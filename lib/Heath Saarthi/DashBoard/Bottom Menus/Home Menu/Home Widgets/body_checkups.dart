@@ -27,7 +27,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
           ),
           Container(
             width: MediaQuery.of(context).size.width.w,
-            height: MediaQuery.of(context).size.height / 3.2.h,
+            height: MediaQuery.of(context).size.height / 2.7.h,
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
@@ -72,7 +72,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                               child: Text("Include 8 Test", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(25, 5, 10, 0),
+                              padding: const EdgeInsets.fromLTRB(25, 5, 10, 5),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -86,11 +86,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                   ),
                                   InkWell(
                                       onTap: (){
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-                                          imageBaner: 'https://img.freepik.com/free-psd/medical-horizontal-banner-template_23-2148940482.jpg',
-                                          title: 'Health Saarthi Platinum',
-                                          mrp: '2999',
-                                        )));
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                                       },
                                       child: Row(
                                         children: [
@@ -126,7 +122,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                               child: Container(
                                                   padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
                                                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.white),
-                                                  child: Icon(Icons.shopping_cart_rounded,color: hsOne)
+                                                  child: Icon(Icons.shopping_cart_rounded,color: hsPrime)
                                               ),
                                             )
                                           ],
@@ -134,7 +130,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                       )
                                     ],
                                   ),
-                                  backgroundColor: hsOne,
+                                  backgroundColor: hsPrime,
                                 );
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               },

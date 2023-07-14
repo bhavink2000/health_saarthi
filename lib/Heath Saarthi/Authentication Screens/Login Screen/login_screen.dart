@@ -9,8 +9,8 @@ import 'Login Widgets/header.dart';
 import 'Login Widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  var screenH;
-  LoginScreen({Key key,this.screenH}) : super(key: key);
+  var screenH,deviceToken,deviceType;
+  LoginScreen({Key key,this.screenH,this.deviceToken,this.deviceType}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 children: <Widget>[
                   Header(animation: _headerTextAnimation),
                   SizedBox(height: 170.h),
-                  LoginForm(animation: _formElementAnimation,screenH: widget.screenH),
+                  LoginForm(animation: _formElementAnimation,screenH: widget.screenH,deviceToken: widget.deviceToken,deviceType: widget.deviceType),
                 ],
               ),
             ),

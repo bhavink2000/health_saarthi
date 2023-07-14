@@ -25,9 +25,9 @@ class CartModel {
 }
 
 class Data {
-  String grossAmount;
-  String netAmount;
-  CartItems cartItems;
+  dynamic grossAmount;
+  dynamic netAmount;
+  CartItems   cartItems;
   List<GlobalSettingSlot> globalSettingTestSlot;
   List<GlobalSettingSlot> globalSettingPackageSlot;
   List<GlobalSettingSlot> globalSettingProfileSlot;

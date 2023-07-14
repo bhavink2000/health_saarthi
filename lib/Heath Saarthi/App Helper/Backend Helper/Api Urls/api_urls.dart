@@ -5,6 +5,9 @@ class ApiUrls{
   static String loginUrl = '${mainUrls}pharmacy/login';
   static String logoutUrl = '${mainUrls}pharmacy/logout';
 
+  static String addDeviceUrl = '${mainUrls}pharmacy/add-device-token';
+  static String deleteDeviceUrl = '${mainUrls}pharmacy/delete-device-token';
+
   static String profileUrls = '${mainUrls}pharmacy/get-profile-data';
 
 
@@ -39,5 +42,19 @@ class ApiUrls{
   static String instantBookingUrls = '${mainUrls}pharmacy/instant-book';
 
   static String todayDealUrls = '${mainUrls}pharmacy/get-todays-deals';
+  static String todayDealDetailsUrls = '${mainUrls}pharmacy/todays-deals-lists';
   static String bannerUrls = '${mainUrls}pharmacy/get-banners-list';
+
+  static String notificationUrls = '${mainUrls}pharmacy/get-notifications-list';
+
+  static String dayReportUrls = '${mainUrls}pharmacy/get-daily-report';
+  static String monthReportUrls = '${mainUrls}pharmacy/get-month-report';
+  static String yearReportUrls = '${mainUrls}pharmacy/get-year-report';
+
+  static String contactUsUrls = '${mainUrls}pharmacy/contact-info';
+  static String supportUrls = '${mainUrls}pharmacy/support';
+  static String referralPharmacyUrls = '${mainUrls}pharmacy/pharmacy-referral';
+  static String globalSearchUrls = '${mainUrls}pharmacy/master-search';
+  static String faqsUrls = '${mainUrls}pharmacy/faqs';
+  static String requestManagementUrls = '${mainUrls}pharmacy/post-request-management';
 }

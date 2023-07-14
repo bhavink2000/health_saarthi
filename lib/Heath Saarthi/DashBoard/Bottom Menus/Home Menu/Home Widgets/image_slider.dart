@@ -9,6 +9,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Lo
 import 'package:provider/provider.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
+import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../Test List/test_list_items.dart';
 
 class HomeImageSlider extends StatefulWidget {
@@ -19,15 +20,6 @@ class HomeImageSlider extends StatefulWidget {
 }
 
 class _HomeImageSliderState extends State<HomeImageSlider> {
-
-  final List<String> sliderBanners = [
-    'assets/Image Slider/banner_1.jpg',
-    'assets/Image Slider/banner_2.jpg',
-    'assets/Image Slider/banner_3.jpg',
-    'assets/Image Slider/01-Banner.png',
-    'assets/Image Slider/02-Banner.png',
-    'assets/Image Slider/03-Banner.png',
-  ];
 
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
@@ -44,21 +36,22 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
   }
   @override
   Widget build(BuildContext context) {  
-    return Container(
-      width: MediaQuery.of(context).size.width.w,
-      height: MediaQuery.of(context).size.height / 6.h,
-      //color: Colors.green,
-      child: ChangeNotifierProvider<HomeMenusProvider>(
-        create: (BuildContext context)=>homeMenusProvider,
-        child: Consumer<HomeMenusProvider>(
-          builder: (context, value, __){
-            switch(value.bannerList.status){
-              case Status.loading:
-                return const CenterLoading();
-              case Status.error:
-                return const Center(child: Text("Error"));
-              case Status.completed:
-                return CarouselSlider.builder(
+    return ChangeNotifierProvider<HomeMenusProvider>(
+      create: (BuildContext context)=>homeMenusProvider,
+      child: Consumer<HomeMenusProvider>(
+        builder: (context, value, __){
+          switch(value.bannerList.status){
+            case Status.loading:
+              return const CenterLoading();
+            case Status.error:
+              return Center(child: Text(value.bannerList.message));
+            case Status.completed:
+              return value.bannerList.data.data.isEmpty ? Container() :Container(
+                width: MediaQuery.of(context).size.width.w,
+                height: MediaQuery.of(context).size.height / 6.h,
+                child: value.bannerList.data.data.isEmpty
+                    ? const Center(child: Text("No Banner Available",style: TextStyle(fontFamily: FontType.MontserratMedium),),)
+                    : CarouselSlider.builder(
                   options: CarouselOptions(
                     viewportFraction: 0.8,
                     initialPage: 0,
@@ -82,13 +75,13 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                           },
-                          child: Image(image: NetworkImage("${bannerI.image}"),fit: BoxFit.fill,)),
+                          child: Image(image: NetworkImage(bannerI.image),fit: BoxFit.fill,)),
                     );
                   },
-                );
-            }
-          },
-        ),
+                ),
+              );
+          }
+        },
       ),
     );
   }

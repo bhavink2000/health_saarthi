@@ -29,8 +29,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final branch = TextEditingController();
 
   final pincode = TextEditingController();
-  final panCard = TextEditingController();
-  final aadharcard = TextEditingController();
+  var panCard;
+  var addressProfe;
+  var aadharCardF;
+  var aadharCardB;
 
   final currentPassword = TextEditingController();
   final newPassword = TextEditingController();
@@ -65,7 +67,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                     icon: const Icon(Icons.arrow_back,color: Colors.white,size: 25,),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  const Text("Profile",style: TextStyle(fontSize: 20,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
+                  const Text("Profile",style: TextStyle(fontSize: 16,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
                   //Icon(Icons.circle_notifications_rounded,color: hsColorOne,size: 25,)
                 ],
               ),
@@ -88,8 +90,96 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         showTextField('Area', area,Icons.area_chart),
                         showTextField('Branch', branch,CupertinoIcons.arrow_branch),
                         showTextField('PinCode', pincode,Icons.code),
-                        showTextField('PanCard', panCard,Icons.confirmation_number_outlined),
-                        showTextField('Aadhaar Card', aadharcard,CupertinoIcons.creditcard_fill),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shadowColor: hsPrime.withOpacity(0.5),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.height / 10,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
+                                    const SizedBox(height: 5,),
+                                    Text("${panCard ?? 'PanCard'}",
+                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                          fontSize: 12),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shadowColor: hsPrime.withOpacity(0.5),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.height / 10,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
+                                    const SizedBox(height: 5,),
+                                    Text(
+                                      "${addressProfe ?? 'Address Proof'}",
+                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                          fontSize: 12),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shadowColor: hsPrime.withOpacity(0.5),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.height / 10,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
+                                    const SizedBox(height: 5,),
+                                    Text(
+                                      "${aadharCardF ?? 'Aadhaar Card Front'}",
+                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                          fontSize: 10),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              shadowColor: hsPrime.withOpacity(0.5),
+                              child: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.height / 10,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
+                                    const SizedBox(height: 5,),
+                                    Text(
+                                      "${aadharCardB ??'Aadhaar Card Back'}",
+                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                          fontSize:  10),)
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                           child: Card(
@@ -280,7 +370,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           var data = json.decode(response.body);
           var errorMsg = data['message'];
           if (data['status'] == 400) {
-            SnackBarMessageShow.errorMSG("$errorMsg", context);
+            SnackBarMessageShow.warningMSG("$errorMsg", context);
           }
         }
       }
@@ -289,13 +379,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
 
   void getProfile() async {
     try {
-      var pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      mobile.text = pModel.data!.mobile.toString();
-      email.text = pModel.data!.emailId.toString();
-      address.text = pModel.data!.address.toString();
-      state.text = pModel.data!.state!.stateName.toString();
-      city.text = pModel.data!.city!.cityName.toString();
-      area.text = pModel.data!.area!.areaName.toString();
+      var pModel;
+      try {
+        pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+        print("Value -> $pModel");
+      } catch (e) {
+        if (e.toString().contains('Token is Expired')) {
+          SnackBarMessageShow.warningMSG('Token is Expired\nPlease Login', context);
+        } else {
+          print('Error: $e');
+        }
+      }
+      if (pModel != null) {
+        setState(() {
+          firstNm.text = pModel.data!.name.toString();
+          mobile.text = pModel.data!.mobile.toString();
+          email.text = pModel.data!.emailId.toString();
+          address.text = pModel.data!.address.toString();
+          state.text = pModel.data!.state!.stateName.toString();
+          city.text = pModel.data!.city!.cityName.toString();
+          area.text = pModel.data!.area!.areaName.toString();
+          pincode.text = pModel.data!.pincode.toString();
+          panCard = pModel.data!.pancard.toString();
+          addressProfe = pModel.data!.addressProof.toString();
+          aadharCardF = pModel.data!.aadharFront.toString();
+          aadharCardB = pModel.data!.aadharBack.toString();
+        });
+      }
     } catch (e) {
       print('Error: $e');
     }

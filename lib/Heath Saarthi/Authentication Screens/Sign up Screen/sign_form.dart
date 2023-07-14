@@ -1,11 +1,16 @@
 //@dart=2.9
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, missing_return
 
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Location%20Provider/location_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Location%20Bloc/location_bloc.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Location%20Bloc/location_event.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Location%20Bloc/location_state.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,23 +19,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
-import '../../App Helper/Backend Helper/Providers/Authentication Provider/sign_up_provider.dart';
+import '../../App Helper/Blocs/Location Bloc/location_repo.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
-import '../Login Screen/Login Widgets/custom_button.dart';
-import '../Login Screen/Login Widgets/fade_slide_transition.dart';
 import '../Login Screen/login_screen.dart';
 
 class SignUpForm extends StatefulWidget {
-  final Animation<double> animation;
-  var screenH;
-  SignUpForm({Key key,this.animation,this.screenH}) : super(key: key);
+  var emailId;
+  SignUpForm({Key key,this.emailId}) : super(key: key);
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -38,18 +39,16 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File panCardFile;
   File addressFile;
   File aadharCardFFile;
   File aadharCardBFile;
+  File checkFile;
 
   final createVendor = TextEditingController();
   final firstNm = TextEditingController();
   final mobile = TextEditingController();
-  final email = TextEditingController();
-  bool showOTP = false;
-
-  final otpVerify = TextEditingController();
   final address = TextEditingController();
   final seMobile = TextEditingController();
   bool showExecutive = false;
@@ -57,9 +56,14 @@ class _SignUpFormState extends State<SignUpForm> {
   final password = TextEditingController();
   final cPassword = TextEditingController();
 
+  final panCardNo = TextEditingController();
+  final bankName = TextEditingController();
+  final ifscCode = TextEditingController();
+  final accountNo = TextEditingController();
+  final gstNo = TextEditingController();
+
   String selectedSales;
   String selectedB2b;
-
   var selectedSalesMobileNo;
   @override
   void initState() {
@@ -76,7 +80,18 @@ class _SignUpFormState extends State<SignUpForm> {
     });
   }
 
-
+  bool obScured = true;
+  void _togglePasswordView() {
+    setState(() {
+      obScured = !obScured;
+    });
+  }
+  bool obCScured = true;
+  void _toggleCPasswordView() {
+    setState(() {
+      obCScured = !obCScured;
+    });
+  }
   String getMobileNumber(String selectedName) {
     final selectedExecutive = salesExecutiveList.firstWhere(
           (executive) => executive['name'] == selectedName,
@@ -84,25 +99,51 @@ class _SignUpFormState extends State<SignUpForm> {
     );
     return selectedExecutive != null ? selectedExecutive['mobile_no'] : '';
   }
+  bool isFirstNameFieldTouched = false;
+  bool isVendorNameFieldTouched = false;
+  bool _agreedToTOS = true;
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
     final space = height > 650 ? hsSpaceM : hsSpaceS;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: Column(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-            child: FadeSlideTransition(
-              animation: widget.animation,
-              additionalOffset: space,
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: '${widget.emailId}',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.email_rounded, color: hsBlack, size: 20),
+                ), // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: DropdownButtonFormField<String>(
                 value: selectedB2b,
                 style: const TextStyle(fontSize: 12,color: Colors.black87),
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
@@ -119,343 +160,322 @@ class _SignUpFormState extends State<SignUpForm> {
                 onChanged: (newValue) {
                   selectedB2b = newValue;
                 },
-                items: b2bSubAdminList?.map((subAdmin) => DropdownMenuItem(
-                  value: subAdmin['id'].toString(),
-                  child: Container(
-                      width: MediaQuery.of(context).size.width / 1.5.w,
-                      child: Text(subAdmin['name'])
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Select B2B subadmin'),
                   ),
-                ))?.toList() ?? [],
-              ),
-            ),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: 0.0,
-            child: showTextField('Full Name', firstNm,Icons.person),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: 0.0,
-            child: showTextField('Vendor Name', createVendor,Icons.person_pin),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: Row(
-              children: [
-                Container(
-                    width: MediaQuery.of(context).size.width / 1.35.w,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                      child: TextField(
-                        controller: email,
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.all(hsPaddingM),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          ),
-                          hintText: 'Email',
-                          hintStyle: const TextStyle(
-                              color: Colors.black54,
-                              fontFamily: FontType.MontserratRegular,
-                              fontSize: 14
-                          ),
-                          prefixIcon: const Icon(Icons.email, color: hsBlack,size: 20),
-                        ),
-                      ),
-                    )
-                ),
-                InkWell(
-                  onTap: (){
-                    if(email.text.isEmpty){
-                      SnackBarMessageShow.warningMSG('Please Enter Email Id', context);
-                    }
-                    else{
-                      verifyEmailId(email.text);
-                      setState(() {
-                        showOTP = true;
-                      });
-                    }
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.black87),
-                    child: Text(showOTP == true ? "Resend" : "Verify",style: TextStyle(color: Colors.white70,fontFamily: FontType.MontserratRegular),),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Visibility(
-            visible: showOTP,
-            child: FadeSlideTransition(
-              animation: widget.animation,
-              additionalOffset: space,
-              child: Row(
-                children: [
-                  Container(
-                      width: MediaQuery.of(context).size.width / 1.35.w,
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                        child: TextField(
-                          controller: otpVerify,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            ),
-                            hintText: 'OTP',
-                            hintStyle: const TextStyle(
-                                color: Colors.black54,
-                                fontFamily: FontType.MontserratRegular,
-                                fontSize: 14
-                            ),
-                            prefixIcon: const Icon(Icons.code_rounded, color: hsBlack,size: 20),
-                          ),
-                        ),
-                      )
-                  ),
-                  InkWell(
-                    onTap: (){
-                      if(otpVerify.text.isEmpty){
-                        SnackBarMessageShow.warningMSG('Please Enter OTP', context);
-                      }
-                      else{
-                        submitOtp(email.text, otpVerify.text);
-                      }
-                    },
+                  ...b2bSubAdminList?.map((subAdmin) => DropdownMenuItem(
+                    value: subAdmin['id'].toString(),
                     child: Container(
-                      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.black87),
-                      child: const Text("Submit",style: TextStyle(color: Colors.white70,fontFamily: FontType.MontserratRegular),),
+                        width: MediaQuery.of(context).size.width / 1.5.w,
+                        child: Text(subAdmin['name'])
                     ),
-                  )
+                  ))?.toList() ?? []
                 ],
               ),
             ),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: showTextField('Mobile', mobile,Icons.mobile_friendly),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: showTextField('Address', address,Icons.location_city),
-          ),
-          SizedBox(height: space),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 2.3,
-                //height: MediaQuery.of(context).size.height / 18,
-                child: FadeSlideTransition(
-                  animation: widget.animation,
-                  additionalOffset: space,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedState,
-                    style: const TextStyle(fontSize: 10, color: Colors.black87),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(hsPaddingM),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                      hintText: 'State',
-                      hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                    ),
-                    onChanged: (newValue) {
-                      setState(() {
-                        selectedState = newValue;
-                      });
-                      fetchCityList(selectedState);
-                    },
-                    onTap: () {
-                      if (selectedCity == null) {
-                        fetchStateList();
-                      } else {
-                        setState(() {
-                          selectedCity = null;
-                          selectedArea = null;
-                          selectedBranch = null;
-                        });
-                        fetchStateList();
-                      }
-                    },
-                    items: stateList.map((state) => DropdownMenuItem<String>(
-                      value: state.id?.toString() ?? '',
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 3.8,
-                        child: Text(state.stateName ?? ''),
-                      ),
-                    )).toList(),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 2.3,
-                child: FadeSlideTransition(
-                  animation: widget.animation,
-                  additionalOffset: space,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedCity,
-                    style: const TextStyle(fontSize: 10,color: Colors.black87),
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(hsPaddingM),
-                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                      hintText: 'City',
-                      hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12,),
-                    ),
-                    onChanged: (newValue) {
-                      selectedCity = newValue;
-                      fetchAreaList(selectedState, selectedCity);
-                    },
-                    onTap: (){
-                      if(selectedArea == null){
-                        fetchCityList(selectedState);
-                      }
-                      else{
-                        setState(() {
-                          selectedArea = null;
-                          selectedBranch = null;
-                        });
-                        fetchAreaList(selectedState, selectedCity);
-                      }
-                    },
-                    items: cityList?.map((city) => DropdownMenuItem<String>(
-                      value: city.id.toString() ?? '',
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 4.w,
-                        child: Text(city.cityName)
-                      ),
-                    ))?.toList() ?? [],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: space),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: Container(
-              width: MediaQuery.of(context).size.width / 1.2,
-              //height: MediaQuery.of(context).size.height / 18,
-              child: FadeSlideTransition(
-                animation: widget.animation,
-                additionalOffset: space,
-                child: DropdownButtonFormField<String>(
-                  value: selectedArea,
-                  style: const TextStyle(fontSize: 10,color: Colors.black87),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.all(hsPaddingM),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                    ),
-                    hintText: 'Area',
-                    hintStyle: const TextStyle(
-                      color: Colors.black54,
-                      fontFamily: FontType.MontserratRegular,
-                      fontSize: 12,
-                    ),
-                  ),
-                  onChanged: (newValue) {
-                    selectedArea = newValue;
-                    fetchBranchList(selectedState, selectedCity, selectedArea);
-                  },
-                  onTap: (){
-                    if(selectedBranch == null){
-                      fetchAreaList(selectedState, selectedCity);
-                    }
-                    else{
-                      setState(() {
-                        selectedBranch = null;
-                      });
-                      fetchBranchList(selectedState, selectedCity,selectedArea);
-                    }
-                  },
-                  items: areaList?.map((area) => DropdownMenuItem<String>(
-                    value: area.id.toString() ?? '',
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.5.w,
-                      child: Text(area.areaName)
-                    ),
-                  ))?.toList() ?? [],
-                ),
-              ),
+            showTextField(
+                'Full name', firstNm,Icons.person,
+                    (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter full name';
+                  }
+                  return null;
+                }
             ),
-          ),
-          SizedBox(height: space),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width / 1.2,
-              child: FadeSlideTransition(
-                animation: widget.animation,
-                additionalOffset: space,
-                child: DropdownButtonFormField<String>(
-                  value: selectedBranch,
-                  style: const TextStyle(fontSize: 10,color: Colors.black87),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                    hintText: 'Branch',
-                    hintStyle: const TextStyle(
-                      color: Colors.black54,
-                      fontFamily: FontType.MontserratRegular,
-                      fontSize: 12,
-                    ),
-                  ),
-                  onChanged: (newValue) {
-                    selectedBranch = newValue;
-                  },
-                  items: branchList?.map((branch) => DropdownMenuItem<String>(
-                    value: branch.id.toString() ?? '',
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.5.w,
-                      child: Text(branch.branchName)
-                    ),
-                  ))?.toList() ?? [],
-                ),
-              ),
+            showTextField(
+                'Vendor name', createVendor,Icons.person_pin,
+                    (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter vendor name';
+                  }
+                  return null;
+                }
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-            child: FadeSlideTransition(
-              animation: widget.animation,
-              additionalOffset: space,
-              child: DropdownButtonFormField<String>(
-                value: selectedSales,
-                style: const TextStyle(fontSize: 10,color: Colors.black87),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: mobile,
+                keyboardType: TextInputType.phone,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                maxLength: 10,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Sales Executive',
+                  hintText: 'Mobile no',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.mobile_friendly, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter mobile number';
+                  }
+                  return null;
+                }, // Set the validator function
+              ),
+            ),
+            showTextField(
+                'Address', address,Icons.location_city,
+                    (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter address';
+                  }
+                  return null;
+                }
+            ),
+            SizedBox(height: space),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.15,
+              child: DropdownButtonFormField<String>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                value: selectedState,
+                style: const TextStyle(fontSize: 10, color: Colors.black87),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                  hintText: 'State',
+                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select a state';
+                  }
+                  return null;
+                },
+                onChanged: (newValue) {
+                  setState(() {
+                    selectedState = newValue;
+                  });
+                  fetchCityList(selectedState);
+                },
+                onTap: () {
+                  if (selectedCity == null) {
+                    fetchStateList();
+                  } else {
+                    setState(() {
+                      selectedCity = null;
+                      selectedArea = null;
+                      selectedBranch = null;
+                    });
+                    fetchStateList();
+                  }
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Select state'),
+                  ),
+                  ...stateList.map((state) => DropdownMenuItem<String>(
+                    value: state.id?.toString() ?? '',
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 3.8,
+                      child: Text(state.stateName ?? ''),
+                    ),
+                  )).toList()
+                ],
+              ),
+            ),
+            SizedBox(height: space),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.15,
+              child: DropdownButtonFormField<String>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                value: selectedCity,
+                style: const TextStyle(fontSize: 10,color: Colors.black87),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                  hintText: 'City',
+                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12,),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select a city';
+                  }
+                  return null;
+                },
+                onChanged: (newValue) {
+                  selectedCity = newValue;
+                  fetchAreaList(selectedState, selectedCity);
+                },
+                onTap: (){
+                  if(selectedArea == null){
+                    fetchCityList(selectedState);
+                  }
+                  else{
+                    setState(() {
+                      selectedArea = null;
+                      selectedBranch = null;
+                    });
+                    fetchAreaList(selectedState, selectedCity);
+                  }
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Select city'),
+                  ),
+                  ...cityList?.map((city) => DropdownMenuItem<String>(
+                    value: city.id.toString() ?? '',
+                    child: Container(
+                        width: MediaQuery.of(context).size.width / 4.w,
+                        child: Text(city.cityName)
+                    ),
+                  ))?.toList() ?? []
+                ],
+              ),
+            ),
+            SizedBox(height: space),
+            Container(
+              width: MediaQuery.of(context).size.width / 1.15,
+              //height: MediaQuery.of(context).size.height / 18,
+              child: DropdownButtonFormField<String>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                value: selectedArea,
+                style: const TextStyle(fontSize: 10,color: Colors.black87),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Area',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 12,
                   ),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select a area';
+                  }
+                  return null;
+                },
+                onChanged: (newValue) {
+                  selectedArea = newValue;
+                  fetchBranchList(selectedState, selectedCity, selectedArea);
+                },
+                onTap: (){
+                  if(selectedBranch == null){
+                    fetchAreaList(selectedState, selectedCity);
+                  }
+                  else{
+                    setState(() {
+                      selectedBranch = null;
+                    });
+                    fetchBranchList(selectedState, selectedCity,selectedArea);
+                  }
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Select area'),
+                  ),
+                  ...areaList?.map((area) => DropdownMenuItem<String>(
+                    value: area.id.toString() ?? '',
+                    child: Container(
+                        width: MediaQuery.of(context).size.width / 1.5.w,
+                        child: Text(area.areaName)
+                    ),
+                  ))?.toList() ?? []
+                ],
+              ),
+            ),
+            SizedBox(height: space),
+            SizedBox(
+              width: MediaQuery.of(context).size.width / 1.15,
+              child: DropdownButtonFormField<String>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                value: selectedBranch,
+                isExpanded: true,
+                style: const TextStyle(fontSize: 10,color: Colors.black87),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                  hintText: 'Branch',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 12,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select a branch';
+                  }
+                  return null;
+                },
+                onChanged: (newValue) {
+                  selectedBranch = newValue;
+                },
+                items: [
+                  DropdownMenuItem(
+                    value: '',
+                    child: Text('Select branch'),
+                  ),
+                  ...branchList?.map((branch) => DropdownMenuItem<String>(
+                    value: branch.id.toString() ?? '',
+                    child: Container(
+                        width: MediaQuery.of(context).size.width / 1.5.w,
+                        child: Text(branch.branchName)
+                    ),
+                  ))?.toList() ?? []
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+              child: DropdownButtonFormField<String>(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                value: selectedSales,
+                style: const TextStyle(fontSize: 10,color: Colors.black87),
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Sales executive',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 12,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Select a sales executive';
+                  }
+                  return null;
+                },
                 onChanged: (newValue) {
                   setState(() {
                     showExecutive = true;
@@ -481,26 +501,67 @@ class _SignUpFormState extends State<SignUpForm> {
                 ))?.toList() ?? [],
               ),
             ),
-          ),
 
-          SizedBox(height: space),
-          Visibility(
-            visible: showExecutive,
-            child: FadeSlideTransition(
-              animation: widget.animation,
-              additionalOffset: space,
-              child: showTextField('Executive Mobile ', seMobile,Icons.mobile_friendly),
+            SizedBox(height: space),
+            Visibility(
+              visible: showExecutive,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: seMobile,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    hintText: 'Executive mobile no',
+                    hintStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(Icons.mobile_friendly, color: hsBlack, size: 20),
+                  ),
+                ),
+              ),
             ),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: showTextField('PinCode No', pincode,Icons.code),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: SizedBox(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: pincode,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Pincode',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter pincode';
+                  }
+                  return null;
+                }, // Set the validator function
+              ),
+            ),
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height / 8,
               child: Row(
@@ -511,8 +572,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     shadowColor: hsPrime.withOpacity(0.5),
                     child: InkWell(
-                      onTap: (){
-                        _showFilePick(context,'panCard');
+                      onTap: () {
+                        _showFilePick(context, 'panCard');
                       },
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width / 2.5,
@@ -520,13 +581,117 @@ class _SignUpFormState extends State<SignUpForm> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                            const SizedBox(height: 5,),
+                            panCardFile == null
+                                ? Icon(
+                              Icons.upload_file_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            )
+                                : const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 30,
+                            ),
+                            SizedBox(height: 5),
                             Text(
-                              panCardFile == null
-                                  ? "Pan Card"
-                                  :  panCardFile.path.split('/').last,
-                              style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,fontSize: panCardFile == null ? 14 : 10),)
+                              panCardFile == null ? "Pan card" : "Pan card picked",
+                              style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,
+                                color: Colors.black87,
+                                fontSize: panCardFile == null ? 14 : 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  ),
+                  Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shadowColor: hsPrime.withOpacity(0.5),
+                    child: InkWell(
+                      onTap: () {
+                        _showFilePick(context, 'address');
+                      },
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        height: MediaQuery.of(context).size.height / 10,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            addressFile == null
+                                ? Icon(
+                              Icons.upload_file_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            )
+                                : const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 30,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              addressFile == null ? "Address proof" : "Address proof picked",
+                              style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,
+                                color: Colors.black87,
+                                fontSize: addressFile == null ? 14 : 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shadowColor: hsPrime.withOpacity(0.5),
+                    child: InkWell(
+                      onTap: () {
+                        _showFilePick(context, 'aadhaarF');
+                      },
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        height: MediaQuery.of(context).size.height / 10,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            aadharCardFFile == null
+                                ? Icon(
+                              Icons.upload_file_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            )
+                                : const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 30,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              aadharCardFFile == null ? "Aadhaar card front" : "Aadhaar card front picked",
+                              style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,
+                                color: Colors.black87,
+                                fontSize: aadharCardFFile == null ? 14 : 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       ),
@@ -537,8 +702,8 @@ class _SignUpFormState extends State<SignUpForm> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     shadowColor: hsPrime.withOpacity(0.5),
                     child: InkWell(
-                      onTap: (){
-                        _showFilePick(context,'address');
+                      onTap: () {
+                        _showFilePick(context, 'aadhaarB');
                       },
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width / 2.5,
@@ -546,98 +711,248 @@ class _SignUpFormState extends State<SignUpForm> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                            const SizedBox(height: 5,),
+                            aadharCardBFile == null
+                                ? Icon(
+                              Icons.upload_file_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            )
+                                : const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 30,
+                            ),
+                            SizedBox(height: 5),
                             Text(
-                              addressFile == null
-                                  ? "Address Proof"
-                                  : addressFile.path.split('/').last,
-                              style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,fontSize: addressFile == null ? 14 : 10),)
+                              aadharCardBFile == null ? "Aadhaar card back" : "Aadhaar card back picked",
+                              style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,
+                                color: Colors.black87,
+                                fontSize: aadharCardBFile == null ? 14 : 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
-
                 ],
               ),
             ),
-          ),
-          FadeSlideTransition(
-              animation: widget.animation,
-              additionalOffset: space,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 8,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      shadowColor: hsPrime.withOpacity(0.5),
-                      child: InkWell(
-                        onTap: (){
-                          _showFilePick(context,'aadhaarF');
-                        },
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          height: MediaQuery.of(context).size.height / 10,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                              const SizedBox(height: 5,),
-                              Text(
-                                aadharCardFFile == null
-                                    ? "Aadhaar Card Front"
-                                    : aadharCardFFile.path.split('/').last,
-                                style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,fontSize: aadharCardFFile == null ? 14 : 10),)
-                            ],
-                          ),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height / 8,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Card(
+                    elevation: 5,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    shadowColor: hsPrime.withOpacity(0.5),
+                    child: InkWell(
+                      onTap: () {
+                        _showFilePick(context, 'checkFile');
+                      },
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        height: MediaQuery.of(context).size.height / 10,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            checkFile == null
+                                ? Icon(
+                              Icons.upload_file_rounded,
+                              color: Colors.black,
+                              size: 30,
+                            )
+                                : const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 30,
+                            ),
+                            SizedBox(height: 5),
+                            Text(
+                              checkFile == null ? "Cheque photo" : "Cheque picked",
+                              style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,
+                                color: Colors.black87,
+                                fontSize: checkFile == null ? 14 : 10,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      shadowColor: hsPrime.withOpacity(0.5),
-                      child: InkWell(
-                        onTap: (){
-                          _showFilePick(context,'aadhaarB');
-                        },
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          height: MediaQuery.of(context).size.height / 10,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                              const SizedBox(height: 5,),
-                              Text(
-                                aadharCardBFile == null
-                                    ? "Aadhaar Card Back"
-                                    : aadharCardBFile.path.split('/').last,
-                                style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,fontSize:  aadharCardBFile == null ? 14 : 10),)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  ],
-                ),
-              )
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: Padding(
+                  ),
+                ],
+              ),
+            ),
+            Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-              child: TextField(
-                controller: password,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: panCardNo,
+                keyboardType: TextInputType.emailAddress,
+                textCapitalization: TextCapitalization.characters,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Pancard number',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.numbers_rounded, color: hsBlack, size: 20),
+                ),
+                  // onChanged: (value){
+                  //   if (value.length < 11) {
+                  //     print('Pancard length is less than 10 characters.');
+                  //   }
+                  //   if (!value.contains(RegExp(r'[0-9]'))) {
+                  //     print('Pancard does not contain a digit.');
+                  //   }
+                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter pancard number';
+                    }
+                    return null;
+                  } // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: gstNo,
+                keyboardType: TextInputType.emailAddress,
+                textCapitalization: TextCapitalization.characters,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'GST Number',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.confirmation_number_rounded, color: hsBlack, size: 20),
+                ),
+                  // onChanged: (value){
+                  //   if (value.length < 16) {
+                  //     print('GST number length is less than 15 characters.');
+                  //   }
+                  //   if (!value.contains(RegExp(r'[0-9]'))) {
+                  //     print('GST does not contain a digit.');
+                  //   }
+                  // },
+                // Set the validator function
+              ),
+            ),
+            showTextField(
+                'Bank name', bankName,Icons.account_balance_rounded,
+                    (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter bank name';
+                  }
+                  return null;
+                }
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: ifscCode,
+                  keyboardType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    hintText: 'IFSC code',
+                    hintStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
+                  ),
+                  // onChanged: (value){
+                  //   if (value.length < 12) {
+                  //     print('Pancard length is less than 10 characters.');
+                  //   }
+                  //   if (!value.contains(RegExp(r'[0-9]'))) {
+                  //     print('Pancard does not contain a digit.');
+                  //   }
+                  // },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter IFSC code';
+                    }
+                    return null;
+                  } // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: accountNo,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    hintText: 'Account number',
+                    hintStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(Icons.account_balance_wallet_rounded, color: hsBlack, size: 20),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Enter account number';
+                    }
+                    return null;
+                  } // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                controller: password,
+                obscureText: obScured,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
@@ -651,78 +966,248 @@ class _SignUpFormState extends State<SignUpForm> {
                       fontSize: 14
                   ),
                   prefixIcon: const Icon(Icons.lock_open_rounded, color: hsBlack,size: 20),
-                  suffixIcon: const Icon(Icons.remove_red_eye_sharp, color: hsBlack,size: 20),
+                  suffixIcon: InkWell(
+                    onTap: _togglePasswordView,
+                    child: Icon(
+                      obScured
+                          ?
+                      Icons.visibility_off_rounded
+                          :
+                      Icons.visibility_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
+                onChanged: (value) {
+                  if (value.length >= 8 && value.contains(RegExp(r'[A-Z]')) &&
+                      value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')) && value.contains(RegExp(r'[0-9]'))) {
+                    // Password meets all the requirements
+                  } else {
+                    print('Password does not meet the requirements.');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  if (value.trim().length < 8) {
+                    return 'Password must be at least 8 characters in length';
+                  }
+                  if (!value.contains(RegExp(r'[A-Z]'))) {
+                    return 'Password must contain at least one uppercase letter';
+                  }
+                  if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                    return 'Password must contain at least one special character';
+                  }
+                  return null;
+                },
               ),
             ),
-          ),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: space,
-            child: Padding(
+            Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-              child: TextField(
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: cPassword,
+                obscureText: obCScured,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Confirm Password',
+                  hintText: 'Confirm password',
                   hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
                       fontSize: 14
                   ),
                   prefixIcon: const Icon(Icons.lock_outline_rounded, color: hsBlack,size: 20),
-                  suffixIcon: const Icon(Icons.remove_red_eye_sharp, color: hsBlack,size: 20),
+                  suffixIcon: InkWell(
+                    onTap: _toggleCPasswordView,
+                    child: Icon(
+                      obCScured
+                          ?
+                      Icons.visibility_off_rounded
+                          :
+                      Icons.visibility_rounded,
+                      color: Colors.black,
+                    ),
+                  ),
                 ),
+                onChanged: (value) {
+                  if (value.length >= 8 && value.contains(RegExp(r'[A-Z]')) &&
+                      value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')) && value.contains(RegExp(r'[0-9]'))) {
+                    // Password meets all the requirements
+                  } else {
+                    print('Password does not meet the requirements.');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter a password';
+                  }
+                  if (value.trim().length < 8) {
+                    return 'Password must be at least 8 characters in length';
+                  }
+                  if (!value.contains(RegExp(r'[A-Z]'))) {
+                    return 'Password must contain at least one uppercase letter';
+                  }
+                  if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                    return 'Password must contain at least one special character';
+                  }
+                  return null;
+                },
               ),
             ),
-          ),
-          SizedBox(height: space),
-          FadeSlideTransition(
-            animation: widget.animation,
-            additionalOffset: 4 * space,
-            child: CustomButton(
-              color: hsBlack,
-              textColor: hsWhite,
-              text: 'Create a Account',
-              onPressed: () {
-                signUpData();
-              },
+            //SizedBox(height: space),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Row(
+                children: <Widget>[
+                  Checkbox(
+                    value: _agreedToTOS,
+                    onChanged: _setAgreedToTOS,
+                  ),
+                  GestureDetector(
+                    onTap: () => _setAgreedToTOS(!_agreedToTOS),
+                    child: const Text(
+                      'I agree to the Terms of Condition and Privacy Policy',
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: space),
-        ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+              child: InkWell(
+                onTap: ()async{
+                  if(_agreedToTOS == false){
+                    SnackBarMessageShow.warningMSG('Please select term & condition', context);
+                  }
+                  else{
+                    if (_formKey.currentState.validate()) {
+                      FocusScope.of(context).unfocus();
+                      if(selectedState == null || selectedCity == null || selectedArea == null){
+                        SnackBarMessageShow.warningMSG("Please select location fields", context);
+                      }
+                      else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null || checkFile == null){
+                        SnackBarMessageShow.warningMSG("Please select documents", context);
+                      }
+                      else{
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: const [
+                                    CircularProgressIndicator(),
+                                    SizedBox(height: 16.0),
+                                    Text('Loading...'),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                        await signUpData();
+                        //Navigator.pop(context);
+                      }
+                    }
+                  }
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsBlack),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "Create an account",
+                    style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontSize: 16),
+                  ),
+                ),
+              ),
+              /*child: CustomButton(
+                color: hsBlack,
+                textColor: hsWhite,
+                text: 'Create an account',
+                onPressed: () async{
+                  if (_formKey.currentState.validate()) {
+                    FocusScope.of(context).unfocus();
+                    if(selectedState == null || selectedCity == null || selectedArea == null){
+                      SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
+                    }
+                    else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null){
+                      SnackBarMessageShow.warningMSG("Please Select Documents", context);
+                    }
+                    else{
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: const [
+                                  CircularProgressIndicator(),
+                                  SizedBox(height: 16.0),
+                                  Text('Loading...'),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                      await signUpData();
+                      //Navigator.pop(context);
+                    }
+                  }
+                },
+              ),*/
+            ),
+            SizedBox(height: space),
+          ],
+        ),
       ),
     );
   }
-
-  Widget showTextField(var lebal, TextEditingController controller, IconData iconData){
+  void _setAgreedToTOS(bool newValue) {
+    setState(() {
+      _agreedToTOS = newValue;
+    });
+  }
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
+          border: const OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
           ),
-          hintText: '$lebal',
+          hintText: '$label',
           hintStyle: const TextStyle(
-              color: Colors.black54,
-              fontFamily: FontType.MontserratRegular,
-              fontSize: 14
+            color: Colors.black54,
+            fontFamily: FontType.MontserratRegular,
+            fontSize: 14,
           ),
-          prefixIcon: Icon(iconData, color: hsBlack,size: 20),
+          prefixIcon: Icon(iconData, color: hsBlack, size: 20),
         ),
+        validator: validator, // Set the validator function
       ),
     );
   }
@@ -771,26 +1256,44 @@ class _SignUpFormState extends State<SignUpForm> {
                                     }
                                     final file = File(pickedFile.files.single.path);
                                     setState(() {
-                                      type == 'panCard'
-                                          ? panCardFile = file
-                                          : type == 'address'
-                                          ? addressFile = file
-                                          : type == 'aadhaarF'
-                                          ? aadharCardFFile = file
-                                          : aadharCardBFile = file;
+                                      switch (type) {
+                                        case 'panCard':
+                                          panCardFile = file;
+                                          break;
+                                        case 'address':
+                                          addressFile = file;
+                                          break;
+                                        case 'aadhaarF':
+                                          aadharCardFFile = file;
+                                          break;
+                                        case 'checkFile':
+                                          checkFile = file;
+                                          break;
+                                        default:
+                                          aadharCardBFile = file;
+                                          break;
+                                      }
                                     });
                                     Navigator.pop(context);
                                   } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: hsOne,
-                                      content: Text('Failed to pick file: ${e.message}', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                    ),);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: hsOne,
+                                        content: Text(
+                                          'Failed to pick file: ${e.message}',
+                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
+                                        ),
+                                      ),
+                                    );
                                     print("platForm-> $e");
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         backgroundColor: hsOne,
-                                        content: Text('Unknown error: $e', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
+                                        content: Text(
+                                          'Unknown error: $e',
+                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
+                                        ),
                                       ),
                                     );
                                     print("error -> $e");
@@ -816,7 +1319,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                               color: hsTwo,
                               child: InkWell(
-                                onTap: ()async{
+                                onTap: () async {
                                   try {
                                     final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
                                     if (pickedFile == null) {
@@ -833,26 +1336,44 @@ class _SignUpFormState extends State<SignUpForm> {
                                     }
                                     final file = File(pickedFile.path);
                                     setState(() {
-                                      type == 'panCard'
-                                          ? panCardFile = file
-                                          : type == 'address'
-                                          ? addressFile = file
-                                          : type == 'aadhaarF'
-                                          ? aadharCardFFile = file
-                                          : aadharCardBFile = file;
+                                      switch (type) {
+                                        case 'panCard':
+                                          panCardFile = file;
+                                          break;
+                                        case 'address':
+                                          addressFile = file;
+                                          break;
+                                        case 'aadhaarF':
+                                          aadharCardFFile = file;
+                                          break;
+                                        case 'checkFile':
+                                          checkFile = file;
+                                          break;
+                                        default:
+                                          aadharCardBFile = file;
+                                          break;
+                                      }
                                     });
                                     Navigator.pop(context);
                                   } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: hsOne,
-                                      content: Text('Failed to pick file: ${e.message}', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                    ),);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: hsOne,
+                                        content: Text(
+                                          'Failed to pick file: ${e.message}',
+                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
+                                        ),
+                                      ),
+                                    );
                                     print("platForm-> $e");
                                   } catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         backgroundColor: hsOne,
-                                        content: Text('Unknown error: $e', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
+                                        content: Text(
+                                          'Unknown error: $e',
+                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
+                                        ),
                                       ),
                                     );
                                     print("error -> $e");
@@ -890,7 +1411,7 @@ class _SignUpFormState extends State<SignUpForm> {
     try {
       FormData formData = FormData.fromMap({
         "name": firstNm.text,
-        "email_id": email.text,
+        "email_id": widget.emailId,
         "password": password.text,
         "mobile": mobile.text,
         "vendor_name": createVendor.text,
@@ -901,41 +1422,59 @@ class _SignUpFormState extends State<SignUpForm> {
         'address': address.text,
         'pincode': pincode.text,
         'pancard': await MultipartFile.fromFile(panCardFile.path),
+        'pancard_number': panCardNo.text,
         'address_proof': await MultipartFile.fromFile(addressFile.path),
         'aadhar_front': await MultipartFile.fromFile(aadharCardFFile.path),
         'aadhar_back': await MultipartFile.fromFile(aadharCardBFile.path),
+        'cheque_image': await MultipartFile.fromFile(checkFile.path),
         'sales_executive_admin_id': selectedSales ?? '',
         'b2b_subadmin_id': selectedB2b ?? '',
+        'bank_name': bankName.text ?? '',
+        'ifsc': ifscCode.text ?? '',
+        'account_number': accountNo.text ?? '',
+        'gst_number': gstNo.text ?? '',
       });
       print('Form -> ${formData.fields}');
 
       var dio = Dio();
-      //dio.interceptors.add(LogInterceptor(responseBody: true)); // Enable detailed logging
+      dio.interceptors.add(LogInterceptor(responseBody: true)); // Enable detailed logging
 
       var response = await dio.post(url, data: formData);
       print("Sign Response ->$response");
-      if (response.statusCode == 200) {
-        final jsonData = response.data;
-        var bodyStatus = jsonData['status'];
+      final jsonData = response.data;
+
+      print("sign jsonData-> $jsonData");
+
+      if (jsonData['status'] == 200) {
+        print("in if->${jsonData['status']} / ${jsonData['message']}");
         var bodyMSG = jsonData['message'];
-        if (bodyStatus == 200) {
           SnackBarMessageShow.successsMSG('$bodyMSG', context);
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()),);
-        } else if(bodyStatus == 400){
-          var errorData = response.data;
-          var errorMsg = errorData['0']['b2b_subadmin_id'][0]; // Extract the error message
-          SnackBarMessageShow.errorMSG(errorMsg, context);
-        }
-        else {
-          SnackBarMessageShow.errorMSG('$bodyMSG', context);
-        }
-      }
-      else if (response.statusCode == 400) {
+          Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+          );
+      } else if (jsonData['status'] == 400) {
         var errorData = response.data;
-        var errorMessage = errorData['0']['email_id'][0];
-        SnackBarMessageShow.errorMSG(errorMessage, context);
-      } else {
-        SnackBarMessageShow.errorMSG('Failed to load data', context);
+        var errorMessages = [];
+        errorData['error'].forEach((field, messages) {
+          messages.forEach((message) {
+            errorMessages.add("$field: $message");
+          });
+        });
+        var errorMessage = errorMessages.join("\n");
+        SnackBarMessageShow.warningMSG(errorMessage, context);
+      }
+      else if (jsonData['status'] == 400) {
+        var errorData = response.data;
+        var errorMessage = errorData['error']['email_id'][0];
+        SnackBarMessageShow.warningMSG(errorMessage, context);
+      }
+      else if (jsonData['status'] == 400) {
+        var errorData = response.data;
+        var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+        SnackBarMessageShow.warningMSG(errorMessage, context);
+      }
+      else {
+        SnackBarMessageShow.errorMSG('Faild to load data', context);
       }
     } catch (e) {
       print('Error -> ${e.toString()}');
@@ -953,7 +1492,7 @@ class _SignUpFormState extends State<SignUpForm> {
         stateList = list;
       });
     } catch (e) {
-      print("Error -> $e");
+      print("State Error -> $e");
     }
   }
 
@@ -967,7 +1506,7 @@ class _SignUpFormState extends State<SignUpForm> {
         cityList = list;
       });
     } catch (e) {
-      print("Error -> $e");
+      print("City Error -> $e");
     }
   }
 
@@ -981,7 +1520,7 @@ class _SignUpFormState extends State<SignUpForm> {
         areaList = list;
       });
     } catch (e) {
-      print("Error -> $e");
+      print("Area Error -> $e");
     }
   }
 
@@ -995,14 +1534,13 @@ class _SignUpFormState extends State<SignUpForm> {
         branchList = list;
       });
     } catch (e) {
-      print("Error -> $e");
+      print("Branch Error -> $e");
     }
   }
 
   List<dynamic> b2bSubAdminList = [];
   List<dynamic> salesExecutiveList = [];
   Future<void> getB2bSalesList() async {
-    print("calling");
     try {
       final response = await http.get(
         Uri.parse(ApiUrls.b2b_Saless_Url),
@@ -1023,83 +1561,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
       }
     } catch (e) {
-      print("Error -> $e");
+      print("B2b & Sales Error -> $e");
     }
-  }
-
-  var getOtp;
-  var getEmail;
-  Future<String> verifyEmailId(var emailId) async {
-    print("Calling Url->${showOTP == true ? ApiUrls.reSendOtpUrl : ApiUrls.sendOtpUrl}");
-    await http.post(
-        Uri.parse(
-          showOTP == true ? ApiUrls.reSendOtpUrl : ApiUrls.sendOtpUrl
-        ),
-        body: {
-          'email_id': emailId,
-        }
-    ).then((response) {
-      print(response.body);
-      var data = json.decode(response.body);
-      if(data['status'] == 200){
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text("${data['success']}")
-          )
-        );
-        setState(() {
-          getOtp = data['otp'];
-          getEmail = data['email_id'];
-        });
-        print("OTP ->$getOtp / Email -> $getEmail");
-      }else if(data['status'] == 400){
-        var errorMsg = data['error']['email_id'];
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              backgroundColor: Colors.red.withOpacity(0.8),
-              content: Text("$errorMsg")
-          )
-        );
-      }
-    });
-  }
-
-  Future<String> submitOtp(var emailId,var otp) async {
-    print("Email ->$emailId / Otp -> $otp");
-    await http.post(
-        Uri.parse(ApiUrls.verifyOtpUrl),
-        body: {
-          'email_id': getEmail.toString(),
-          'otp': getOtp.toString(),
-          'provided_email_id': emailId,
-          'provided_otp': otp,
-        }
-    ).then((response) {
-      print(response.body);
-      var data = json.decode(response.body);
-      if(data['status'] == 200){
-        SnackBarMessageShow.warningMSG('message', context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            dismissDirection: DismissDirection.up,
-            backgroundColor: Colors.green,
-            content: Text("${data['message']}")
-          )
-        );
-      }
-      else if(data['status'] == 400){
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                dismissDirection: DismissDirection.up,
-                backgroundColor: Colors.red.withOpacity(0.8),
-                content: Text("${data['message']}")
-            )
-        );
-      }
-      else{
-        print("error");
-      }
-    });
   }
 }

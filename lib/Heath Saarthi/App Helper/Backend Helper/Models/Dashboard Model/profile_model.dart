@@ -22,10 +22,10 @@ class ProfileModel {
 class Data {
   int? id;
   dynamic parentId;
-  int? b2bSubadminId;
+  dynamic b2bSubadminId;
   int? salesExecutiveAdminId;
   int? pharmacyCode;
-  dynamic msdCode;
+  String? msdCode;
   String? name;
   String? vendorName;
   String? mobile;
@@ -35,14 +35,21 @@ class Data {
   int? stateId;
   int? cityId;
   int? areaId;
-  dynamic userId;
+  int? userId;
   int? costCenterId;
   String? address;
   String? pincode;
   String? pancard;
+  String? pancardNumber;
   String? addressProof;
   String? aadharFront;
   String? aadharBack;
+  String? chequeImage;
+  String? gstNumber;
+  String? bankName;
+  String? ifsc;
+  String? accountNumber;
+  dynamic message;
   int? status;
   String? createdAt;
   String? updatedAt;
@@ -75,9 +82,16 @@ class Data {
         this.address,
         this.pincode,
         this.pancard,
+        this.pancardNumber,
         this.addressProof,
         this.aadharFront,
         this.aadharBack,
+        this.chequeImage,
+        this.gstNumber,
+        this.bankName,
+        this.ifsc,
+        this.accountNumber,
+        this.message,
         this.status,
         this.createdAt,
         this.updatedAt,
@@ -110,9 +124,16 @@ class Data {
     address = json['address'];
     pincode = json['pincode'];
     pancard = json['pancard'];
+    pancardNumber = json['pancard_number'];
     addressProof = json['address_proof'];
     aadharFront = json['aadhar_front'];
     aadharBack = json['aadhar_back'];
+    chequeImage = json['cheque_image'];
+    gstNumber = json['gst_number'];
+    bankName = json['bank_name'];
+    ifsc = json['ifsc'];
+    accountNumber = json['account_number'];
+    message = json['message'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -147,9 +168,16 @@ class Data {
     data['address'] = this.address;
     data['pincode'] = this.pincode;
     data['pancard'] = this.pancard;
+    data['pancard_number'] = this.pancardNumber;
     data['address_proof'] = this.addressProof;
     data['aadhar_front'] = this.aadharFront;
     data['aadhar_back'] = this.aadharBack;
+    data['cheque_image'] = this.chequeImage;
+    data['gst_number'] = this.gstNumber;
+    data['bank_name'] = this.bankName;
+    data['ifsc'] = this.ifsc;
+    data['account_number'] = this.accountNumber;
+    data['message'] = this.message;
     data['status'] = this.status;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;

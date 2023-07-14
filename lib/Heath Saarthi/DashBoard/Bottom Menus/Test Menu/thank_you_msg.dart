@@ -73,11 +73,11 @@ class _ThankYouPageState extends State<ThankYouPage> {
             Flexible(
               child: InkWell(
                 onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const Home()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
                 },
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsTwo),
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrime),
                   child: const Text("Home",style: TextStyle(fontSize: 20,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
                 ),
               ),

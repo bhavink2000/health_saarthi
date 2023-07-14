@@ -8,7 +8,7 @@ import '../Providers/Authentication Provider/user_data_auth_session.dart';
 
 class GetAccessToken{
   String access_token = "",token_type = "";
-  var id, enc_agent_id, countryId;
+  var userStatus;
   Future<LoginModel> getUserData() => UserDataSession().getUserData();
 
   void checkAuthentication(BuildContext context, StateSetter setState)async{
@@ -20,6 +20,7 @@ class GetAccessToken{
         setState((){
           access_token = value.accessToken.toString();
           token_type = value.tokenType.toString();
+          userStatus = value.userStatus.toString();
         });
       }
     }).onError((error, stackTrace){

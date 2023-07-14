@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/login_error_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:provider/provider.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Backend Helper/Enums/enums_status.dart';
@@ -30,21 +31,27 @@ class _PackageListItemsState extends State<PackageListItems> {
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   int curentindex = 0;
+  final packageSearch = TextEditingController();
   @override
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 2),(){
       setState(() {
-        homeMenusProvider.fetchPackage(1, getAccessToken.access_token);
+        homeMenusProvider.fetchPackage(1, getAccessToken.access_token,'');
       });
     });
   }
 
+  bool packageBook = false;
   @override
   Widget build(BuildContext context) {
+    Map packageData = {
+      'search': packageSearch.text,
+    };
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset:  false,
       body: SafeArea(
         child: Column(
           children: [
@@ -90,7 +97,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                     elevation: 0,
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                     child: Container(
-                      height: MediaQuery.of(context).size.height / 22.h,
+                      height: MediaQuery.of(context).size.height / 19.h,
                       decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
                           border: Border.all(color: Colors.grey.withOpacity(1),width: 1),
@@ -98,15 +105,32 @@ class _PackageListItemsState extends State<PackageListItems> {
                       ),
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: TextFormField(
+                        controller: packageSearch,
                         decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                             border: InputBorder.none,
                             hintText: 'Search for Tests, Package',
                             hintStyle: const TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),
-                            prefixIcon: const Icon(Icons.search_rounded,size: 20),
+                            suffixIcon: InkWell(
+                                onTap: (){
+                                  setState(() {
+                                    packageSearch.clear();
+                                  });
+                                  Map packageData = {
+                                    'search': '',
+                                  };
+                                  homeMenusProvider.fetchPackage(1, getAccessToken.access_token,packageData);
+                                },
+                                child: const Icon(Icons.close)
+                            ),
                             focusColor: hsPrime
                         ),
-                        onChanged: (value) {},
+                        onChanged: (value) {
+                          Map packageData = {
+                            'search': packageSearch.text,
+                          };
+                          homeMenusProvider.fetchPackage(1, getAccessToken.access_token,packageData);
+                        },
                       ),
                     ),
                   ),
@@ -125,206 +149,181 @@ class _PackageListItemsState extends State<PackageListItems> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return const LoginErrorHelper();
+                          print("${value.testList.message}-----------------");
+                          return value.packageList.message == 'Token is Expired'
+                              ? TokenExpiredHelper(tokenMsg: "${value.packageList.message}")
+                              : value.packageList.data == []
+                              ? Container()
+                              : Center(
+                              child: Text(
+                                  "Package Not found your branch",
+                                  style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16
+                                  ),textAlign: TextAlign.center
+                              )
+                          );
                         case Status.completed:
                           return Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width.w,
-                                height: MediaQuery.of(context).size.height / 1.3.h,
-                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                child: AnimationLimiter(
-                                  child: ListView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: value.packageList.data.packageData.data.length,
-                                    itemBuilder: (context, index){
-                                      var packageI = value.packageList.data.packageData.data[index];
-                                      return AnimationConfiguration.staggeredList(
-                                        position: index,
-                                        duration: const Duration(milliseconds: 1000),
-                                        child: Column(
-                                          children: [
-                                            FadeInAnimation(
-                                              child: Container(
-                                                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                                child: Card(
-                                                  elevation: 5,
-                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                                  shadowColor: Colors.grey.withOpacity(0.8),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      SizedBox(height: 10.h),
-                                                      InkWell(
-                                                        onTap: (){
-                                                          Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                                            title: packageI.serviceName,
-                                                            mrp: packageI.mrpAmount,
-                                                            serviceCode: packageI.serviceCode,
-                                                            collect: packageI.collect,
-                                                            serviceClassification: packageI.serviceClassification,
-                                                            serviceVolume: packageI.specimenVolume,
-                                                            orderingInfo: packageI.orderingInfo,
-                                                            reported: packageI.reported,
-                                                            state: packageI.state.stateName,
-                                                            city: packageI.city.cityName,
-                                                            area: packageI.area.areaName,
-                                                            accessToken: getAccessToken.access_token,
-                                                            packageId: packageI.id,
-                                                          )));
-                                                        },
-                                                        child: Align(
-                                                          alignment: Alignment.center,
-                                                          child: Container(
-                                                            width: MediaQuery.of(context).size.width / 1.2.w,
-                                                            height: MediaQuery.of(context).size.height / 8.h,
-                                                            padding: const EdgeInsets.fromLTRB(50, 20, 50, 20),
-                                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),),
-                                                            child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.circular(10),
-                                                                  image: DecorationImage(
-                                                                    image: AssetImage(
-                                                                      "assets/health_saarthi_logo.png",
-                                                                    ),fit: BoxFit.fill,
-                                                                  )
+                              Expanded(
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width.w,
+                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: AnimationLimiter(
+                                    child: ListView.builder(
+                                      physics: const BouncingScrollPhysics(),
+                                      itemCount: value.packageList.data.packageData.data.length,
+                                      itemBuilder: (context, index){
+                                        var packageI = value.packageList.data.packageData.data[index];
+                                        return AnimationConfiguration.staggeredList(
+                                          position: index,
+                                          duration: const Duration(milliseconds: 1000),
+                                          child: Column(
+                                            children: [
+                                              FadeInAnimation(
+                                                child: Container(
+                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                                  child: InkWell(
+                                                    onTap: (){
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
+                                                        title: packageI.serviceName,
+                                                        mrp: packageI.mrpAmount,
+                                                        serviceCode: packageI.serviceCode,
+                                                        collect: packageI.collect,
+                                                        serviceClassification: packageI.serviceClassification,
+                                                        serviceVolume: packageI.specimenVolume,
+                                                        orderingInfo: packageI.orderingInfo,
+                                                        reported: packageI.reported,
+                                                        state: packageI.state.stateName,
+                                                        city: packageI.city.cityName,
+                                                        area: packageI.area.areaName,
+                                                        accessToken: getAccessToken.access_token,
+                                                        packageId: packageI.id,
+                                                        bookedStatus: packageI.bookedStatus,
+                                                      )));
+                                                    },
+                                                    child: Card(
+                                                      elevation: 5,
+                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                                      shadowColor: Colors.grey.withOpacity(0.8),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Container(
+                                                            width: MediaQuery.of(context).size.width.w,
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: const BorderRadius.only(
+                                                                  topLeft: Radius.circular(10),topRight: Radius.circular(10)
                                                               ),
+                                                              color: hsPackageColor.withOpacity(0.5),
+                                                            ),
+                                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                                            child: Text(
+                                                                packageI.serviceName,
+                                                                style: TextStyle(
+                                                                    fontFamily: FontType.MontserratMedium,
+                                                                    fontSize: 15.sp,color: Colors.white
+                                                                )
                                                             ),
                                                           ),
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(20, 10, 10, 5),
-                                                        child: InkWell(
-                                                          onTap: (){
-                                                            Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                                              title: packageI.serviceName,
-                                                              mrp: packageI.mrpAmount,
-                                                              serviceCode: packageI.serviceCode,
-                                                              collect: packageI.collect,
-                                                              serviceClassification: packageI.serviceClassification,
-                                                              serviceVolume: packageI.specimenVolume,
-                                                              orderingInfo: packageI.orderingInfo,
-                                                              reported: packageI.reported,
-                                                              state: packageI.state.stateName,
-                                                              city: packageI.city.cityName,
-                                                              area: packageI.area.areaName,
-                                                              accessToken: getAccessToken.access_token,
-                                                              packageId: packageI.id,
-                                                            )));
-                                                          },
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(packageI.serviceName,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold)),
-                                                              SizedBox(height: 5.h,),
-                                                              Text("${packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black54,fontSize: 12.sp),)
-                                                            ],
+                                                          Padding(
+                                                            padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Container(
+                                                                    width: MediaQuery.of(context).size.width / 1.5.w,
+                                                                    child: Text("${packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
+                                                                Row(
+                                                                  children: [
+                                                                    Text("\u{20B9}${packageI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
+                                                                    const Spacer(),
+                                                                    InkWell(
+                                                                      onTap: (){
+                                                                        CartFuture().addToCartTest(getAccessToken.access_token, packageI.id, context).then((value) {
+                                                                          homeMenusProvider.fetchPackage(1, getAccessToken.access_token,packageData);
+                                                                        });
+                                                                      },
+                                                                      child: Container(
+                                                                        decoration: BoxDecoration(borderRadius: const BorderRadius.only(
+                                                                            bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
+                                                                        ),color: hsPackageColor.withOpacity(0.9)),
+                                                                        padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+                                                                        child: Text(packageI.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
+                                                                      ),
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
-                                                        ),
+                                                        ],
                                                       ),
-                                                      Padding(
-                                                        padding: const EdgeInsets.fromLTRB(20, 5, 10, 10),
-                                                        child: Row(
-                                                          children: [
-                                                            Text("\u{20B9}${packageI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: Colors.black,fontWeight: FontWeight.bold)),
-                                                            const Spacer(),
-                                                            InkWell(
-                                                              onTap: (){
-                                                                CartFuture().addToCartTest(getAccessToken.access_token, packageI.id, context).then((value) {
-                                                                  homeMenusProvider.fetchPackage(1, getAccessToken.access_token);
-                                                                  /*final response = value;
-                                                                  final snackBar = SnackBar(
-                                                                    backgroundColor: hsOne,
-                                                                    content: Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                      children: [
-                                                                        Expanded(child: Text("${response.message} (${response.count})", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular))),
-                                                                        Row(
-                                                                          children: [
-                                                                            Text("\u{20B9}${response.amount}", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular)),
-                                                                            SizedBox(width: 10.w),
-                                                                            InkWell(
-                                                                              onTap: () {
-                                                                                Navigator.push(context, MaterialPageRoute(builder: (context) => const TestCart()));
-                                                                              },
-                                                                              child: Container(
-                                                                                padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
-                                                                                child: Icon(Icons.shopping_cart_rounded, color: hsOne),
-                                                                              ),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);*/
-                                                                });
-                                                              },
-                                                              child: Container(
-                                                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: const Color(0xffe2791b)),
-                                                                padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                                                                child: Text("+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
 
-                                            if (value.packageList.data.packageData.data.length == 10 || index + 1 != value.packageList.data.packageData.data.length)
-                                              Container()
-                                            else
-                                              SizedBox(height: MediaQuery.of(context).size.height / 4),
+                                              if (value.packageList.data.packageData.data.length == 10 || index + 1 != value.packageList.data.packageData.data.length)
+                                                Container()
+                                              else
+                                                SizedBox(height: MediaQuery.of(context).size.height / 2.8),
 
-                                            index + 1 == value.packageList.data.packageData.data.length ? CustomPaginationWidget(
-                                              currentPage: curentindex,
-                                              lastPage: homeMenusProvider.packageList.data.packageData.lastPage,
-                                              onPageChange: (page) {
-                                                setState(() {
-                                                  curentindex = page - 1;
-                                                });
-                                                homeMenusProvider.fetchPackage(curentindex + 1, getAccessToken.access_token);
-                                              },
-                                            ) : Container(),
-                                          ],
-                                        ),
-                                      );
-                                    },
+                                              index + 1 == value.packageList.data.packageData.data.length ? CustomPaginationWidget(
+                                                currentPage: curentindex,
+                                                lastPage: homeMenusProvider.packageList.data.packageData.lastPage,
+                                                onPageChange: (page) {
+                                                  setState(() {
+                                                    curentindex = page - 1;
+                                                  });
+                                                  homeMenusProvider.fetchPackage(curentindex + 1, getAccessToken.access_token, packageData);
+                                                },
+                                              ) : Container(),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),
-                              Spacer(),
                               Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: MediaQuery.of(context).size.height / 20.h,
+                                height: MediaQuery.of(context).size.height / 12.h,
                                 color: hsPackageColor,
                                 child: InkWell(
                                   onTap: (){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TestCart()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Padding(
-                                        padding: EdgeInsets.fromLTRB(15, 5, 10, 5),
+                                        padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
                                         child: Text(
                                           "Total Cart Items [ ${value.packageList.data.cartData.count} ]",
-                                          style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
+                                          style: const TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
                                         ),
                                       ),
                                       Padding(
-                                        padding: EdgeInsets.fromLTRB(10, 5, 15, 5),
-                                        child: Text(
-                                          "\u{20B9}${value.packageList.data.cartData.amount}",
-                                          style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontWeight: FontWeight.bold),
+                                        padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
+                                        child: Container(
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: Colors.white),
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "\u{20B9}${value.packageList.data.cartData.amount}",
+                                                  style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPackageColor,fontWeight: FontWeight.bold),
+                                                ),
+                                                SizedBox(width: 5.w),
+                                                Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPackageColor,)
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -333,7 +332,6 @@ class _PackageListItemsState extends State<PackageListItems> {
                           );
                       }
                     },
-
                   ),
                 ),
               ),

@@ -108,7 +108,7 @@ class PackageData {
 class Data {
   int? id;
   int? costCenterId;
-  Null? userId;
+  dynamic userId;
   int? stateId;
   int? cityId;
   int? areaId;
@@ -127,13 +127,13 @@ class Data {
   String? specimenPreparation;
   String? storageTemperature;
   String? maxDiscountPercentageAllow;
-  Null? vendorServiceCode;
+  dynamic vendorServiceCode;
   String? patientPreparation;
   int? isPopularPackage;
-  Null? popularPackageSerialNumber;
+  dynamic popularPackageSerialNumber;
   String? serviceImage;
-  Null? serviceImage1;
-  Null? serviceImage2;
+  dynamic serviceImage1;
+  dynamic serviceImage2;
   String? orderingInfo;
   String? reported;
   String? notes;
@@ -146,19 +146,20 @@ class Data {
   String? netAmount;
   String? visitorAmount;
   int? isB2bB2cPrice;
-  Null? displayPrice;
+  dynamic displayPrice;
   int? isAppRegistrationAllow;
   int? isMobileNoCompulsoryinRegistration;
   int? isHomeVisitNotApplicable;
   int? isAddressCompulsoryinRegistration;
-  Null? serviceDescription;
+  dynamic serviceDescription;
   String? clinicalReference;
   int? status;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  dynamic deletedAt;
   String? encTestManagementId;
   String? createAt;
+  int? bookedStatus;
   String? mrp;
   State? state;
   City? city;
@@ -219,6 +220,7 @@ class Data {
         this.deletedAt,
         this.encTestManagementId,
         this.createAt,
+        this.bookedStatus,
         this.mrp,
         this.state,
         this.city,
@@ -281,6 +283,7 @@ class Data {
     deletedAt = json['deleted_at'];
     encTestManagementId = json['enc_test_management_id'];
     createAt = json['create_at'];
+    bookedStatus = json['booked_status'];
     mrp = json['mrp'];
     state = json['state'] != null ? new State.fromJson(json['state']) : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
@@ -347,6 +350,7 @@ class Data {
     data['deleted_at'] = this.deletedAt;
     data['enc_test_management_id'] = this.encTestManagementId;
     data['create_at'] = this.createAt;
+    data['booked_status'] = this.bookedStatus;
     data['mrp'] = this.mrp;
     if (this.state != null) {
       data['state'] = this.state!.toJson();
@@ -448,7 +452,7 @@ class TestPackages {
   int? status;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  dynamic deletedAt;
   String? encTestPackageId;
   String? createAt;
 
@@ -519,8 +523,8 @@ class Links {
 }
 
 class CartData {
-  int? count;
-  String? amount;
+  dynamic count;
+  dynamic amount;
 
   CartData({this.count, this.amount});
 

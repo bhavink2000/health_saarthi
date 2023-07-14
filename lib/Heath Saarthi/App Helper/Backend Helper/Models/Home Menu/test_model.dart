@@ -108,7 +108,7 @@ class TestData {
 class Data {
   int? id;
   int? costCenterId;
-  Null? userId;
+  dynamic userId;
   int? stateId;
   int? cityId;
   int? areaId;
@@ -159,6 +159,7 @@ class Data {
   dynamic deletedAt;
   String? encTestManagementId;
   String? createAt;
+  int? bookedStatus;
   String? mrp;
   State? state;
   City? city;
@@ -218,6 +219,7 @@ class Data {
         this.deletedAt,
         this.encTestManagementId,
         this.createAt,
+        this.bookedStatus,
         this.mrp,
         this.state,
         this.city,
@@ -279,6 +281,7 @@ class Data {
     deletedAt = json['deleted_at'];
     encTestManagementId = json['enc_test_management_id'];
     createAt = json['create_at'];
+    bookedStatus = json['booked_status'];
     mrp = json['mrp'];
     state = json['state'] != null ? new State.fromJson(json['state']) : null;
     city = json['city'] != null ? new City.fromJson(json['city']) : null;
@@ -342,6 +345,7 @@ class Data {
     data['deleted_at'] = this.deletedAt;
     data['enc_test_management_id'] = this.encTestManagementId;
     data['create_at'] = this.createAt;
+    data['booked_status'] = this.bookedStatus;
     data['mrp'] = this.mrp;
     if (this.state != null) {
       data['state'] = this.state!.toJson();
@@ -454,8 +458,8 @@ class Links {
 }
 
 class CartData {
-  int? count;
-  String? amount;
+  dynamic count;
+  dynamic amount;
 
   CartData({this.count, this.amount});
 

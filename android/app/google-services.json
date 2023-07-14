@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "617563943499",
+    "project_id": "healthsaarthi-fc4ab",
+    "storage_bucket": "healthsaarthi-fc4ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617563943499:android:ba611347b8d51f467ed3ce",
+        "android_client_info": {
+          "package_name": "com.healthsaarthi.hs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617563943499-e62jdoa57gvfb8948e3ag0fg3m1cddr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC876ceNdXsr9UzGEbvMfcq78lkBV3Brm4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617563943499-e62jdoa57gvfb8948e3ag0fg3m1cddr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

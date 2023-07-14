@@ -4,7 +4,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +40,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   final emailId = TextEditingController();
   final address = TextEditingController();
   final pinCode = TextEditingController();
-  final colletionDate = TextEditingController();
+  final collectionDate = TextEditingController();
+  final collectionTime = TextEditingController();
   final remark = TextEditingController();
 
   String selectedGender;
@@ -64,6 +67,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     });
   }
 
+  final _formKey = GlobalKey<FormState>();
+  void resetCityAndAreaSelection() {
+    setState(() {
+      selectedCity = null;
+      selectedArea = null;
+    });
+    fetchStateList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +88,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
               child: Row(
                 //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(onPressed: (){Navigator.pop(context);}, icon: Icon(Icons.arrow_back_rounded,color: Colors.black,size: 24)),
+                  IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.arrow_back_rounded,color: Colors.black,size: 24)),
                   Text("Booking Form",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16.sp,letterSpacing: 0.5),)
                 ],
               ),
@@ -87,266 +98,586 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
               child: Container(
                 child: SingleChildScrollView(
                   primary: false,
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
-                        child: Card(
-                          elevation: 5,
-                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  physics: const BouncingScrollPhysics(),
+                  child: Form(
+                    key: _formKey,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
                           child: Container(
-                            height: MediaQuery.of(context).size.height / 12.h,
-                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                            child: SearchChoices.single(
-                              dropDownDialogPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                              items: mobileList.map((number) {
-                                return DropdownMenuItem<String>(
-                                  value: number.encPharmacyPatientId.toString() ?? '',
-                                  child: Text(number.mobileNo),
-                                );
-                              }).toList() ?? [],
-                              value: selectedMobileNo,
-                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                              style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15,letterSpacing: 1,color: Colors.black87),
-                              hint: "Select Mobile Number",
-                              searchHint: "Select Number",
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedMobileNo = value;
-                                  getPatient(selectedMobileNo);
-                                });
-                              },
-                              isExpanded: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                      showTextField('Patient Name', pName,Icons.person),
-                      showTextField('Patient Mobile No', pMobile,Icons.mobile_friendly_rounded),
-                      showTextField('Patient Age', pAge,Icons.view_agenda),
-                      showTextField('DOB', pDob,Icons.calendar_month_rounded),
-                      showTextField('Email', emailId,Icons.email),
-                      showTextField('Address', address,Icons.location_city),
-                      Row(
-                        children: [
-                          Flexible(
-                            child: RadioListTile(
-                              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                              value: 'Female',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGender = value;
-                                });
-                              },
-                            ),
-                          ),
-                          Flexible(
-                            child: RadioListTile(
-                              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                              value: 'Male',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGender = value;
-                                });
-                              },
-                            ),
-                          ),
-                          Flexible(
-                            child: RadioListTile(
-                              contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                              title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                              value: 'Other',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  setState((){
-                                    selectedGender = value;
-                                  });
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width / 2.2.w,
-                              height: MediaQuery.of(context).size.height / 18.h,
-                              child: DropdownButtonFormField<String>(
-                                value: selectedState,
-                                style: const TextStyle(fontSize: 10, color: Colors.black87),
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.all(hsPaddingM),
-                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  hintText: 'State',
-                                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                                ),
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedState = newValue;
-                                  });
-                                  fetchCityList(selectedState);
-                                },
-                                onTap: () {
-                                  if (selectedCity == null) {
-                                    fetchStateList();
-                                  } else {
-                                    setState(() {
-                                      selectedCity = null;
-                                      selectedArea = null;
-                                    });
-                                    fetchStateList();
-                                  }
-                                },
-                                items: stateList.map((state) => DropdownMenuItem<String>(
-                                  value: state.id?.toString() ?? '',
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width / 3.8,
-                                    child: Text(state.stateName ?? ''),
+                              height: MediaQuery.of(context).size.height / 12.h,
+                              decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                              child: TypeAheadFormField<MobileData>(
+                                textFieldConfiguration: TextFieldConfiguration(
+                                  decoration: const InputDecoration(
+                                    labelText: 'Select mobile number',
+                                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
                                   ),
-                                )).toList(),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  style: const TextStyle(
+                                    fontFamily: FontType.MontserratMedium,
+                                    fontSize: 15,
+                                    letterSpacing: 1,
+                                    color: Colors.black87,
+                                  ),
+                                  controller: pMobile, // Assign the controller
+                                ),
+                                suggestionsCallback: (pattern) async {
+                                  return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
+                                },
+                                itemBuilder: (context, MobileData suggestion) {
+                                  return ListTile(
+                                    title: Text(suggestion.mobileNo),
+                                  );
+                                },
+                                onSuggestionSelected: (MobileData suggestion) {
+                                  setState(() {
+                                    selectedMobileNo = suggestion.encPharmacyPatientId;
+                                    getPatient(selectedMobileNo);
+                                    pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null) {
+                                    return 'Select a mobile number';
+                                  }
+                                  return null;
+                                },
+                                onSaved: (value) => this.selectedMobileNo = value,
                               )
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2.w,
-                            height: MediaQuery.of(context).size.height / 18.h,
-                            child: DropdownButtonFormField<String>(
-                              value: selectedCity,
-                              style: const TextStyle(fontSize: 10,color: Colors.black87),
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(hsPaddingM),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                                hintText: 'City',
-                                hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12,),
-                              ),
-                              onChanged: (newValue) {
-                                selectedCity = newValue;
-                                fetchAreaList(selectedState, selectedCity);
-                              },
-                              onTap: (){
-                                if(selectedArea == null){
-                                  fetchCityList(selectedState);
-                                }
-                                else{
-                                  setState(() {
-                                    selectedArea = null;
-                                  });
-                                  fetchAreaList(selectedState, selectedCity);
-                                }
-                              },
-                              items: cityList?.map((city) => DropdownMenuItem<String>(
-                                value: city.id.toString() ?? '',
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width / 3.5.w,
-                                    child: Text(city.cityName)
-                                ),
-                              ))?.toList() ?? [],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2.w,
-                            height: MediaQuery.of(context).size.height / 18.h,
-                            child: DropdownButtonFormField<String>(
-                              value: selectedArea,
-                              style: const TextStyle(fontSize: 10,color: Colors.black87),
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(hsPaddingM),
-                                focusedBorder: OutlineInputBorder(
+                        ),
+                        showTextField(
+                            'Patient name', pName,Icons.person,
+                                (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter patient name';
+                              }
+                              return null;
+                            }
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          child: TextFormField(
+                            controller: pAge,
+                            maxLength: 3,
+                            keyboardType: TextInputType.number,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(hsPaddingM),
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                                hintText: 'Area',
-                                hintStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 12,
-                                ),
+                                  borderRadius: BorderRadius.circular(15)
                               ),
-                              onChanged: (newValue) {
-                                selectedArea = newValue;
-                              },
-                              onTap: (){
-                                fetchAreaList(selectedState, selectedCity);
-                              },
-                              items: areaList?.map((area) => DropdownMenuItem<String>(
-                                value: area.id.toString() ?? '',
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width / 3.5.w,
-                                    child: Text(area.areaName)
-                                ),
-                              ))?.toList() ?? [],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2.w,
-                            height: MediaQuery.of(context).size.height / 15.h,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                              child: TextField(
-                                controller: pinCode,
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.fromLTRB(10, 2, 5, 2),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                      borderRadius: BorderRadius.circular(5)
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                      borderRadius: BorderRadius.circular(5)
-                                  ),
-                                  hintText: 'Pincode',
-                                  hintStyle: const TextStyle(
-                                      color: Colors.black54,
-                                      fontFamily: FontType.MontserratRegular,
-                                      fontSize: 14
-                                  ),
-                                  prefixIcon: Icon(Icons.pin, color: hsBlack,size: 20),
-                                ),
+                              hintText: 'Age',
+                              hintStyle: const TextStyle(
+                                color: Colors.black54,
+                                fontFamily: FontType.MontserratRegular,
+                                fontSize: 14,
                               ),
+                              prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
                             ),
-                          ),
-                        ],
-                      ),
-                      showTextField('Collection Date', colletionDate,Icons.pin),
-                      showTextField('Remark', remark,Icons.markunread_mailbox),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
-                        child: InkWell(
-                          onTap: (){
-                            print("called");
-                            bookOrder();
-                            print("call");
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsTwo),
-                            child: Text("Processed",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 18.sp,letterSpacing: 1)),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter age';
+                              }
+                              return null;
+                            }, // Set the validator function
                           ),
                         ),
-                      )
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          child: TextFormField(
+                            controller: pDob,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(hsPaddingM),
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              hintText: 'DOB',
+                              hintStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14
+                              ),
+                              prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter DOB';
+                              }
+                              return null;
+                            },
+                            onTap: () async {
+                              DateTime pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime.now(),
+                              );
+                              if(pickedDate != null ){
+                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                setState(() {
+                                  pDob.text = formattedDate;
+                                });
+                              }else{}
+                            },
+                          ),
+                        ),
+                        showTextField(
+                            'Email id', emailId,Icons.email,
+                                (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter email id';
+                              }
+                              return null;
+                            }
+                        ),
+                        showTextField(
+                            'Address', address,Icons.location_city,
+                                (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Enter address';
+                              }
+                              return null;
+                            }
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Row(
+                            children: [
+                              Flexible(
+                                child: RadioListTile(
+                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                  value: 'Female',
+                                  groupValue: selectedGender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedGender = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Flexible(
+                                child: RadioListTile(
+                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                  value: 'Male',
+                                  groupValue: selectedGender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedGender = value;
+                                    });
+                                  },
+                                ),
+                              ),
+                              Flexible(
+                                child: RadioListTile(
+                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                  title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                                  value: 'Other',
+                                  groupValue: selectedGender,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      setState((){
+                                        selectedGender = value;
+                                      });
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                                width: MediaQuery.of(context).size.width / 2.2.w,
+                                //height: MediaQuery.of(context).size.height / 14.h,
+                                child: DropdownButtonFormField<String>(
+                                  value: selectedState,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  style: const TextStyle(fontSize: 10, color: Colors.black87),
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                    hintText: 'State',
+                                    hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Select a state';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (newValue) {
+                                    setState(() {
+                                      selectedState = newValue;
+                                    });
+                                    fetchCityList(selectedState);
+                                  },
+                                  onTap: selectedCity == null ? fetchStateList : resetCityAndAreaSelection,
+                                  items: [
+                                    DropdownMenuItem(
+                                      value: '',
+                                      child: Text('Select state'),
+                                    ),
+                                    ...stateList.map((state) => DropdownMenuItem<String>(
+                                      value: state.id?.toString() ?? '',
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width / 3.8,
+                                        child: Text(state.stateName ?? ''),
+                                      ),
+                                    )).toList()
+                                  ],
+                                )
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2.2.w,
+                              //height: MediaQuery.of(context).size.height / 14.h,
+                              child: DropdownButtonFormField<String>(
+                                value: selectedCity,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                style: const TextStyle(fontSize: 10, color: Colors.black87),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                  hintText: 'City',
+                                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a city';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedCity = newValue;
+                                    selectedArea = null;
+                                    fetchAreaList(selectedState, selectedCity); // Replace with your fetchAreaList logic
+                                  });
+                                },
+                                onTap: () {
+                                  if (selectedArea == null) {
+                                    fetchCityList(selectedState);
+                                  } else {
+                                    setState(() {
+                                      selectedArea = null;
+                                    });
+                                    fetchAreaList(selectedState, selectedCity);
+                                  }
+                                },
+                                items: [
+                                  DropdownMenuItem(
+                                    value: '',
+                                    child: Text('Select city'),
+                                  ),
+                                  ...cityList?.map((city) {
+                                    return DropdownMenuItem<String>(
+                                      value: city.id.toString(),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width / 4,
+                                        child: Text(city.cityName),
+                                      ),
+                                    );
+                                  })?.toList() ?? []
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2.2.w,
+                              //height: MediaQuery.of(context).size.height / 14.h,
+                              child: DropdownButtonFormField<String>(
+                                value: selectedArea,
+                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                style: const TextStyle(fontSize: 10, color: Colors.black87),
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  border: OutlineInputBorder(),
+                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                                  hintText: 'Area',
+                                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select an area';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedArea = newValue;
+                                  });
+                                },
+                                items: [
+                                  DropdownMenuItem(
+                                    value: '',
+                                    child: Text('Select area'),
+                                  ),
+                                  ... areaList != null
+                                      ? areaList.map((area) {
+                                    return DropdownMenuItem<String>(
+                                      value: area.id.toString(),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width / 3.5,
+                                        child: Text(area.areaName),
+                                      ),
+                                    );
+                                  }).toList() : []
+                                ],
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 2.15.w,
+                              //height: MediaQuery.of(context).size.height / 13.h,
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                child: TextFormField(
+                                  controller: pinCode,
+                                  keyboardType: TextInputType.number,
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(5)
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(5)
+                                    ),
+                                    hintText: 'Pin code',
+                                    hintStyle: const TextStyle(
+                                        color: Colors.black54,
+                                        fontFamily: FontType.MontserratRegular,
+                                        fontSize: 14
+                                    ),
+                                    prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Enter Pin code';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 10, 20, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.1.w,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                                  controller: collectionDate,
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(15)
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(15)
+                                    ),
+                                    hintText: 'Collection date',
+                                    hintStyle: const TextStyle(
+                                        color: Colors.black54,
+                                        fontFamily: FontType.MontserratRegular,
+                                        fontSize: 14
+                                    ),
+                                    prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack,size: 20),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter Collection Date';
+                                    }
+                                    return null;
+                                  },
+                                  onTap: () async {
+                                    DateTime pickedDate = await showDatePicker(
+                                        context: context,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime.now(),
+                                        lastDate: DateTime(2101)
+                                    );
+                                    if(pickedDate != null ){
+                                      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                      setState(() {
+                                        collectionDate.text = formattedDate;
+                                      });
+                                    }else{}
+                                  },
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width / 2.1.w,
+                                child: TextFormField(
+                                  controller: collectionTime,
+                                  readOnly: true,
+                                  decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                                    border: OutlineInputBorder(),
+                                    focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(15)
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        borderRadius: BorderRadius.circular(15)
+                                    ),
+                                    hintText: 'Collection Time',
+                                    hintStyle: const TextStyle(
+                                        color: Colors.black54,
+                                        fontFamily: FontType.MontserratRegular,
+                                        fontSize: 14
+                                    ),
+                                    prefixIcon: const Icon(Icons.timer, color: hsBlack,size: 20),
+                                  ),
+                                  onTap: () async {
+                                    TimeOfDay pickedTime = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    );
+                                    if (pickedTime != null) {
+                                      String formattedTime = pickedTime.format(context);
+                                      setState(() {
+                                        collectionTime.text = formattedTime;
+                                      });
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          child: TextFormField(
+                            controller: remark,
+                            maxLines: 5,
+                            minLines: 1,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(hsPaddingM),
+                              border: OutlineInputBorder(),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                  borderRadius: BorderRadius.circular(15)
+                              ),
+                              hintText: 'Remark',
+                              hintStyle: const TextStyle(
+                                color: Colors.black54,
+                                fontFamily: FontType.MontserratRegular,
+                                fontSize: 14,
+                              ),
+                              prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
+                            ),
+
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter Remark';
+                              }
+                              return null;
+                            }, // Set the validator function
+                          ),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
+                          child: InkWell(
+                            onTap: ()async{
+                              if (_formKey.currentState.validate()) {
+                                FocusScope.of(context).unfocus();
+                                if(selectedState == null || selectedCity == null || selectedArea == null){
+                                  SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
+                                }
+                                else{
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: const [
+                                              CircularProgressIndicator(),
+                                              SizedBox(height: 16.0),
+                                              Text('Loading...'),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                  await bookOrder();
+                                }
+                              }
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrime),
+                              child: Text("Confirm Booking",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 18.sp,letterSpacing: 1)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -416,13 +747,20 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   void getPatient(var patientId) async {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
-      pharmacyId = pModel.patientData.pharmacyId.toString();
-      pName.text = pModel.patientData.name.toString();
-      pDob.text = pModel.patientData.dateOfBirth.toString();
-      pAge.text = pModel.patientData.age.toString();
-      pMobile.text = pModel.patientData.mobileNo.toString();
-      emailId.text = pModel.patientData.emailId.toString();
-      address.text = pModel.patientData.address.toString();
+      setState(() {
+        pharmacyId = pModel.patientData.pharmacyId.toString();
+        pName.text = pModel.patientData.name.toString();
+        pDob.text = pModel.patientData.dateOfBirth.toString();
+        pAge.text = pModel.patientData.age.toString();
+        pMobile.text = pModel.patientData.mobileNo.toString();
+        emailId.text = pModel.patientData.emailId.toString();
+        address.text = pModel.patientData.address.toString();
+        selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
+        selectedState = pModel.patientData.state.id.toString();
+        selectedCity = pModel.patientData.city.id.toString();
+        selectedArea = pModel.patientData.area.id.toString();
+        pinCode.text = pModel.patientData.pincode.toString();
+      });
     } catch (e) {
       print('Error: $e');
     }
@@ -442,7 +780,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       "package_discount_id": '${widget.packageDis ?? ''}',
       "profile_discount_id": '${widget.profileDis ?? ''}',
       "promo_offer_code": '${widget.promoApply ?? ''}',
-      "collection_date": colletionDate.text ?? '',
+      "collection_date": collectionDate.text ?? '',
+      "collection_time": collectionTime.text ?? '',
       "remark": remark?.text ?? '',
       "name": pName?.text ?? '',
       "email_id": emailId?.text ?? '',
@@ -474,7 +813,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
 
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ThankYouPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       } else if (bodyStatus == 400) {
         SnackBarMessageShow.warningMSG('$bodyMsg', context);
       } else {
@@ -486,13 +825,15 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     }
   }
 
-  Widget showTextField(var lebal, TextEditingController controller, IconData iconData){
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-      child: TextField(
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+      child: TextFormField(
         controller: controller,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
+          border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
@@ -501,14 +842,15 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
           ),
-          hintText: '$lebal',
+          hintText: '$label',
           hintStyle: const TextStyle(
-              color: Colors.black54,
-              fontFamily: FontType.MontserratRegular,
-              fontSize: 14
+            color: Colors.black54,
+            fontFamily: FontType.MontserratRegular,
+            fontSize: 14,
           ),
-          prefixIcon: Icon(iconData, color: hsBlack,size: 20),
+          prefixIcon: Icon(iconData, color: hsBlack, size: 20),
         ),
+        validator: validator, // Set the validator function
       ),
     );
   }

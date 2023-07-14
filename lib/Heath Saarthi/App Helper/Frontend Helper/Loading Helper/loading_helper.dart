@@ -14,7 +14,7 @@ class LoadingLogin extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(child: Image.asset("assets/Gif/loading_one.gif",width: 130)),
+            Center(child: Image.asset("assets/Gif/loader.gif",width: 70,color: hsPrime)),
             const SizedBox(height: 10),
             const Text('Login...',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18),)
           ],
@@ -35,7 +35,7 @@ class LoadingOnly extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Center(child: Image.asset("assets/Gif/loading_one.gif",width: 130)),
+          Center(child: Image.asset("assets/Gif/loader.gif",width: 70,color: hsPrime)),
           const SizedBox(height: 10),
           const Text('Loading...',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15),)
         ],
@@ -49,6 +49,6 @@ class CenterLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Image.asset("assets/Gif/loading_one.gif",width: 130));
+    return Center(child: Image.asset("assets/Gif/loader.gif",width: 70,color: hsPrime));
   }
 }

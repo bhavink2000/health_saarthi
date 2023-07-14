@@ -1,6 +1,11 @@
+//@dart=2.9
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
 
 import 'dart:convert';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/gallery_screen.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/testimonial_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -11,16 +16,21 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%2
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/my_booking_screen.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../App Helper/Backend Helper/Api Future/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
+import 'Drawer Menus Items/Other Screen/refer_chemist_screen.dart';
+import 'Drawer Menus Items/Other Screen/support_screen.dart';
 import 'Drawer Menus Items/my_profile_screen.dart';
 import 'Drawer Menus Items/my_report_screen.dart';
 
 class DrawerScreen extends StatefulWidget {
-  const DrawerScreen({Key? key}) : super(key: key);
+  DrawerScreen({Key key}) : super(key: key);
 
   @override
   _DrawerScreenState createState() => _DrawerScreenState();
@@ -29,10 +39,20 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
 
   GetAccessToken getAccessToken = GetAccessToken();
+  String deviceToken;
   @override
   void initState() {
     super.initState();
+    retrieveDeviceToken();
     getAccessToken.checkAuthentication(context, setState);
+  }
+
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    print("SharedPreferences DeviceToken->$deviceToken");
   }
   @override
   Widget build(BuildContext context) {
@@ -48,170 +68,310 @@ class _DrawerScreenState extends State<DrawerScreen> {
               const SizedBox(height: 20,),
               const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 175),
               const SizedBox(height: 20,),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 5, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const Home()));
-                  },
-                  child: Row(
+              Container(
+                height: MediaQuery.of(context).size.height / 1.1.h,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Icon(Icons.dashboard,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("Home",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.book,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("Book A Test",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.shopping_bag_rounded,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("My Booking History",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.event_repeat_outlined,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("My Report",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.person_pin,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("My Profile",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.phone_android_rounded,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("Contact Us",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                    ],
-                  ),
-                ),
-              ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                child: InkWell(
-                  onTap: (){
-                    showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                            child: AlertDialog(
-                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                              content: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Image.asset("assets/health_saarthi_logo.png",width: 150),
-                                    const Padding(
-                                      padding: EdgeInsets.all(5),
-                                      child: Text(
-                                        "Are You Sure Would Like To Logout?",
-                                        style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
-                                        textAlign: TextAlign.center,
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 5, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Home(deviceToken: deviceToken)));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.dashboard,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Home",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.book,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Book a test",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.shopping_bag_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("My booking history",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.event_repeat_outlined,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("My report",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.person_pin,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("My profile",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.phone_android_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Contact us",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const FaqScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.question_answer_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("FAQ",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      /*Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>TestimonialScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.telegram_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Testimonial",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>GalleryScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.browse_gallery_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Gallery",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),*/
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>SupportScreen()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.support_agent_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Support",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ReferChemist()));
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.science_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Refer a chemist",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        child: InkWell(
+                          onTap: (){
+                            showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (BuildContext context) {
+                                  return BackdropFilter(
+                                    filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                                    child: AlertDialog(
+                                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                      content: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(30),
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            Image.asset("assets/health_saarthi_logo.png",width: 150),
+                                            const Padding(
+                                              padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
+                                              child: Text(
+                                                "Are You Sure Would Like To Logout?",
+                                                style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                InkWell(
+                                                  onTap: ()=>Navigator.pop(context),
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width / 4.w,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: hsPrime,
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                                                      child: Text("Stay",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: (){
+                                                    logoutUser().then((value){
+                                                      userDataSession.removeUserData().then((value){
+                                                        DeviceInfo().deleteDeviceToken(context, deviceToken,getAccessToken.access_token).then((value){
+                                                          if(value == 'success'){
+                                                            print("token is deleted $value");
+                                                            //SnackBarMessageShow.successsMSG("Token is Deleted", context);
+                                                          }
+                                                          else{
+                                                            print("Token is not deleted");
+                                                            //SnackBarMessageShow.warningMSG("Token is Not Deleted", context);
+                                                          }
+                                                        });
+                                                      });
+                                                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
+                                                    });
+                                                  },
+                                                  child: Container(
+                                                    width: MediaQuery.of(context).size.width / 4.w,
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(10),
+                                                      color: hsPrime,
+                                                    ),
+                                                    child: const Padding(
+                                                      padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
+                                                      child: Text("Logout",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                                                    ),
+                                                  ),
+                                                ),
+                                                // TextButton(
+                                                //   child: const Text("Logout",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
+                                                //   onPressed: (){
+                                                //     logoutUser().then((value){
+                                                //       userDataSession.removeUserData().then((value){
+                                                //         DeviceInfo().deleteDeviceToken(context, widget.deviceToken,getAccessToken.access_token).then((value){
+                                                //           if(value == 'success'){
+                                                //             SnackBarMessageShow.successsMSG("Token is Deleted", context);
+                                                //           }
+                                                //           else{
+                                                //             SnackBarMessageShow.warningMSG("Token is Not Deleted", context);
+                                                //           }
+                                                //         });
+                                                //       });
+                                                //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
+                                                //     });
+                                                //   },
+                                                // ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        TextButton(
-                                          child: const Text("Stay",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
-                                          onPressed: () => Navigator.of(context).pop(),
-                                        ),
-                                        TextButton(
-                                          child: const Text("Logout",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
-                                          onPressed: (){
-                                            logoutUser().then((value){
-                                              userDataSession.removeUserData();
-                                              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => LoginScreen()), (Route<dynamic> route) => false);
-                                            });
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Icon(Icons.logout_rounded,color: hsPrimeOne,size: 25),
-                      const SizedBox(width: 10,),
-                      const Text("Log Out",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                                  );
+                                }
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout_rounded,color: hsPrimeOne,size: 25),
+                              const SizedBox(width: 10,),
+                              const Text("Log out",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
                     ],
                   ),
                 ),
               ),
-              Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-              const Spacer(),
-              const Text("STERLING ACCURIS WELLNESS PVT. LTD.",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),textAlign: TextAlign.center,),
-              const SizedBox(height: 5),
+              // const Spacer(),
+              // const Text("STERLING ACCURIS WELLNESS PVT. LTD.",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),textAlign: TextAlign.center,),
+              // const SizedBox(height: 5),
             ],
           ),
         ),
@@ -231,13 +391,14 @@ class _DrawerScreenState extends State<DrawerScreen> {
           headers: headers,
       );
       final responseData = json.decode(response.body);
+      print("response -> $responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
       } else {
-        SnackBarMessageShow.errorMSG('$bodyMsg', context);
+        //SnackBarMessageShow.errorMSG('$bodyMsg', context);
       }
     } catch (error) {
       print(error.toString());

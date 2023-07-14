@@ -6,14 +6,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../Add To Cart/test_cart.dart';
+import 'test_list_items.dart';
 
 class TestItemDetails extends StatefulWidget {
   var imageBaner;
   var title,mrp,serviceCode,collect,serviceClassification,serviceVolume,orderingInfo,reported;
-  var state,city,area,branch,accessToken,testId;
+  var state,city,area,branch,accessToken,testId,bookedStatus;
   TestItemDetails({Key key,
   this.imageBaner,this.title,this.mrp,this.serviceCode,this.collect,this.serviceClassification,this.serviceVolume,
-  this.orderingInfo,this.reported,this.state,this.city,this.area,this.branch,this.accessToken,this.testId}) : super(key: key);
+  this.orderingInfo,this.reported,this.state,this.city,this.area,this.branch,this.accessToken,this.testId,this.bookedStatus}) : super(key: key);
 
   @override
   State<TestItemDetails> createState() => _TestItemDetailsState();
@@ -73,40 +74,12 @@ class _TestItemDetailsState extends State<TestItemDetails> {
                           const Spacer(),
                           InkWell(
                             onTap: (){
-                              CartFuture().addToCartTest(widget.accessToken, widget.testId, context).then((value) {
-                                final response = value;
-                                final snackBar = SnackBar(
-                                  backgroundColor: hsTestColor,
-                                  content: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(child: Text("${response.message} (${response.count})", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular))),
-                                      Row(
-                                        children: [
-                                          Text("\u{20B9}${response.amount}", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular)),
-                                          SizedBox(width: 10.w),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => const TestCart()));
-                                            },
-                                            child: Container(
-                                              padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
-                                              child: Icon(Icons.shopping_cart_rounded, color: hsOne),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              });
+                              CartFuture().addToCartTest(widget.accessToken, widget.testId, context);
                             },
                             child: Container(
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsTestColor.withOpacity(0.8)),
                               padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                              child: const Text("+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
+                              child: Text(widget.bookedStatus == 1 ? "Booked": "+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
                             ),
                           )
                         ],

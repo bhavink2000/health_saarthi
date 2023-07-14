@@ -8,10 +8,10 @@ import '../../../Add To Cart/test_cart.dart';
 class PackageItemsDetails extends StatefulWidget {
   var imageBaner;
   var title,mrp,serviceCode,collect,serviceClassification,serviceVolume,orderingInfo,reported;
-  var state,city,area,branch,accessToken,packageId;
+  var state,city,area,branch,accessToken,packageId,bookedStatus;
   PackageItemsDetails({Key key,
     this.imageBaner,this.title,this.mrp,this.serviceCode,this.collect,this.serviceClassification,this.serviceVolume,
-    this.orderingInfo,this.reported,this.state,this.city,this.area,this.branch,this.accessToken,this.packageId
+    this.orderingInfo,this.reported,this.state,this.city,this.area,this.branch,this.accessToken,this.packageId,this.bookedStatus
   }) : super(key: key);
 
   @override
@@ -41,8 +41,10 @@ class _PackageItemsDetailsState extends State<PackageItemsDetails> {
                       ),
                     ),
                     Container(
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("${widget.title}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold),textAlign: TextAlign.right,))
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: Text("${widget.serviceCode}",
+                        style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold),textAlign: TextAlign.right)
+                    )
                   ],
                 ),
               ),
@@ -60,7 +62,7 @@ class _PackageItemsDetailsState extends State<PackageItemsDetails> {
                         children: [
                           Text("${widget.title}",style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,fontSize: 16,fontWeight: FontWeight.bold)),
                           const SizedBox(height: 10),
-                          Text("${widget.serviceVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
+                          Text("${widget.serviceVolume}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
                         ],
                       ),
                     ),
@@ -72,40 +74,12 @@ class _PackageItemsDetailsState extends State<PackageItemsDetails> {
                           const Spacer(),
                           InkWell(
                             onTap: (){
-                              CartFuture().addToCartTest(widget.accessToken, widget.packageId, context).then((value) {
-                                /*final response = value;
-                                final snackBar = SnackBar(
-                                  backgroundColor: hsOne,
-                                  content: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(child: Text("${response.message} (${response.count})", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular))),
-                                      Row(
-                                        children: [
-                                          Text("\u{20B9}${response.amount}", style: const TextStyle(color: Colors.white, fontFamily: FontType.MontserratRegular)),
-                                          SizedBox(width: 10.w),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => const TestCart()));
-                                            },
-                                            child: Container(
-                                              padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5), color: Colors.white),
-                                              child: Icon(Icons.shopping_cart_rounded, color: hsOne),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);*/
-                              });
+                              CartFuture().addToCartTest(widget.accessToken, widget.packageId, context);
                             },
                             child: Container(
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPackageColor.withOpacity(0.8)),
                               padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                              child: const Text("+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
+                              child: Text(widget.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
                             ),
                           )
                         ],
@@ -137,7 +111,7 @@ class _PackageItemsDetailsState extends State<PackageItemsDetails> {
                               )
                           ),
                           const SizedBox(height: 10),
-                          Text("${widget.reported}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
+                          Text("${widget.reported}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
                         ],
                       ),
                     ),

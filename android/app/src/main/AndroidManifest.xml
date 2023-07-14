@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.health_saarthi">
+    package="com.healthsaarthi.hs">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
    <application
-        android:label="health_saarthi"
+        android:label="HealthSaarthi"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -32,5 +32,9 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+       <meta-data
+           android:name="com.google.firebase.messaging.default_notification_channel_id"
+           android:value="high_importance_channel"
+           />
     </application>
 </manifest>

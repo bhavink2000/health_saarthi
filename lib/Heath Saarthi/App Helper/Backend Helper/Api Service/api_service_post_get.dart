@@ -11,7 +11,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
   Future getApiResponse(String url)async {
     dynamic responseJson;
     try{
-      final response = await http.get(Uri.parse(url),).timeout(Duration(seconds: 5));
+      final response = await http.get(Uri.parse(url),);
       responseJson = returnResponse(response);
     }on SocketMessage{
       throw FetchDataException(message: "No Internet Connection");
@@ -23,7 +23,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
   Future postApiResponse(String url, data)async {
     dynamic responseJson;
     try {
-      http.Response response = await http.post(Uri.parse(url), body: data).timeout(Duration(seconds: 10));
+      http.Response response = await http.post(Uri.parse(url), body: data);
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException(message: "No Internet Connection");
@@ -61,7 +61,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
             'Authorization': 'Bearer $access_token',
           },
           body: data
-      ).timeout(Duration(seconds: 10));
+      );
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException(message: "No Internet Connection");

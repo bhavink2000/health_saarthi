@@ -4,13 +4,16 @@ class LoginModel {
   String? tokenType;
   Data? data;
   int? expiresIn;
+  dynamic userStatus;
 
   LoginModel(
       {this.status,
         this.accessToken,
         this.tokenType,
         this.data,
-        this.expiresIn});
+        this.expiresIn,
+        this.userStatus
+      });
 
   LoginModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -18,6 +21,7 @@ class LoginModel {
     tokenType = json['token_type'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
     expiresIn = json['expires_in'];
+    userStatus = json['data']['status'];
   }
 
   Map<String, dynamic> toJson() {
@@ -29,6 +33,7 @@ class LoginModel {
       data['data'] = this.data!.toJson();
     }
     data['expires_in'] = this.expiresIn;
+    data['data']['status'] = this.userStatus;
     return data;
   }
 }

@@ -40,7 +40,7 @@ const Color hsBlack = Color(0xFF2D3243);
 
 // Padding
 const double hsPaddingS = 8.0;
-const double hsPaddingM = 16.0;
+const double hsPaddingM = 10.0;
 const double hsPaddingL = 32.0;
 
 // Spacing

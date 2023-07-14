@@ -45,107 +45,86 @@ class BookingData {
 
 class BookingItems {
   int? id;
-  int? bookingDetailId;
-  int? pharmacyId;
-  int? testManagementId;
-  String? serviceName;
-  String? serviceCode;
-  String? mrpAmount;
-  int? isApplyDiscount;
-  int? isApplyPromoOffer;
-  int? testType;
-  int? status;
-  String? createdAt;
-  String? updatedAt;
-  dynamic deletedAt;
-  String? encBookingItemId;
-  String? createDate;
-  String? createTime;
+  int? bookingCode;
+  int? pharmacyPatientId;
+  String? grossAmount;
+  String? netAmount;
+  String? pharmacyDiscountAmount;
+  String? encBookingDetailId;
+  String? createAt;
+  PharmacyPatient? pharmacyPatient;
 
   BookingItems(
       {this.id,
-        this.bookingDetailId,
-        this.pharmacyId,
-        this.testManagementId,
-        this.serviceName,
-        this.serviceCode,
-        this.mrpAmount,
-        this.isApplyDiscount,
-        this.isApplyPromoOffer,
-        this.testType,
-        this.status,
-        this.createdAt,
-        this.updatedAt,
-        this.deletedAt,
-        this.encBookingItemId,
-        this.createDate,
-        this.createTime});
+        this.bookingCode,
+        this.pharmacyPatientId,
+        this.grossAmount,
+        this.netAmount,
+        this.pharmacyDiscountAmount,
+        this.encBookingDetailId,
+        this.createAt,
+        this.pharmacyPatient});
 
   BookingItems.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    bookingDetailId = json['booking_detail_id'];
-    pharmacyId = json['pharmacy_id'];
-    testManagementId = json['test_management_id'];
-    serviceName = json['service_name'];
-    serviceCode = json['service_code'];
-    mrpAmount = json['mrp_amount'];
-    isApplyDiscount = json['is_apply_discount'];
-    isApplyPromoOffer = json['is_apply_promo_offer'];
-    testType = json['test_type'];
-    status = json['status'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    encBookingItemId = json['enc_booking_item_id'];
-    createDate = json['create_date'];
-    createTime = json['create_time'];
+    bookingCode = json['booking_code'];
+    pharmacyPatientId = json['pharmacy_patient_id'];
+    grossAmount = json['gross_amount'];
+    netAmount = json['net_amount'];
+    pharmacyDiscountAmount = json['pharmacy_discount_amount'];
+    encBookingDetailId = json['enc_booking_detail_id'];
+    createAt = json['create_at'];
+    pharmacyPatient = json['pharmacy_patient'] != null
+        ? new PharmacyPatient.fromJson(json['pharmacy_patient'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
-    data['booking_detail_id'] = this.bookingDetailId;
-    data['pharmacy_id'] = this.pharmacyId;
-    data['test_management_id'] = this.testManagementId;
-    data['service_name'] = this.serviceName;
-    data['service_code'] = this.serviceCode;
-    data['mrp_amount'] = this.mrpAmount;
-    data['is_apply_discount'] = this.isApplyDiscount;
-    data['is_apply_promo_offer'] = this.isApplyPromoOffer;
-    data['test_type'] = this.testType;
-    data['status'] = this.status;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
-    data['deleted_at'] = this.deletedAt;
-    data['enc_booking_item_id'] = this.encBookingItemId;
-    data['create_date'] = this.createDate;
-    data['create_time'] = this.createTime;
+    data['booking_code'] = this.bookingCode;
+    data['pharmacy_patient_id'] = this.pharmacyPatientId;
+    data['gross_amount'] = this.grossAmount;
+    data['net_amount'] = this.netAmount;
+    data['pharmacy_discount_amount'] = this.pharmacyDiscountAmount;
+    data['enc_booking_detail_id'] = this.encBookingDetailId;
+    data['create_at'] = this.createAt;
+    if (this.pharmacyPatient != null) {
+      data['pharmacy_patient'] = this.pharmacyPatient!.toJson();
+    }
     return data;
   }
 }
 
-class Data {
-  List<BookingItems>? bookingItems;
+class PharmacyPatient {
+  int? id;
+  String? name;
+  String? mobileNo;
+  String? encPharmacyPatientId;
+  String? createAt;
 
-  Data({this.bookingItems});
+  PharmacyPatient(
+      {this.id,
+        this.name,
+        this.mobileNo,
+        this.encPharmacyPatientId,
+        this.createAt});
 
-  Data.fromJson(Map<String, dynamic> json) {
-    if (json['booking_items'] != null) {
-      bookingItems = <BookingItems>[];
-      json['booking_items'].forEach((v) {
-        bookingItems!.add(new BookingItems.fromJson(v));
-      });
-    }
+  PharmacyPatient.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    mobileNo = json['mobile_no'];
+    encPharmacyPatientId = json['enc_pharmacy_patient_id'];
+    createAt = json['create_at'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.bookingItems != null) {
-      data['booking_items'] =
-          this.bookingItems!.map((v) => v.toJson()).toList();
-    }
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['mobile_no'] = this.mobileNo;
+    data['enc_pharmacy_patient_id'] = this.encPharmacyPatientId;
+    data['create_at'] = this.createAt;
     return data;
   }
 }
-
-

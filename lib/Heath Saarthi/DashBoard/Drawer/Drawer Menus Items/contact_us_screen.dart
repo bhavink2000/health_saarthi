@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 
 
@@ -11,6 +16,20 @@ class ContactUsScreen extends StatefulWidget {
 }
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
+
+  var salesPersonNM,superiorNM,customerCareNm,otherNM;
+  var salesPersonNo,superiorNo,customerCareNo,otherNo;
+
+
+  GetAccessToken getAccessToken = GetAccessToken();
+  @override
+  void initState() {
+    super.initState();
+    getAccessToken.checkAuthentication(context, setState);
+    Future.delayed(const Duration(seconds: 1),(){
+      fetchContact();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +47,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                     icon: const Icon(Icons.arrow_back,color: Colors.white,size: 25,),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  const Text("Contact Us",style: TextStyle(fontSize: 20,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
+                  const Text("Contact Us",style: TextStyle(fontSize: 16,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
                   //Icon(Icons.circle_notifications_rounded,color: hsColorOne,size: 25,)
                 ],
               ),
@@ -51,17 +70,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               Card(
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.5,
-                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("sales Person Name",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
-                                      const SizedBox(height: 5,),
-                                      Text("1234567890",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
-                                    ],
+                                child: InkWell(
+                                  onTap: ()=>launch("tel://$salesPersonNo"),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 1.5,
+                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("${salesPersonNM ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        const SizedBox(height: 5,),
+                                        Text("${salesPersonNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -83,17 +105,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               Card(
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.5,
-                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Superior Name",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
-                                      const SizedBox(height: 5,),
-                                      Text("1234567890",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
-                                    ],
+                                child: InkWell(
+                                  onTap: ()=>launch("tel://$superiorNo"),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 1.5,
+                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("${superiorNM ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        const SizedBox(height: 5,),
+                                        Text("${superiorNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -115,17 +140,20 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                               Card(
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 1.5,
-                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text("Customer care",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
-                                      const SizedBox(height: 5,),
-                                      Text("1234567890",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
-                                    ],
+                                child: InkWell(
+                                  onTap: ()=>launch("tel://$customerCareNo"),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width / 1.5,
+                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("${customerCareNm ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        const SizedBox(height: 5,),
+                                        Text("${customerCareNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -145,5 +173,36 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
         ),
       ),
     );
+  }
+
+  void fetchContact() async {
+    final headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${getAccessToken.access_token}',
+    };
+    final response = await http.get(
+        headers: headers,
+        Uri.parse(ApiUrls.contactUsUrls)
+    );
+    print("response-$response");
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body)['data'];
+      print("data->$data");
+      setState(() {
+        salesPersonNM = data['name'];
+        salesPersonNo = data['mobile_no'];
+        superiorNM = data['name_two'];
+        superiorNo = data['mobile_no_two'];
+        customerCareNm = data['name_three'];
+        customerCareNo = data['mobile_no_three'];
+        otherNM = data['name_other'];
+        otherNo = data['mobile_no_other'];
+      });
+      final id = data['id'];
+      final status = data['status'];
+      final encId = data['enc_id'];
+    } else {
+      print('Request failed with status: ${response.statusCode}');
+    }
   }
 }

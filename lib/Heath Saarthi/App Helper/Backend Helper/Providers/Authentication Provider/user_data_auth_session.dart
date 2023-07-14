@@ -9,6 +9,7 @@ class UserDataSession with ChangeNotifier{
     final SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString('access_token', user.accessToken.toString());
     sp.setString('token_type', user.tokenType.toString());
+    sp.setString('status', user.userStatus).toString();
     notifyListeners();
     return true;
   }
@@ -17,10 +18,12 @@ class UserDataSession with ChangeNotifier{
     final SharedPreferences sp = await SharedPreferences.getInstance();
     final String accessToken = sp.getString('access_token');
     final String tokenType = sp.getString('token_type');
+    final String userStatus = sp.getString('status');
 
     return LoginModel(
       accessToken: accessToken.toString(),
       tokenType: tokenType.toString(),
+      userStatus: userStatus.toString(),
     );
   }
 

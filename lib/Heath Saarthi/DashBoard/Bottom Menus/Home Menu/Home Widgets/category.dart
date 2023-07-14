@@ -27,7 +27,7 @@ class _HomeCategoryState extends State<HomeCategory> {
           ),
           Container(
             width: MediaQuery.of(context).size.width.w,
-            height: MediaQuery.of(context).size.height / 6.h,
+            height: MediaQuery.of(context).size.height / 5.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),

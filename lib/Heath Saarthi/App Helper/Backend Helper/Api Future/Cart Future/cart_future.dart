@@ -15,13 +15,12 @@ import 'cart_response_model.dart';
 class CartFuture{
   var count, amount;
   Future<CartResponseModel> addToCartTest(accessToken, testId, BuildContext context) async {
-    print("testId->$testId");
+    print("add to cart ->$testId /$accessToken");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
     };
     try {
-      print("in try");
       final response = await http.post(
         Uri.parse(ApiUrls.addItemsUrls),
         headers: headers,
@@ -30,7 +29,6 @@ class CartFuture{
         },
       );
       final responseData = json.decode(response.body);
-      print("respo=>$responseData");
       var bodyStatus = responseData['status'];
       var bodyMsg = responseData['message'];
 
@@ -66,15 +64,13 @@ class CartFuture{
           }
       );
       final responseData = json.decode(response.body);
-
       var bodyStatus = responseData['status'];
       var bodyMsg = responseData['message'];
       var count = responseData['data']['count'];
       var amount = responseData['data']['amount'];
-
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
+        Navigator.pop(context);
       } else {
         SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
@@ -128,7 +124,6 @@ class CartFuture{
     );
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print("Resposne ->$jsonResponse");
       return PatientModel.fromJson(jsonResponse);
     } else {
       throw Exception('Request failed with status: ${response.statusCode}.');
