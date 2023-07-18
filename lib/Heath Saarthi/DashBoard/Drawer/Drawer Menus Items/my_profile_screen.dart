@@ -3,12 +3,19 @@ import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
+import '../../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
+import '../../../Authentication Screens/Splash Screen/splash_screen.dart';
+import '../../Bottom Menus/Profile Menu/change_password.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({Key? key}) : super(key: key);
@@ -26,13 +33,23 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final state = TextEditingController();
   final city = TextEditingController();
   final area = TextEditingController();
-  final branch = TextEditingController();
+
+  final bankNm = TextEditingController();
+  final ifscCode = TextEditingController();
+  final accountNo = TextEditingController();
+  final gstNo = TextEditingController();
 
   final pincode = TextEditingController();
   var panCard;
   var addressProfe;
   var aadharCardF;
   var aadharCardB;
+  var chequeFile;
+  var panCardImg;
+  var addressProfeImg;
+  var aadharCardFImg;
+  var aadharCardBImg;
+  var chequeImg;
 
   final currentPassword = TextEditingController();
   final newPassword = TextEditingController();
@@ -43,13 +60,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   void initState(){
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    retrieveDeviceToken();
     Future.delayed(const Duration(seconds: 2),(){
       setState(() {
         getProfile();
       });
     });
   }
-
+  String? deviceToken;
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    print("SharedPreferences DeviceToken->$deviceToken");
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,226 +113,134 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         showTextField('State', state,Icons.query_stats),
                         showTextField('City', city,Icons.reduce_capacity),
                         showTextField('Area', area,Icons.area_chart),
-                        showTextField('Branch', branch,CupertinoIcons.arrow_branch),
                         showTextField('PinCode', pincode,Icons.code),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Card(
+                        showTextField('Bank name', bankNm,Icons.account_balance_rounded),
+                        showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
+                        showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
+                        showTextField('GST no', gstNo,Icons.app_registration_rounded),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Card(
                               elevation: 5,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              shadowColor: hsPrime.withOpacity(0.5),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                                    const SizedBox(height: 5,),
-                                    Text("${panCard ?? 'PanCard'}",
-                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
-                                          fontSize: 12),
-                                    )
-                                  ],
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                title: const Text("Pancard",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                subtitle: Text("${panCard ?? 'Pancard'}",
+                                  style: const TextStyle(
+                                      fontFamily: FontType.MontserratRegular,
+                                      color: Colors.black87,
+                                      fontSize: 12),
                                 ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              shadowColor: hsPrime.withOpacity(0.5),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                                    const SizedBox(height: 5,),
-                                    Text(
-                                      "${addressProfe ?? 'Address Proof'}",
-                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
-                                          fontSize: 12),)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              shadowColor: hsPrime.withOpacity(0.5),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                                    const SizedBox(height: 5,),
-                                    Text(
-                                      "${aadharCardF ?? 'Aadhaar Card Front'}",
-                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
-                                          fontSize: 10),)
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              shadowColor: hsPrime.withOpacity(0.5),
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 2.5,
-                                height: MediaQuery.of(context).size.height / 10,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.upload_file_rounded,color: Colors.black,size: 30),
-                                    const SizedBox(height: 5,),
-                                    Text(
-                                      "${aadharCardB ??'Aadhaar Card Back'}",
-                                      style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
-                                          fontSize:  10),)
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                children: [
+                                  panCardImg == null ? Text("Image not found") :Image(
+                                    image: NetworkImage("$panCardImg"),
+                                  ),
+                                ],
+                              )
+                          ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                            color: hsPrimeOne,
-                            child: InkWell(
-                              onTap: (){
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return StatefulBuilder(
-                                        builder: (context, setState){
-                                          return BackdropFilter(
-                                            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                                            child: AlertDialog(
-                                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                              contentPadding: const EdgeInsets.only(top: 10.0),
-                                              content: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(30),
-                                                ),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    const Padding(
-                                                      padding: EdgeInsets.all(8.0),
-                                                      child: Text("Health Saarthi", style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,letterSpacing: 3,fontSize: 18),),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-                                                      child: TextField(
-                                                        controller: currentPassword,
-                                                        style: TextStyle(color: hsOne),
-                                                        decoration: InputDecoration(
-                                                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne.withOpacity(0.5))),
-                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne)),
-                                                          fillColor: Colors.lightBlueAccent,
-                                                          labelText: 'Current Password',
-                                                          labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-                                                      child: TextField(
-                                                        controller: newPassword,
-                                                        style: TextStyle(color: hsOne),
-                                                        decoration: InputDecoration(
-                                                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne.withOpacity(0.5))),
-                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne)),
-                                                          fillColor: Colors.lightBlueAccent,
-                                                          labelText: 'New Password',
-                                                          labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.fromLTRB(30, 5, 30, 5),
-                                                      child: TextField(
-                                                        controller: cPassword,
-                                                        style: TextStyle(color: hsOne),
-                                                        decoration: InputDecoration(
-                                                          enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne.withOpacity(0.5))),
-                                                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: hsPrimeOne)),
-                                                          fillColor: Colors.lightBlueAccent,
-                                                          labelText: 'Confirm Password',
-                                                          labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 5,),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Container(
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsOne),
-                                                          child: TextButton(
-                                                            child: const Text("Cancel",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,color: Colors.white),),
-                                                            onPressed: (){
-                                                              currentPassword.text = "";
-                                                              newPassword.text = "";
-                                                              cPassword.text = "";
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsOne),
-                                                          child: TextButton(
-                                                            child: const Text("Send",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,color: Colors.white),),
-                                                            onPressed: (){
-                                                              if(currentPassword.text.isEmpty || newPassword.text.isEmpty || cPassword.text.isEmpty){
-                                                                SnackBarMessageShow.warningMSG('Please Fill All Fields', context);
-                                                              }
-                                                              else{
-                                                                getChangePass(currentPassword.text,newPassword.text,cPassword.text);
-                                                                Navigator.pop(context);
-                                                              }
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    const SizedBox(height: 10,)
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    }
-                                );
-                              },
-                              child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                                  child: const Text(
-                                    "Change Passowrd",
-                                    style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,letterSpacing: 1,fontSize: 16),
-                                    textAlign: TextAlign.center,
-                                  )
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                title: const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                subtitle: Text("${aadharCardF ?? 'Aadhaar card front'}",
+                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                      fontSize: 12),
+                                ),
+                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                children: [
+                                  aadharCardFImg == null ? const Text("Image not found") :Image(
+                                    image: NetworkImage("$aadharCardFImg"),
+                                  ),
+                                ],
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                title: const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                subtitle: Text("${aadharCardB ?? 'Aadhaar card back'}",
+                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                      fontSize: 12),
+                                ),
+                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                children: [
+                                  aadharCardBImg == null ? const Text("Image not found") : Image(
+                                    image: NetworkImage("$aadharCardBImg"),
+                                  ),
+                                ],
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                title: const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                subtitle: Text("${addressProfe ?? 'Address proof'}",
+                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                      fontSize: 12),
+                                ),
+                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                children: [
+                                  addressProfeImg == null ? const Text("Image not found") : Image(
+                                    image: NetworkImage("$addressProfeImg"),
+                                  ),
+                                ],
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: ExpansionTile(
+                                tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                title: const Text("Cheque image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                subtitle: Text("${chequeFile ?? 'Cheque'}",
+                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                      fontSize: 12),
+                                ),
+                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                children: [
+                                  chequeImg == null ? const Text("Image not found") :Image(
+                                    image: NetworkImage("$chequeImg"),
+                                  ),
+                                ],
+                              )
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: InkWell(
+                            onTap: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ChangePasswordScreen(accessToken: getAccessToken.access_token)));
+                            },
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: const ListTile(
+                                title: Text("Change password",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                trailing: Icon(Icons.keyboard_arrow_right_rounded),
                               ),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
@@ -376,20 +309,28 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       }
     });
   }
-
+  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(
+            key: _loadingDialogKey,
+            child: const CenterLoading(),
+          ),
+        );
+      },
+    );
+  }
   void getProfile() async {
+    final userDataSession = Provider.of<UserDataSession>(context, listen: false);
     try {
+      _showLoadingDialog(context);
       var pModel;
-      try {
-        pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-        print("Value -> $pModel");
-      } catch (e) {
-        if (e.toString().contains('Token is Expired')) {
-          SnackBarMessageShow.warningMSG('Token is Expired\nPlease Login', context);
-        } else {
-          print('Error: $e');
-        }
-      }
+      pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       if (pModel != null) {
         setState(() {
           firstNm.text = pModel.data!.name.toString();
@@ -400,14 +341,70 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           city.text = pModel.data!.city!.cityName.toString();
           area.text = pModel.data!.area!.areaName.toString();
           pincode.text = pModel.data!.pincode.toString();
+          bankNm.text = pModel.data!.bankName.toString();
+          ifscCode.text = pModel.data!.ifsc.toString();
+          accountNo.text = pModel.data!.accountNumber.toString();
+          gstNo.text = pModel.data!.gstNumber.toString();
           panCard = pModel.data!.pancard.toString();
           addressProfe = pModel.data!.addressProof.toString();
           aadharCardF = pModel.data!.aadharFront.toString();
           aadharCardB = pModel.data!.aadharBack.toString();
+          chequeFile = pModel.data!.chequeImage.toString();
+          panCardImg = pModel.data!.pancardImg.toString();
+          addressProfeImg = pModel.data!.addressProofImg.toString();
+          aadharCardFImg = pModel.data!.aadharFrontImg.toString();
+          aadharCardBImg = pModel.data!.aadharBackImg.toString();
+          chequeImg = pModel.data!.chequeImg.toString();
         });
       }
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
+      if (e.toString().contains('Token is Expired')) {
+        logoutUser().then((value) {
+          userDataSession.removeUserData().then((value) {
+            DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+              if (value == 'success') {
+                print("token is deleted $value");
+              } else {
+                print("Token is not deleted");
+              }
+            });
+          });
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => const SplashScreen()),
+                (Route<dynamic> route) => false,
+          );
+        });
+      } else {
+        print('Error: $e');
+      }
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+    }
+  }
+  var bodyMsg;
+  Future<void> logoutUser() async {
+    Map<String, String> headers = {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${getAccessToken.access_token}',
+    };
+    try {
+      final response = await http.post(
+        Uri.parse(ApiUrls.logoutUrl),
+        headers: headers,
+      );
+      final responseData = json.decode(response.body);
+      var bodyStatus = responseData['status'];
+      bodyMsg = responseData['message'];
+
+      if (bodyStatus == 200) {
+        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+      } else {
+        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
+      }
+    } catch (error) {
+      print(error.toString());
+      SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
 }

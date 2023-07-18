@@ -70,7 +70,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                         case Status.error:
                           return const Center(child: Text("Error"));
                         case Status.completed:
-                          return AnimationLimiter(
+                          return value.notificationist.data.data.isEmpty ? Center(child: Text("Notification is not available"),) : AnimationLimiter(
                             child: ListView.builder(
                               itemCount: value.notificationist.data.data.length,
                               itemBuilder: (context, index){

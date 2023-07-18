@@ -54,6 +54,11 @@ class Data {
   String? createdAt;
   String? updatedAt;
   dynamic deletedAt;
+  String? pancardImg;
+  String? addressProofImg;
+  String? aadharFrontImg;
+  String? aadharBackImg;
+  String? chequeImg;
   String? encPharmacyId;
   String? encUserId;
   String? createAt;
@@ -96,6 +101,11 @@ class Data {
         this.createdAt,
         this.updatedAt,
         this.deletedAt,
+        this.pancardImg,
+        this.addressProofImg,
+        this.aadharFrontImg,
+        this.aadharBackImg,
+        this.chequeImg,
         this.encPharmacyId,
         this.encUserId,
         this.createAt,
@@ -138,6 +148,11 @@ class Data {
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     deletedAt = json['deleted_at'];
+    pancardImg = json['pancard_img'];
+    addressProofImg = json['address_proof_img'];
+    aadharFrontImg = json['aadhar_front_img'];
+    aadharBackImg = json['aadhar_back_img'];
+    chequeImg = json['cheque_img'];
     encPharmacyId = json['enc_pharmacy_id'];
     encUserId = json['enc_user_id'];
     createAt = json['create_at'];
@@ -182,6 +197,11 @@ class Data {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     data['deleted_at'] = this.deletedAt;
+    data['pancard_img'] = this.pancardImg;
+    data['address_proof_img'] = this.addressProofImg;
+    data['aadhar_front_img'] = this.aadharFrontImg;
+    data['aadhar_back_img'] = this.aadharBackImg;
+    data['cheque_img'] = this.chequeImg;
     data['enc_pharmacy_id'] = this.encPharmacyId;
     data['enc_user_id'] = this.encUserId;
     data['create_at'] = this.createAt;

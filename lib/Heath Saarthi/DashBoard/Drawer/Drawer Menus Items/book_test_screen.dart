@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
+import '../../../App Helper/Backend Helper/Models/Authentication Models/user_model.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Bottom Menus/Home Menu/Home Widgets/attach_prescription.dart';
@@ -29,6 +32,31 @@ class _BookTestScreenState extends State<BookTestScreen> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    getUserData();
+  }
+  var userStatus;
+  void getUserData()async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String storedEmail = prefs.getString('email');
+    String storedPassword = prefs.getString('password');
+    print("store E->$storedEmail");
+    print("store P->$storedPassword");
+    getUser(storedEmail, storedPassword);
+  }
+  void getUser(String sEmail, String sPassword) async {
+    try {
+      UserModel user = await ProfileFuture().fetchUser(sEmail, sPassword);
+      if (user != null && user.data != null) {
+        print("user Status -->> ${user.data.status}");
+        setState(() {
+          userStatus = user.data.status;
+        });
+      } else {
+        print('Failed to fetch user: User data is null');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -196,10 +224,10 @@ class _BookTestScreenState extends State<BookTestScreen> {
                               padding: const EdgeInsets.fromLTRB(5, 5, 0, 10),
                               child: InkWell(
                                 onTap: (){
-                                  if(getAccessToken.userStatus == '0'){
+                                  if(userStatus == 0){
                                     SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                                   }
-                                  else if (getAccessToken.userStatus == '1'){
+                                  else if (userStatus == 1){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AttachPrescription()));
                                   }
                                   else{
@@ -265,10 +293,10 @@ class _BookTestScreenState extends State<BookTestScreen> {
                               padding: const EdgeInsets.fromLTRB(0, 5, 5, 10),
                               child: InkWell(
                                 onTap: (){
-                                  if(getAccessToken.userStatus == '0'){
+                                  if(userStatus == 0){
                                     SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                                   }
-                                  else if (getAccessToken.userStatus == '1'){
+                                  else if (userStatus == 1){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>InstantBooking()));
                                   }
                                   else{

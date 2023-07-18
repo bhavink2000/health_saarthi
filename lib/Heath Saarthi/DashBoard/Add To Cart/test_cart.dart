@@ -113,7 +113,7 @@ class _TestCartState extends State<TestCart> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
               child: Row(
                 children: [
-                  Text("Gross Amount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
+                  Text("Gross amount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
                   const Spacer(),
                   Container(
                     alignment: Alignment.centerRight,
@@ -134,7 +134,7 @@ class _TestCartState extends State<TestCart> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
               child: Row(
                 children: [
-                  Text("Total Discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
+                  Text("Total discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
                   const Spacer(),
                   Container(
                     alignment: Alignment.centerRight,
@@ -165,7 +165,7 @@ class _TestCartState extends State<TestCart> {
                         child: Row(
                           children: [
                             const Text(
-                                "Promo offer applyed",
+                                "Promo offer applied",
                                 style: TextStyle(
                                     fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold,color: Colors.green)
                             ),
@@ -214,7 +214,7 @@ class _TestCartState extends State<TestCart> {
                             borderSide: const BorderSide(color: Colors.white),
                             borderRadius: BorderRadius.circular(5)
                         ),
-                        hintText: 'Coupon Code',
+                        hintText: 'Coupon code',
                         hintStyle: const TextStyle(
                             color: Colors.white,
                             fontFamily: FontType.MontserratMedium,
@@ -291,7 +291,7 @@ class _TestCartState extends State<TestCart> {
                           SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                         }else if(userStatus == 1){
                           if(bodyMsg == 'There is no item in cart.'){
-                            SnackBarMessageShow.warningMSG('Cart Is Empty', context);
+                            SnackBarMessageShow.warningMSG('Cart is empty', context);
                           }
                           else{
                             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
@@ -313,7 +313,7 @@ class _TestCartState extends State<TestCart> {
                           child: Row(
                             children: [
                               Text(
-                                "Book Now",
+                                "Book now",
                                 style: TextStyle(
                                     fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold
                                 ),
@@ -350,7 +350,7 @@ class _TestCartState extends State<TestCart> {
                         },
                         child: const Icon(Icons.arrow_back,size: 30,)
                     ),
-                    Text("Cart Items",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5),)
+                    Text("Cart items",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5),)
                   ],
                 ),
               ),
@@ -400,7 +400,7 @@ class _TestCartState extends State<TestCart> {
                                     children: [
                                       SizedBox(height: MediaQuery.of(context).size.height / 2.h,),
                                       const Text(
-                                          "Cart Is Empty",
+                                          "Cart is empty",
                                           style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16
                                           ),textAlign: TextAlign.center
                                         ),
@@ -497,7 +497,7 @@ class _TestCartState extends State<TestCart> {
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
-                                                                                          "Are You Sure Would Like To Delete Test Item?",
+                                                                                          "Are you sure would like to delete test item?",
                                                                                           style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
                                                                                           textAlign: TextAlign.center,
                                                                                         ),
@@ -556,7 +556,7 @@ class _TestCartState extends State<TestCart> {
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
                                                   children: [
-                                                    Text("Test Discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
+                                                    Text("Test discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
                                                         width: MediaQuery.of(context).size.width / 3.5.w,
@@ -695,7 +695,7 @@ class _TestCartState extends State<TestCart> {
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                                                         child: Text(
-                                                                                          "Are You Sure Would Like To Delete Package Item?",
+                                                                                          "Are you sure would like to delete package item?",
                                                                                           style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
                                                                                           textAlign: TextAlign.center,
                                                                                         ),
@@ -754,7 +754,7 @@ class _TestCartState extends State<TestCart> {
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
                                                   children: [
-                                                    Text("Package Discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
+                                                    Text("Package discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
                                                         width: MediaQuery.of(context).size.width / 3.5.w,
@@ -893,7 +893,7 @@ class _TestCartState extends State<TestCart> {
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
-                                                                                          "Are You Sure Would Like To Delete Profile Item?",
+                                                                                          "Are you sure would like to delete profile item?",
                                                                                           style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
                                                                                           textAlign: TextAlign.center,
                                                                                         ),
@@ -952,7 +952,7 @@ class _TestCartState extends State<TestCart> {
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
                                                   children: [
-                                                    Text("Profile Discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
+                                                    Text("Profile discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
                                                         width: MediaQuery.of(context).size.width / 3.5.w,

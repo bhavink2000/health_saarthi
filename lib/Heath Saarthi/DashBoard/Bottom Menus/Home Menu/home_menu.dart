@@ -110,6 +110,7 @@ class _HomeMenuState extends State<HomeMenu> {
             const HomeOffers(),
             const HomeBodyCheckups(),
             const HomeCategory(),
+
           ],
         ),
       ),

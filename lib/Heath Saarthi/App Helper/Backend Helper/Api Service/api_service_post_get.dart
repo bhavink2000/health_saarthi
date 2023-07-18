@@ -14,7 +14,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       final response = await http.get(Uri.parse(url),);
       responseJson = returnResponse(response);
     }on SocketMessage{
-      throw FetchDataException(message: "No Internet Connection");
+      throw FetchDataException(message: "");
     }
     return responseJson;
   }
@@ -26,7 +26,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       http.Response response = await http.post(Uri.parse(url), body: data);
       responseJson = returnResponse(response);
     } on SocketException {
-      throw FetchDataException(message: "No Internet Connection");
+      throw FetchDataException(message: "");
     }
     return responseJson;
   }
@@ -45,7 +45,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       ).timeout(Duration(seconds: 5));
       responseJson = returnResponse(response);
     }on SocketMessage{
-      throw FetchDataException(message: "No Internet Connection");
+      throw FetchDataException(message: "");
     }
     return responseJson;
   }
@@ -64,7 +64,7 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       );
       responseJson = returnResponse(response);
     } on SocketException {
-      throw FetchDataException(message: "No Internet Connection");
+      throw FetchDataException(message: "");
     }
     return responseJson;
   }
@@ -80,8 +80,8 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
         throw UnAuthorizedException(message: response.body.toString());
       default:
         throw FetchDataException(
-            message: "Error occurred while communicating with server" +
-                "with status code" + response.statusCode.toString()
+            message: " Error occurred while communicating with server " +
+                " with status code " + response.statusCode.toString()
         );
     }
   }
