@@ -306,23 +306,29 @@ class _TestCartState extends State<TestCart> {
                           SnackBarMessageShow.warningMSG('User Not Found', context);
                         }
                       },
-                      child: Container(
-                          width: MediaQuery.of(context).size.width / 2.9.w,
-                          padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.green),
-                          child: Row(
-                            children: [
-                              Text(
-                                "Book now",
-                                style: TextStyle(
-                                    fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold
+                      child: Card(
+                        elevation: userStatus == 0 ? 0 : 5,
+                        shadowColor: userStatus == 0 ? Colors.white : Colors.green.withOpacity(0.5),
+                        child: Container(
+                            width: MediaQuery.of(context).size.width / 2.9.w,
+                            padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color:
+                            userStatus == 0 ? Colors.green.withOpacity(0.5) : Colors.green
+                            ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "Book now",
+                                  style: TextStyle(
+                                      fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(width: 3.w,),
-                              const Icon(Icons.arrow_forward_ios_rounded,color: Colors.white,size: 12,)
-                            ],
-                          )
+                                SizedBox(width: 3.w,),
+                                const Icon(Icons.arrow_forward_ios_rounded,color: Colors.white,size: 12,)
+                              ],
+                            )
+                        ),
                       ),
                     ),
                   ),
@@ -551,7 +557,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: const Color(0xff396fff).withOpacity(0.8),
+                                                  color: hsTestColor.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -559,7 +565,7 @@ class _TestCartState extends State<TestCart> {
                                                     Text("Test discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
-                                                        width: MediaQuery.of(context).size.width / 3.5.w,
+                                                        width: MediaQuery.of(context).size.width / 3.w,
                                                         height: MediaQuery.of(context).size.height / 25.h,
                                                         decoration: BoxDecoration(
                                                           borderRadius: BorderRadius.circular(15),
@@ -594,7 +600,7 @@ class _TestCartState extends State<TestCart> {
                                                           items: [
                                                             const DropdownMenuItem(
                                                               value: '',
-                                                              child: Text("0%"),
+                                                              child: Text("discount"),
                                                             ),
                                                             ...value.cartList.data.data.globalSettingTestSlot?.map((testDrop) => DropdownMenuItem<String>(
                                                               value: testDrop.id.toString() ?? '',
@@ -727,7 +733,7 @@ class _TestCartState extends State<TestCart> {
                                                                     },
                                                                     child: SizedBox(
                                                                       width: MediaQuery.of(context).size.width / 6.w,
-                                                                      child: const Icon(Icons.delete_forever_rounded,color: Colors.black,size: 20),
+                                                                      child: Icon(Icons.delete_forever_rounded,color: hsPackageColor,size: 20),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -749,7 +755,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: const Color(0xffe2791b).withOpacity(0.8),
+                                                  color: hsPackageColor.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -757,7 +763,7 @@ class _TestCartState extends State<TestCart> {
                                                     Text("Package discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
-                                                        width: MediaQuery.of(context).size.width / 3.5.w,
+                                                        width: MediaQuery.of(context).size.width / 3.w,
                                                         height: MediaQuery.of(context).size.height / 25.h,
                                                         decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(15),
@@ -792,7 +798,7 @@ class _TestCartState extends State<TestCart> {
                                                           items: [
                                                             const DropdownMenuItem(
                                                               value: '',
-                                                              child: Text("0%"),
+                                                              child: Text("Discount"),
                                                             ),
                                                             ...value.cartList.data.data.globalSettingPackageSlot?.map((packageDrop) => DropdownMenuItem<String>(
                                                               value: packageDrop.id.toString() ?? '',
@@ -832,7 +838,7 @@ class _TestCartState extends State<TestCart> {
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsInstantBookingColor.withOpacity(0.8)),
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPackageColor.withOpacity(0.8)),
                                                         child: const Text("+ Add",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratMedium,fontSize: 14),),
                                                       ),
                                                     )
@@ -947,7 +953,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: hsInstantBookingColor.withOpacity(0.8),
+                                                  color: hsPackageColor.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -955,7 +961,7 @@ class _TestCartState extends State<TestCart> {
                                                     Text("Profile discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     Container(
-                                                        width: MediaQuery.of(context).size.width / 3.5.w,
+                                                        width: MediaQuery.of(context).size.width / 3.w,
                                                         height: MediaQuery.of(context).size.height / 25.h,
                                                         decoration: BoxDecoration(
                                                             borderRadius: BorderRadius.circular(15),
@@ -990,7 +996,7 @@ class _TestCartState extends State<TestCart> {
                                                           items: [
                                                             const DropdownMenuItem(
                                                               value: '',
-                                                              child: Text("0%"),
+                                                              child: Text("Discount"),
                                                             ),
                                                             ...value.cartList.data.data.globalSettingProfileSlot?.map((packageDrop) => DropdownMenuItem<String>(
                                                               value: packageDrop.id.toString() ?? '',

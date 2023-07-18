@@ -50,7 +50,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: Color(0xff396fff).withOpacity(0.3),
+                    shadowColor: hsTestColor.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -71,28 +71,28 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                                   const SizedBox(width: 10),
                                   Text("Lab Test",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                     child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                   )
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                             child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xff396fff).withOpacity(0.1)
+                                  color: hsTestColor.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
-                                  Image(image: AssetImage("assets/Home/test_sub.png"),width: 12),
+                                  const Image(image: AssetImage("assets/Home/test_sub.png"),width: 12),
                                   SizedBox(width: 10.w,),
-                                  Text("View Test",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                  const Text("View Test",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
                               ),
                             ),
@@ -111,7 +111,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: Color(0xffe2791b).withOpacity(0.3),
+                    shadowColor: hsPackageColor.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -132,28 +132,28 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                                   const SizedBox(width: 10),
                                   Text("Package",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                     child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                   )
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                             child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xffe2791b).withOpacity(0.1)
+                                  color: hsPackageColor.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
-                                  Image(image: AssetImage("assets/Home/package_sub.png"),width: 12),
+                                  const Image(image: AssetImage("assets/Home/package_sub.png"),width: 12),
                                   SizedBox(width: 10.w,),
-                                  Text("View Package",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                  const Text("View Package",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
                               ),
                             ),
@@ -178,7 +178,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                       SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                     }
                     else if (widget.uStatus == 1){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>AttachPrescription()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const AttachPrescription()));
                     }
                     else{
                       SnackBarMessageShow.warningMSG('User Not Found', context);
@@ -186,7 +186,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: Color(0xff4aa4f5).withOpacity(0.3),
+                    shadowColor: hsPrescriptionColor.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -207,28 +207,28 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                                   const SizedBox(width: 10),
                                   Text("Prescription",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                     child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                   )
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                             child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xff4aa4f5).withOpacity(0.1)
+                                  color: hsPrescriptionColor.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
-                                  Image(image: AssetImage("assets/Home/prescription_sub.png"),width: 12),
+                                  const Image(image: AssetImage("assets/Home/prescription_sub.png"),width: 12),
                                   SizedBox(width: 10.w,),
-                                  Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                  const Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
                               ),
                             ),
@@ -247,7 +247,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                       SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                     }
                     else if (widget.uStatus == 1){
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=>InstantBooking()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=>const InstantBooking()));
                     }
                     else{
                       SnackBarMessageShow.warningMSG('User Not Found', context);
@@ -256,7 +256,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: Color(0xff002860).withOpacity(0.3),
+                    shadowColor: hsInstantBookingColor.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -277,28 +277,28 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                                   SizedBox(width: 10.w),
                                   Text("Instant Book",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                     child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                   )
                                 ],
                               ),
                             ),
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                             child: Container(
-                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: Color(0xff002860).withOpacity(0.1)
+                                  color: hsInstantBookingColor.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
-                                  Image(image: AssetImage("assets/Home/booking_sub.png"),width: 12),
+                                  const Image(image: AssetImage("assets/Home/booking_sub.png"),width: 12),
                                   SizedBox(width: 10.w,),
-                                  Text("Book Now!",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                  const Text("Book Now!",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
                               ),
                             ),

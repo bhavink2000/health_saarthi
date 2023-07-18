@@ -81,10 +81,10 @@ class _TestListItemsState extends State<TestListItems> {
                         children: [
                           IconButton(onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                          }, icon: const Icon(Icons.shopping_cart_outlined,color: Color(0xff396fff),size: 24)),
+                          }, icon: Icon(Icons.shopping_cart_outlined,color: hsTestColor,size: 24)),
                           IconButton(onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                          }, icon: const Icon(Icons.circle_notifications_rounded,color: Color(0xff396fff),size: 24)),
+                          }, icon: Icon(Icons.circle_notifications_rounded,color: hsTestColor,size: 24)),
                         ],
                       )
                     ],
@@ -213,7 +213,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                 borderRadius: const BorderRadius.only(
                                                                     topLeft: Radius.circular(10),topRight: Radius.circular(10)
                                                                 ),
-                                                                color: const Color(0xff396fff).withOpacity(0.5),
+                                                                color: hsTestColor.withOpacity(0.5),
                                                               ),
                                                               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                               child: Text(
@@ -246,9 +246,11 @@ class _TestListItemsState extends State<TestListItems> {
                                                                         child: Container(
                                                                           decoration: BoxDecoration(borderRadius: const BorderRadius.only(
                                                                               bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
-                                                                          ),color: hsTestColor.withOpacity(0.8)),
+                                                                          ),color: hsTestColor),
                                                                           padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                                                                          child: Text(testI.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
+                                                                          child: Text(
+                                                                            testI.bookedStatus == 1 ? "Booked" :"+ Book Now",
+                                                                            style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
                                                                         ),
                                                                       )
                                                                     ],

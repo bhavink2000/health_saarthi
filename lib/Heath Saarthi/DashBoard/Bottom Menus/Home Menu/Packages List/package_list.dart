@@ -247,7 +247,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                                       child: Container(
                                                                         decoration: BoxDecoration(borderRadius: const BorderRadius.only(
                                                                             bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
-                                                                        ),color: hsPackageColor.withOpacity(0.9)),
+                                                                        ),color: hsPackageColor),
                                                                         padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                                                                         child: Text(packageI.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
                                                                       ),

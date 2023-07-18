@@ -101,7 +101,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                 },
                                 child: Card(
                                   elevation: 5,
-                                  shadowColor: Color(0xff396fff).withOpacity(0.3),
+                                  shadowColor: hsTestColor.withOpacity(0.3),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 2.1.w,
@@ -137,7 +137,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
-                                                color: Color(0xff396fff).withOpacity(0.1)
+                                                color: hsTestColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
@@ -162,7 +162,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                 },
                                 child: Card(
                                   elevation: 5,
-                                  shadowColor: Color(0xffe2791b).withOpacity(0.3),
+                                  shadowColor: hsPackageColor.withOpacity(0.3),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 2.1.w,
@@ -198,7 +198,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
-                                                color: Color(0xffe2791b).withOpacity(0.1)
+                                                color: hsPackageColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
@@ -236,7 +236,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                 },
                                 child: Card(
                                   elevation: 5,
-                                  shadowColor: Color(0xff4aa4f5).withOpacity(0.3),
+                                  shadowColor: hsPrescriptionColor.withOpacity(0.3),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 2.1.w,
@@ -272,7 +272,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
-                                                color: Color(0xff4aa4f5).withOpacity(0.1)
+                                                color: hsPrescriptionColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
@@ -306,7 +306,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                 },
                                 child: Card(
                                   elevation: 5,
-                                  shadowColor: Color(0xff002860).withOpacity(0.3),
+                                  shadowColor: hsInstantBookingColor.withOpacity(0.3),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   child: Container(
                                     width: MediaQuery.of(context).size.width / 2.1.w,
@@ -342,7 +342,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
-                                                color: Color(0xff002860).withOpacity(0.1)
+                                                color: hsInstantBookingColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [

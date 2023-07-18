@@ -55,6 +55,10 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+
+
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
         fetchMobileList();
@@ -77,6 +81,9 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final initialTime = TimeOfDay(hour: now.hour, minute: now.minute).replacing(hour: now.hour + 1);
+    collectionTime.text = initialTime.format(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -101,7 +108,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                   physics: const BouncingScrollPhysics(),
                   child: Form(
                     key: _formKey,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -313,156 +319,227 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 10.h),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width / 2.2.w,
-                                //height: MediaQuery.of(context).size.height / 14.h,
-                                child: DropdownButtonFormField<String>(
-                                  value: selectedState,
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  style: const TextStyle(fontSize: 10, color: Colors.black87),
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                    border: OutlineInputBorder(),
-                                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                    hintText: 'State',
-                                    hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Select a state';
-                                    }
-                                    return null;
-                                  },
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedState = newValue;
-                                    });
-                                    fetchCityList(selectedState);
-                                  },
-                                  onTap: selectedCity == null ? fetchStateList : resetCityAndAreaSelection,
-                                  items: [
-                                    DropdownMenuItem(
-                                      value: '',
-                                      child: Text('Select state'),
-                                    ),
-                                    ...stateList.map((state) => DropdownMenuItem<String>(
-                                      value: state.id?.toString() ?? '',
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width / 3.8,
-                                        child: Text(state.stateName ?? ''),
-                                      ),
-                                    )).toList()
-                                  ],
-                                )
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 2.2.w,
-                              //height: MediaQuery.of(context).size.height / 14.h,
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Container(
+                              width: MediaQuery.of(context).size.width / 1.w,
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                               child: DropdownButtonFormField<String>(
-                                value: selectedCity,
+                                value: selectedState,
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                 style: const TextStyle(fontSize: 10, color: Colors.black87),
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                   border: OutlineInputBorder(),
-                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  hintText: 'City',
+                                  focusedBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                      borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                      borderRadius: BorderRadius.circular(15)
+                                  ),
+                                  hintText: 'State',
                                   hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Select a city';
+                                    return 'Select a state';
                                   }
                                   return null;
                                 },
                                 onChanged: (newValue) {
                                   setState(() {
-                                    selectedCity = newValue;
-                                    selectedArea = null;
-                                    fetchAreaList(selectedState, selectedCity); // Replace with your fetchAreaList logic
+                                    selectedState = newValue;
                                   });
+                                  fetchCityList(selectedState);
                                 },
-                                onTap: () {
-                                  if (selectedArea == null) {
-                                    fetchCityList(selectedState);
-                                  } else {
-                                    setState(() {
-                                      selectedArea = null;
-                                    });
-                                    fetchAreaList(selectedState, selectedCity);
-                                  }
-                                },
+                                onTap: selectedCity == null ? fetchStateList : resetCityAndAreaSelection,
                                 items: [
                                   DropdownMenuItem(
                                     value: '',
-                                    child: Text('Select city'),
+                                    child: Text('Select state'),
                                   ),
-                                  ...cityList?.map((city) {
-                                    return DropdownMenuItem<String>(
-                                      value: city.id.toString(),
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width / 4,
-                                        child: Text(city.cityName),
-                                      ),
-                                    );
-                                  })?.toList() ?? []
+                                  ...stateList.map((state) => DropdownMenuItem<String>(
+                                    value: state.id?.toString() ?? '',
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 3.8,
+                                      child: Text(state.stateName ?? ''),
+                                    ),
+                                  )).toList()
                                 ],
+                              )
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.w,
+                            //height: MediaQuery.of(context).size.height / 14.h,
+                            child: DropdownButtonFormField<String>(
+                              value: selectedCity,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              style: const TextStyle(fontSize: 10, color: Colors.black87),
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                border: OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'City',
+                                hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Select a city';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedCity = newValue;
+                                  selectedArea = null;
+                                  fetchAreaList(selectedState, selectedCity); // Replace with your fetchAreaList logic
+                                });
+                              },
+                              onTap: () {
+                                if (selectedArea == null) {
+                                  fetchCityList(selectedState);
+                                } else {
+                                  setState(() {
+                                    selectedArea = null;
+                                  });
+                                  fetchAreaList(selectedState, selectedCity);
+                                }
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Select city'),
+                                ),
+                                ...cityList?.map((city) {
+                                  return DropdownMenuItem<String>(
+                                    value: city.id.toString(),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 4,
+                                      child: Text(city.cityName),
+                                    ),
+                                  );
+                                })?.toList() ?? []
+                              ],
                             ),
-                          ],
+                          ),
+                        ),
+                        SizedBox(height: 10.h),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 1.w,
+                            //height: MediaQuery.of(context).size.height / 14.h,
+                            child: DropdownButtonFormField<String>(
+                              value: selectedArea,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              style: const TextStyle(fontSize: 10, color: Colors.black87),
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                border: OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'Area',
+                                hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Select an area';
+                                }
+                                return null;
+                              },
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedArea = newValue;
+                                });
+                              },
+                              items: [
+                                DropdownMenuItem(
+                                  value: '',
+                                  child: Text('Select area'),
+                                ),
+                                ... areaList != null
+                                    ? areaList.map((area) {
+                                  return DropdownMenuItem<String>(
+                                    value: area.id.toString(),
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 3.5,
+                                      child: Text(area.areaName),
+                                    ),
+                                  );
+                                }).toList() : []
+                              ],
+                            ),
+                          ),
                         ),
                         SizedBox(height: 10.h),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+
                             Container(
                               width: MediaQuery.of(context).size.width / 2.2.w,
-                              //height: MediaQuery.of(context).size.height / 14.h,
-                              child: DropdownButtonFormField<String>(
-                                value: selectedArea,
+                              child: TextFormField(
+                                controller: collectionDate,
+                                readOnly: true,
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                                style: const TextStyle(fontSize: 10, color: Colors.black87),
                                 decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                  contentPadding: const EdgeInsets.all(hsPaddingM),
                                   border: OutlineInputBorder(),
-                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                                  hintText: 'Area',
-                                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                  hintText: 'Collection date',
+                                  hintStyle: const TextStyle(
+                                    color: Colors.black54,
+                                    fontFamily: FontType.MontserratRegular,
+                                    fontSize: 14,
+                                  ),
+                                  prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Select an area';
+                                    return 'Enter collection date';
                                   }
                                   return null;
                                 },
-                                onChanged: (newValue) {
-                                  setState(() {
-                                    selectedArea = newValue;
-                                  });
+                                onTap: () async {
+                                  DateTime pickedDate = await showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.now(),
+                                    lastDate: DateTime(2101),
+                                  );
+                                  if (pickedDate != null) {
+                                    String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                    setState(() {
+                                      collectionDate.text = formattedDate;
+                                    });
+                                  }
                                 },
-                                items: [
-                                  DropdownMenuItem(
-                                    value: '',
-                                    child: Text('Select area'),
-                                  ),
-                                  ... areaList != null
-                                      ? areaList.map((area) {
-                                    return DropdownMenuItem<String>(
-                                      value: area.id.toString(),
-                                      child: Container(
-                                        width: MediaQuery.of(context).size.width / 3.5,
-                                        child: Text(area.areaName),
-                                      ),
-                                    );
-                                  }).toList() : []
-                                ],
                               ),
                             ),
                             Container(
@@ -482,11 +559,11 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                     contentPadding: const EdgeInsets.all(hsPaddingM),
                                     focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(5)
+                                        borderRadius: BorderRadius.circular(15)
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(5)
+                                        borderRadius: BorderRadius.circular(15)
                                     ),
                                     hintText: 'Pin code',
                                     hintStyle: const TextStyle(
@@ -512,53 +589,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width / 2.1.w,
-                                child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                                  controller: collectionDate,
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.all(hsPaddingM),
-                                    border: OutlineInputBorder(),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(15)
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(15)
-                                    ),
-                                    hintText: 'Collection date',
-                                    hintStyle: const TextStyle(
-                                        color: Colors.black54,
-                                        fontFamily: FontType.MontserratRegular,
-                                        fontSize: 14
-                                    ),
-                                    prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack,size: 20),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter Collection Date';
-                                    }
-                                    return null;
-                                  },
-                                  onTap: () async {
-                                    DateTime pickedDate = await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime(2101)
-                                    );
-                                    if(pickedDate != null ){
-                                      String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                      setState(() {
-                                        collectionDate.text = formattedDate;
-                                      });
-                                    }else{}
-                                  },
-                                ),
-                              ),
+
                               Container(
                                 width: MediaQuery.of(context).size.width / 2.1.w,
                                 child: TextFormField(
@@ -568,20 +599,20 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                     contentPadding: const EdgeInsets.all(hsPaddingM),
                                     border: OutlineInputBorder(),
                                     focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(15)
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
                                     enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        borderRadius: BorderRadius.circular(15)
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                      borderRadius: BorderRadius.circular(15),
                                     ),
                                     hintText: 'Collection Time',
                                     hintStyle: const TextStyle(
-                                        color: Colors.black54,
-                                        fontFamily: FontType.MontserratRegular,
-                                        fontSize: 14
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
                                     ),
-                                    prefixIcon: const Icon(Icons.timer, color: hsBlack,size: 20),
+                                    prefixIcon: const Icon(Icons.timer, color: hsBlack, size: 20),
                                   ),
                                   onTap: () async {
                                     TimeOfDay pickedTime = await showTimePicker(
@@ -589,9 +620,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                       initialTime: TimeOfDay.now(),
                                     );
                                     if (pickedTime != null) {
-                                      String formattedTime = pickedTime.format(context);
                                       setState(() {
-                                        collectionTime.text = formattedTime;
+                                        collectionTime.text = pickedTime.format(context);
                                       });
                                     }
                                   },
@@ -600,6 +630,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             ],
                           ),
                         ),
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(

@@ -77,7 +77,7 @@ class _PackageItemsDetailsState extends State<PackageItemsDetails> {
                               CartFuture().addToCartTest(widget.accessToken, widget.packageId, context);
                             },
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPackageColor.withOpacity(0.8)),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPackageColor),
                               padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                               child: Text(widget.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
                             ),

@@ -9,22 +9,14 @@ Color hsPrimeOne = const Color(0xff593c76);
 Color hsPrimeTwo = const Color(0xff734e98);
 Color hsPrimeThree = const Color(0xff8c67b1);
 
-Color hsTestColor = const Color(0xff396fff);
-Color hsPackageColor = const Color(0xffe2791b);
-Color hsPrescriptionColor = const Color(0xff4aa4f5);
-Color hsInstantBookingColor = const Color(0xff002860);
-/*
-Color hsColor = const Color(0xff7e50a0);
-Color hsColorOne = hsPrimeOne;
-Color hsColorTwo = hsPrimeThree;
-Color hsColorThree = hsPrime;
-Color hsColorFour = hsPrimeOne;
-*/
+Color hsTestColor = const Color(0xff7c54a4);
+Color hsPackageColor = const Color(0xff7c54a4);
+Color hsPrescriptionColor = const Color(0xff7c54a4);
+Color hsInstantBookingColor = const Color(0xff7c54a4);
 
-
-Color hsOne = const Color(0xff1d617a);
-Color hsTwo = const Color(0xff00a18b);
-Color hsThree = const Color(0xff65c5b9);
+Color hsOne = const Color(0xff7c54a4);
+Color hsTwo = const Color(0xff7c54a4);
+Color hsThree = const Color(0xff7c54a4);
 
 
 class FontType{
