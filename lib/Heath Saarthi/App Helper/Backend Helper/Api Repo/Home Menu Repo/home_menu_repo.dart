@@ -31,6 +31,7 @@ class HomeMenuRepo{
       try {
         return response = TestModel.fromJson(response);
       } catch (e) {
+        print("test Data error->$e");
         throw e;
       }
     }
@@ -45,6 +46,7 @@ class HomeMenuRepo{
       try {
         return response = PackageModel.fromJson(response);
       } catch (e) {
+        print("package Data error->$e");
         throw e;
       }
     }

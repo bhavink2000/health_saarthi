@@ -32,30 +32,20 @@ class _BookTestScreenState extends State<BookTestScreen> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
-    getUserData();
+    Future.delayed(const Duration(seconds: 1),(){
+      getUserStatus();
+    });
   }
   var userStatus;
-  void getUserData()async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String storedEmail = prefs.getString('email');
-    String storedPassword = prefs.getString('password');
-    print("store E->$storedEmail");
-    print("store P->$storedPassword");
-    getUser(storedEmail, storedPassword);
-  }
-  void getUser(String sEmail, String sPassword) async {
-    try {
-      UserModel user = await ProfileFuture().fetchUser(sEmail, sPassword);
-      if (user != null && user.data != null) {
-        print("user Status -->> ${user.data.status}");
-        setState(() {
-          userStatus = user.data.status;
-        });
-      } else {
-        print('Failed to fetch user: User data is null');
-      }
-    } catch (e) {
-      print('Error: $e');
+  void getUserStatus()async{
+    try{
+      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      setState(() {
+        userStatus = userData.data.status;
+      });
+      print("userStatus ==>>$userStatus");
+    }catch(e){
+      print("get User Status Error->$e");
     }
   }
   @override

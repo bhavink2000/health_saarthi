@@ -53,16 +53,35 @@ class NotificationService{
       },
     );
   }
+  // void firebaseInit(BuildContext context) {
+  //   FirebaseMessaging.onMessage.listen((message) {
+  //
+  //     print("---------------------------------------");
+  //     print("message data->${message.data}");
+  //     print("message notification->${message.notification}");
+  //
+  //
+  //     print("notification title->${message.data['title']}");
+  //     print("notification message->${message.data['message']}");
+  //
+  //     print("---------------------------------------");
+  //     initLocalNotification(context, message);
+  //     showNotification(message);
+  //   });
+  // }
+
   void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
-
       print("---------------------------------------");
       print("message data->${message.data}");
       print("message notification->${message.notification}");
 
-
-      print("notification title->${message.data['title']}");
-      print("notification message->${message.data['message']}");
+      if (message.data != null) {
+        print("notification title->${message.data['title']}");
+        print("notification message->${message.data['message']}");
+      } else {
+        print("Notification data is null.");
+      }
 
       print("---------------------------------------");
       initLocalNotification(context, message);

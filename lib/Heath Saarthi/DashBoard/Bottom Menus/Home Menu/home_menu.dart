@@ -1,5 +1,5 @@
 //@dart=2.9
-// ignore_for_file: import_of_legacy_library_into_null_safe
+// ignore_for_file: import_of_legacy_library_into_null_safe, use_build_context_synchronously
 
 import 'dart:io';
 import 'dart:ui';
@@ -36,29 +36,43 @@ class _HomeMenuState extends State<HomeMenu> {
     super.initState();
     getAccessToken = GetAccessToken();
     getAccessToken.checkAuthentication(context, setState);
-    getUserData();
+    Future.delayed(const Duration(seconds: 1),(){
+      getUserStatus();
+    });
   }
-  void getUserData()async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String storedEmail = prefs.getString('email');
-    String storedPassword = prefs.getString('password');
-    print("store E->$storedEmail");
-    print("store P->$storedPassword");
-    getUser(storedEmail, storedPassword);
-  }
-  void getUser(String sEmail, String sPassword) async {
-    try {
-      UserModel user = await ProfileFuture().fetchUser(sEmail, sPassword);
-      if (user != null && user.data != null) {
-        print("user Status -->> ${user.data.status}");
+  void getUserStatus()async{
+    try{
+      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      if (userData != null && userData.data != null) {
+        print("user Status -->> ${userData.data.status}");
         setState(() {
-          userStatus = user.data.status;
+          userStatus = userData.data.status;
         });
+        if (userStatus == 0) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text("Account Status"),
+                content: const Text("Account is under review\nPlease connect with the support team."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog box
+                    },
+                    child: const Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       } else {
         print('Failed to fetch user: User data is null');
       }
-    } catch (e) {
-      print('Error: $e');
+      print("userStatus ==>>$userStatus");
+    }catch(e){
+      print("get User Status Error->$e");
     }
   }
   @override
@@ -104,12 +118,12 @@ class _HomeMenuState extends State<HomeMenu> {
                 ),
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             const HomeImageSlider(),
             HomeTestPackage(uStatus: userStatus),
             const HomeOffers(),
             const HomeBodyCheckups(),
-            const HomeCategory(),
+            //const HomeCategory(),
 
           ],
         ),

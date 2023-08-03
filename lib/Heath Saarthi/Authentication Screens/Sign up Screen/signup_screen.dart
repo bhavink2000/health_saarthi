@@ -23,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
           child: Column(
             children: <Widget>[
               HeaderSignUp(),
-              SignUpForm(emailId: widget.emailId),
+              SignUpForm(),
             ],
           ),
         ),

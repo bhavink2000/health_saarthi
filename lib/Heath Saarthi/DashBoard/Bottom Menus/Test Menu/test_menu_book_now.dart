@@ -1,6 +1,7 @@
 //@dart=2.9
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +49,7 @@ class _TestMenuState extends State<TestMenu> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    colletionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
         fetchMobileList();
@@ -199,12 +201,6 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter DOB';
-                      }
-                      return null;
-                    },
                     onTap: () async {
                       DateTime pickedDate = await showDatePicker(
                         context: context,
@@ -221,14 +217,49 @@ class _TestMenuState extends State<TestMenu> {
                     },
                   ),
                 ),
-                showTextField(
-                    'Email id', emailId,Icons.email,
-                        (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter email id';
-                      }
-                      return null;
-                    }
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  child: TextFormField(
+                    controller: emailId,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(hsPaddingM),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      hintText: 'Email id *',
+                      hintStyle: const TextStyle(
+                        color: Colors.black54,
+                        fontFamily: FontType.MontserratRegular,
+                        fontSize: 14,
+                      ),
+                      prefixIcon: Icon(Icons.email, color: hsBlack, size: 20),
+                    ),
+                      onChanged: (value) {
+                        if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                          // Password meets all the requirements
+                        } else if (!value.contains('gmail.com')) {
+                            return 'Email id must contain "gmail.com"';
+                        }else {
+                          print('Please enter valid email id');
+                        }
+                      },
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter email id';
+                        }
+                        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                          return 'email id must contain at least one special character';
+                        }
+                        return null;
+                      },
+                  ),
                 ),
                 showTextField(
                     'Address', address,Icons.location_city,
@@ -287,156 +318,155 @@ class _TestMenuState extends State<TestMenu> {
                     ],
                   ),
                 ),
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2.2.w,
-                        //height: MediaQuery.of(context).size.height / 14.h,
-                        child: DropdownButtonFormField<String>(
-                          value: selectedState,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          style: const TextStyle(fontSize: 10, color: Colors.black87),
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                            hintText: 'State',
-                            hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Select a state';
-                            }
-                            return null;
-                          },
-                          onChanged: (newValue) {
-                            setState(() {
-                              selectedState = newValue;
-                            });
-                            fetchCityList(selectedState);
-                          },
-                          onTap: selectedCity == null ? fetchStateList : resetCityAndAreaSelection,
-                          items: [
-                            DropdownMenuItem(
-                              value: '',
-                              child: Text('Select state'),
-                            ),
-                            ...stateList.map((state) => DropdownMenuItem<String>(
-                              value: state.id?.toString() ?? '',
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 3.8,
-                                child: Text(state.stateName ?? ''),
-                              ),
-                            )).toList()
-                          ],
-                        )
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2.2.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownButtonFormField<String>(
-                        value: selectedCity,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: const TextStyle(fontSize: 10, color: Colors.black87),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                          hintText: 'City',
-                          hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select a city';
-                          }
-                          return null;
-                        },
-                        onChanged: (newValue) {
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.w,
+                    //height: MediaQuery.of(context).size.height / 14.h,
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                      label: "Select state*",
+                      onChanged: (newValue) {
+                        final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                        if (selectedStateObject != null) {
                           setState(() {
-                            selectedCity = newValue;
-                            selectedArea = null;
-                            fetchAreaList(selectedState, selectedCity); // Replace with your fetchAreaList logic
+                            selectedCity = '';
+                            selectedArea = '';
+                            selectedState = newValue;
+                            selectedStateId = selectedStateObject.id.toString();
                           });
-                        },
-                        onTap: () {
-                          if (selectedArea == null) {
-                            fetchCityList(selectedState);
-                          } else {
-                            setState(() {
-                              selectedArea = null;
-                            });
-                            fetchAreaList(selectedState, selectedCity);
-                          }
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            value: '',
-                            child: Text('Select city'),
-                          ),
-                          ...cityList?.map((city) {
-                            return DropdownMenuItem<String>(
-                              value: city.id.toString(),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 4,
-                                child: Text(city.cityName),
-                              ),
-                            );
-                          })?.toList() ?? []
-                        ],
-                      ),
+                          fetchCityList(selectedStateId);
+                        }
+                      },
+                      selectedItem: selectedState,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a state';
+                        }
+                        return null;
+                      },
                     ),
-                  ],
+                  ),
                 ),
-                SizedBox(height: 10.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2.2.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownButtonFormField<String>(
-                        value: selectedArea,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        style: const TextStyle(fontSize: 10, color: Colors.black87),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                          hintText: 'Area',
-                          hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select an area';
-                          }
-                          return null;
-                        },
-                        onChanged: (newValue) {
+                SizedBox(height: 15,),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.w,
+                    //height: MediaQuery.of(context).size.height / 14.h,
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                      label: "Select city *",
+                      onChanged: (newValue) {
+                        final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                        if (selectedCityObject != null) {
+                          setState(() {
+                            selectedCity = '';
+                            selectedArea = '';
+                            selectedCity = newValue;
+                            selectedCityId = selectedCityObject.id.toString();
+                          });
+                          fetchAreaList(selectedStateId, selectedCityId);
+                        }
+                      },
+                      selectedItem: selectedCity,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a city';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15,),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.w,
+                    //height: MediaQuery.of(context).size.height / 14.h,
+                    child: DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                      label: "Select area *",
+                      onChanged: (newValue) {
+                        final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                        if (selectedAreaObject != null) {
                           setState(() {
                             selectedArea = newValue;
+                            selectedAreaId = selectedAreaObject.id.toString();
                           });
-                        },
-                        items: [
-                          DropdownMenuItem(
-                            value: '',
-                            child: Text('Select area'),
+                        }
+                      },
+                      selectedItem: selectedArea,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a area';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 10.h),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+
+                    Container(
+                      width: MediaQuery.of(context).size.width / 2.2.w,
+                      child: TextFormField(
+                        controller: colletionDate,
+                        readOnly: true,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(hsPaddingM),
+                          border: OutlineInputBorder(),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                            borderRadius: BorderRadius.circular(15),
                           ),
-                          ... areaList != null
-                              ? areaList.map((area) {
-                            return DropdownMenuItem<String>(
-                              value: area.id.toString(),
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                child: Text(area.areaName),
-                              ),
-                            );
-                          }).toList() : []
-                        ],
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          hintText: 'Collection date',
+                          hintStyle: const TextStyle(
+                            color: Colors.black54,
+                            fontFamily: FontType.MontserratRegular,
+                            fontSize: 14,
+                          ),
+                          prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Enter collection date';
+                          }
+                          return null;
+                        },
+                        onTap: () async {
+                          DateTime pickedDate = await showDatePicker(
+                            context: context,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2101),
+                          );
+                          if (pickedDate != null) {
+                            String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                            setState(() {
+                              colletionDate.text = formattedDate;
+                            });
+                          }
+                        },
                       ),
                     ),
                     Container(
@@ -456,11 +486,11 @@ class _TestMenuState extends State<TestMenu> {
                             contentPadding: const EdgeInsets.all(hsPaddingM),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(5)
+                                borderRadius: BorderRadius.circular(15)
                             ),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(5)
+                                borderRadius: BorderRadius.circular(15)
                             ),
                             hintText: 'Pin code',
                             hintStyle: const TextStyle(
@@ -480,53 +510,6 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                     ),
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                  child: TextFormField(
-                    controller: colletionDate,
-                    readOnly: true,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.all(hsPaddingM),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          borderRadius: BorderRadius.circular(15)
-                      ),
-                      hintText: 'Collection date',
-                      hintStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14
-                      ),
-                      prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack,size: 20),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter collection date';
-                      }
-                      return null;
-                    },
-                    onTap: () async {
-                      DateTime pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2101)
-                      );
-                      if(pickedDate != null ){
-                        String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                        setState(() {
-                          colletionDate.text = formattedDate;
-                        });
-                      }else{}
-                    },
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -642,6 +625,7 @@ class _TestMenuState extends State<TestMenu> {
   }
   List<StateData> stateList = [];
   String selectedState;
+  String selectedStateId;
   Future<void> fetchStateList() async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -656,6 +640,7 @@ class _TestMenuState extends State<TestMenu> {
 
   List<CityData> cityList = [];
   String selectedCity;
+  String selectedCityId;
   Future<void> fetchCityList(var sState) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -670,6 +655,7 @@ class _TestMenuState extends State<TestMenu> {
 
   List<AreaData> areaList = [];
   String selectedArea;
+  String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -730,9 +716,9 @@ class _TestMenuState extends State<TestMenu> {
       "gender": '$pGender',
       "date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
-      "state_id": selectedState ?? '',
-      'city_id': selectedCity ?? '',
-      'area_id': selectedArea ?? '',
+      "state_id": selectedStateId ?? '',
+      'city_id': selectedCityId ?? '',
+      'area_id': selectedAreaId ?? '',
       'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };

@@ -28,6 +28,7 @@ class _ReferChemistState extends State<ReferChemist> {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
   }
+  final _referFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,87 +57,129 @@ class _ReferChemistState extends State<ReferChemist> {
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),color: Colors.white),
                 child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 18,
-                          child: TextField(
-                            controller: fName,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'First Name',
-                                prefixIcon: Icon(Icons.person,color: Colors.black,size: 24)
+                  child: Form(
+                    key: _referFormKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                          child: Container(
+                            //height: MediaQuery.of(context).size.height / 18,
+                            child: TextFormField(
+                              controller: fName,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'First Name',
+                                  prefixIcon: Icon(Icons.person,color: Colors.black,size: 24)
+                              ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Enter name';
+                                  }
+                                  return null;
+                                }
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 18,
-                          child: TextField(
-                            controller: mobile,
-                            keyboardType: TextInputType.phone,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Mobile Number',
-                                prefixIcon: Icon(Icons.phone_android_rounded,color: Colors.black,size: 24)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                          child: Container(
+                            //height: MediaQuery.of(context).size.height / 18,
+                            child: TextFormField(
+                              controller: mobile,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.phone,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Mobile Number',
+                                  prefixIcon: Icon(Icons.phone_android_rounded,color: Colors.black,size: 24)
+                              ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Enter mobile number';
+                                  }
+                                  return null;
+                                }
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 18,
-                          child: TextField(
-                            controller: email,
-                            keyboardType: TextInputType.emailAddress,
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Email Id',
-                                prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
+                          child: Container(
+                            //height: MediaQuery.of(context).size.height / 18,
+                            child: TextFormField(
+                              controller: email,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              keyboardType: TextInputType.emailAddress,
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Email Id',
+                                  prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
+                              ),
+                              onChanged: (value) {
+                                if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                  // Password meets all the requirements
+                                } else if (!value.contains('gmail.com')) {
+                                  // If the email does not contain 'gmail.com', show an error message
+                                  setState(() {
+                                    return 'Email id must contain "gmail.com"';
+                                  });
+                                }else {
+                                  print('Please enter valid email id');
+                                }
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter a email';
+                                }
+                                if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                  return 'email id must contain at least one special character';
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              fName.clear();
-                              mobile.clear();
-                              email.clear();
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime),
-                              child: const Text("Cancel",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                fName.clear();
+                                mobile.clear();
+                                email.clear();
+                                Navigator.pop(context);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime),
+                                child: const Text("Cancel",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                              ),
                             ),
-                          ),
-                          InkWell(
-                            onTap: (){
-                              if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty){
-                                SnackBarMessageShow.warningMSG('Please Fill All Field', context);
-                              }
-                              else{
-                                sendReferralPharmacy();
-                              }
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime),
-                              child: const Text("Submit",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                            InkWell(
+                              onTap: (){
+                                if(_referFormKey.currentState.validate()){
+                                  sendReferralPharmacy();
+                                }
+                                // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty){
+                                //   SnackBarMessageShow.warningMSG('Please Fill All Field', context);
+                                // }
+                                // else{
+                                //
+                                // }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime),
+                                child: const Text("Submit",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

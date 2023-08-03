@@ -85,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         ),
       ),
     );
-
     _animationController.forward();
   }
 

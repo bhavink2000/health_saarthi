@@ -9,6 +9,7 @@ class ApiUrls{
   static String deleteDeviceUrl = '${mainUrls}pharmacy/delete-device-token';
 
   static String profileUrls = '${mainUrls}pharmacy/get-profile-data';
+  static String updateProfileUrls = '${mainUrls}pharmacy/update-profile-data';
 
 
   static String signUpUrl = '${mainUrls}pharmacy/register';

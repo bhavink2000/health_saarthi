@@ -1,13 +1,10 @@
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/home_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Report%20Menu/report_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/drawer_menu.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Global%20Search%20Screen/global_search_screen.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
-import '../App Helper/Backend Helper/Api Service/notification_service.dart';
 import '../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../App Helper/Frontend Helper/UI Helper/app_icons_helper.dart';
@@ -103,7 +100,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                     ),
                     const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 150),
                     Container(
-                      width: MediaQuery.of(context).size.width / 5.5,
+                      width: MediaQuery.of(context).size.width / 5.35,
                       child: Row(
                         children: [
                           InkWell(

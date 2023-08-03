@@ -6,11 +6,12 @@ import '../../Api Service/api_service_type_post_get.dart';
 class UserAuthentication {
   ApiServicesTypePostGet apiServicesTypePostGet = ApiServicePostGet();
 
-  Future<dynamic> loginApi(dynamic data)async{
-    try{
+  Future<dynamic> loginApi(dynamic data) async {
+    print("login api data->$data"); // Add this line to check the value of 'data'
+    try {
       dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
       return response;
-    }catch(e){
+    } catch (e) {
       print("Login Error->$e");
       throw e;
     }

@@ -1,6 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
+import 'dart:ui';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Device%20Info/device_info.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
@@ -27,9 +28,11 @@ class AuthProvider with ChangeNotifier{
   }
 
   Future<void> loginApi(dynamic data, BuildContext context, var deviceToken,var deviceType) async {
+    print("login Data->$data");
     LoadingIndicater().onLoad(true, context);
     setLoginLoading(true);
     _myUser.loginApi(data).then((value) {
+
       setLoginLoading(false);
       final userDataSession = Provider.of<UserDataSession>(context, listen: false);
       userDataSession.saveUserData(LoginModel(
@@ -38,22 +41,13 @@ class AuthProvider with ChangeNotifier{
       ));
       print("accessToken--------->${value['access_token'].toString()}");
       SnackBarMessageShow.successsMSG('Login Successfully', context);
-      DeviceInfo().sendDeviceToken(context, deviceToken, deviceType,value['access_token'].toString()).then((value) {
-        if(value == null){
-          LoadingIndicater().onLoadExit(false, context);
-          Navigator.pop(context);
-        }
-        else{
-          LoadingIndicater().onLoadExit(false, context);
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-        }
-      });
-      LoadingIndicater().onLoadExit(false, context);
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
       if (kDebugMode) {
         print(value);
       }
     }).catchError((error, stackTrace) {
-      setLoginLoading(false);
+      print("cathcError->$error");
+      print("cathcStackTrace->$stackTrace");
       var errorString = error.toString();
       var jsonStartIndex = errorString.indexOf('{');
       var jsonEndIndex = errorString.lastIndexOf('}');

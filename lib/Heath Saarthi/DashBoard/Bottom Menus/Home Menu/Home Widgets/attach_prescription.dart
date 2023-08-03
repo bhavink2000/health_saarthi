@@ -1,7 +1,10 @@
 //@dart=2.9
 // ignore_for_file: use_build_context_synchronously, missing_return
 
+import 'dart:async';
 import 'dart:ui';
+import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:search_choices/search_choices.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
@@ -21,6 +25,7 @@ import '../../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_mod
 import '../../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
+import '../../../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Add To Cart/test_cart.dart';
@@ -36,7 +41,8 @@ class AttachPrescription extends StatefulWidget {
 
 class _AttachPrescriptionState extends State<AttachPrescription> {
 
-  File fileManger;
+  File presciptionFile;
+  Completer<XFile> filePickerCompleter = Completer<XFile>();
   var focusNode = FocusNode();
   final emailId = TextEditingController();
   final address = TextEditingController();
@@ -117,450 +123,420 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                        child: Card(
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                onTap: (){
-                                  _showFilePick(context);
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width / 2.w,
-                                  height: MediaQuery.of(context).size.height / 14.h,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrimeOne),
-                                  child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          "Upload \nPresciption",
-                                          style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
-                                        ),
-                                        const Icon(Icons.upload_file_rounded,color: Colors.white,)
-                                      ],
+                child: Column(
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                child: Row(
+                                  children: [
+                                    presciptionFile == null
+                                        ? const Text("Upload prescription",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                                        : Container(
+                                        width: 100,height: 50,
+                                        child: Image.file(File(presciptionFile.path), fit: BoxFit.cover)
                                     ),
-                                  ),
+                                    const Spacer(),
+                                    IconButton(
+                                        onPressed: ()async {
+                                          var presciptionFileManger = await FileImagePicker().pickFileManger(context);
+                                          setState(() {
+                                            presciptionFile = presciptionFileManger;
+                                          });
+                                        },
+                                        icon: const Icon(
+                                            Icons.file_copy_rounded
+                                        )
+                                    ),
+                                    IconButton(
+                                        onPressed: () async{
+                                          var presciptionCamera = await FileImagePicker().pickCamera(context);
+                                          setState(() {
+                                            presciptionFile = presciptionCamera;
+                                          });
+                                        },
+                                        icon: const Icon(
+                                            Icons.camera
+                                        )
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  child: Text(
-                                    fileManger == null ? "No Prescription Select" : 'Prescription Selected',
-                                    style: const TextStyle(fontFamily: FontType.MontserratRegular),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                        child: Container(
-                            height: MediaQuery.of(context).size.height / 12.h,
-                            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-                            child: TypeAheadFormField<MobileData>(
-                              textFieldConfiguration: TextFieldConfiguration(
-                                decoration: const InputDecoration(
-                                  labelText: 'Select mobile number',
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
-                                ),
-                                keyboardType: TextInputType.number,
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                            child: Container(
+                                height: MediaQuery.of(context).size.height / 12.h,
+                                decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
+                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+                                child: TypeAheadFormField<MobileData>(
+                                  textFieldConfiguration: TextFieldConfiguration(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Select mobile number',
+                                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
+                                    ),
+                                    keyboardType: TextInputType.number,
 
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                style: const TextStyle(
-                                  fontFamily: FontType.MontserratMedium,
-                                  fontSize: 15,
-                                  letterSpacing: 1,
-                                  color: Colors.black87,
-                                ),
-                                controller: pMobile, // Assign the controller
-                              ),
-                              suggestionsCallback: (pattern) async {
-                                return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
-                              },
-                              itemBuilder: (context, MobileData suggestion) {
-                                return ListTile(
-                                  title: Text(suggestion.mobileNo),
-                                );
-                              },
-                              onSuggestionSelected: (MobileData suggestion) {
-                                setState(() {
-                                  selectedMobileNo = suggestion.encPharmacyPatientId;
-                                  getPatient(selectedMobileNo);
-                                  pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
-                                });
-                              },
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Select a mobile number';
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                    ],
+                                    style: const TextStyle(
+                                      fontFamily: FontType.MontserratMedium,
+                                      fontSize: 15,
+                                      letterSpacing: 1,
+                                      color: Colors.black87,
+                                    ),
+                                    controller: pMobile, // Assign the controller
+                                  ),
+                                  suggestionsCallback: (pattern) async {
+                                    return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
+                                  },
+                                  itemBuilder: (context, MobileData suggestion) {
+                                    return ListTile(
+                                      title: Text(suggestion.mobileNo),
+                                    );
+                                  },
+                                  onSuggestionSelected: (MobileData suggestion) {
+                                    setState(() {
+                                      selectedMobileNo = suggestion.encPharmacyPatientId;
+                                      getPatient(selectedMobileNo);
+                                      pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
+                                    });
+                                  },
+                                  validator: (value) {
+                                    if (value == null) {
+                                      return 'Select a mobile number';
+                                    }
+                                    return null;
+                                  },
+                                  onSaved: (value) => this.selectedMobileNo = value,
+                                )
+                            ),
+                          ),
+                          showTextField(
+                              'Patient name *', pName,Icons.person,
+                                  (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Enter patient name';
                                 }
                                 return null;
-                              },
-                              onSaved: (value) => this.selectedMobileNo = value,
-                            )
-                        ),
-                      ),
-                      showTextField(
-                          'Patient name', pName,Icons.person,
-                              (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter patient name';
-                            }
-                            return null;
-                          }
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                        child: TextFormField(
-                          controller: pAge,
-                          maxLength: 3,
-                          keyboardType: TextInputType.number,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            hintText: 'Age',
-                            hintStyle: const TextStyle(
-                              color: Colors.black54,
-                              fontFamily: FontType.MontserratRegular,
-                              fontSize: 14,
-                            ),
-                            prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
+                              }
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter age';
-                            }
-                            return null;
-                          }, // Set the validator function
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                        child: TextFormField(
-                          controller: pDob,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            hintText: 'DOB',
-                            hintStyle: const TextStyle(
-                                color: Colors.black54,
-                                fontFamily: FontType.MontserratRegular,
-                                fontSize: 14
-                            ),
-                            prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter DOB';
-                            }
-                            return null;
-                          },
-                          onTap: () async {
-                            DateTime pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if(pickedDate != null ){
-                              String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                              setState(() {
-                                pDob.text = formattedDate;
-                              });
-                            }else{}
-                          },
-                        ),
-                      ),
-                      showTextField(
-                          'Email id', emailId,Icons.email,
-                              (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter email id';
-                            }
-                            return null;
-                          }
-                      ),
-                      showTextField(
-                          'Address', address,Icons.location_city,
-                              (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter address';
-                            }
-                            return null;
-                          }
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: Row(
-                          children: [
-                            Flexible(
-                              child: RadioListTile(
-                                contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                value: 'Female',
-                                groupValue: selectedGender,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedGender = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              child: RadioListTile(
-                                contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                value: 'Male',
-                                groupValue: selectedGender,
-                                onChanged: (value) {
-                                  setState(() {
-                                    selectedGender = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            Flexible(
-                              child: RadioListTile(
-                                contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                                value: 'Other',
-                                groupValue: selectedGender,
-                                onChanged: (value) {
-                                  setState(() {
-                                    setState((){
-                                      selectedGender = value;
-                                    });
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: Container(
-                            width: MediaQuery.of(context).size.width / 1.w,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
-                            child: DropdownButtonFormField<String>(
-                              value: selectedState,
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: pAge,
+                              maxLength: 3,
+                              keyboardType: TextInputType.number,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
-                              style: const TextStyle(fontSize: 10, color: Colors.black87),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
                               decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                border: OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                border: const OutlineInputBorder(),
                                 focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
+                                    borderRadius: BorderRadius.circular(15)
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
+                                    borderRadius: BorderRadius.circular(15)
                                 ),
-                                hintText: 'State',
-                                hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+                                hintText: 'Age',
+                                hintStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
+                                prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
                               ),
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Enter age';
+                              //   }
+                              //   return null;
+                              // }, // Set the validator function
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: pDob,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              readOnly: true,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                border: const OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'DOB',
+                                hintStyle: const TextStyle(
+                                    color: Colors.black54,
+                                    fontFamily: FontType.MontserratRegular,
+                                    fontSize: 14
+                                ),
+                                prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
+                              ),
+                              onTap: () async {
+                                DateTime pickedDate = await showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(1900),
+                                  lastDate: DateTime.now(),
+                                );
+                                if(pickedDate != null ){
+                                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                                  setState(() {
+                                    pDob.text = formattedDate;
+                                  });
+                                }else{}
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: emailId,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                border: const OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'Email id *',
+                                hintStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
+                                prefixIcon: const Icon(Icons.email, color: hsBlack, size: 20),
+                              ),
+                              onChanged: (value) {
+                                if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                  // Password meets all the requirements
+                                } else if (!value.contains('gmail.com')) {
+                                  return 'Email id must contain "gmail.com"';
+                                }else {
+                                  print('Please enter valid email id');
+                                }
+                              },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Select a state';
+                                  return 'Please enter email id';
+                                }
+                                if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                                  return 'email id must contain at least one special character';
                                 }
                                 return null;
                               },
-                              onChanged: (newValue) {
-                                setState(() {
-                                  selectedState = newValue;
-                                });
-                                fetchCityList(selectedState);
-                              },
-                              onTap: selectedCity == null ? fetchStateList : resetCityAndAreaSelection,
-                              items: [
-                                DropdownMenuItem(
-                                  value: '',
-                                  child: Text('Select state'),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: address,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                border: const OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
                                 ),
-                                ...stateList.map((state) => DropdownMenuItem<String>(
-                                  value: state.id?.toString() ?? '',
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width / 3.8,
-                                    child: Text(state.stateName ?? ''),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'Address',
+                                hintStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
+                                prefixIcon: Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
+                              ), // Set the validator function
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: RadioListTile(
+                                    contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                    title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                    value: 'Female',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedGender = value;
+                                      });
+                                    },
                                   ),
-                                )).toList()
+                                ),
+                                Flexible(
+                                  child: RadioListTile(
+                                    contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                    title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                    value: 'Male',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedGender = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                                Flexible(
+                                  child: RadioListTile(
+                                    contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                    title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                                    value: 'Other',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        setState((){
+                                          selectedGender = value;
+                                        });
+                                      });
+                                    },
+                                  ),
+                                ),
                               ],
-                            )
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownButtonFormField<String>(
-                            value: selectedCity,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(fontSize: 10, color: Colors.black87),
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                              border: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              hintText: 'City',
-                              hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a city';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedCity = newValue;
-                                selectedArea = null;
-                                fetchAreaList(selectedState, selectedCity); // Replace with your fetchAreaList logic
-                              });
-                            },
-                            onTap: () {
-                              if (selectedArea == null) {
-                                fetchCityList(selectedState);
-                              } else {
-                                setState(() {
-                                  selectedArea = null;
-                                });
-                                fetchAreaList(selectedState, selectedCity);
-                              }
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                value: '',
-                                child: Text('Select city'),
-                              ),
-                              ...cityList?.map((city) {
-                                return DropdownMenuItem<String>(
-                                  value: city.id.toString(),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width / 4,
-                                    child: Text(city.cityName),
-                                  ),
-                                );
-                              })?.toList() ?? []
-                            ],
                           ),
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownButtonFormField<String>(
-                            value: selectedArea,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            style: const TextStyle(fontSize: 10, color: Colors.black87),
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                              border: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                              ),
-                              hintText: 'Area',
-                              hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select an area';
-                              }
-                              return null;
-                            },
-                            onChanged: (newValue) {
-                              setState(() {
-                                selectedArea = newValue;
-                              });
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                value: '',
-                                child: Text('Select area'),
-                              ),
-                              ... areaList != null
-                                  ? areaList.map((area) {
-                                return DropdownMenuItem<String>(
-                                  value: area.id.toString(),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width / 3.5,
-                                    child: Text(area.areaName),
-                                  ),
-                                );
-                              }).toList() : []
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
 
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.2.w,
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 1.w,
+                              //height: MediaQuery.of(context).size.height / 14.h,
+                              child: DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                                label: "Select state*",
+                                onChanged: (newValue) {
+                                  final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                                  if (selectedStateObject != null) {
+                                    setState(() {
+                                      selectedCity = '';
+                                      selectedArea = '';
+                                      selectedState = newValue;
+                                      selectedStateId = selectedStateObject.id.toString();
+                                    });
+                                    fetchCityList(selectedStateId);
+                                  }
+                                },
+                                selectedItem: selectedState,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a state';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15,),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 1.w,
+                              //height: MediaQuery.of(context).size.height / 14.h,
+                              child: DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                                label: "Select city *",
+                                onChanged: (newValue) {
+                                  final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                                  if (selectedCityObject != null) {
+                                    setState(() {
+                                      selectedCity = '';
+                                      selectedArea = '';
+                                      selectedCity = newValue;
+                                      selectedCityId = selectedCityObject.id.toString();
+                                    });
+                                    fetchAreaList(selectedStateId, selectedCityId);
+                                  }
+                                },
+                                selectedItem: selectedCity,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a city';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 15,),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 1.w,
+                              //height: MediaQuery.of(context).size.height / 14.h,
+                              child: DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                                label: "Select area *",
+                                onChanged: (newValue) {
+                                  final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                                  if (selectedAreaObject != null) {
+                                    setState(() {
+                                      selectedArea = newValue;
+                                      selectedAreaId = selectedAreaObject.id.toString();
+                                    });
+                                  }
+                                },
+                                selectedItem: selectedArea,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a area';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10.h),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                             child: TextFormField(
                               controller: colletionDate,
                               readOnly: true,
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               decoration: InputDecoration(
                                 contentPadding: const EdgeInsets.all(hsPaddingM),
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15),
@@ -569,7 +545,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                hintText: 'Collection date',
+                                hintText: 'Collection date *',
                                 hintStyle: const TextStyle(
                                   color: Colors.black54,
                                   fontFamily: FontType.MontserratRegular,
@@ -577,12 +553,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 ),
                                 prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
                               ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Enter collection date';
-                                }
-                                return null;
-                              },
                               onTap: () async {
                                 DateTime pickedDate = await showDatePicker(
                                   context: context,
@@ -599,281 +569,125 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               },
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width / 2.15.w,
-                            //height: MediaQuery.of(context).size.height / 13.h,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                              child: TextFormField(
-                                controller: pinCode,
-                                keyboardType: TextInputType.number,
-                                autovalidateMode: AutovalidateMode.onUserInteraction,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                ],
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  contentPadding: const EdgeInsets.all(hsPaddingM),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                      borderRadius: BorderRadius.circular(15)
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                      borderRadius: BorderRadius.circular(15)
-                                  ),
-                                  hintText: 'Pin code',
-                                  hintStyle: const TextStyle(
-                                      color: Colors.black54,
-                                      fontFamily: FontType.MontserratRegular,
-                                      fontSize: 14
-                                  ),
-                                  prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: pinCode,
+                              keyboardType: TextInputType.number,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
                                 ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Enter Pin code';
-                                  }
-                                  return null;
-                                },
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'Pin code',
+                                hintStyle: const TextStyle(
+                                    color: Colors.black54,
+                                    fontFamily: FontType.MontserratRegular,
+                                    fontSize: 14
+                                ),
+                                prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
+                              ),
+                              // validator: (value) {
+                              //   if (value == null || value.isEmpty) {
+                              //     return 'Enter pin code';
+                              //   }
+                              //   return null;
+                              // },
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                            child: TextFormField(
+                              controller: remark,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              maxLines: 5,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.all(hsPaddingM),
+                                border: const OutlineInputBorder(),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                hintText: 'Remark',
+                                hintStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
+                                prefixIcon: const Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
                               ),
                             ),
                           ),
+
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                            child: InkWell(
+                              onTap: ()async{
+                                if (_formKey.currentState.validate()) {
+                                  FocusScope.of(context).unfocus();
+                                  if(selectedState == null || selectedCity == null || selectedArea == null){
+                                    SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
+                                  }
+                                  else if(presciptionFile == null){
+                                    SnackBarMessageShow.warningMSG('Please Select Prescription', context);
+                                  }
+                                  else{
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return Dialog(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: const [
+                                                CircularProgressIndicator(),
+                                                SizedBox(height: 16.0),
+                                                Text('Loading...'),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                    await attachPrescription();
+                                  }
+                                }
+                              },
+                              child: Container(
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrescriptionColor),
+                                child: Text("Confirm Booking",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 18.sp,letterSpacing: 1)),
+                              ),
+                            ),
+                          )
                         ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                        child: TextFormField(
-                          controller: remark,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          maxLines: 5,
-                          minLines: 1,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            hintText: 'Remark',
-                            hintStyle: const TextStyle(
-                              color: Colors.black54,
-                              fontFamily: FontType.MontserratRegular,
-                              fontSize: 14,
-                            ),
-                            prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
-                          ),
-
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter remark';
-                            }
-                            return null;
-                          }, // Set the validator function
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                        child: InkWell(
-                          onTap: ()async{
-                            if (_formKey.currentState.validate()) {
-                              FocusScope.of(context).unfocus();
-                              if(selectedState == null || selectedCity == null || selectedArea == null){
-                                SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
-                              }
-                              else if(fileManger == null){
-                                SnackBarMessageShow.warningMSG('Please Select Prescription', context);
-                              }
-                              else{
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: const [
-                                            CircularProgressIndicator(),
-                                            SizedBox(height: 16.0),
-                                            Text('Loading...'),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                                await attachPrescription();
-                              }
-                            }
-                          },
-                          child: Container(
-                            alignment: Alignment.center,
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrescriptionColor),
-                            child: Text("Confirm Booking",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 18.sp,letterSpacing: 1)),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             )
           ],
         ),
       ),
-    );
-  }
-  _showFilePick(BuildContext context){
-    return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0),),),
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState){
-              return BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-                          child: Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 20),),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: () async {
-                                  try {
-                                    final pickedFile = await FilePicker.platform.pickFiles(type: FileType.any);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.files.single.path);
-                                    setState(() {
-                                      fileManger = file;
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: hsOne,
-                                      content: Text('Failed to pick file: ${e.message}', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                    ),);
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text('Unknown error: $e', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //fileOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.file_copy_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("File Manger",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: ()async{
-                                  try {
-                                    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.path);
-                                    setState(() {
-                                      fileManger = file;
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: hsOne,
-                                      content: Text('Failed to pick file: ${e.message}', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                    ),);
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text('Unknown error: $e', style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //cameraOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.camera_alt_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("Camera",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-              );
-            },
-          );
-        }
     );
   }
   List<MobileData> mobileList = [];
@@ -903,9 +717,13 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       emailId.text = pModel.patientData.emailId.toString();
       address.text = pModel.patientData.address.toString();
       selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
-      selectedState = pModel.patientData.state.id.toString();
-      selectedCity = pModel.patientData.city.id.toString();
-      selectedArea = pModel.patientData.area.id.toString();
+      selectedState = pModel.patientData.state.stateName.toString();
+      selectedCity = pModel.patientData.city.cityName.toString();
+      selectedArea = pModel.patientData.area.areaName.toString();
+      selectedStateId = pModel.patientData.state.id.toString();
+      selectedCityId = pModel.patientData.city.id.toString();
+      selectedAreaId = pModel.patientData.area.id.toString();
+
       pinCode.text = pModel.patientData.pincode.toString();
     } catch (e) {
       print('Error: $e');
@@ -913,6 +731,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   }
   List<StateData> stateList = [];
   String selectedState;
+  String selectedStateId;
   Future<void> fetchStateList() async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -927,6 +746,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
   List<CityData> cityList = [];
   String selectedCity;
+  String selectedCityId;
   Future<void> fetchCityList(var sState) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -941,6 +761,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
   List<AreaData> areaList = [];
   String selectedArea;
+  String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -1002,9 +823,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       "gender": '$pGender',
       "date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
-      "state_id": selectedState ?? '',
-      'city_id': selectedCity ?? '',
-      'area_id': selectedArea ?? '',
+      "state_id": selectedStateId ?? '',
+      'city_id': selectedCityId ?? '',
+      'area_id': selectedAreaId ?? '',
       'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
@@ -1017,10 +838,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         request.fields[key] = value.toString();
       });
 
-      if (fileManger != null) {
+      if (presciptionFile != null) {
         var file = http.MultipartFile.fromBytes(
-          'prescription', await fileManger.readAsBytes(),
-          filename: fileManger.path.split('/').last,
+          'prescription', await presciptionFile.readAsBytes(),
+          filename: presciptionFile.path.split('/').last,
         );
         request.files.add(file);
       }
@@ -1038,19 +859,19 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
-      } else if (bodyStatus == 400) {
-        var remarkMsg = parsedResponse['data']['remark'];
-        SnackBarMessageShow.warningMSG('$remarkMsg', context);
-      } else if (bodyStatus == 400) {
-        var errorMessage = parsedResponse['error']['mobile_no'];
+      }else if (bodyStatus == 400) {
+        var errorMessage = parsedResponse['error']['mobile_no'][0];
         SnackBarMessageShow.warningMSG('$errorMessage', context);
+        Navigator.pop(context);
       }
       else {
-        SnackBarMessageShow.errorMSG('Something went wrong', context);
+        SnackBarMessageShow.warningMSG('Something went wrong', context);
+        Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      SnackBarMessageShow.errorMSG('Something wrong', context);
+      //SnackBarMessageShow.errorMSG('Something wrong', context);
+      Navigator.pop(context);
     }
   }
 }

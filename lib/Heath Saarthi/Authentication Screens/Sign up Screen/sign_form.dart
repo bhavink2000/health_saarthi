@@ -6,6 +6,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,9 +41,18 @@ class _SignUpFormState extends State<SignUpForm> {
   File aadharCardFFile;
   File aadharCardBFile;
   File checkFile;
+  File gstFile;
 
+  bool panCardColor = false;
+  bool aadhaarCardFColor = false;
+  bool aadhaarCardBColor = false;
+  bool addressColor = false;
+  bool chequeColor = false;
+  bool gstColor = false;
+  
   final createVendor = TextEditingController();
   final firstNm = TextEditingController();
+  final emailId = TextEditingController();
   final mobile = TextEditingController();
   final address = TextEditingController();
   final seMobile = TextEditingController();
@@ -95,7 +106,7 @@ class _SignUpFormState extends State<SignUpForm> {
   }
   bool isFirstNameFieldTouched = false;
   bool isVendorNameFieldTouched = false;
-  bool _agreedToTOS = true;
+  bool _agreedToTOS = false;
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
@@ -107,29 +118,6 @@ class _SignUpFormState extends State<SignUpForm> {
         key: _formKey,
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-              child: TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.all(hsPaddingM),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                  ),
-                  hintText: '${widget.emailId}',
-                  hintStyle: const TextStyle(
-                    color: Colors.black54,
-                    fontFamily: FontType.MontserratRegular,
-                    fontSize: 14,
-                  ),
-                  prefixIcon: Icon(Icons.email_rounded, color: hsBlack, size: 20),
-                ), // Set the validator function
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: DropdownButtonFormField<String>(
@@ -155,7 +143,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   selectedB2b = newValue;
                 },
                 items: [
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     value: '',
                     child: Text('Select B2B subadmin'),
                   ),
@@ -170,7 +158,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             showTextField(
-                'Full name', firstNm,Icons.person,
+                'Full name *', firstNm,Icons.person,
                     (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter full name';
@@ -178,8 +166,54 @@ class _SignUpFormState extends State<SignUpForm> {
                   return null;
                 }
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+               controller: emailId,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Email id *',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.email_rounded, color: hsBlack, size: 20),
+                ),
+                onChanged: (value) {
+                  if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                    // Password meets all the requirements
+                  } else if (!value.contains('gmail.com')) {
+                    // If the email does not contain 'gmail.com', show an error message
+                    setState(() {
+                      return 'Email id must contain "gmail.com"';
+                    });
+                  }else {
+                    print('Please enter valid email id');
+                  }
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a email';
+                  }
+                  if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                    return 'email id must contain at least one special character';
+                  }
+                  return null;
+                },// Set the validator function
+              ),
+            ),
             showTextField(
-                'Vendor name', createVendor,Icons.person_pin,
+                'Vendor name *', createVendor,Icons.person_pin,
                     (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter vendor name';
@@ -207,7 +241,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Mobile no',
+                  hintText: 'Mobile no *',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
@@ -223,183 +257,142 @@ class _SignUpFormState extends State<SignUpForm> {
                 }, // Set the validator function
               ),
             ),
-            showTextField(
-                'Address', address,Icons.location_city,
-                    (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter address';
-                  }
-                  return null;
-                }
-            ),
             SizedBox(height: space),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.15,
-              child: DropdownButtonFormField<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                value: selectedState,
-                style: const TextStyle(fontSize: 10, color: Colors.black87),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
-                  hintText: 'State',
-                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.w,
+                //height: MediaQuery.of(context).size.height / 14.h,
+                child: DropdownSearch<String>(
+                  mode: Mode.DIALOG,
+                  showSearchBox: true,
+                  showSelectedItem: true,
+                  items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                  label: "Select state*",
+                  onChanged: (newValue) {
+                    final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                    if (selectedStateObject != null) {
+                      setState(() {
+                        selectedCity = '';
+                        selectedArea = '';
+                        selectedBranch = '';
+                        selectedState = newValue;
+                        selectedStateId = selectedStateObject.id.toString();
+                      });
+                      fetchCityList(selectedStateId);
+                    }
+                  },
+                  selectedItem: selectedState,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Select a state';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Select a state';
-                  }
-                  return null;
-                },
-                onChanged: (newValue) {
-                  setState(() {
-                    selectedState = newValue;
-                  });
-                  fetchCityList(selectedState);
-                },
-                onTap: () {
-                  if (selectedCity == null) {
-                    fetchStateList();
-                  } else {
-                    setState(() {
-                      selectedCity = null;
-                      selectedArea = null;
-                      selectedBranch = null;
-                    });
-                    fetchStateList();
-                  }
-                },
-                items: [
-                  DropdownMenuItem(
-                    value: '',
-                    child: Text('Select state'),
-                  ),
-                  ...stateList.map((state) => DropdownMenuItem<String>(
-                    value: state.id?.toString() ?? '',
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 3.8,
-                      child: Text(state.stateName ?? ''),
-                    ),
-                  )).toList()
-                ],
               ),
             ),
             SizedBox(height: space),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.15,
-              child: DropdownButtonFormField<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                value: selectedCity,
-                style: const TextStyle(fontSize: 10,color: Colors.black87),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                  hintText: 'City',
-                  hintStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 12,),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.w,
+                //height: MediaQuery.of(context).size.height / 14.h,
+                child: DropdownSearch<String>(
+                  mode: Mode.DIALOG,
+                  showSearchBox: true,
+                  showSelectedItem: true,
+                  items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                  label: "Select city *",
+                  onChanged: (newValue) {
+                    final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                    if (selectedCityObject != null) {
+                      setState(() {
+                        selectedCity = '';
+                        selectedArea = '';
+                        selectedBranch = '';
+                        selectedCity = newValue;
+                        selectedCityId = selectedCityObject.id.toString();
+                      });
+                      fetchAreaList(selectedStateId, selectedCityId);
+                    }
+                  },
+                  selectedItem: selectedCity,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Select a city';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Select a city';
-                  }
-                  return null;
-                },
-                onChanged: (newValue) {
-                  selectedCity = newValue;
-                  fetchAreaList(selectedState, selectedCity);
-                },
-                onTap: (){
-                  if(selectedArea == null){
-                    fetchCityList(selectedState);
-                  }
-                  else{
-                    setState(() {
-                      selectedArea = null;
-                      selectedBranch = null;
-                    });
-                    fetchAreaList(selectedState, selectedCity);
-                  }
-                },
-                items: [
-                  DropdownMenuItem(
-                    value: '',
-                    child: Text('Select city'),
-                  ),
-                  ...cityList?.map((city) => DropdownMenuItem<String>(
-                    value: city.id.toString() ?? '',
-                    child: Container(
-                        width: MediaQuery.of(context).size.width / 4.w,
-                        child: Text(city.cityName)
-                    ),
-                  ))?.toList() ?? []
-                ],
               ),
             ),
             SizedBox(height: space),
-            Container(
-              width: MediaQuery.of(context).size.width / 1.15,
-              //height: MediaQuery.of(context).size.height / 18,
-              child: DropdownButtonFormField<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                value: selectedArea,
-                style: const TextStyle(fontSize: 10,color: Colors.black87),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                  ),
-                  hintText: 'Area',
-                  hintStyle: const TextStyle(
-                    color: Colors.black54,
-                    fontFamily: FontType.MontserratRegular,
-                    fontSize: 12,
-                  ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.w,
+                //height: MediaQuery.of(context).size.height / 14.h,
+                child: DropdownSearch<String>(
+                  mode: Mode.DIALOG,
+                  showSearchBox: true,
+                  showSelectedItem: true,
+                  items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                  label: "Select area *",
+                  onChanged: (newValue) {
+                    final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                    if (selectedAreaObject != null) {
+                      setState(() {
+                        selectedBranch = '';
+                        selectedArea = newValue;
+                        selectedAreaId = selectedAreaObject.id.toString();
+                        fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                      });
+                    }
+                  },
+                  selectedItem: selectedArea,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Select a area';
+                    }
+                    return null;
+                  },
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Select a area';
-                  }
-                  return null;
-                },
-                onChanged: (newValue) {
-                  selectedArea = newValue;
-                  fetchBranchList(selectedState, selectedCity, selectedArea);
-                },
-                onTap: (){
-                  if(selectedBranch == null){
-                    fetchAreaList(selectedState, selectedCity);
-                  }
-                  else{
-                    setState(() {
-                      selectedBranch = null;
-                    });
-                    fetchBranchList(selectedState, selectedCity,selectedArea);
-                  }
-                },
-                items: [
-                  DropdownMenuItem(
-                    value: '',
-                    child: Text('Select area'),
-                  ),
-                  ...areaList?.map((area) => DropdownMenuItem<String>(
-                    value: area.id.toString() ?? '',
-                    child: Container(
-                        width: MediaQuery.of(context).size.width / 1.5.w,
-                        child: Text(area.areaName)
-                    ),
-                  ))?.toList() ?? []
-                ],
               ),
             ),
+
             SizedBox(height: space),
-            SizedBox(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.w,
+                //height: MediaQuery.of(context).size.height / 14.h,
+                child: DropdownSearch<String>(
+                  mode: Mode.DIALOG,
+                  showSearchBox: true,
+                  showSelectedItem: true,
+                  items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                  label: "Select branch *",
+                  onChanged: (newValue) {
+                    final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                    if (selectedBranchObject != null) {
+                      setState(() {
+                        selectedBranch = newValue;
+                        selectedBranchId = selectedBranchObject.id.toString();
+                      });
+                    }
+                  },
+                  selectedItem: selectedBranch,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Select a branch';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+           /* SizedBox(
               width: MediaQuery.of(context).size.width / 1.15,
               child: DropdownButtonFormField<String>(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -411,7 +404,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   border: const OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                   enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                  hintText: 'Branch',
+                  hintText: 'Select branch *',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
@@ -428,7 +421,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   selectedBranch = newValue;
                 },
                 items: [
-                  DropdownMenuItem(
+                  const DropdownMenuItem(
                     value: '',
                     child: Text('Select branch'),
                   ),
@@ -441,7 +434,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   ))?.toList() ?? []
                 ],
               ),
-            ),
+            ),*/
+
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
               child: DropdownButtonFormField<String>(
@@ -457,7 +452,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Sales executive',
+                  hintText: 'Sales executive *',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
@@ -539,7 +534,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Pincode',
+                  hintText: 'Pincode *',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
@@ -555,228 +550,91 @@ class _SignUpFormState extends State<SignUpForm> {
                 }, // Set the validator function
               ),
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 8,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    shadowColor: hsPrime.withOpacity(0.5),
-                    child: InkWell(
-                      onTap: () {
-                        _showFilePick(context, 'panCard');
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.height / 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            panCardFile == null
-                                ? Icon(
-                              Icons.upload_file_rounded,
-                              color: Colors.black,
-                              size: 30,
-                            )
-                                : const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              panCardFile == null ? "Pan card" : "Pan card picked",
-                              style: TextStyle(
-                                fontFamily: FontType.MontserratRegular,
-                                color: Colors.black87,
-                                fontSize: panCardFile == null ? 14 : 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
 
-                  ),
-                  Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    shadowColor: hsPrime.withOpacity(0.5),
-                    child: InkWell(
-                      onTap: () {
-                        _showFilePick(context, 'address');
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.height / 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            addressFile == null
-                                ? Icon(
-                              Icons.upload_file_rounded,
-                              color: Colors.black,
-                              size: 30,
-                            )
-                                : const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              addressFile == null ? "Address proof" : "Address proof picked",
-                              style: TextStyle(
-                                fontFamily: FontType.MontserratRegular,
-                                color: Colors.black87,
-                                fontSize: addressFile == null ? 14 : 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 8,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //height: MediaQuery.of(context).size.height / 5,
+              //color: Colors.green,
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              child: Column(
                 children: [
                   Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    shadowColor: hsPrime.withOpacity(0.5),
-                    child: InkWell(
-                      onTap: () {
-                        _showFilePick(context, 'aadhaarF');
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.height / 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            aadharCardFFile == null
-                                ? Icon(
-                              Icons.upload_file_rounded,
-                              color: Colors.black,
-                              size: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        children: [
+                          aadharCardFFile == null
+                            ? Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                            : Container(
+                              width: 100,height: 50,
+                              child: Image.file(File(aadharCardFFile.path), fit: BoxFit.cover)
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: ()async {
+                              var aadhaarCardFront = await FileImagePicker().pickFileManger(context);
+                              setState(() {
+                                aadharCardFFile = aadhaarCardFront;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.file_copy_rounded
                             )
-                                : const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              aadharCardFFile == null ? "Aadhaar card front" : "Aadhaar card front picked",
-                              style: TextStyle(
-                                fontFamily: FontType.MontserratRegular,
-                                color: Colors.black87,
-                                fontSize: aadharCardFFile == null ? 14 : 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            onPressed: () async{
+                              var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                aadharCardFFile = aadhaarCardFrontCamera;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.camera
+                            )
+                          ),
+                        ],
                       ),
                     ),
                   ),
                   Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    shadowColor: hsPrime.withOpacity(0.5),
-                    child: InkWell(
-                      onTap: () {
-                        _showFilePick(context, 'aadhaarB');
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.height / 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            aadharCardBFile == null
-                                ? Icon(
-                              Icons.upload_file_rounded,
-                              color: Colors.black,
-                              size: 30,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        children: [
+                          aadharCardBFile == null
+                            ? Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                            : Container(
+                              width: 100,height: 50,
+                              child: Image.file(File(aadharCardBFile.path), fit: BoxFit.cover)
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: ()async {
+                              var aadhaarCardBack = await FileImagePicker().pickFileManger(context);
+                              setState(() {
+                                aadharCardBFile = aadhaarCardBack;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.file_copy_rounded
                             )
-                                : const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              aadharCardBFile == null ? "Aadhaar card back" : "Aadhaar card back picked",
-                              style: TextStyle(
-                                fontFamily: FontType.MontserratRegular,
-                                color: Colors.black87,
-                                fontSize: aadharCardBFile == null ? 14 : 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 8,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Card(
-                    elevation: 5,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    shadowColor: hsPrime.withOpacity(0.5),
-                    child: InkWell(
-                      onTap: () {
-                        _showFilePick(context, 'checkFile');
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        height: MediaQuery.of(context).size.height / 10,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            checkFile == null
-                                ? Icon(
-                              Icons.upload_file_rounded,
-                              color: Colors.black,
-                              size: 30,
+                          ),
+                          IconButton(
+                            onPressed: ()async{
+                              var aadhaarCardBackCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                aadharCardBFile = aadhaarCardBackCamera;
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.camera
                             )
-                                : const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 30,
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              checkFile == null ? "Cheque photo" : "Cheque picked",
-                              style: TextStyle(
-                                fontFamily: FontType.MontserratRegular,
-                                color: Colors.black87,
-                                fontSize: checkFile == null ? 14 : 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -786,10 +644,10 @@ class _SignUpFormState extends State<SignUpForm> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
+                controller: address,
+                minLines: 1,
+                maxLines: 4,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: panCardNo,
-                keyboardType: TextInputType.emailAddress,
-                textCapitalization: TextCapitalization.characters,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
                   border: const OutlineInputBorder(),
@@ -799,14 +657,89 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Pancard number',
+                  hintText: 'Address *',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                   ),
-                  prefixIcon: const Icon(Icons.numbers_rounded, color: hsBlack, size: 20),
+                  prefixIcon: const Icon(Icons.location_city, color: hsBlack, size: 20),
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter address';
+                  }
+                  return null;
+                }, // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: [
+                      addressFile == null
+                          ? Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          : Container(
+                          width: 100,height: 50,
+                          child: Image.file(File(addressFile.path), fit: BoxFit.cover)
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: ()async {
+                            var addressProof = await FileImagePicker().pickFileManger(context);
+                            setState(() {
+                              addressFile = addressProof;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.file_copy_rounded
+                          )
+                      ),
+                      IconButton(
+                          onPressed: () async{
+                            var addressProofCamera = await FileImagePicker().pickCamera(context);
+                            setState(() {
+                              addressFile = addressProofCamera;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.camera
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: panCardNo,
+                  keyboardType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.characters,
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.all(hsPaddingM),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    ),
+                    hintText: 'Pancard number *',
+                    hintStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(Icons.numbers_rounded, color: hsBlack, size: 20),
+                  ),
                   // onChanged: (value){
                   //   if (value.length < 11) {
                   //     print('Pancard length is less than 10 characters.');
@@ -821,6 +754,49 @@ class _SignUpFormState extends State<SignUpForm> {
                     }
                     return null;
                   } // Set the validator function
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: [
+                      panCardFile == null
+                          ? Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          : Container(
+                          width: 100,height: 50,
+                          child: Image.file(File(panCardFile.path), fit: BoxFit.cover)
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: ()async {
+                            var panCardFileManger = await FileImagePicker().pickFileManger(context);
+                            setState(() {
+                              panCardFile = panCardFileManger;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.file_copy_rounded
+                          )
+                      ),
+                      IconButton(
+                          onPressed: () async{
+                            var panCardCamera = await FileImagePicker().pickCamera(context);
+                            setState(() {
+                              panCardFile = panCardCamera;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.camera
+                          )
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -847,19 +823,62 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.confirmation_number_rounded, color: hsBlack, size: 20),
                 ),
-                  // onChanged: (value){
-                  //   if (value.length < 16) {
-                  //     print('GST number length is less than 15 characters.');
-                  //   }
-                  //   if (!value.contains(RegExp(r'[0-9]'))) {
-                  //     print('GST does not contain a digit.');
-                  //   }
-                  // },
+                // onChanged: (value){
+                //   if (value.length < 16) {
+                //     print('GST number length is less than 15 characters.');
+                //   }
+                //   if (!value.contains(RegExp(r'[0-9]'))) {
+                //     print('GST does not contain a digit.');
+                //   }
+                // },
                 // Set the validator function
               ),
             ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: [
+                      gstFile == null
+                          ? Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          : Container(
+                          width: 100,height: 50,
+                          child: Image.file(File(gstFile.path), fit: BoxFit.cover)
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: ()async {
+                            var gstFileManger = await FileImagePicker().pickFileManger(context);
+                            setState(() {
+                              gstFile = gstFileManger;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.file_copy_rounded
+                          )
+                      ),
+                      IconButton(
+                          onPressed: () async{
+                            var gstFileCamera = await FileImagePicker().pickCamera(context);
+                            setState(() {
+                              gstFile = gstFileCamera;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.camera
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             showTextField(
-                'Bank name', bankName,Icons.account_balance_rounded,
+                'Bank name *', bankName,Icons.account_balance_rounded,
                     (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter bank name';
@@ -870,7 +889,7 @@ class _SignUpFormState extends State<SignUpForm> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: ifscCode,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.characters,
@@ -883,7 +902,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'IFSC code',
+                    hintText: 'IFSC code *',
                     hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
@@ -908,6 +927,50 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             Padding(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    children: [
+                      checkFile == null
+                          ? Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          : Container(
+                          width: 100,height: 50,
+                          child: Image.file(File(checkFile.path), fit: BoxFit.cover)
+                      ),
+                      const Spacer(),
+                      IconButton(
+                          onPressed: ()async {
+                            var chequeFileManger = await FileImagePicker().pickFileManger(context);
+                            setState(() {
+                              checkFile = chequeFileManger;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.file_copy_rounded
+                          )
+                      ),
+                      IconButton(
+                          onPressed: () async{
+                            var chequeFileCamera = await FileImagePicker().pickCamera(context);
+                            setState(() {
+                              checkFile = chequeFileCamera;
+                            });
+                          },
+                          icon: const Icon(
+                              Icons.camera
+                          )
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+
+            Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -922,7 +985,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'Account number',
+                    hintText: 'Account number *',
                     hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
@@ -953,7 +1016,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Password',
+                  hintText: 'Password *',
                   hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
@@ -1012,7 +1075,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Confirm password',
+                  hintText: 'Confirm password *',
                   hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
@@ -1052,6 +1115,9 @@ class _SignUpFormState extends State<SignUpForm> {
                   if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                     return 'Password must contain at least one special character';
                   }
+                  if (value != password.text) {
+                    return 'Passwords do not match';
+                  }
                   return null;
                 },
               ),
@@ -1068,7 +1134,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   GestureDetector(
                     onTap: () => _setAgreedToTOS(!_agreedToTOS),
                     child: const Text(
-                      'I agree to the Terms of Condition and Privacy Policy',
+                      'I agree to the Terms of Condition and \nPrivacy Policy',
                     ),
                   ),
                 ],
@@ -1078,67 +1144,28 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: InkWell(
                 onTap: ()async{
-                  if(_agreedToTOS == false){
-                    SnackBarMessageShow.warningMSG('Please select term & condition', context);
-                  }
-                  else{
-                    if (_formKey.currentState.validate()) {
-                      FocusScope.of(context).unfocus();
-                      if(selectedState == null || selectedCity == null || selectedArea == null){
-                        SnackBarMessageShow.warningMSG("Please select location fields", context);
-                      }
-                      else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null || checkFile == null){
-                        SnackBarMessageShow.warningMSG("Please select documents", context);
-                      }
-                      else{
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (BuildContext context) {
-                            return Dialog(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: const [
-                                    CircularProgressIndicator(),
-                                    SizedBox(height: 16.0),
-                                    Text('Loading...'),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                        await signUpData();
-                        //Navigator.pop(context);
-                      }
-                    }
-                  }
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsBlack),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    "Create an account",
-                    style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontSize: 16),
-                  ),
-                ),
-              ),
-              /*child: CustomButton(
-                color: hsBlack,
-                textColor: hsWhite,
-                text: 'Create an account',
-                onPressed: () async{
                   if (_formKey.currentState.validate()) {
                     FocusScope.of(context).unfocus();
                     if(selectedState == null || selectedCity == null || selectedArea == null){
-                      SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
+                      SnackBarMessageShow.warningMSG("Please select location fields", context);
                     }
-                    else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null){
-                      SnackBarMessageShow.warningMSG("Please Select Documents", context);
+                    else if(panCardFile == null){
+                      SnackBarMessageShow.warningMSG("Please select pancard", context);
+                    }
+                    else if(addressFile == null){
+                      SnackBarMessageShow.warningMSG("Please select address proof", context);
+                    }
+                    else if(aadharCardFFile == null){
+                      SnackBarMessageShow.warningMSG("Please select aadhaar card front", context);
+                    }
+                    else if(aadharCardBFile == null){
+                      SnackBarMessageShow.warningMSG("Please select aadhaar card back", context);
+                    }
+                    else if(checkFile == null){
+                      SnackBarMessageShow.warningMSG("Please select cheque img", context);
+                    }
+                    else if(_agreedToTOS == false){
+                      SnackBarMessageShow.warningMSG('Please select term & condition', context);
                     }
                     else{
                       showDialog(
@@ -1164,8 +1191,55 @@ class _SignUpFormState extends State<SignUpForm> {
                       //Navigator.pop(context);
                     }
                   }
+                  // if(_agreedToTOS == false){
+                  //   SnackBarMessageShow.warningMSG('Please select term & condition', context);
+                  // }
+                  // else{
+                  //   if (_formKey.currentState.validate()) {
+                  //     FocusScope.of(context).unfocus();
+                  //     if(selectedState == null || selectedCity == null || selectedArea == null){
+                  //       SnackBarMessageShow.warningMSG("Please select location fields", context);
+                  //     }
+                  //     else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null || checkFile == null || gstFile == null){
+                  //       SnackBarMessageShow.warningMSG("Please select documents", context);
+                  //     }
+                  //     else{
+                  //       showDialog(
+                  //         context: context,
+                  //         barrierDismissible: false,
+                  //         builder: (BuildContext context) {
+                  //           return Dialog(
+                  //             child: Padding(
+                  //               padding: const EdgeInsets.all(16.0),
+                  //               child: Column(
+                  //                 mainAxisSize: MainAxisSize.min,
+                  //                 children: const [
+                  //                   CircularProgressIndicator(),
+                  //                   SizedBox(height: 16.0),
+                  //                   Text('Loading...'),
+                  //                 ],
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       );
+                  //       await signUpData();
+                  //       //Navigator.pop(context);
+                  //     }
+                  //   }
+                  // }
                 },
-              ),*/
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsBlack),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    "Create an account",
+                    style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontSize: 16),
+                  ),
+                ),
+              ),
             ),
             SizedBox(height: space),
           ],
@@ -1206,213 +1280,183 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  _showFilePick(BuildContext context,var type){
-    return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0),),),
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState){
-              return BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-                          child: Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 20),),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: () async {
-                                  try {
-                                    final pickedFile = await FilePicker.platform.pickFiles(type: FileType.any);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.files.single.path);
-                                    setState(() {
-                                      switch (type) {
-                                        case 'panCard':
-                                          panCardFile = file;
-                                          break;
-                                        case 'address':
-                                          addressFile = file;
-                                          break;
-                                        case 'aadhaarF':
-                                          aadharCardFFile = file;
-                                          break;
-                                        case 'checkFile':
-                                          checkFile = file;
-                                          break;
-                                        default:
-                                          aadharCardBFile = file;
-                                          break;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Failed to pick file: ${e.message}',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Unknown error: $e',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //fileOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.file_copy_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("File Manger",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: () async {
-                                  try {
-                                    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.path);
-                                    setState(() {
-                                      switch (type) {
-                                        case 'panCard':
-                                          panCardFile = file;
-                                          break;
-                                        case 'address':
-                                          addressFile = file;
-                                          break;
-                                        case 'aadhaarF':
-                                          aadharCardFFile = file;
-                                          break;
-                                        case 'checkFile':
-                                          checkFile = file;
-                                          break;
-                                        default:
-                                          aadharCardBFile = file;
-                                          break;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Failed to pick file: ${e.message}',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Unknown error: $e',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //cameraOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.camera_alt_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("Camera",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-              );
-            },
-          );
+  void signUpData() async {
+    var url = ApiUrls.signUpUrl;
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+
+      request.fields["name"] = firstNm.text;
+      request.fields["email_id"] = emailId.text;
+      request.fields["password"] = password.text;
+      request.fields["mobile"] = mobile.text;
+      request.fields["vendor_name"] = createVendor.text;
+      request.fields["state_id"] = selectedStateId;
+      request.fields["city_id"] = selectedCityId;
+      request.fields["area_id"] = selectedAreaId;
+      request.fields["cost_center_id"] = selectedBranchId;
+      request.fields["address"] = address.text;
+      request.fields["pincode"] = pincode.text;
+      request.fields["pancard_number"] = panCardNo.text;
+      request.fields["sales_executive_admin_id"] = selectedSales ?? '';
+      request.fields["b2b_subadmin_id"] = selectedB2b ?? '';
+      request.fields["bank_name"] = bankName.text ?? '';
+      request.fields["ifsc"] = ifscCode.text ?? '';
+      request.fields["account_number"] = accountNo.text ?? '';
+      request.fields["gst_number"] = gstNo.text ?? '';
+
+      if (panCardFile != null) {
+        request.files.add(http.MultipartFile('pancard', panCardFile.readAsBytes().asStream(), panCardFile.lengthSync(), filename: 'pancard.jpg'));
+      }
+      if (addressFile != null) {
+        request.files.add(http.MultipartFile('address_proof', addressFile.readAsBytes().asStream(), addressFile.lengthSync(), filename: 'address_proof.jpg'));
+      }
+      if(aadharCardFFile != null){
+        request.files.add(http.MultipartFile('aadhar_front', aadharCardFFile.readAsBytes().asStream(), aadharCardFFile.lengthSync(), filename: 'aadhar_front.jpg'));
+      }
+      if(aadharCardBFile != null){
+        request.files.add(http.MultipartFile('aadhar_back', aadharCardBFile.readAsBytes().asStream(), aadharCardBFile.lengthSync(), filename: 'aadhar_back.jpg'));
+      }
+      if(checkFile != null){
+        request.files.add(http.MultipartFile('cheque_image', checkFile.readAsBytes().asStream(), checkFile.lengthSync(), filename: 'cheque_image.jpg'));
+      }
+      if(gstFile != null){
+        request.files.add(http.MultipartFile('gst_image', gstFile.readAsBytes().asStream(), gstFile.lengthSync(), filename: 'gst_image.jpg'));
+      }
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      final jsonData = jsonDecode(response.body);
+      print("sign jsonData-> $jsonData");
+      if (response.statusCode == 200) {
+        var bodyMSG = jsonData['message'];
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else if (response.statusCode == 400) {
+        var errorData = jsonData;
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['sales_executive_admin_id'] != null) {
+          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        }else if (errorData['error']['password'] != null) {
+          var errorMessage = errorData['error']['password'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
         }
-    );
+        else {
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+          Navigator.pop(context);
+        }
+        Navigator.pop(context);
+      } else {
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error -> ${e.toString()}');
+      Navigator.pop(context);
+    }
   }
 
-  void signUpData() async {
+  /*void signUpData() async {
+    var url = ApiUrls.signUpUrl;
+    try {
+      Map<String, String> headers = {"Content-type": "multipart/form-data"};
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
+
+      Map<String, dynamic> formData = {
+        "name": firstNm.text,
+        "email_id": emailId.text,
+        "password": password.text,
+        "mobile": mobile.text,
+        "vendor_name": createVendor.text,
+        "state_id": selectedStateId,
+        "city_id": selectedCityId,
+        "area_id": selectedAreaId,
+        "cost_center_id": selectedBranchId,
+        "address": address.text,
+        "pincode": pincode.text,
+        "pancard_number": panCardNo.text,
+        "sales_executive_admin_id": selectedSales ?? '',
+        "b2b_subadmin_id": selectedB2b ?? '',
+        "bank_name": bankName.text ?? '',
+        "ifsc": ifscCode.text ?? '',
+        "account_number": accountNo.text ?? '',
+        "gst_number": gstNo.text ?? '',
+      };
+
+      // Add files to the request if they are not null
+      if (panCardFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('pancard', panCardFile.path));
+      }
+      if (addressFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('address_proof', addressFile.path));
+      }
+      if (aadharCardFFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('aadhar_front', aadharCardFFile.path));
+      }
+      if (aadharCardBFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('aadhar_back', aadharCardBFile.path));
+      }
+      if (checkFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('cheque_image', checkFile.path));
+      }
+      if (gstFile != null) {
+        request.files.add(await http.MultipartFile.fromPath('gst_image', gstFile.path));
+      }
+
+      request.fields.addAll(formData);
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      final jsonData = jsonDecode(response.body);
+      print("sign jsonData-> $jsonData");
+      if (response.statusCode == 200) {
+        var bodyMSG = jsonData['message'];
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else if (response.statusCode == 400) {
+        var errorData = jsonData;
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['sales_executive_admin_id'] != null) {
+          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else {
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+        }
+        Navigator.pop(context);
+      } else {
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error -> ${e.toString()}');
+      Navigator.pop(context);
+    }
+  }*/
+
+  /*void signUpData() async {
     var url = ApiUrls.signUpUrl;
     try {
       FormData formData = FormData.fromMap({
         "name": firstNm.text,
-        "email_id": widget.emailId,
+        "email_id": emailId.text,
         "password": password.text,
         "mobile": mobile.text,
         "vendor_name": createVendor.text,
-        "state_id": selectedState,
-        'city_id': selectedCity,
-        'area_id': selectedArea,
-        'cost_center_id': selectedBranch,
+        "state_id": selectedStateId,
+        'city_id': selectedCityId,
+        'area_id': selectedAreaId,
+        'cost_center_id': selectedBranchId,
         'address': address.text,
         'pincode': pincode.text,
         'pancard': await MultipartFile.fromFile(panCardFile.path),
@@ -1421,6 +1465,7 @@ class _SignUpFormState extends State<SignUpForm> {
         'aadhar_front': await MultipartFile.fromFile(aadharCardFFile.path),
         'aadhar_back': await MultipartFile.fromFile(aadharCardBFile.path),
         'cheque_image': await MultipartFile.fromFile(checkFile.path),
+        'gst_image': await MultipartFile.fromFile(gstFile.path),
         'sales_executive_admin_id': selectedSales ?? '',
         'b2b_subadmin_id': selectedB2b ?? '',
         'bank_name': bankName.text ?? '',
@@ -1431,7 +1476,7 @@ class _SignUpFormState extends State<SignUpForm> {
       print('Form -> ${formData.fields}');
 
       var dio = Dio();
-      dio.interceptors.add(LogInterceptor(responseBody: true)); // Enable detailed logging
+      dio.interceptors.add(LogInterceptor(responseBody: true));
 
       var response = await dio.post(url, data: formData);
       print("Sign Response ->$response");
@@ -1442,42 +1487,101 @@ class _SignUpFormState extends State<SignUpForm> {
       if (jsonData['status'] == 200) {
         print("in if->${jsonData['status']} / ${jsonData['message']}");
         var bodyMSG = jsonData['message'];
-          SnackBarMessageShow.successsMSG('$bodyMSG', context);
-          Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => LoginScreen()),
-          );
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
       } else if (jsonData['status'] == 400) {
         var errorData = response.data;
-        var errorMessages = [];
-        errorData['error'].forEach((field, messages) {
-          messages.forEach((message) {
-            errorMessages.add("$field: $message");
-          });
-        });
-        var errorMessage = errorMessages.join("\n");
-        SnackBarMessageShow.warningMSG(errorMessage, context);
-      }
-      else if (jsonData['status'] == 400) {
-        var errorData = response.data;
-        var errorMessage = errorData['error']['email_id'][0];
-        SnackBarMessageShow.warningMSG(errorMessage, context);
-      }
-      else if (jsonData['status'] == 400) {
-        var errorData = response.data;
-        var errorMessage = errorData['error']['sales_executive_admin_id'][0];
-        SnackBarMessageShow.warningMSG(errorMessage, context);
-      }
-      else {
-        SnackBarMessageShow.errorMSG('Faild to load data', context);
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['sales_executive_admin_id'] != null) {
+          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else {
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+        }
+        Navigator.pop(context);
+      } else {
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
       }
     } catch (e) {
       print('Error -> ${e.toString()}');
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      Navigator.pop(context);
     }
-  }
+  }*/
+  /*void signUpData() async {
+    var url = ApiUrls.signUpUrl;
+    try {
+      Map<String, String> headers = {"Content-type": "multipart/form-data"};
+      var request = http.MultipartRequest('POST', Uri.parse(url));
+      request.headers.addAll(headers);
 
+      request.fields["name"] = firstNm.text;
+      request.fields["email_id"] = emailId.text;
+      request.fields["password"] = password.text;
+      request.fields["mobile"] = mobile.text;
+      request.fields["vendor_name"] = createVendor.text;
+      request.fields["state_id"] = selectedStateId;
+      request.fields["city_id"] = selectedCityId;
+      request.fields["area_id"] = selectedAreaId;
+      request.fields["cost_center_id"] = selectedBranchId;
+      request.fields["address"] = address.text;
+      request.fields["pincode"] = pincode.text;
+      request.fields["pancard_number"] = panCardNo.text;
+      request.fields["sales_executive_admin_id"] = selectedSales ?? '';
+      request.fields["b2b_subadmin_id"] = selectedB2b ?? '';
+      request.fields["bank_name"] = bankName.text ?? '';
+      request.fields["ifsc"] = ifscCode.text ?? '';
+      request.fields["account_number"] = accountNo.text ?? '';
+      request.fields["gst_number"] = gstNo.text ?? '';
+
+      // Add files as multipart
+      request.files.add(await http.MultipartFile.fromPath('pancard', panCardFile.path));
+      request.files.add(await http.MultipartFile.fromPath('address_proof', addressFile.path));
+      request.files.add(await http.MultipartFile.fromPath('aadhar_front', aadharCardFFile.path));
+      request.files.add(await http.MultipartFile.fromPath('aadhar_back', aadharCardBFile.path));
+      request.files.add(await http.MultipartFile.fromPath('cheque_image', checkFile.path));
+      request.files.add(await http.MultipartFile.fromPath('gst_image', gstFile.path));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      final jsonData = jsonDecode(response.body);
+      print("sign jsonData-> $jsonData");
+      if (response.statusCode == 200) {
+        var bodyMSG = jsonData['message'];
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      } else if (response.statusCode == 400) {
+        var errorData = jsonData;
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['sales_executive_admin_id'] != null) {
+          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else {
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+        }
+        Navigator.pop(context);
+      } else {
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error -> ${e.toString()}');
+      Navigator.pop(context);
+    }
+  }*/
   List<StateData> stateList = [];
   String selectedState;
+  String selectedStateId;
   Future<void> fetchStateList() async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -1492,6 +1596,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   List<CityData> cityList = [];
   String selectedCity;
+  String selectedCityId;
   Future<void> fetchCityList(var sState) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -1506,6 +1611,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   List<AreaData> areaList = [];
   String selectedArea;
+  String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -1520,6 +1626,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   List<BranchData> branchList = [];
   String selectedBranch;
+  String selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
     try {
       LocationFuture locationFuture = LocationFuture();
@@ -1544,6 +1651,7 @@ class _SignUpFormState extends State<SignUpForm> {
         },
       );
       if (response.statusCode == 200) {
+
         final data = json.decode(response.body);
         setState(() {
           b2bSubAdminList = data['data']['b2b_subadmins'];

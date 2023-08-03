@@ -8,51 +8,73 @@ import '../../Frontend Helper/Loading Helper/loading_indicator.dart';
 import '../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class DeviceInfo{
-  Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
-    var returnToken;
-    var dType = deviceType == 'Android' ? 0 : 1;
+  // Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
+  //   var returnToken;
+  //   var dType = deviceType == 'Android' ? 0 : 1;
+  //
+  //   Completer<String> completer = Completer<String>();
+  //
+  //   Map<String, String> headers = {
+  //     'Accept': 'application/json',
+  //     'Authorization': 'Bearer $accessToken',
+  //   };
+  //   await http.post(
+  //       Uri.parse(ApiUrls.addDeviceUrl),
+  //       headers: headers,
+  //       body: {
+  //     'device_token': deviceToken ?? '',
+  //     'device_type': dType.toString() ?? '',
+  //     'app_version': '0.5' ?? '',
+  //   }).then((response) {
+  //     print("Device Token Response -> ${response.body}");
+  //     var data = json.decode(response.body);
+  //     if (data['status'] == 200) {
+  //       returnToken = data['data']['device_token'];
+  //       LoadingIndicater().onLoadExit(false, context);
+  //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
+  //     } else if (data['status'] == 400) {
+  //       var errorMsg = data['error']['device_token'];
+  //       print("Error msg->$errorMsg");
+  //       returnToken = data['error']['device_token'];
+  //       LoadingIndicater().onLoadExit(false, context);
+  //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
+  //     } else {
+  //       var data = json.decode(response.body);
+  //       if (data['status'] == 400) {
+  //         var errorMsg = data['error']['device_token'];
+  //         print("Error->$errorMsg");
+  //         LoadingIndicater().onLoadExit(false, context);
+  //         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
+  //       }
+  //       returnToken = data['error']['device_token'];
+  //     }
+  //     completer.complete(returnToken);
+  //   });
+  //   return completer.future;
+  // }
 
-    Completer<String> completer = Completer<String>();
+
+  Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType) async {
+    var dType = deviceType == 'Android' ? 0 : 1;
 
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
     };
-    await http.post(
-        Uri.parse(ApiUrls.addDeviceUrl),
-        headers: headers,
-        body: {
-      'device_token': deviceToken ?? '',
-      'device_type': dType.toString() ?? '',
-      'app_version': '1' ?? '',
-    }).then((response) {
-      print("Device Token Response -> ${response.body}");
-      var data = json.decode(response.body);
-      if (data['status'] == 200) {
-        returnToken = data['data']['device_token'];
-        LoadingIndicater().onLoadExit(false, context);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-      } else if (data['status'] == 400) {
-        var errorMsg = data['error']['device_token'];
-        print("Error msg->$errorMsg");
-        returnToken = data['error']['device_token'];
-        LoadingIndicater().onLoadExit(false, context);
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-      } else {
-        var data = json.decode(response.body);
-        if (data['status'] == 400) {
-          var errorMsg = data['error']['device_token'];
-          print("Error->$errorMsg");
-          LoadingIndicater().onLoadExit(false, context);
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-        }
-        returnToken = data['error']['device_token'];
-      }
-      completer.complete(returnToken);
-    });
-    return completer.future;
-  }
 
+    var response = await http.post(
+      Uri.parse(ApiUrls.addDeviceUrl),
+      headers: headers,
+      body: {
+        'device_token': deviceToken ?? '',
+        'device_type': dType.toString() ?? '',
+        'app_version': '0.5' ?? '',
+      },
+    );
+
+    print("Device Token Response -> ${response.body}");
+
+    return response.body;
+  }
   Future<String> deleteDeviceToken(BuildContext context, deviceToken,accessToken) async {
     print("Delete Device Token->$deviceToken");
 

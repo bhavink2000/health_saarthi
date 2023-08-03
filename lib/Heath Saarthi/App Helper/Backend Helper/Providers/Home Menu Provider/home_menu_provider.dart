@@ -26,7 +26,8 @@ class HomeMenusProvider with ChangeNotifier{
       setTestResponse(ApiResponseType.complate(value));
     }).onError((error, stackTrace){
       setTestResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
+      print("fetch Test onError->$error");
+      print("fetch Test stackTrace->$stackTrace");
     });
   }
 
@@ -41,7 +42,8 @@ class HomeMenusProvider with ChangeNotifier{
       setPackageResponse(ApiResponseType.complate(value));
     }).onError((error, stackTrace){
       setPackageResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
+      print("fetch Package onError->$error");
+      print("fetch Package stackTrace->$stackTrace");
     });
   }
 

@@ -47,6 +47,9 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
     }on SocketMessage{
       throw FetchDataException(message: "");
     }
+    catch(e){
+      print("after Get Api Response->$e");
+    }
     return responseJson;
   }
 
@@ -65,6 +68,8 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException(message: "");
+    }catch(e){
+      print("after Post Api Response->$e");
     }
     return responseJson;
   }

@@ -59,6 +59,7 @@ class Data {
   String? aadharFrontImg;
   String? aadharBackImg;
   String? chequeImg;
+  String? gstImg;
   String? encPharmacyId;
   String? encUserId;
   String? createAt;
@@ -106,6 +107,7 @@ class Data {
         this.aadharFrontImg,
         this.aadharBackImg,
         this.chequeImg,
+        this.gstImg,
         this.encPharmacyId,
         this.encUserId,
         this.createAt,
@@ -153,6 +155,7 @@ class Data {
     aadharFrontImg = json['aadhar_front_img'];
     aadharBackImg = json['aadhar_back_img'];
     chequeImg = json['cheque_img'];
+    gstImg = json['gst_img'];
     encPharmacyId = json['enc_pharmacy_id'];
     encUserId = json['enc_user_id'];
     createAt = json['create_at'];
@@ -202,6 +205,7 @@ class Data {
     data['aadhar_front_img'] = this.aadharFrontImg;
     data['aadhar_back_img'] = this.aadharBackImg;
     data['cheque_img'] = this.chequeImg;
+    data['gst_img'] = this.gstImg;
     data['enc_pharmacy_id'] = this.encPharmacyId;
     data['enc_user_id'] = this.encUserId;
     data['create_at'] = this.createAt;

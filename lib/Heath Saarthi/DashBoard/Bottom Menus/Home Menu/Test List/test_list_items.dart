@@ -1,10 +1,7 @@
 //@dart=2.9
 // ignore_for_file: prefer_typing_uninitialized_variables, missing_return, use_build_context_synchronously, unrelated_type_equality_checks
 
-import 'dart:convert';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/login_error_helper.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -246,7 +243,9 @@ class _TestListItemsState extends State<TestListItems> {
                                                                         child: Container(
                                                                           decoration: BoxDecoration(borderRadius: const BorderRadius.only(
                                                                               bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
-                                                                          ),color: hsTestColor),
+                                                                          ),
+                                                                           color: testI.bookedStatus == 1 ? hsTestColor.withOpacity(0.2): hsTestColor
+                                                                          ),
                                                                           padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                                                                           child: Text(
                                                                             testI.bookedStatus == 1 ? "Booked" :"+ Book Now",

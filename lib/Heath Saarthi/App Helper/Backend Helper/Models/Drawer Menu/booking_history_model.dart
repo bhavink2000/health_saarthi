@@ -50,6 +50,7 @@ class BookingItems {
   String? grossAmount;
   String? netAmount;
   String? pharmacyDiscountAmount;
+  String? createdAt;
   String? encBookingDetailId;
   String? createAt;
   PharmacyPatient? pharmacyPatient;
@@ -61,6 +62,7 @@ class BookingItems {
         this.grossAmount,
         this.netAmount,
         this.pharmacyDiscountAmount,
+        this.createdAt,
         this.encBookingDetailId,
         this.createAt,
         this.pharmacyPatient});
@@ -72,6 +74,7 @@ class BookingItems {
     grossAmount = json['gross_amount'];
     netAmount = json['net_amount'];
     pharmacyDiscountAmount = json['pharmacy_discount_amount'];
+    createdAt = json['created_at'];
     encBookingDetailId = json['enc_booking_detail_id'];
     createAt = json['create_at'];
     pharmacyPatient = json['pharmacy_patient'] != null
@@ -87,6 +90,7 @@ class BookingItems {
     data['gross_amount'] = this.grossAmount;
     data['net_amount'] = this.netAmount;
     data['pharmacy_discount_amount'] = this.pharmacyDiscountAmount;
+    data['created_at'] = this.createdAt;
     data['enc_booking_detail_id'] = this.encBookingDetailId;
     data['create_at'] = this.createAt;
     if (this.pharmacyPatient != null) {
@@ -100,6 +104,7 @@ class PharmacyPatient {
   int? id;
   String? name;
   String? mobileNo;
+  String? createdAt;
   String? encPharmacyPatientId;
   String? createAt;
 
@@ -107,6 +112,7 @@ class PharmacyPatient {
       {this.id,
         this.name,
         this.mobileNo,
+        this.createdAt,
         this.encPharmacyPatientId,
         this.createAt});
 
@@ -114,6 +120,7 @@ class PharmacyPatient {
     id = json['id'];
     name = json['name'];
     mobileNo = json['mobile_no'];
+    createdAt = json['created_at'];
     encPharmacyPatientId = json['enc_pharmacy_patient_id'];
     createAt = json['create_at'];
   }
@@ -123,6 +130,7 @@ class PharmacyPatient {
     data['id'] = this.id;
     data['name'] = this.name;
     data['mobile_no'] = this.mobileNo;
+    data['created_at'] = this.createdAt;
     data['enc_pharmacy_patient_id'] = this.encPharmacyPatientId;
     data['create_at'] = this.createAt;
     return data;

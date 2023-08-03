@@ -71,91 +71,7 @@ class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
               style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16,fontWeight: FontWeight.bold),
             )
         ),
-        /*const Center(
-            child: Text("You need to logout",
-              style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16,fontWeight: FontWeight.bold),
-            )
-        ),
-        SizedBox(height: 5.h,),
-        Container(
-          width: MediaQuery.of(context).size.width / 2.w,
-          height: MediaQuery.of(context).size.height / 5.h,
-          child: const Image(
-            image: AssetImage("assets/Gif/expire.gif"),
-          ),
-        ),*/
         SizedBox(height: 10.h,),
-        // InkWell(
-        //   onTap: (){
-        //     showDialog(
-        //         context: context,
-        //         barrierDismissible: false,
-        //         builder: (BuildContext context) {
-        //           return BackdropFilter(
-        //             filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-        //             child: AlertDialog(
-        //               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        //               content: Container(
-        //                 decoration: BoxDecoration(
-        //                   color: Colors.white,
-        //                   borderRadius: BorderRadius.circular(30),
-        //                 ),
-        //                 child: Column(
-        //                   mainAxisSize: MainAxisSize.min,
-        //                   children: <Widget>[
-        //                     Image.asset("assets/health_saarthi_logo.png",width: 150),
-        //                     const Padding(
-        //                       padding: EdgeInsets.all(5),
-        //                       child: Text(
-        //                         "Are You Sure Would Like To Logout?",
-        //                         style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
-        //                         textAlign: TextAlign.center,
-        //                       ),
-        //                     ),
-        //                     Row(
-        //                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //                       children: <Widget>[
-        //                         TextButton(
-        //                           child: const Text("Stay",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
-        //                           onPressed: () => Navigator.of(context).pop(),
-        //                         ),
-        //                         TextButton(
-        //                           child: const Text("Logout",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
-        //                           onPressed: (){
-        //                             logoutUser().then((value){
-        //                               userDataSession.removeUserData().then((value){
-        //                                 DeviceInfo().deleteDeviceToken(context, deviceToken,getAccessToken.access_token).then((value){
-        //                                   if(value == 'success'){
-        //                                     print("token is deleted $value");
-        //                                   }
-        //                                   else{
-        //                                     print("Token is not deleted");
-        //                                   }
-        //                                 });
-        //                               });
-        //                               Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
-        //                             });
-        //                           },
-        //                         ),
-        //                       ],
-        //                     ),
-        //                   ],
-        //                 ),
-        //               ),
-        //             ),
-        //           );
-        //         }
-        //     );
-        //   },
-        //   child: Container(
-        //     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-        //     decoration: BoxDecoration(
-        //         borderRadius: BorderRadius.circular(10),
-        //         color: hsPrime
-        //     ),
-        //     child: const Text("Logout",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
-        //   ),
-        // )
       ],
     );
   }
@@ -245,8 +161,8 @@ class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
         //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
-      print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      print("logoutUser catch->$error");
+      //SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
 }

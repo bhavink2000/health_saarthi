@@ -218,9 +218,9 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                       const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: const [
+                                        children: [
                                           Text("Earning Amount  ",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14),),
-                                          Text("\u{20B9}${0}",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12)),
+                                          Text("\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12)),
                                         ],
                                       ),
                                       const SizedBox(height: 5),

@@ -56,7 +56,9 @@ class _TestCartState extends State<TestCart> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
-    getUserData();
+    Future.delayed(const Duration(seconds: 1),(){
+      getUserStatus();
+    });
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
         homeMenusProvider.fetchCart(1, getAccessToken.access_token, context);
@@ -69,27 +71,15 @@ class _TestCartState extends State<TestCart> {
     });
   }
   var userStatus;
-  void getUserData()async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String storedEmail = prefs.getString('email');
-    String storedPassword = prefs.getString('password');
-    print("store E->$storedEmail");
-    print("store P->$storedPassword");
-    getUser(storedEmail, storedPassword);
-  }
-  void getUser(String sEmail, String sPassword) async {
-    try {
-      UserModel user = await ProfileFuture().fetchUser(sEmail, sPassword);
-      if (user != null && user.data != null) {
-        print("user Status -->> ${user.data.status}");
-        setState(() {
-          userStatus = user.data.status;
-        });
-      } else {
-        print('Failed to fetch user: User data is null');
-      }
-    } catch (e) {
-      print('Error: $e');
+  void getUserStatus()async{
+    try{
+      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      setState(() {
+        userStatus = userData.data.status;
+      });
+      print("userStatus ==>>$userStatus");
+    }catch(e){
+      print("get User Status Error->$e");
     }
   }
   @override
@@ -390,7 +380,9 @@ class _TestCartState extends State<TestCart> {
                           : Column(
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
-                              TokenExpiredHelper(tokenMsg: value.cartList.message),
+                              value.cartList.message == 'Token is Expired'
+                                  ? TokenExpiredHelper(tokenMsg: value.cartList.message)
+                                  : Center(child: Text('Please check internet connection'),),
                             ],
                           );
                       case Status.completed:
@@ -450,9 +442,12 @@ class _TestCartState extends State<TestCart> {
                                                 ),
                                               ),
                                               Divider(color: Colors.grey.withOpacity(0.5),),
-                                              SizedBox(
+                                              Container(
+                                                //color: Colors.green,
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: MediaQuery.of(context).size.height / 3.h,
+                                                height: value.cartList.data.data.cartItems.testItems.length == 1
+                                                    ? 50.h : value.cartList.data.data.cartItems.testItems.length == 2 ? 80.h
+                                                    : 175.h,
                                                 child: value.cartList.data.data.cartItems.testItems.isNotEmpty
                                                  ? Scrollbar(
                                                     isAlwaysShown: true,
@@ -471,16 +466,11 @@ class _TestCartState extends State<TestCart> {
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
-                                                                  SizedBox(
-                                                                    width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        Text(cartI.testItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15)),
-                                                                        Text("Amount :-  \u{20B9}${cartI.testItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12)),
-                                                                      ],
-                                                                    ),
+                                                                  Container(
+                                                                    width: MediaQuery.of(context).size.width / 1.9.w,
+                                                                    child: Text(cartI.testItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
                                                                   ),
+                                                                  Text("\u{20B9}${cartI.testItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -548,7 +538,7 @@ class _TestCartState extends State<TestCart> {
                                                   },
                                                 ),
                                                   )
-                                                  : const CartEmptyHelper(),
+                                                 : const CartEmptyHelper(),
                                               ),
                                               SizedBox(height: 5.h),
                                               Container(
@@ -616,6 +606,8 @@ class _TestCartState extends State<TestCart> {
                                           ),
                                         ),
                                       ) : Container(),
+
+
                                       const SizedBox(height: 10),
                                       value.cartList.data.data.cartItems.packageItems.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -650,7 +642,7 @@ class _TestCartState extends State<TestCart> {
                                               Divider(color: Colors.grey.withOpacity(0.5),),
                                               Container(
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: MediaQuery.of(context).size.height / 6.5.h,
+                                                height: value.cartList.data.data.cartItems.packageItems.length == 1 ? 50.h : 120.h,
                                                 child: value.cartList.data.data.cartItems.packageItems.isNotEmpty
                                                  ? Scrollbar(
                                                     isAlwaysShown: true,
@@ -670,15 +662,10 @@ class _TestCartState extends State<TestCart> {
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
                                                                   SizedBox(
-                                                                    width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        Text(cartI.packageItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15)),
-                                                                        Text("Amount :-  \u{20B9}${cartI.packageItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12)),
-                                                                      ],
-                                                                    ),
+                                                                    width: MediaQuery.of(context).size.width / 1.9.w,
+                                                                    child: Text(cartI.packageItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
                                                                   ),
+                                                                  Text("\u{20B9}${cartI.packageItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -813,8 +800,44 @@ class _TestCartState extends State<TestCart> {
                                             ],
                                           ),
                                         ),
-                                      ) : Container(),
+                                      ) : Center(
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 10),
+                                            Text("Add package",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: hsPrime,
+                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                              ),
+                                              onPressed: (){
+                                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
+                                              },
+                                              child: Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                       const SizedBox(height: 10),
+                                      value.cartList.data.data.cartItems.testItems.isNotEmpty ? Container() : Center(
+                                        child: Column(
+                                          children: [
+                                            SizedBox(height: 10),
+                                            Text("Add test",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: hsPrime,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                                ),
+                                                onPressed: (){
+                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                                },
+                                                child: Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                            )
+                                          ],
+                                        ),
+                                      ),
+
                                       value.cartList.data.data.cartItems.profileItems.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
@@ -828,8 +851,6 @@ class _TestCartState extends State<TestCart> {
                                                 padding: const EdgeInsets.fromLTRB(15, 8, 10, 0),
                                                 child: Row(
                                                   children: [
-                                                    //Container(width: 2, height: 18,color: hsTwo,),
-                                                    //const SizedBox(width: 5),
                                                     const Text("Profile",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold),),
                                                     const Spacer(),
                                                     InkWell(
@@ -848,7 +869,7 @@ class _TestCartState extends State<TestCart> {
                                               Divider(color: Colors.grey.withOpacity(0.5),),
                                               Container(
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: MediaQuery.of(context).size.height / 5.h,
+                                                height: value.cartList.data.data.cartItems.profileItems.length == 1 ? 50.h : 100.h,
                                                 child: value.cartList.data.data.cartItems.profileItems.isNotEmpty
                                                  ? Scrollbar(
                                                     isAlwaysShown: true,
@@ -868,15 +889,10 @@ class _TestCartState extends State<TestCart> {
                                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                 children: [
                                                                   SizedBox(
-                                                                    width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                    child: Column(
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: [
-                                                                        Text(cartI.profileItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15)),
-                                                                        Text("Amount :-  \u{20B9}${cartI.profileItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12)),
-                                                                      ],
-                                                                    ),
+                                                                    width: MediaQuery.of(context).size.width / 1.9.w,
+                                                                    child: Text(cartI.profileItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
                                                                   ),
+                                                                  Text("\u{20B9}${cartI.profileItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -931,7 +947,7 @@ class _TestCartState extends State<TestCart> {
                                                                     },
                                                                     child: SizedBox(
                                                                       width: MediaQuery.of(context).size.width / 6.w,
-                                                                      child: const Icon(Icons.delete_forever_rounded,color: Colors.black,size: 20),
+                                                                      child: Icon(Icons.delete_forever_rounded,color: hsPrime,size: 20),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1016,248 +1032,6 @@ class _TestCartState extends State<TestCart> {
                                   ),
                                 ),
                               ),
-                              /*SizedBox(height: 30.h,),
-                              //const Spacer(),
-                              value.cartList.data.data.cartItems.testItems.isEmpty
-                                  && value.cartList.data.data.cartItems.packageItems.isEmpty
-                                  && value.cartList.data.data.cartItems.profileItems.isEmpty
-                                  ? Container()
-                                  : Container(
-                                width: MediaQuery.of(context).size.width.w,
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(0),topLeft: Radius.circular(0)
-                                  ),color: hsPrime,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                      child: Row(
-                                        children: [
-                                          Text("Gross Amount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
-                                          const Spacer(),
-                                          Container(
-                                            alignment: Alignment.centerRight,
-                                            width: MediaQuery.of(context).size.width / 3.w,
-                                            height: MediaQuery.of(context).size.height / 25.h,
-                                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                            child: Text("\u{20B9}${grossAmount.isEmpty ? 0 : grossAmount}",style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontFamily: FontType.MontserratRegular,
-                                                fontSize: 14
-                                            )),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
-                                      child: Row(
-                                        children: [
-                                          Text("Total Discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
-                                          const Spacer(),
-                                          Container(
-                                            alignment: Alignment.centerRight,
-                                            width: MediaQuery.of(context).size.width / 3.w,
-                                            height: MediaQuery.of(context).size.height / 25.h,
-                                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                            child: Text("$totalAmount",style: const TextStyle(
-                                                color: Colors.white70,
-                                                fontFamily: FontType.MontserratRegular,
-                                                fontSize: 14
-                                            )),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      padding: const EdgeInsets.fromLTRB(12, 5, 12, 5),
-                                      alignment: Alignment.topLeft,
-                                      child: callPromo == true ? Row(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width / 1.5.w,
-                                            child: Card(
-                                              elevation: 5,
-                                              child: Padding(
-                                                padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                        "Promo offer applyed",
-                                                        style: TextStyle(
-                                                            fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold,color: Colors.green)
-                                                    ),
-                                                    Spacer(),
-                                                    Text("\u{20B9}$applyPromo",style: TextStyle(fontFamily: FontType.MontserratMedium),),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          ElevatedButton(
-                                            onPressed: (){
-                                              promoApply.clear();
-                                              _showLoadingDialog();
-                                              cartCalculation().then((_) {
-                                                setState(() {
-                                                  callPromo = false;
-                                                });
-                                                Navigator.of(context).pop(); // Hide the loading dialog
-                                              });
-                                            },
-                                            child: Text("Cancel",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime),),
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors.white,
-                                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                                            ),
-                                          )
-                                        ],
-                                      ): Row(
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context).size.width / 1.5.w,
-                                            height: MediaQuery.of(context).size.height / 20.h,
-                                            child: TextField(
-                                              controller: promoApply,
-                                              style: const TextStyle(color: Colors.white,fontFamily: FontType.MontserratMedium),
-                                              textAlign: TextAlign.left,
-                                              decoration: InputDecoration(
-                                                contentPadding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                focusedBorder: OutlineInputBorder(
-                                                    borderSide: const BorderSide(color: Colors.white),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
-                                                enabledBorder: OutlineInputBorder(
-                                                    borderSide: const BorderSide(color: Colors.white),
-                                                    borderRadius: BorderRadius.circular(5)
-                                                ),
-                                                hintText: 'Coupon Code',
-                                                hintStyle: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: FontType.MontserratMedium,
-                                                    fontSize: 14
-                                                ),
-                                                //prefixIcon: Icon(iconData, color: hsBlack,size: 20),
-                                              ),
-                                              onEditingComplete: (){
-                                                setState(() {
-                                                  callPromo = true;
-                                                });
-                                                cartCalculation();
-                                              },
-                                            ),
-                                          ),
-                                          Spacer(),
-                                          ElevatedButton(
-                                            onPressed: (){
-                                              if(promoApply.text.isEmpty){
-                                                SnackBarMessageShow.warningMSG('Please enter coupe code', context);
-                                              }
-                                              else{
-                                                _showLoadingDialog();
-                                                cartCalculation().then((_) {
-                                                  setState(() {
-                                                    callPromo = true;
-                                                  });
-                                                  Navigator.of(context).pop();
-                                                  promoApply.clear();
-                                                });
-                                              }
-                                            },
-                                            child: Text("Apply",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime),),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width.w,
-                                      height: MediaQuery.of(context).size.height / 14.sp,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(0),color: Colors.white),
-                                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(15, 5, 0, 5),
-                                            child: Container(
-                                              child: Row(
-                                                children: [
-                                                  Text("Payable :-",
-                                                    style: TextStyle(fontFamily: FontType.MontserratMedium,
-                                                        color: Colors.green,fontSize: 16.sp),
-                                                  ),
-                                                  SizedBox(width: 5.w,),
-                                                  Text(
-                                                    "\u{20B9}${netAmount.isEmpty ? 0.00 : netAmount}",
-                                                    style: TextStyle(fontFamily: FontType.MontserratMedium,
-                                                        color: Colors.green,fontSize: 16.sp,fontWeight: FontWeight.bold),),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(0, 4, 10, 0),
-                                            child: InkWell(
-                                              onTap: (){
-                                                if(getAccessToken.userStatus == '0'){
-                                                  SnackBarMessageShow.warningMSG('Unauthorized', context);
-                                                }else if(getAccessToken.userStatus == '1'){
-                                                  if(value.cartList.data.data.cartItems.testItems.isEmpty
-                                                      && value.cartList.data.data.cartItems.packageItems.isEmpty
-                                                      && value.cartList.data.data.cartItems.profileItems.isEmpty){
-                                                    SnackBarMessageShow.warningMSG('Cart Is Empty', context);
-                                                  }
-                                                  else{
-                                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
-                                                      testDis: testD,
-                                                      packageDis: packageD,
-                                                      profileDis: profileD,
-                                                      promoApply: promoApply.text,
-                                                    )));
-                                                  }
-                                                }
-                                                else{
-                                                  SnackBarMessageShow.warningMSG('User Not Found', context);
-                                                }
-                                              },
-                                              child: Container(
-                                                  width: MediaQuery.of(context).size.width / 2.9.w,
-                                                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.green),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "Book Now",
-                                                        style: TextStyle(
-                                                            fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white,fontWeight: FontWeight.bold
-                                                        ),
-                                                        textAlign: TextAlign.center,
-                                                      ),
-                                                      SizedBox(width: 3.w,),
-                                                      const Icon(Icons.arrow_forward_ios_rounded,color: Colors.white,size: 12,)
-                                                    ],
-                                                  )
-                                              ),
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),*/
                             ],
                           ),
                         );
@@ -1338,8 +1112,8 @@ class _TestCartState extends State<TestCart> {
         //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
-      print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      print("cart Calculation Error->$error");
+      //SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
 }
