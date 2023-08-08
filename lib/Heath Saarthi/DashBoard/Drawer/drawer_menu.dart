@@ -4,12 +4,9 @@
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/gallery_screen.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/testimonial_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Login%20Screen/login_screen.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Splash%20Screen/splash_screen.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/book_test_screen.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/contact_us_screen.dart';
@@ -17,7 +14,6 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%2
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../App Helper/Backend Helper/Api Future/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
@@ -184,38 +180,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           ),
                         ),
                       ),
-                      /*Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                        child: InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>TestimonialScreen()));
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.telegram_rounded,color: hsPrimeOne,size: 25),
-                              const SizedBox(width: 10,),
-                              const Text("Testimonial",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                        child: InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>GalleryScreen()));
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.browse_gallery_rounded,color: hsPrimeOne,size: 25),
-                              const SizedBox(width: 10,),
-                              const Text("Gallery",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                            ],
-                          ),
-                        ),
-                      ),*/
                       Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
@@ -327,24 +291,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                                // TextButton(
-                                                //   child: const Text("Logout",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
-                                                //   onPressed: (){
-                                                //     logoutUser().then((value){
-                                                //       userDataSession.removeUserData().then((value){
-                                                //         DeviceInfo().deleteDeviceToken(context, widget.deviceToken,getAccessToken.access_token).then((value){
-                                                //           if(value == 'success'){
-                                                //             SnackBarMessageShow.successsMSG("Token is Deleted", context);
-                                                //           }
-                                                //           else{
-                                                //             SnackBarMessageShow.warningMSG("Token is Not Deleted", context);
-                                                //           }
-                                                //         });
-                                                //       });
-                                                //       Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
-                                                //     });
-                                                //   },
-                                                // ),
                                               ],
                                             ),
                                           ],
@@ -369,9 +315,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
                   ),
                 ),
               ),
-              // const Spacer(),
-              // const Text("STERLING ACCURIS WELLNESS PVT. LTD.",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),textAlign: TextAlign.center,),
-              // const SizedBox(height: 5),
             ],
           ),
         ),

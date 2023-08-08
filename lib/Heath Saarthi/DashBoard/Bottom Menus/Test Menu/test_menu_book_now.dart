@@ -131,7 +131,7 @@ class _TestMenuState extends State<TestMenu> {
                   ),
                 ),
                 showTextField(
-                    'Patient name', pName,Icons.person,
+                    'Patient name *', pName,Icons.person,
                         (value) {
                       if (value == null || value.isEmpty) {
                         return 'Enter patient name';
@@ -168,12 +168,12 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter age';
-                      }
-                      return null;
-                    }, // Set the validator function
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Enter age';
+                    //   }
+                    //   return null;
+                    // }, // Set the validator function
                   ),
                 ),
                 Padding(
@@ -218,7 +218,7 @@ class _TestMenuState extends State<TestMenu> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                   child: TextFormField(
                     controller: emailId,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -233,7 +233,7 @@ class _TestMenuState extends State<TestMenu> {
                           borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                           borderRadius: BorderRadius.circular(15)
                       ),
-                      hintText: 'Email id *',
+                      hintText: 'Email id',
                       hintStyle: const TextStyle(
                         color: Colors.black54,
                         fontFamily: FontType.MontserratRegular,
@@ -241,35 +241,46 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       prefixIcon: Icon(Icons.email, color: hsBlack, size: 20),
                     ),
-                      onChanged: (value) {
-                        if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                          // Password meets all the requirements
-                        } else if (!value.contains('gmail.com')) {
-                            return 'Email id must contain "gmail.com"';
-                        }else {
-                          print('Please enter valid email id');
+                    onChanged: (value) {
+                      _formKey.currentState?.validate(); // Trigger validation manually
+                    },
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (!value.contains('@')) {
+                          return 'Email id must contain "@" symbol';
                         }
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter email id';
-                        }
-                        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                          return 'email id must contain at least one special character';
-                        }
-                        return null;
-                      },
+                      }
+                      return null; // Return null if no validation error
+                    },
                   ),
                 ),
-                showTextField(
-                    'Address', address,Icons.location_city,
-                        (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter address';
-                      }
-                      return null;
-                    }
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: TextFormField(
+                    controller: address,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(hsPaddingM),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      hintText: 'Address',
+                      hintStyle: const TextStyle(
+                        color: Colors.black54,
+                        fontFamily: FontType.MontserratRegular,
+                        fontSize: 14,
+                      ),
+                      prefixIcon: Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
+                    ),
+                  ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Row(
@@ -325,15 +336,18 @@ class _TestMenuState extends State<TestMenu> {
                     //height: MediaQuery.of(context).size.height / 14.h,
                     child: DropdownSearch<String>(
                       mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
                       showSearchBox: true,
                       showSelectedItem: true,
                       items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                      label: "Select state*",
+                      label: "Select state *",
                       onChanged: (newValue) {
                         final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
                         if (selectedStateObject != null) {
                           setState(() {
+                            cityList.clear();
                             selectedCity = '';
+                            areaList.clear();
                             selectedArea = '';
                             selectedState = newValue;
                             selectedStateId = selectedStateObject.id.toString();
@@ -359,6 +373,7 @@ class _TestMenuState extends State<TestMenu> {
                     //height: MediaQuery.of(context).size.height / 14.h,
                     child: DropdownSearch<String>(
                       mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
                       showSearchBox: true,
                       showSelectedItem: true,
                       items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
@@ -368,6 +383,7 @@ class _TestMenuState extends State<TestMenu> {
                         if (selectedCityObject != null) {
                           setState(() {
                             selectedCity = '';
+                            areaList.clear();
                             selectedArea = '';
                             selectedCity = newValue;
                             selectedCityId = selectedCityObject.id.toString();
@@ -393,6 +409,7 @@ class _TestMenuState extends State<TestMenu> {
                     //height: MediaQuery.of(context).size.height / 14.h,
                     child: DropdownSearch<String>(
                       mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
                       showSearchBox: true,
                       showSelectedItem: true,
                       items: areaList?.map((area) => area.areaName)?.toList() ?? [],
@@ -447,12 +464,12 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                           prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
                         ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Enter collection date';
-                          }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   if (value == null || value.isEmpty) {
+                        //     return 'Enter collection date';
+                        //   }
+                        //   return null;
+                        // },
                         onTap: () async {
                           DateTime pickedDate = await showDatePicker(
                             context: context,
@@ -500,12 +517,12 @@ class _TestMenuState extends State<TestMenu> {
                             ),
                             prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Enter Pin code';
-                            }
-                            return null;
-                          },
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return 'Enter Pin code';
+                          //   }
+                          //   return null;
+                          // },
                         ),
                       ),
                     ),
@@ -537,13 +554,6 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
                     ),
-
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Enter remark';
-                      }
-                      return null;
-                    }, // Set the validator function
                   ),
                 ),
 
@@ -619,6 +629,14 @@ class _TestMenuState extends State<TestMenu> {
       pMobile.text = pModel.patientData.mobileNo.toString();
       emailId.text = pModel.patientData.emailId.toString();
       address.text = pModel.patientData.address.toString();
+      selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
+      selectedState = pModel.patientData.state.stateName.toString();
+      selectedCity = pModel.patientData.city.cityName.toString();
+      selectedArea = pModel.patientData.area.areaName.toString();
+      selectedStateId = pModel.patientData.state.id.toString();
+      selectedCityId = pModel.patientData.city.id.toString();
+      selectedAreaId = pModel.patientData.area.id.toString();
+      pinCode.text = pModel.patientData.pincode.toString();
     } catch (e) {
       print('Error: $e');
     }

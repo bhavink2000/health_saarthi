@@ -151,6 +151,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextField(
                 controller: email,
+                readOnly: true,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
                   focusedBorder: OutlineInputBorder(
@@ -203,7 +204,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("Pancard",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    subtitle: Text(panCardChange == null ? 'Choose pancard' : 'Pancard is picked',
+                    subtitle: Text(panCardChange == null ? '$panCard' : 'Pancard is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: panCardChange == null ? Colors.black87 : Colors.green,
@@ -241,7 +242,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     subtitle: Text(aadhaarCardFChange == null
-                        ? 'Choose aadhaar card front' : 'Aadhaar card front is picked',
+                        ? '$aadharCardF' : 'Aadhaar card front is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: aadhaarCardFChange == null  ? Colors.black87 : Colors.green,
@@ -279,7 +280,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     subtitle: Text(aadhaarCardBChange == null
-                        ? 'Choose aadhaar card back' : 'Aadhaar card back is picked',
+                        ? '$aadharCardB' : 'Aadhaar card back is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: aadhaarCardBChange == null ? Colors.black87 : Colors.green,
@@ -317,7 +318,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     subtitle: Text(addressChange == null
-                        ? 'Choose address proof' : 'Address proof is picked',
+                        ? '$addressProfe' : 'Address proof is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: addressChange == null ? Colors.black87 : Colors.green,
@@ -355,7 +356,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("Cheque image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     subtitle: Text(chequeChange == null
-                        ? 'Choose cheque' : 'Cheque img is picked',
+                        ? '$chequeFile' : 'Cheque img is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: chequeChange == null ? Colors.black87 : Colors.green,
@@ -392,7 +393,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    subtitle: Text("${gstFile ?? 'GST file'}",
+                    subtitle: Text("${gstFile == null ? 'No gst file' : 'GST file'}",
                       style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
                           fontSize: 12),
                     ),
@@ -433,6 +434,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: TextField(
         controller: controller,
+        readOnly: true,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
           focusedBorder: OutlineInputBorder(

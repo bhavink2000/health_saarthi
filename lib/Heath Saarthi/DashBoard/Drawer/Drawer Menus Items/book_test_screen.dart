@@ -76,7 +76,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                 child: SafeArea(
                   child: Container(
                     width: MediaQuery.of(context).size.width.w,
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                    padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                     child: Column(
                       //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -112,28 +112,28 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                                 const SizedBox(width: 10),
                                                 Text("Lab Test",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                                 SizedBox(width: 1.w),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                                const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                                   child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                                           child: Container(
-                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
                                                 color: hsTestColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
-                                                Image(image: AssetImage("assets/Home/test_sub.png"),width: 12),
+                                                const Image(image: AssetImage("assets/Home/test_sub.png"),width: 12),
                                                 SizedBox(width: 10.w,),
-                                                Text("View Test",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                                const Text("View Test",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                               ],
                                             ),
                                           ),
@@ -173,28 +173,28 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                                 const SizedBox(width: 10),
                                                 Text("Package",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                                 SizedBox(width: 1.w),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                                const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                                   child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                                           child: Container(
-                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
                                                 color: hsPackageColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
-                                                Image(image: AssetImage("assets/Home/package_sub.png"),width: 12),
+                                                const Image(image: AssetImage("assets/Home/package_sub.png"),width: 12),
                                                 SizedBox(width: 10.w,),
-                                                Text("View Package",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                                const Text("View Package",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                               ],
                                             ),
                                           ),
@@ -214,14 +214,15 @@ class _BookTestScreenState extends State<BookTestScreen> {
                               padding: const EdgeInsets.fromLTRB(5, 5, 0, 10),
                               child: InkWell(
                                 onTap: (){
+                                  print("pre->${userStatus}");
                                   if(userStatus == 0){
                                     SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                                   }
                                   else if (userStatus == 1){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AttachPrescription()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const AttachPrescription()));
                                   }
                                   else{
-
+                                    SnackBarMessageShow.warningMSG('User Not Found', context);
                                   }
                                 },
                                 child: Card(
@@ -247,28 +248,28 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                                 const SizedBox(width: 10),
                                                 Text("Prescription",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                                 SizedBox(width: 1.w),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                                const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                                   child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                                           child: Container(
-                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
                                                 color: hsPrescriptionColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
-                                                Image(image: AssetImage("assets/Home/prescription_sub.png"),width: 12),
+                                                const Image(image: AssetImage("assets/Home/prescription_sub.png"),width: 12),
                                                 SizedBox(width: 10.w,),
-                                                Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                                const Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                               ],
                                             ),
                                           ),
@@ -287,7 +288,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                     SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
                                   }
                                   else if (userStatus == 1){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>InstantBooking()));
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>const InstantBooking()));
                                   }
                                   else{
                                     SnackBarMessageShow.warningMSG('User Not Found', context);
@@ -317,28 +318,28 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                                 SizedBox(width: 10.w),
                                                 Text("Instant Book",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                                 SizedBox(width: 1.w),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                                                const Padding(
+                                                  padding: EdgeInsets.fromLTRB(0, 3, 0, 0),
                                                   child: Icon(Icons.arrow_forward_ios_rounded,size: 10),
                                                 )
                                               ],
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10),
+                                        const SizedBox(height: 10),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                                           child: Container(
-                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(4),
                                                 color: hsInstantBookingColor.withOpacity(0.1)
                                             ),
                                             child: Row(
                                               children: [
-                                                Image(image: AssetImage("assets/Home/booking_sub.png"),width: 12),
+                                                const Image(image: AssetImage("assets/Home/booking_sub.png"),width: 12),
                                                 SizedBox(width: 10.w,),
-                                                Text("Book Now!",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
+                                                const Text("Book Now!",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                               ],
                                             ),
                                           ),

@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
@@ -24,10 +26,11 @@ import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../Login Screen/login_screen.dart';
+import '../Splash Screen/splash_screen.dart';
 
 class SignUpForm extends StatefulWidget {
-  var emailId;
-  SignUpForm({Key key,this.emailId}) : super(key: key);
+  var dType,dToken;
+  SignUpForm({Key key,this.dType,this.dToken}) : super(key: key);
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -107,6 +110,18 @@ class _SignUpFormState extends State<SignUpForm> {
   bool isFirstNameFieldTouched = false;
   bool isVendorNameFieldTouched = false;
   bool _agreedToTOS = false;
+
+  Future<void> storeStateCityAreaBranch() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('signupStateId', selectedStateId);
+    await prefs.setString('signupCityId', selectedCityId);
+    await prefs.setString('signupAreaId', selectedAreaId);
+    await prefs.setString('signupBranchId', selectedBranchId);
+    await prefs.setString('signupStateName', selectedState);
+    await prefs.setString('signupCityName', selectedCity);
+    await prefs.setString('signupAreaName', selectedArea);
+    await prefs.setString('signupBranchName', selectedBranch);
+  }
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
@@ -198,12 +213,12 @@ class _SignUpFormState extends State<SignUpForm> {
                       return 'Email id must contain "gmail.com"';
                     });
                   }else {
-                    print('Please enter valid email id');
+                    print('Enter valid email id');
                   }
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a email';
+                    return 'Enter a email';
                   }
                   if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                     return 'email id must contain at least one special character';
@@ -213,10 +228,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             showTextField(
-                'Vendor name *', createVendor,Icons.person_pin,
+                'Shop name *', createVendor,Icons.person_pin,
                     (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter vendor name';
+                    return 'Enter shop name';
                   }
                   return null;
                 }
@@ -265,16 +280,20 @@ class _SignUpFormState extends State<SignUpForm> {
                 //height: MediaQuery.of(context).size.height / 14.h,
                 child: DropdownSearch<String>(
                   mode: Mode.DIALOG,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
                   showSearchBox: true,
                   showSelectedItem: true,
                   items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                  label: "Select state*",
+                  label: "Select state *",
                   onChanged: (newValue) {
                     final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
                     if (selectedStateObject != null) {
                       setState(() {
+                        cityList.clear();
                         selectedCity = '';
+                        areaList.clear();
                         selectedArea = '';
+                        branchList.clear();
                         selectedBranch = '';
                         selectedState = newValue;
                         selectedStateId = selectedStateObject.id.toString();
@@ -300,6 +319,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 //height: MediaQuery.of(context).size.height / 14.h,
                 child: DropdownSearch<String>(
                   mode: Mode.DIALOG,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
                   showSearchBox: true,
                   showSelectedItem: true,
                   items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
@@ -309,10 +329,13 @@ class _SignUpFormState extends State<SignUpForm> {
                     if (selectedCityObject != null) {
                       setState(() {
                         selectedCity = '';
+                        areaList.clear();
                         selectedArea = '';
+                        branchList.clear();
                         selectedBranch = '';
                         selectedCity = newValue;
                         selectedCityId = selectedCityObject.id.toString();
+                        fetchBranchList(selectedStateId, selectedCityId, '');
                       });
                       fetchAreaList(selectedStateId, selectedCityId);
                     }
@@ -335,6 +358,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 //height: MediaQuery.of(context).size.height / 14.h,
                 child: DropdownSearch<String>(
                   mode: Mode.DIALOG,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
                   showSearchBox: true,
                   showSelectedItem: true,
                   items: areaList?.map((area) => area.areaName)?.toList() ?? [],
@@ -343,10 +367,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
                     if (selectedAreaObject != null) {
                       setState(() {
-                        selectedBranch = '';
+                        //branchList.clear();
+                        //selectedBranch = '';
                         selectedArea = newValue;
                         selectedAreaId = selectedAreaObject.id.toString();
-                        fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                        //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
                       });
                     }
                   },
@@ -369,6 +394,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 //height: MediaQuery.of(context).size.height / 14.h,
                 child: DropdownSearch<String>(
                   mode: Mode.DIALOG,
+                  autoValidateMode: AutovalidateMode.onUserInteraction,
                   showSearchBox: true,
                   showSelectedItem: true,
                   items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
@@ -392,50 +418,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
-           /* SizedBox(
-              width: MediaQuery.of(context).size.width / 1.15,
-              child: DropdownButtonFormField<String>(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                value: selectedBranch,
-                isExpanded: true,
-                style: const TextStyle(fontSize: 10,color: Colors.black87),
-                decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
-                  hintText: 'Select branch *',
-                  hintStyle: const TextStyle(
-                    color: Colors.black54,
-                    fontFamily: FontType.MontserratRegular,
-                    fontSize: 12,
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Select a branch';
-                  }
-                  return null;
-                },
-                onChanged: (newValue) {
-                  selectedBranch = newValue;
-                },
-                items: [
-                  const DropdownMenuItem(
-                    value: '',
-                    child: Text('Select branch'),
-                  ),
-                  ...branchList?.map((branch) => DropdownMenuItem<String>(
-                    value: branch.id.toString() ?? '',
-                    child: Container(
-                        width: MediaQuery.of(context).size.width / 1.5.w,
-                        child: Text(branch.branchName)
-                    ),
-                  ))?.toList() ?? []
-                ],
-              ),
-            ),*/
-
 
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -555,7 +537,7 @@ class _SignUpFormState extends State<SignUpForm> {
               width: MediaQuery.of(context).size.width,
               //height: MediaQuery.of(context).size.height / 5,
               //color: Colors.green,
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Column(
                 children: [
                   Card(
@@ -566,17 +548,17 @@ class _SignUpFormState extends State<SignUpForm> {
                       child: Row(
                         children: [
                           aadharCardFFile == null
-                            ? Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                            ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
                               child: Image.file(File(aadharCardFFile.path), fit: BoxFit.cover)
                           ),
                           const Spacer(),
                           IconButton(
-                            onPressed: ()async {
-                              var aadhaarCardFront = await FileImagePicker().pickFileManger(context);
+                            onPressed: () async {
+                              var aadhaarCardFrontFile = await FileImagePicker().pickFileManger(context);
                               setState(() {
-                                aadharCardFFile = aadhaarCardFront;
+                                aadharCardFFile = aadhaarCardFrontFile;
                               });
                             },
                             icon: const Icon(
@@ -606,7 +588,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       child: Row(
                         children: [
                           aadharCardBFile == null
-                            ? Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                            ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
                               child: Image.file(File(aadharCardBFile.path), fit: BoxFit.cover)
@@ -674,7 +656,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -683,7 +665,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       addressFile == null
-                          ? Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                           : Container(
                           width: 100,height: 50,
                           child: Image.file(File(addressFile.path), fit: BoxFit.cover)
@@ -757,7 +739,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -766,7 +748,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       panCardFile == null
-                          ? Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                           : Container(
                           width: 100,height: 50,
                           child: Image.file(File(panCardFile.path), fit: BoxFit.cover)
@@ -835,7 +817,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -844,7 +826,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       gstFile == null
-                          ? Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                           : Container(
                           width: 100,height: 50,
                           child: Image.file(File(gstFile.path), fit: BoxFit.cover)
@@ -927,7 +909,7 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -936,7 +918,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       checkFile == null
-                          ? Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                           : Container(
                           width: 100,height: 50,
                           child: Image.file(File(checkFile.path), fit: BoxFit.cover)
@@ -1045,7 +1027,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
+                    return 'Enter a password';
                   }
                   if (value.trim().length < 8) {
                     return 'Password must be at least 8 characters in length';
@@ -1122,7 +1104,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               ),
             ),
-            //SizedBox(height: space),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Row(
@@ -1188,46 +1169,8 @@ class _SignUpFormState extends State<SignUpForm> {
                         },
                       );
                       await signUpData();
-                      //Navigator.pop(context);
                     }
                   }
-                  // if(_agreedToTOS == false){
-                  //   SnackBarMessageShow.warningMSG('Please select term & condition', context);
-                  // }
-                  // else{
-                  //   if (_formKey.currentState.validate()) {
-                  //     FocusScope.of(context).unfocus();
-                  //     if(selectedState == null || selectedCity == null || selectedArea == null){
-                  //       SnackBarMessageShow.warningMSG("Please select location fields", context);
-                  //     }
-                  //     else if(panCardFile == null || addressFile == null || aadharCardFFile == null || aadharCardBFile == null || checkFile == null || gstFile == null){
-                  //       SnackBarMessageShow.warningMSG("Please select documents", context);
-                  //     }
-                  //     else{
-                  //       showDialog(
-                  //         context: context,
-                  //         barrierDismissible: false,
-                  //         builder: (BuildContext context) {
-                  //           return Dialog(
-                  //             child: Padding(
-                  //               padding: const EdgeInsets.all(16.0),
-                  //               child: Column(
-                  //                 mainAxisSize: MainAxisSize.min,
-                  //                 children: const [
-                  //                   CircularProgressIndicator(),
-                  //                   SizedBox(height: 16.0),
-                  //                   Text('Loading...'),
-                  //                 ],
-                  //               ),
-                  //             ),
-                  //           );
-                  //         },
-                  //       );
-                  //       await signUpData();
-                  //       //Navigator.pop(context);
-                  //     }
-                  //   }
-                  // }
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -1247,6 +1190,92 @@ class _SignUpFormState extends State<SignUpForm> {
       ),
     );
   }
+
+  /*void signUpData() async {
+      var response = await sendSignupRequest();
+      final jsonData = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        print("in if with status->${jsonData['status']}");
+        var bodyMSG = jsonData['message'];
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        storeStateCityAreaBranch();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SplashScreen()),
+        );
+      } else if (response.statusCode == 400) {
+        var errorData = jsonData;
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        }else if (errorData['error']['name'] != null) {
+          var errorMessage = errorData['error']['name'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        }
+        else if (errorData['error']['sales_executive_admin_id'] != null) {
+          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        }else if (errorData['error']['password'] != null) {
+          var errorMessage = errorData['error']['password'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        }
+        else {
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+          Navigator.pop(context);
+        }
+        Navigator.pop(context);
+      } else {
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
+      }
+  }
+  Future<http.Response> sendSignupRequest() async {
+    var url = ApiUrls.signUpUrl;
+    var request = http.MultipartRequest('POST', Uri.parse(url));
+
+    request.fields["name"] = firstNm.text;
+    request.fields["email_id"] = emailId.text;
+    request.fields["password"] = password.text;
+    request.fields["mobile"] = mobile.text;
+    request.fields["vendor_name"] = createVendor.text;
+    request.fields["state_id"] = selectedStateId;
+    request.fields["city_id"] = selectedCityId;
+    request.fields["area_id"] = selectedAreaId;
+    request.fields["cost_center_id"] = selectedBranchId;
+    request.fields["address"] = address.text;
+    request.fields["pincode"] = pincode.text;
+    request.fields["pancard_number"] = panCardNo.text;
+    request.fields["sales_executive_admin_id"] = selectedSales ?? '';
+    request.fields["b2b_subadmin_id"] = selectedB2b ?? '';
+    request.fields["bank_name"] = bankName.text ?? '';
+    request.fields["ifsc"] = ifscCode.text ?? '';
+    request.fields["account_number"] = accountNo.text ?? '';
+    request.fields["gst_number"] = gstNo.text ?? '';
+
+    if (panCardFile != null) {
+      request.files.add(http.MultipartFile('pancard', panCardFile.readAsBytes().asStream(), panCardFile.lengthSync(), filename: 'pancard.jpg'));
+    }
+    if (addressFile != null) {
+      request.files.add(http.MultipartFile('address_proof', addressFile.readAsBytes().asStream(), addressFile.lengthSync(), filename: 'address_proof.jpg'));
+    }
+    if(aadharCardFFile != null){
+      request.files.add(http.MultipartFile('aadhar_front', aadharCardFFile.readAsBytes().asStream(), aadharCardFFile.lengthSync(), filename: 'aadhar_front.jpg'));
+    }
+    if(aadharCardBFile != null){
+      request.files.add(http.MultipartFile('aadhar_back', aadharCardBFile.readAsBytes().asStream(), aadharCardBFile.lengthSync(), filename: 'aadhar_back.jpg'));
+    }
+    if(checkFile != null){
+      request.files.add(http.MultipartFile('cheque_image', checkFile.readAsBytes().asStream(), checkFile.lengthSync(), filename: 'cheque_image.jpg'));
+    }
+    if(gstFile != null){
+      request.files.add(http.MultipartFile('gst_image', gstFile.readAsBytes().asStream(), gstFile.lengthSync(), filename: 'gst_image.jpg'));
+    }
+
+    var streamedResponse = await request.send();
+    return await http.Response.fromStream(streamedResponse);
+  }*/
+
+
   void _setAgreedToTOS(bool newValue) {
     setState(() {
       _agreedToTOS = newValue;
@@ -1328,30 +1357,35 @@ class _SignUpFormState extends State<SignUpForm> {
       final jsonData = jsonDecode(response.body);
       print("sign jsonData-> $jsonData");
       if (response.statusCode == 200) {
+        print("in if with status->${jsonData['status']}");
         var bodyMSG = jsonData['message'];
         SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        storeStateCityAreaBranch();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => const SplashScreen()),
         );
       } else if (response.statusCode == 400) {
         var errorData = jsonData;
         if (errorData['error']['email_id'] != null) {
           var errorMessage = errorData['error']['email_id'][0];
           SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else if (errorData['error']['sales_executive_admin_id'] != null) {
-          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
+        }else if (errorData['error']['name'] != null) {
+          var errorMessage = errorData['error']['name'][0];
           SnackBarMessageShow.warningMSG(errorMessage, context);
-        }else if (errorData['error']['password'] != null) {
+        }
+        else if (errorData['error']['password'] != null) {
           var errorMessage = errorData['error']['password'][0];
           SnackBarMessageShow.warningMSG(errorMessage, context);
         }
         else {
+          print("in sub else");
           SnackBarMessageShow.warningMSG('Failed to load data', context);
           Navigator.pop(context);
         }
         Navigator.pop(context);
       } else {
+        print("in main else");
         SnackBarMessageShow.warningMSG('Failed to load data', context);
         Navigator.pop(context);
       }
@@ -1361,224 +1395,6 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  /*void signUpData() async {
-    var url = ApiUrls.signUpUrl;
-    try {
-      Map<String, String> headers = {"Content-type": "multipart/form-data"};
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers.addAll(headers);
-
-      Map<String, dynamic> formData = {
-        "name": firstNm.text,
-        "email_id": emailId.text,
-        "password": password.text,
-        "mobile": mobile.text,
-        "vendor_name": createVendor.text,
-        "state_id": selectedStateId,
-        "city_id": selectedCityId,
-        "area_id": selectedAreaId,
-        "cost_center_id": selectedBranchId,
-        "address": address.text,
-        "pincode": pincode.text,
-        "pancard_number": panCardNo.text,
-        "sales_executive_admin_id": selectedSales ?? '',
-        "b2b_subadmin_id": selectedB2b ?? '',
-        "bank_name": bankName.text ?? '',
-        "ifsc": ifscCode.text ?? '',
-        "account_number": accountNo.text ?? '',
-        "gst_number": gstNo.text ?? '',
-      };
-
-      // Add files to the request if they are not null
-      if (panCardFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('pancard', panCardFile.path));
-      }
-      if (addressFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('address_proof', addressFile.path));
-      }
-      if (aadharCardFFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('aadhar_front', aadharCardFFile.path));
-      }
-      if (aadharCardBFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('aadhar_back', aadharCardBFile.path));
-      }
-      if (checkFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('cheque_image', checkFile.path));
-      }
-      if (gstFile != null) {
-        request.files.add(await http.MultipartFile.fromPath('gst_image', gstFile.path));
-      }
-
-      request.fields.addAll(formData);
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      final jsonData = jsonDecode(response.body);
-      print("sign jsonData-> $jsonData");
-      if (response.statusCode == 200) {
-        var bodyMSG = jsonData['message'];
-        SnackBarMessageShow.successsMSG('$bodyMSG', context);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      } else if (response.statusCode == 400) {
-        var errorData = jsonData;
-        if (errorData['error']['email_id'] != null) {
-          var errorMessage = errorData['error']['email_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else if (errorData['error']['sales_executive_admin_id'] != null) {
-          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else {
-          SnackBarMessageShow.warningMSG('Failed to load data', context);
-        }
-        Navigator.pop(context);
-      } else {
-        SnackBarMessageShow.warningMSG('Failed to load data', context);
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      print('Error -> ${e.toString()}');
-      Navigator.pop(context);
-    }
-  }*/
-
-  /*void signUpData() async {
-    var url = ApiUrls.signUpUrl;
-    try {
-      FormData formData = FormData.fromMap({
-        "name": firstNm.text,
-        "email_id": emailId.text,
-        "password": password.text,
-        "mobile": mobile.text,
-        "vendor_name": createVendor.text,
-        "state_id": selectedStateId,
-        'city_id': selectedCityId,
-        'area_id': selectedAreaId,
-        'cost_center_id': selectedBranchId,
-        'address': address.text,
-        'pincode': pincode.text,
-        'pancard': await MultipartFile.fromFile(panCardFile.path),
-        'pancard_number': panCardNo.text,
-        'address_proof': await MultipartFile.fromFile(addressFile.path),
-        'aadhar_front': await MultipartFile.fromFile(aadharCardFFile.path),
-        'aadhar_back': await MultipartFile.fromFile(aadharCardBFile.path),
-        'cheque_image': await MultipartFile.fromFile(checkFile.path),
-        'gst_image': await MultipartFile.fromFile(gstFile.path),
-        'sales_executive_admin_id': selectedSales ?? '',
-        'b2b_subadmin_id': selectedB2b ?? '',
-        'bank_name': bankName.text ?? '',
-        'ifsc': ifscCode.text ?? '',
-        'account_number': accountNo.text ?? '',
-        'gst_number': gstNo.text ?? '',
-      });
-      print('Form -> ${formData.fields}');
-
-      var dio = Dio();
-      dio.interceptors.add(LogInterceptor(responseBody: true));
-
-      var response = await dio.post(url, data: formData);
-      print("Sign Response ->$response");
-      final jsonData = response.data;
-
-      print("sign jsonData-> $jsonData");
-
-      if (jsonData['status'] == 200) {
-        print("in if->${jsonData['status']} / ${jsonData['message']}");
-        var bodyMSG = jsonData['message'];
-        SnackBarMessageShow.successsMSG('$bodyMSG', context);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      } else if (jsonData['status'] == 400) {
-        var errorData = response.data;
-        if (errorData['error']['email_id'] != null) {
-          var errorMessage = errorData['error']['email_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else if (errorData['error']['sales_executive_admin_id'] != null) {
-          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else {
-          SnackBarMessageShow.warningMSG('Failed to load data', context);
-        }
-        Navigator.pop(context);
-      } else {
-        SnackBarMessageShow.warningMSG('Failed to load data', context);
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      print('Error -> ${e.toString()}');
-      Navigator.pop(context);
-    }
-  }*/
-  /*void signUpData() async {
-    var url = ApiUrls.signUpUrl;
-    try {
-      Map<String, String> headers = {"Content-type": "multipart/form-data"};
-      var request = http.MultipartRequest('POST', Uri.parse(url));
-      request.headers.addAll(headers);
-
-      request.fields["name"] = firstNm.text;
-      request.fields["email_id"] = emailId.text;
-      request.fields["password"] = password.text;
-      request.fields["mobile"] = mobile.text;
-      request.fields["vendor_name"] = createVendor.text;
-      request.fields["state_id"] = selectedStateId;
-      request.fields["city_id"] = selectedCityId;
-      request.fields["area_id"] = selectedAreaId;
-      request.fields["cost_center_id"] = selectedBranchId;
-      request.fields["address"] = address.text;
-      request.fields["pincode"] = pincode.text;
-      request.fields["pancard_number"] = panCardNo.text;
-      request.fields["sales_executive_admin_id"] = selectedSales ?? '';
-      request.fields["b2b_subadmin_id"] = selectedB2b ?? '';
-      request.fields["bank_name"] = bankName.text ?? '';
-      request.fields["ifsc"] = ifscCode.text ?? '';
-      request.fields["account_number"] = accountNo.text ?? '';
-      request.fields["gst_number"] = gstNo.text ?? '';
-
-      // Add files as multipart
-      request.files.add(await http.MultipartFile.fromPath('pancard', panCardFile.path));
-      request.files.add(await http.MultipartFile.fromPath('address_proof', addressFile.path));
-      request.files.add(await http.MultipartFile.fromPath('aadhar_front', aadharCardFFile.path));
-      request.files.add(await http.MultipartFile.fromPath('aadhar_back', aadharCardBFile.path));
-      request.files.add(await http.MultipartFile.fromPath('cheque_image', checkFile.path));
-      request.files.add(await http.MultipartFile.fromPath('gst_image', gstFile.path));
-
-      var streamedResponse = await request.send();
-      var response = await http.Response.fromStream(streamedResponse);
-      final jsonData = jsonDecode(response.body);
-      print("sign jsonData-> $jsonData");
-      if (response.statusCode == 200) {
-        var bodyMSG = jsonData['message'];
-        SnackBarMessageShow.successsMSG('$bodyMSG', context);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
-      } else if (response.statusCode == 400) {
-        var errorData = jsonData;
-        if (errorData['error']['email_id'] != null) {
-          var errorMessage = errorData['error']['email_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else if (errorData['error']['sales_executive_admin_id'] != null) {
-          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        } else {
-          SnackBarMessageShow.warningMSG('Failed to load data', context);
-        }
-        Navigator.pop(context);
-      } else {
-        SnackBarMessageShow.warningMSG('Failed to load data', context);
-        Navigator.pop(context);
-      }
-    } catch (e) {
-      print('Error -> ${e.toString()}');
-      Navigator.pop(context);
-    }
-  }*/
   List<StateData> stateList = [];
   String selectedState;
   String selectedStateId;
@@ -1660,7 +1476,6 @@ class _SignUpFormState extends State<SignUpForm> {
         print("b2b -> $b2bSubAdminList");
         print("sales -> $salesExecutiveList");
       } else {
-
       }
     } catch (e) {
       print("B2b & Sales Error -> $e");

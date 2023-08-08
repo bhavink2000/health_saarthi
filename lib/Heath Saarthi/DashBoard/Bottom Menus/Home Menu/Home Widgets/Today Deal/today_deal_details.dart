@@ -89,33 +89,6 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
               ),
             ),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
-            /*Padding(
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Card(
-                elevation: 0,
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 20.h,
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      border: Border.all(color: Colors.grey.withOpacity(1),width: 1),
-                      borderRadius: const BorderRadius.all(Radius.circular(4))
-                  ),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        border: InputBorder.none,
-                        hintText: 'Search for Tests, Package',
-                        hintStyle: const TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),
-                        prefixIcon: const Icon(Icons.search_rounded,size: 20),
-                        focusColor: hsPrime
-                    ),
-                    onChanged: (value) {},
-                  ),
-                ),
-              ),
-            ),*/
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width.w,

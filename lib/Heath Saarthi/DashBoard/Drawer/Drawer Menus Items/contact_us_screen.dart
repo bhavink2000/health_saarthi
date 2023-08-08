@@ -79,9 +79,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${salesPersonNM ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${salesPersonNM ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${salesPersonNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${salesPersonNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -114,9 +114,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${superiorNM ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${superiorNM ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${superiorNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${superiorNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -149,9 +149,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${customerCareNm ?? ''}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${customerCareNm ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${customerCareNo ?? ''}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${customerCareNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),

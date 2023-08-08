@@ -45,7 +45,7 @@ class CartFuture{
       return CartResponseModel(bodyStatus, bodyMsg,count, amount);
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
       return CartResponseModel(500, 'Something went wrong',0,'0.00');
     }
   }
@@ -77,7 +77,7 @@ class CartFuture{
       return CartResponseModel(bodyStatus, bodyMsg,count, amount);
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
       return CartResponseModel(500, 'Something went wrong',0,'0.00');
     }
   }

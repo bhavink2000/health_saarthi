@@ -4,8 +4,8 @@ import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper
 import 'header_signup.dart';
 
 class SignUpScreen extends StatefulWidget {
-  var emailId;
-  SignUpScreen({Key? key,this.emailId}) : super(key: key);
+  var deviceType, deviceToken;
+  SignUpScreen({Key? key,this.deviceType,this.deviceToken}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -23,7 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
           child: Column(
             children: <Widget>[
               HeaderSignUp(),
-              SignUpForm(),
+              SignUpForm(dType: widget.deviceType,dToken: widget.deviceToken),
             ],
           ),
         ),

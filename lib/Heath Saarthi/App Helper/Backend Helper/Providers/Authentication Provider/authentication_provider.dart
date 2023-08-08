@@ -55,27 +55,61 @@ class AuthProvider with ChangeNotifier{
       var errorData = json.decode(jsonString) as Map<String, dynamic>;
       var eError = errorData['error'];
       print("e data->$errorData");
-      if (error is UnAuthorizedException) {
-        SnackBarMessageShow.warningMSG('${eError}', context);
-        Navigator.pop(context);
-        return;
-      }
+      // if (error is UnAuthorizedException) {
+      //   SnackBarMessageShow.warningMSG('${eError}', context);
+      //   Navigator.pop(context);
+      //   return;
+      // }
       var errorDatas = {};
       try {
         var errorString = error.toString();
         print("errorStrig ->$errorString");
+
         var jsonStartIndex = errorString.indexOf('{');
         print("jsonStarti->$jsonStartIndex");
+
         var jsonEndIndex = errorString.lastIndexOf('}');
         print("jsonEndI->$jsonEndIndex");
+
         var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
         print("jsonString->$jsonString");
+
         errorDatas = json.decode(jsonString) as Map<String, dynamic>;
         print("errorDates->$errorDatas");
-        var emailError = errorData['error']['email_id'][0].replaceAll(RegExp(r'\[|\]'), '');
-        print("emailError->$emailError");
-        var passwordError = errorDatas['error']['password'][0] as String;
-        SnackBarMessageShow.warningMSG('$emailError\n$passwordError', context);
+
+
+        //print("email e->${errorDatas['error']['email_id'][0]}");
+        //print("password e->${errorDatas['error']['password'][0]}");
+        print("error e->${errorDatas['error']}");
+
+        if(errorDatas['error'] != null || errorDatas['error']['email_id'][0] == ''){
+          print("in first if");
+          var emailError = errorDatas['error'];
+          print("error ->$emailError");
+          SnackBarMessageShow.warningMSG('$emailError', context);
+        }
+        else if(errorDatas['error']['email_id'][0] != ''){
+          print("in second if");
+          var emailError = errorDatas['error']['email_id'][0];
+          print("email error->$emailError");
+          SnackBarMessageShow.warningMSG('$emailError', context);
+        }
+        else if(errorDatas['error']['password'][0] != ''){
+          print("in third if");
+          var passwordError = errorDatas['error']['password'][0];
+          print("password error->$passwordError");
+          SnackBarMessageShow.warningMSG('$passwordError', context);
+        }
+        else{
+          print("in else");
+        }
+
+        //var emailError = errorDatas['error']['email_id'][0];
+        //print("emailError->$emailError");
+
+        //var passwordError = errorDatas['error']['password'][0] as String;
+        //print("password error->$passwordError");
+        //SnackBarMessageShow.warningMSG('$emailError', context);
         Navigator.pop(context);
       } catch (e) {
         print('Error decoding response: $e');

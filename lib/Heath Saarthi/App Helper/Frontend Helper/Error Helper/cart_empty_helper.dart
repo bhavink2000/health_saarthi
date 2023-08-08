@@ -18,14 +18,6 @@ class _CartEmptyHelperState extends State<CartEmptyHelper> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        /*Container(
-          width: MediaQuery.of(context).size.width / 2.w,
-          height: MediaQuery.of(context).size.height / 8.h,
-          child: const Image(
-            image: AssetImage("assets/Gif/cart_empty.gif"),
-            fit: BoxFit.contain,
-          ),
-        ),*/
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
           child: Text(

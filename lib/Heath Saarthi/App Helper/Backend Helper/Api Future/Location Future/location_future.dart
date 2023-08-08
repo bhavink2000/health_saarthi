@@ -21,10 +21,10 @@ class LocationFuture{
         final data = json.decode(response.body);
         StateModel stateModel = StateModel.fromJson(data);
         List<StateData>? stateList = stateModel.data;
-        print("StateList -> $stateList");
+        print("State List -> $stateList");
         return stateList ?? [];
       } else {
-        // Handle other status codes
+
         throw Exception('Failed to fetch state list');
       }
     } catch (e) {
@@ -46,7 +46,7 @@ class LocationFuture{
         final data = json.decode(response.body);
         CityModel cityModel = CityModel.fromJson(data);
         List<CityData>? cityList = cityModel.data;
-        print("cityList ->$cityList");
+        print("city List ->$cityList");
         return cityList ?? [];
       }
       else{
@@ -72,7 +72,7 @@ class LocationFuture{
         final data = json.decode(response.body);
         AreaModel areaModel = AreaModel.fromJson(data);
         List<AreaData>? areaList = areaModel.data;
-        print("areaList ->$areaList");
+        print("area List ->$areaList");
         return areaList ?? [];
       }
       else{
@@ -98,7 +98,7 @@ class LocationFuture{
         final data = json.decode(response.body);
         BranchModel branchModel = BranchModel.fromJson(data);
         List<BranchData>? branchList = branchModel.data;
-        print("branchList ->$branchList");
+        print("branch List ->$branchList");
         return branchList ?? [];
       }
       else{

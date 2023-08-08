@@ -3,6 +3,7 @@
 
 import 'dart:convert';
 import 'dart:ui';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/cart_empty_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
@@ -13,12 +14,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Models/Authentication Models/user_model.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/cart_calculation.dart';
+import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
+import '../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
+import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
+import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
 import '../../App Helper/Frontend Helper/Error Helper/login_error_helper.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
@@ -36,6 +42,16 @@ class TestCart extends StatefulWidget {
 
 class _TestCartState extends State<TestCart> {
 
+  String sStateName;
+  String sCityName;
+  String sAreaName;
+  String sBranchName;
+  String sStateId;
+  String sCityId;
+  String sAreaId;
+  String sBranchId;
+
+  bool showDLocation = false;
   final promoApply = TextEditingController();
   var grossAmount = '';
   var totalAmount = '';
@@ -46,8 +62,6 @@ class _TestCartState extends State<TestCart> {
   String testD;
   String packageD;
   String profileD;
-  bool showPatient = false;
-  List<FamilyMember> familyMembers = [];
 
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
@@ -70,18 +84,28 @@ class _TestCartState extends State<TestCart> {
       });
     });
   }
+
   var userStatus;
   void getUserStatus()async{
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       setState(() {
         userStatus = userData.data.status;
+        sStateId = userData.data.state.id.toString();
+        sCityId = userData.data.city.id.toString();
+        sAreaId = userData.data.area.id.toString();
+        sStateName = userData.data.state.stateName.toString();
+        sCityName = userData.data.city.cityName.toString();
+        sAreaName = userData.data.area.areaName.toString();
       });
       print("userStatus ==>>$userStatus");
     }catch(e){
       print("get User Status Error->$e");
     }
   }
+
+  String selectLocation;
+  final GlobalKey<FormState> _locationFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -284,12 +308,25 @@ class _TestCartState extends State<TestCart> {
                             SnackBarMessageShow.warningMSG('Cart is empty', context);
                           }
                           else{
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
-                              testDis: testD,
-                              packageDis: packageD,
-                              profileDis: profileD,
-                              promoApply: promoApply.text,
-                            )));
+                            if(selectLocation == null){
+                              SnackBarMessageShow.warningMSG('Please Select location', context);
+                            }
+                            else{
+                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
+                                testDis: testD,
+                                packageDis: packageD,
+                                profileDis: profileD,
+                                promoApply: promoApply.text,
+                                dStateId: selectLocation == 'cLocation' ? sStateId : selectedStateId,
+                                dStateNm: selectLocation == 'cLocation' ? sStateName : selectedState,
+                                dCityId: selectLocation == 'cLocation' ?  sCityId : selectedCityId,
+                                dCityNm: selectLocation == 'cLocation' ? sCityName : selectedCity,
+                                dAreaId: selectLocation == 'cLocation' ? sAreaId : selectedAreaId,
+                                dAreaNm: selectLocation == 'cLocation' ? sAreaName : selectedArea,
+                                dBranchId: selectedBranchId,
+                                dBranchNm: selectedBranch,
+                              )));
+                            }
                           }
                         }
                         else{
@@ -351,6 +388,226 @@ class _TestCartState extends State<TestCart> {
                 ),
               ),
               Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  children: [
+                    Flexible(
+                      child: RadioListTile(
+                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        title: const Text('Current location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                        value: 'cLocation',
+                        groupValue: selectLocation,
+                        onChanged: (value) {
+                          setState(() {
+                            selectLocation = value;
+                            showDLocation = false;
+                            stateList.clear();
+                            selectedState = '';
+                            cityList.clear();
+                            selectedCity = '';
+                            areaList.clear();
+                            selectedArea = '';
+                            branchList.clear();
+                            selectedBranch = '';
+                          });
+                          showCurrentLocation(context);
+                        },
+                      ),
+                    ),
+                    Flexible(
+                      child: RadioListTile(
+                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        title: const Text('Different location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                        value: 'dLocation',
+                        groupValue: selectLocation,
+                        onChanged: (value) {
+                          fetchStateList();
+                          setState(() {
+                            selectLocation = value;
+                            showDLocation = true;
+                          });
+                          //showDifferentLocation(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Visibility(
+                visible: showDLocation,
+                child: Form(
+                  key: _locationFormKey,
+                  child: ExpansionTile(
+                    title: Text('Choose location'),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.w,
+                          //height: MediaQuery.of(context).size.height / 14.h,
+                          child: DropdownSearch<String>(
+                            mode: Mode.DIALOG,
+                            autoValidateMode: AutovalidateMode.onUserInteraction,
+                            showSearchBox: true,
+                            showSelectedItem: true,
+                            items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                            label: "Select state *",
+                            onChanged: (newValue) {
+                              final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                              if (selectedStateObject != null) {
+                                setState(() {
+                                  cityList.clear();
+                                  selectedCity = '';
+                                  areaList.clear();
+                                  selectedArea = '';
+                                  branchList.clear();
+                                  selectedBranch = '';
+                                  selectedState = newValue;
+                                  selectedStateId = selectedStateObject.id.toString();
+                                });
+                                fetchCityList(selectedStateId);
+                              }
+                            },
+                            selectedItem: selectedState,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Select a state';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.w,
+                          //height: MediaQuery.of(context).size.height / 14.h,
+                          child: DropdownSearch<String>(
+                            mode: Mode.DIALOG,
+                            autoValidateMode: AutovalidateMode.onUserInteraction,
+                            showSearchBox: true,
+                            showSelectedItem: true,
+                            items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                            label: "Select city *",
+                            onChanged: (newValue) {
+                              final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                              if (selectedCityObject != null) {
+                                setState(() {
+                                  selectedCity = '';
+                                  areaList.clear();
+                                  selectedArea = '';
+                                  branchList.clear();
+                                  selectedBranch = '';
+                                  selectedCity = newValue;
+                                  selectedCityId = selectedCityObject.id.toString();
+                                  fetchBranchList(selectedStateId, selectedCityId, '');
+                                });
+                                fetchAreaList(selectedStateId, selectedCityId);
+                              }
+                            },
+                            selectedItem: selectedCity,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Select a city';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.w,
+                          //height: MediaQuery.of(context).size.height / 14.h,
+                          child: DropdownSearch<String>(
+                            mode: Mode.DIALOG,
+                            autoValidateMode: AutovalidateMode.onUserInteraction,
+                            showSearchBox: true,
+                            showSelectedItem: true,
+                            items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                            label: "Select area *",
+                            onChanged: (newValue) {
+                              final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                              if (selectedAreaObject != null) {
+                                setState(() {
+                                  //branchList.clear();
+                                  //selectedBranch = '';
+                                  selectedArea = newValue;
+                                  selectedAreaId = selectedAreaObject.id.toString();
+                                  //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                                });
+                              }
+                            },
+                            selectedItem: selectedArea,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Select a area';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width / 1.w,
+                          //height: MediaQuery.of(context).size.height / 14.h,
+                          child: DropdownSearch<String>(
+                            mode: Mode.DIALOG,
+                            autoValidateMode: AutovalidateMode.onUserInteraction,
+                            showSearchBox: true,
+                            showSelectedItem: true,
+                            items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                            label: "Select branch *",
+                            onChanged: (newValue) {
+                              final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                              if (selectedBranchObject != null) {
+                                setState(() {
+                                  selectedBranch = newValue;
+                                  selectedBranchId = selectedBranchObject.id.toString();
+                                });
+                              }
+                            },
+                            selectedItem: selectedBranch,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Select a branch';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          child: TextButton(
+                            onPressed: (){
+                              if(_locationFormKey.currentState.validate()){
+                                FocusScope.of(context).unfocus();
+                                setState(() {
+                                  showDLocation = false;
+                                });
+                              }
+                            },
+                            child: Text('Continue')
+                          ),
+                        )
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              //const Divider(endIndent: 20,indent: 20,thickness: 0.9,),
               ChangeNotifierProvider<HomeMenusProvider>(
                 create: (BuildContext context) => homeMenusProvider,
                 child: Consumer<HomeMenusProvider>(
@@ -382,7 +639,7 @@ class _TestCartState extends State<TestCart> {
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
                               value.cartList.message == 'Token is Expired'
                                   ? TokenExpiredHelper(tokenMsg: value.cartList.message)
-                                  : Center(child: Text('Please check internet connection'),),
+                                  : const Center(child: Text('Please check internet connection'),),
                             ],
                           );
                       case Status.completed:
@@ -468,9 +725,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   Container(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.testItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
+                                                                    child: Text(cartI.testItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.testItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.testItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -663,9 +920,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   SizedBox(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.packageItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
+                                                                    child: Text(cartI.packageItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.packageItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.packageItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -803,8 +1060,8 @@ class _TestCartState extends State<TestCart> {
                                       ) : Center(
                                         child: Column(
                                           children: [
-                                            SizedBox(height: 10),
-                                            Text("Add package",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                            const SizedBox(height: 10),
+                                            const Text("Add package",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
                                                 backgroundColor: hsPrime,
@@ -813,7 +1070,7 @@ class _TestCartState extends State<TestCart> {
                                               onPressed: (){
                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
                                               },
-                                              child: Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                              child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular))
                                             )
                                           ],
                                         ),
@@ -822,8 +1079,8 @@ class _TestCartState extends State<TestCart> {
                                       value.cartList.data.data.cartItems.testItems.isNotEmpty ? Container() : Center(
                                         child: Column(
                                           children: [
-                                            SizedBox(height: 10),
-                                            Text("Add test",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                            const SizedBox(height: 10),
+                                            const Text("Add test",style: TextStyle(fontFamily: FontType.MontserratMedium)),
                                             ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                     backgroundColor: hsPrime,
@@ -832,7 +1089,7 @@ class _TestCartState extends State<TestCart> {
                                                 onPressed: (){
                                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                                                 },
-                                                child: Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                                child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
                                             )
                                           ],
                                         ),
@@ -890,9 +1147,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   SizedBox(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.profileItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 15)),
+                                                                    child: Text(cartI.profileItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.profileItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 12,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.profileItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -1116,9 +1373,317 @@ class _TestCartState extends State<TestCart> {
       //SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
-}
-class FamilyMember {
-  String name;
 
-  FamilyMember({this.name});
+  showCurrentLocation(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: const Text('Current locations',style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
+          content: Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 6,
+                      child: const Text('State',style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    ),
+                    const Text(": "),
+                    Expanded(child: Text('${sStateName == null ? 'N/A' : sStateName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 6,
+                      child: const Text('City ',style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    ),
+                    const Text(": "),
+                    Expanded(child: Text('${sCityName == null ? 'N/A' : sCityName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 6,
+                      child: const Text('Area ',style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    ),
+                    const Text(": "),
+                    Expanded(child: Text('${sAreaName == null ? 'N/A' : sAreaName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width / 6,
+                      child: const Text('Branch',style: TextStyle(fontFamily: FontType.MontserratMedium),),
+                    ),
+                    const Text(": "),
+                    Expanded(child: Text('${sBranchName == null ? 'N/A' : sBranchName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: (){
+                Navigator.pop(context);
+              },
+              child: const Text('Continue',style: TextStyle(fontFamily: FontType.MontserratMedium))
+            )
+          ],
+        );
+      }
+    );
+  }
+
+  /*showDifferentLocation(BuildContext context){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return StatefulBuilder(
+          builder: (context, setState){
+            return AlertDialog(
+              title: const Text("Different location", style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1.w,
+                      //height: MediaQuery.of(context).size.height / 14.h,
+                      child: DropdownSearch<String>(
+                        mode: Mode.DIALOG,
+                        showSearchBox: true,
+                        showSelectedItem: true,
+                        items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                        label: "Select state *",
+                        onChanged: (newValue) {
+                          final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                          if (selectedStateObject != null) {
+                            setState(() {
+                              cityList.clear();
+                              selectedCity = '';
+                              areaList.clear();
+                              selectedArea = '';
+                              branchList.clear();
+                              selectedBranch = '';
+                              selectedState = newValue;
+                              selectedStateId = selectedStateObject.id.toString();
+                            });
+                            fetchCityList(selectedStateId);
+                          }
+                        },
+                        selectedItem: selectedState,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Select a state';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1.w,
+                      //height: MediaQuery.of(context).size.height / 14.h,
+                      child: DropdownSearch<String>(
+                        mode: Mode.DIALOG,
+                        showSearchBox: true,
+                        showSelectedItem: true,
+                        items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                        label: "Select city *",
+                        onChanged: (newValue) {
+                          final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                          if (selectedCityObject != null) {
+                            setState(() {
+                              selectedCity = '';
+                              areaList.clear();
+                              selectedArea = '';
+                              branchList.clear();
+                              selectedBranch = '';
+                              selectedCity = newValue;
+                              selectedCityId = selectedCityObject.id.toString();
+                              fetchBranchList(selectedStateId, selectedCityId, '');
+                            });
+                            fetchAreaList(selectedStateId, selectedCityId);
+                          }
+                        },
+                        selectedItem: selectedCity,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Select a city';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1.w,
+                      //height: MediaQuery.of(context).size.height / 14.h,
+                      child: DropdownSearch<String>(
+                        mode: Mode.DIALOG,
+                        showSearchBox: true,
+                        showSelectedItem: true,
+                        items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                        label: "Select area *",
+                        onChanged: (newValue) {
+                          final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                          if (selectedAreaObject != null) {
+                            setState(() {
+                              //branchList.clear();
+                              //selectedBranch = '';
+                              selectedArea = newValue;
+                              selectedAreaId = selectedAreaObject.id.toString();
+                              //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                            });
+                          }
+                        },
+                        selectedItem: selectedArea,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Select a area';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1.w,
+                      //height: MediaQuery.of(context).size.height / 14.h,
+                      child: DropdownSearch<String>(
+                        mode: Mode.DIALOG,
+                        showSearchBox: true,
+                        showSelectedItem: true,
+                        items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                        label: "Select branch *",
+                        onChanged: (newValue) {
+                          final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                          if (selectedBranchObject != null) {
+                            setState(() {
+                              selectedBranch = newValue;
+                              selectedBranchId = selectedBranchObject.id.toString();
+                            });
+                          }
+                        },
+                        selectedItem: selectedBranch,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Select a branch';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: (){
+                      setState((){
+                        selectedStateId = '';
+                        selectedState = '';
+                        selectedCityId = '';
+                        selectedCity = '';
+                        selectedAreaId = '';
+                        selectedArea = '';
+                        selectedBranchId = '';
+                        selectedBranch = '';
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Cancel',style: TextStyle(fontFamily: FontType.MontserratMedium))
+                ),
+                TextButton(
+                    onPressed: (){
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Continue',style: TextStyle(fontFamily: FontType.MontserratMedium))
+                ),
+              ],
+            );
+          },
+        );
+      }
+    );
+  }*/
+
+  List<StateData> stateList = [];
+  String selectedState;
+  String selectedStateId;
+  Future<void> fetchStateList() async {
+    try {
+      LocationFuture locationFuture = LocationFuture();
+      List<StateData> list = await locationFuture.getState();
+      setState(() {
+        stateList = list;
+      });
+    } catch (e) {
+      print("State Error -> $e");
+    }
+  }
+
+  List<CityData> cityList = [];
+  String selectedCity;
+  String selectedCityId;
+  Future<void> fetchCityList(var sState) async {
+    try {
+      LocationFuture locationFuture = LocationFuture();
+      List<CityData> list = await locationFuture.getCity(sState);
+      setState(() {
+        cityList = list;
+      });
+    } catch (e) {
+      print("City Error -> $e");
+    }
+  }
+
+  List<AreaData> areaList = [];
+  String selectedArea;
+  String selectedAreaId;
+  Future<void> fetchAreaList(var sState, var sCity) async {
+    try {
+      LocationFuture locationFuture = LocationFuture();
+      List<AreaData> list = await locationFuture.getArea(sState,sCity);
+      setState(() {
+        areaList = list;
+      });
+    } catch (e) {
+      print("Area Error -> $e");
+    }
+  }
+
+  List<BranchData> branchList = [];
+  String selectedBranch;
+  String selectedBranchId;
+  Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    try {
+      LocationFuture locationFuture = LocationFuture();
+      List<BranchData> list = await locationFuture.getBranch(sState,sCity,sArea);
+      setState(() {
+        branchList = list;
+      });
+    } catch (e) {
+      print("Branch Error -> $e");
+    }
+  }
 }

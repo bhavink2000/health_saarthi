@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/update_app_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -15,8 +16,6 @@ import '../../../App Helper/Backend Helper/Providers/Authentication Provider/aut
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Loading Helper/loading_indicator.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
-import '../../Sign up Screen/Email & OTP Verify/email_verify.dart';
-import 'custom_button.dart';
 import 'fade_slide_transition.dart';
 
 class LoginForm extends StatefulWidget {
@@ -59,62 +58,14 @@ class _LoginFormState extends State<LoginForm> {
       } else {
         var data = json.decode(value);
         if (data['status'] == 200) {
+
           print("version status${data['status']}");
-          //LoadingIndicater().onLoadExit(false, context);
-          //Navigator.pop(context);
         } else if (data['status'] == 201) {
           setState(() {
             updateMsg = data['message'];
             appVersion = data['app_version'];
           });
-          showDialog(
-              context: context,
-              builder: (BuildContext context){
-                return StatefulBuilder(
-                  builder: (context, setState){
-                    return BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                      child: AlertDialog(
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(25))),
-                        contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
-                        content: Container(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          height: MediaQuery.of(context).size.height / 2.9,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text("About update?",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18,fontWeight: FontWeight.bold)),
-                              Text("$updateMsg Version $appVersion is now available - \nYour current app version 1.0",style: const TextStyle(fontFamily: FontType.MontserratLight),),
-                              const SizedBox(height: 10,),
-                              const Text("Would you like to update it now?",style: TextStyle(fontFamily: FontType.MontserratLight)),
-                              const SizedBox(height: 10),
-                              const Text("Release Notes:",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
-                              const SizedBox(height: 5),
-                              const Text("Minor update and \nimprovement",style: TextStyle(fontFamily: FontType.MontserratLight),),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                      onPressed: (){
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("Later")
-                                  ),
-                                  TextButton(
-                                      onPressed: (){},
-                                      child: const Text("Update Now")
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-          );
+          UpdateAppDialog.showUpdateAppDialog(context, updateMsg, appVersion);
         } else {
           var errorMsg = data['error']['device_token'];
           print("Error->$errorMsg");

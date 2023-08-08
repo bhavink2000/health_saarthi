@@ -140,6 +140,7 @@ class GlobalSearch extends SearchDelegate{
                                         area: item['area_id'],
                                         accessToken: accessToken,
                                         packageId: item['id'],
+                                        bookedStatus: item['booked_status'],
                                       )));
                                     }
                                     else{
@@ -157,6 +158,7 @@ class GlobalSearch extends SearchDelegate{
                                         area: item['area_id'],
                                         accessToken: accessToken,
                                         testId: item['id'],
+                                        bookedStatus: item['booked_status'],
                                       )));
                                     }
                                   },
@@ -176,81 +178,6 @@ class GlobalSearch extends SearchDelegate{
                     ],
                   ),
                 ),
-                /*child: Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  shadowColor: Colors.grey.withOpacity(0.8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("${item['service_name']}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold)),
-                            SizedBox(height: 5.h,),
-                            Text("${item['specimen_volume']}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black54,fontSize: 12.sp),)
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-                        child: Row(
-                          children: [
-                            Text("\u{20B9}${item['mrp_amount']}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: Colors.black,fontWeight: FontWeight.bold)),
-                            const Spacer(),
-                            InkWell(
-                              onTap: (){
-                                if(item['is_package'] == 1){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                    title: item['service_name'],
-                                    mrp: item['mrp_amount'],
-                                    serviceCode: item['service_code'],
-                                    collect: item['collect'],
-                                    serviceClassification: item['service_classification'],
-                                    serviceVolume: item['specimen_volume'],
-                                    orderingInfo: item['ordering_info'],
-                                    reported: item['ordering_info'],
-                                    state: item['state_id'],
-                                    city: item['city_id'],
-                                    area: item['area_id'],
-                                    accessToken: accessToken,
-                                    packageId: item['id'],
-                                  )));
-                                }
-                                else{
-                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-                                    title: item['service_name'],
-                                    mrp: item['mrp_amount'],
-                                    serviceCode: item['service_code'],
-                                    collect: item['collect'],
-                                    serviceClassification: item['service_classification'],
-                                    serviceVolume: item['specimen_volume'],
-                                    orderingInfo: item['ordering_info'],
-                                    reported: item['ordering_info'],
-                                    state: item['state_id'],
-                                    city: item['city_id'],
-                                    area: item['area_id'],
-                                    accessToken: accessToken,
-                                    testId: item['id'],
-                                  )));
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),
-                                  color: item['is_package'] == 1 ? hsPackageColor : hsTestColor
-                                ),
-                                padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                                child: Text("+ Know More",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white)),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),*/
               );
             },
           );

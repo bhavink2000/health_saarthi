@@ -341,34 +341,4 @@ class _TestListItemsState extends State<TestListItems> {
       ),
     );
   }
-
-  //var bodyMsg;
-  /*Future<void> addToCartTest(var testId) async {
-    Map<String, String> headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
-    };
-    try {
-      final response = await http.post(
-        Uri.parse(ApiUrls.addItemsUrls),
-        headers: headers,
-        body: {
-          'test_managements_id': testId.toString()
-        }
-      );
-      final responseData = json.decode(response.body);
-
-      var bodyStatus = responseData['status'];
-      bodyMsg = responseData['message'];
-
-      if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
-      } else {
-        SnackBarMessageShow.errorMSG('$bodyMsg', context);
-      }
-    } catch (error) {
-      print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
-    }
-  }*/
 }

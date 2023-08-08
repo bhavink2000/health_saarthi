@@ -9,6 +9,7 @@ class PackageItemsDetails extends StatefulWidget {
   var imageBaner;
   var title,mrp,serviceCode,collect,serviceClassification,serviceVolume,orderingInfo,reported;
   var state,city,area,branch,accessToken,packageId,bookedStatus;
+  var itemStatus;
   PackageItemsDetails({Key key,
     this.imageBaner,this.title,this.mrp,this.serviceCode,this.collect,this.serviceClassification,this.serviceVolume,
     this.orderingInfo,this.reported,this.state,this.city,this.area,this.branch,this.accessToken,this.packageId,this.bookedStatus

@@ -29,37 +29,4 @@ class ProfileFuture{
       throw Exception('Request failed with status: ${response.statusCode}.');
     }
   }
-
-  // Future<UserModel> fetchUser(String userEmail, String userPassword,BuildContext context) async {
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse(ApiUrls.loginUrl),
-  //       body: {
-  //         'email_id': userEmail,
-  //         'password': userPassword,
-  //       },
-  //     );
-  //     var jsonResponse = json.decode(response.body);
-  //     print("User Response -> ${response.body}");
-  //     if (response.statusCode == 200) {
-  //       final jsonBody = json.decode(response.body);
-  //       if (jsonBody.containsKey('status') && jsonResponse['status'] == 200) {
-  //         return UserModel.fromJson(jsonBody);
-  //       } else {
-  //         throw Exception('Failed to fetch user: Invalid status code');
-  //       }
-  //     }
-  //     else if (jsonResponse['status'] == 400){
-  //       var errorMsg = jsonResponse['error'];
-  //       SnackBarMessageShow.warningMSG('$errorMsg', context);
-  //       return errorMsg;
-  //     }
-  //     else {
-  //       throw Exception('Failed to fetch user: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     print("fetch User error->$e");
-  //     throw Exception('Failed to fetch user: $e');
-  //   }
-  // }
 }

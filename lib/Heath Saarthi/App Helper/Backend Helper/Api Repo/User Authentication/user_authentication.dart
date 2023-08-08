@@ -7,7 +7,7 @@ class UserAuthentication {
   ApiServicesTypePostGet apiServicesTypePostGet = ApiServicePostGet();
 
   Future<dynamic> loginApi(dynamic data) async {
-    print("login api data->$data"); // Add this line to check the value of 'data'
+    print("login api data->$data");
     try {
       dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
       return response;

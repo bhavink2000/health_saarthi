@@ -270,7 +270,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Email id *',
+                              hintText: 'Email id',
                               hintStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
@@ -279,22 +279,15 @@ class _InstantBookingState extends State<InstantBooking> {
                               prefixIcon: Icon(Icons.email, color: hsBlack, size: 20),
                             ),
                             onChanged: (value) {
-                              if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                // Password meets all the requirements
-                              } else if (!value.contains('gmail.com')) {
-                                return 'Email id must contain "gmail.com"';
-                              }else {
-                                print('Please enter valid email id');
-                              }
+                              _formKey.currentState?.validate(); // Trigger validation manually
                             },
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email id';
+                              if (value != null && value.isNotEmpty) {
+                                if (!value.contains('@')) {
+                                  return 'Email id must contain "@" symbol';
+                                }
                               }
-                              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                return 'email id must contain at least one special character';
-                              }
-                              return null;
+                              return null; // Return null if no validation error
                             },
                           ),
                         ),
@@ -381,6 +374,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             //height: MediaQuery.of(context).size.height / 14.h,
                             child: DropdownSearch<String>(
                               mode: Mode.DIALOG,
+                              autoValidateMode: AutovalidateMode.onUserInteraction,
                               showSearchBox: true,
                               showSelectedItem: true,
                               items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
@@ -389,7 +383,9 @@ class _InstantBookingState extends State<InstantBooking> {
                                 final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
                                 if (selectedStateObject != null) {
                                   setState(() {
+                                    cityList.clear();
                                     selectedCity = '';
+                                    areaList.clear();
                                     selectedArea = '';
                                     selectedState = newValue;
                                     selectedStateId = selectedStateObject.id.toString();
@@ -415,6 +411,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             //height: MediaQuery.of(context).size.height / 14.h,
                             child: DropdownSearch<String>(
                               mode: Mode.DIALOG,
+                              autoValidateMode: AutovalidateMode.onUserInteraction,
                               showSearchBox: true,
                               showSelectedItem: true,
                               items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
@@ -424,6 +421,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                 if (selectedCityObject != null) {
                                   setState(() {
                                     selectedCity = '';
+                                    areaList.clear();
                                     selectedArea = '';
                                     selectedCity = newValue;
                                     selectedCityId = selectedCityObject.id.toString();
@@ -449,6 +447,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             //height: MediaQuery.of(context).size.height / 14.h,
                             child: DropdownSearch<String>(
                               mode: Mode.DIALOG,
+                              autoValidateMode: AutovalidateMode.onUserInteraction,
                               showSearchBox: true,
                               showSelectedItem: true,
                               items: areaList?.map((area) => area.areaName)?.toList() ?? [],
@@ -491,7 +490,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              hintText: 'Collection date *',
+                              hintText: 'Collection date',
                               hintStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,

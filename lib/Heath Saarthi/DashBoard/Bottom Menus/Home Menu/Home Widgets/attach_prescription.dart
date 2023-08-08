@@ -326,7 +326,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                     borderRadius: BorderRadius.circular(15)
                                 ),
-                                hintText: 'Email id *',
+                                hintText: 'Email id',
                                 hintStyle: const TextStyle(
                                   color: Colors.black54,
                                   fontFamily: FontType.MontserratRegular,
@@ -335,22 +335,15 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 prefixIcon: const Icon(Icons.email, color: hsBlack, size: 20),
                               ),
                               onChanged: (value) {
-                                if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                  // Password meets all the requirements
-                                } else if (!value.contains('gmail.com')) {
-                                  return 'Email id must contain "gmail.com"';
-                                }else {
-                                  print('Please enter valid email id');
-                                }
+                                _formKey.currentState?.validate(); // Trigger validation manually
                               },
                               validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter email id';
+                                if (value != null && value.isNotEmpty) {
+                                  if (!value.contains('@')) {
+                                    return 'Email id must contain "@" symbol';
+                                  }
                                 }
-                                if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                  return 'email id must contain at least one special character';
-                                }
-                                return null;
+                                return null; // Return null if no validation error
                               },
                             ),
                           ),
@@ -436,6 +429,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               //height: MediaQuery.of(context).size.height / 14.h,
                               child: DropdownSearch<String>(
                                 mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 showSearchBox: true,
                                 showSelectedItem: true,
                                 items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
@@ -444,7 +438,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
                                   if (selectedStateObject != null) {
                                     setState(() {
+                                      cityList.clear();
                                       selectedCity = '';
+                                      areaList.clear();
                                       selectedArea = '';
                                       selectedState = newValue;
                                       selectedStateId = selectedStateObject.id.toString();
@@ -470,6 +466,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               //height: MediaQuery.of(context).size.height / 14.h,
                               child: DropdownSearch<String>(
                                 mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 showSearchBox: true,
                                 showSelectedItem: true,
                                 items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
@@ -479,6 +476,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   if (selectedCityObject != null) {
                                     setState(() {
                                       selectedCity = '';
+                                      areaList.clear();
                                       selectedArea = '';
                                       selectedCity = newValue;
                                       selectedCityId = selectedCityObject.id.toString();
@@ -504,6 +502,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               //height: MediaQuery.of(context).size.height / 14.h,
                               child: DropdownSearch<String>(
                                 mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 showSearchBox: true,
                                 showSelectedItem: true,
                                 items: areaList?.map((area) => area.areaName)?.toList() ?? [],
@@ -545,7 +544,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15),
                                 ),
-                                hintText: 'Collection date *',
+                                hintText: 'Collection date',
                                 hintStyle: const TextStyle(
                                   color: Colors.black54,
                                   fontFamily: FontType.MontserratRegular,
@@ -723,7 +722,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       selectedStateId = pModel.patientData.state.id.toString();
       selectedCityId = pModel.patientData.city.id.toString();
       selectedAreaId = pModel.patientData.area.id.toString();
-
       pinCode.text = pModel.patientData.pincode.toString();
     } catch (e) {
       print('Error: $e');

@@ -27,7 +27,12 @@ import '../Bottom Menus/Test Menu/thank_you_msg.dart';
 
 class TestBookingScreen extends StatefulWidget {
   var testDis,packageDis,profileDis,promoApply;
-  TestBookingScreen({Key key,this.testDis,this.packageDis,this.profileDis,this.promoApply}) : super(key: key);
+  var dStateId,dCityId,dAreaId,dBranchId,dStateNm,dCityNm,dAreaNm,dBranchNm;
+  var locationType;
+  TestBookingScreen({Key key,this.testDis,this.packageDis,this.profileDis,this.promoApply,
+  this.dStateId,this.dCityId,this.dAreaId,this.dBranchId,this.dStateNm,this.dCityNm,this.dAreaNm,this.dBranchNm,
+    this.locationType
+  }) : super(key: key);
 
   @override
   State<TestBookingScreen> createState() => _TestBookingScreenState();
@@ -62,21 +67,9 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
         fetchMobileList();
       });
     });
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        fetchStateList();
-      });
-    });
   }
 
   final _formKey = GlobalKey<FormState>();
-  void resetCityAndAreaSelection() {
-    setState(() {
-      selectedCity = null;
-      selectedArea = null;
-    });
-    fetchStateList();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -365,109 +358,11 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                           ),
                         ),
 
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 1.w,
-                            //height: MediaQuery.of(context).size.height / 14.h,
-                            child: DropdownSearch<String>(
-                              autoValidateMode: AutovalidateMode.onUserInteraction,
-                              mode: Mode.DIALOG,
-                              showSearchBox: true,
-                              showSelectedItem: true,
-                              items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                              label: "Select state *",
-                              onChanged: (newValue) {
-                                final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
-                                if (selectedStateObject != null) {
-                                  setState(() {
-                                    selectedCity = '';
-                                    selectedArea = '';
-                                    selectedState = newValue;
-                                    selectedStateId = selectedStateObject.id.toString();
-                                  });
-                                  fetchCityList(selectedStateId);
-                                }
-                              },
-                              selectedItem: selectedState,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Select a state';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15,),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 1.w,
-                            //height: MediaQuery.of(context).size.height / 14.h,
-                            child: DropdownSearch<String>(
-                              mode: Mode.DIALOG,
-                              autoValidateMode: AutovalidateMode.onUserInteraction,
-                              showSearchBox: true,
-                              showSelectedItem: true,
-                              items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                              label: "Select city *",
-                              onChanged: (newValue) {
-                                final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
-                                if (selectedCityObject != null) {
-                                  setState(() {
-                                    selectedCity = '';
-                                    selectedArea = '';
-                                    selectedCity = newValue;
-                                    selectedCityId = selectedCityObject.id.toString();
-                                  });
-                                  fetchAreaList(selectedStateId, selectedCityId);
-                                }
-                              },
-                              selectedItem: selectedCity,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Select a city';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 15,),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 1.w,
-                            //height: MediaQuery.of(context).size.height / 14.h,
-                            child: DropdownSearch<String>(
-                              autoValidateMode: AutovalidateMode.onUserInteraction,
-                              mode: Mode.DIALOG,
-                              showSearchBox: true,
-                              showSelectedItem: true,
-                              items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                              label: "Select area *",
-                              onChanged: (newValue) {
-                                final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
-                                if (selectedAreaObject != null) {
-                                  setState(() {
-                                    selectedArea = newValue;
-                                    selectedAreaId = selectedAreaObject.id.toString();
-                                  });
-                                }
-                              },
-                              selectedItem: selectedArea,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Select a area';
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                        ),
+                        locationField('${widget.dStateNm == '' ? 'N/A' : widget.dStateNm}'),
+                        locationField('${widget.dCityNm == '' ? 'N/A' : widget.dCityNm}'),
+                        locationField('${widget.dAreaNm == '' ? 'N/A' : widget.dAreaNm}'),
+                        locationField('${widget.dBranchNm == '' ? 'N/A': widget.dBranchNm}'),
 
-                        SizedBox(height: 10.h),
                         Padding(
                           padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
@@ -529,7 +424,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Pin code *',
+                              hintText: 'Pin code',
                               hintStyle: const TextStyle(
                                   color: Colors.black54,
                                   fontFamily: FontType.MontserratRegular,
@@ -537,12 +432,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               ),
                               prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
                             ),
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Enter pin code';
-                            //   }
-                            //   return null;
-                            // },
                           ),
                         ),
 
@@ -563,7 +452,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Remark *',
+                              hintText: 'Remark',
                               hintStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
@@ -571,13 +460,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               ),
                               prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
                             ),
-
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Please enter Remark';
-                            //   }
-                            //   return null;
-                            // }, // Set the validator function
                           ),
                         ),
 
@@ -587,31 +469,26 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             onTap: ()async{
                               if (_formKey.currentState.validate()) {
                                 FocusScope.of(context).unfocus();
-                                if(selectedState == null || selectedCity == null || selectedArea == null){
-                                  SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
-                                }
-                                else{
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: const [
-                                              CircularProgressIndicator(),
-                                              SizedBox(height: 16.0),
-                                              Text('Loading...'),
-                                            ],
-                                          ),
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return Dialog(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: const [
+                                            CircularProgressIndicator(),
+                                            SizedBox(height: 16.0),
+                                            Text('Loading...'),
+                                          ],
                                         ),
-                                      );
-                                    },
-                                  );
-                                  await bookOrder();
-                                }
+                                      ),
+                                    );
+                                  },
+                                );
+                                await bookOrder();
                               }
                             },
                             child: Container(
@@ -647,51 +524,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     }
   }
 
-  List<StateData> stateList = [];
-  String selectedState;
-  String selectedStateId;
-  Future<void> fetchStateList() async {
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<StateData> list = await locationFuture.getState();
-      setState(() {
-        stateList = list;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
-  List<CityData> cityList = [];
-  String selectedCity;
-  String selectedCityId;
-  Future<void> fetchCityList(var sState) async {
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<CityData> list = await locationFuture.getCity(sState);
-      setState(() {
-        cityList = list;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
-  List<AreaData> areaList = [];
-  String selectedArea;
-  String selectedAreaId;
-  Future<void> fetchAreaList(var sState, var sCity) async {
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<AreaData> list = await locationFuture.getArea(sState,sCity);
-      setState(() {
-        areaList = list;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
@@ -705,12 +537,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
         emailId.text = pModel.patientData.emailId.toString();
         address.text = pModel.patientData.address.toString();
         selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
-        selectedState = pModel.patientData.state.stateName.toString();
-        selectedCity = pModel.patientData.city.cityName.toString();
-        selectedArea = pModel.patientData.area.areaName.toString();
-        selectedStateId = pModel.patientData.state.id.toString();
-        selectedCityId = pModel.patientData.city.id.toString();
-        selectedAreaId = pModel.patientData.area.id.toString();
         pinCode.text = pModel.patientData.pincode.toString();
       });
     } catch (e) {
@@ -741,9 +567,9 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       "gender": '$pGender',
       "date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
-      "state_id": selectedStateId ?? '',
-      'city_id': selectedCityId ?? '',
-      'area_id': selectedAreaId ?? '',
+      "state_id": widget.dStateId ?? '',
+      'city_id': widget.dCityId ?? '',
+      'area_id': widget.dAreaId ?? '',
       'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
@@ -772,8 +598,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             final bodyMsg = responseData['error']['email_id'][0];
             SnackBarMessageShow.warningMSG('$bodyMsg', context);
             Navigator.pop(context);
-          } else if (responseData['error']['pincode'] != null) {
-            final bodyMsg = responseData['error']['pincode'][0];
+          } else if (responseData['error']['mobile_no'] != null) {
+            final bodyMsg = responseData['error']['mobile_no'][0];
             SnackBarMessageShow.warningMSG('$bodyMsg', context);
             Navigator.pop(context);
           } else if (responseData['error']['address'] != null) {
@@ -820,6 +646,34 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
         ),
         validator: validator, // Set the validator function
       ),
+    );
+  }
+
+  Widget locationField(var lName){
+    return Padding(
+        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
+        child: TextField(
+          readOnly: true,
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(hsPaddingM),
+            border: OutlineInputBorder(),
+            focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                borderRadius: BorderRadius.circular(15)
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                borderRadius: BorderRadius.circular(15)
+            ),
+            hintText: '$lName',
+            hintStyle: const TextStyle(
+              color: Colors.black54,
+              fontFamily: FontType.MontserratRegular,
+              fontSize: 14,
+            ),
+            //prefixIcon: Icon(iconData, color: hsBlack, size: 20),
+          ),
+        )
     );
   }
 }

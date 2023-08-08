@@ -47,17 +47,15 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         setState(() {
           deviceToken = value;
-          print("setState deviceToken->$deviceToken");
         });
         storeDeviceToken(value).then((_) {
           retrieveDeviceDetails().then((value) {
-            print("value->>>>$value");
+            print("retrive Device token value->>>>$value");
             if (deviceToken == '' ||
                 value == '' ||
                 deviceToken == null ||
                 value == null) {
               print("Do not get device token\nplease restart the app");
-              //SnackBarMessageShow.warningMSG('Do not get Device Token\nplease restart the app', context);
             } else {
               print("check Device Token->$deviceToken");
               print("check Device type->$deviceType");
@@ -74,8 +72,8 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
-      print("Access Token => ${value.accessToken}");
-      print("UserStatus => ${value.userStatus}");
+      print("checkAuth Access Token => ${value.accessToken}");
+      print("checkAuth UserStatus => ${value.userStatus}");
       if (value.accessToken == "null") {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
@@ -121,8 +119,8 @@ class _SplashScreenState extends State<SplashScreen> {
       });
       return deviceType;
     }
-    print('Device Type: $deviceType');
-    print('Device Version: $deviceVersion');
+    print('retrieve Device Type: $deviceType');
+    print('retrieve Device Version: $deviceVersion');
   }
   @override
   Widget build(BuildContext context) {
