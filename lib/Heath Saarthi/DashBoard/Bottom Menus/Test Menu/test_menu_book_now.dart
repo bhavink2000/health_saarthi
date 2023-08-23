@@ -13,10 +13,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:search_choices/search_choices.dart';
 import '../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
+import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
+import '../../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
@@ -44,12 +46,23 @@ class _TestMenuState extends State<TestMenu> {
   final pName = TextEditingController();
   final pMobile = TextEditingController();
 
+  bool stateLoading = false;
+  bool cityLoading = false;
+  bool areaLoading = false;
+  bool branchLoading = false;
+
   GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     colletionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+    Future.delayed(const Duration(seconds: 1),(){
+      setState(() {
+        getUserStatus();
+      });
+    });
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
         fetchMobileList();
@@ -68,6 +81,45 @@ class _TestMenuState extends State<TestMenu> {
       selectedArea = null;
     });
     fetchStateList();
+  }
+  var userStatus;
+  void getUserStatus()async{
+    try{
+      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      if (userData != null && userData.data != null) {
+        print("user Status -->> ${userData.data.status}");
+        setState(() {
+          userStatus = userData.data.status;
+        });
+        if (userStatus == 0) {
+          print("in if userStatus->$userStatus");
+        }
+      } else {
+        print('Failed to fetch user: User data is null');
+      }
+      print("userStatus ==>>$userStatus");
+    }catch(e){
+      print("get User Status Error->$e");
+    }
+  }
+
+  @override
+  void dispose() {
+    selectedMobileNo = '';
+    selectedGender = '';
+    remark.text = '';
+    pName.text = '';
+    emailId.text = '';
+    pMobile.text = '';
+    pDob.text = '';
+    pAge.text = '';
+    pinCode.text = '';
+    address.text = '';
+    selectedState = '';
+    selectedCity = '';
+    selectedArea = '';
+    selectedBranch = '';
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -287,6 +339,7 @@ class _TestMenuState extends State<TestMenu> {
                     children: [
                       Flexible(
                         child: RadioListTile(
+                          dense: true,
                           contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                           value: 'Female',
@@ -300,6 +353,7 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       Flexible(
                         child: RadioListTile(
+                          dense: true,
                           contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                           value: 'Male',
@@ -313,6 +367,7 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                       Flexible(
                         child: RadioListTile(
+                          dense: true,
                           contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
                           value: 'Other',
@@ -329,107 +384,194 @@ class _TestMenuState extends State<TestMenu> {
                     ],
                   ),
                 ),
+
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.w,
                     //height: MediaQuery.of(context).size.height / 14.h,
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                      label: "Select state *",
-                      onChanged: (newValue) {
-                        final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
-                        if (selectedStateObject != null) {
-                          setState(() {
-                            cityList.clear();
-                            selectedCity = '';
-                            areaList.clear();
-                            selectedArea = '';
-                            selectedState = newValue;
-                            selectedStateId = selectedStateObject.id.toString();
-                          });
-                          fetchCityList(selectedStateId);
-                        }
-                      },
-                      selectedItem: selectedState,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Select a state';
-                        }
-                        return null;
-                      },
+                    child: Stack(
+                      children: [
+                        Visibility(
+                          visible: stateLoading,
+                          child: Positioned(
+                            top: 10,
+                            right: 5,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        DropdownSearch<String>(
+                          mode: Mode.DIALOG,
+                          autoValidateMode: AutovalidateMode.onUserInteraction,
+                          showSearchBox: true,
+                          showSelectedItem: true,
+                          items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                          label: "Select state *",
+                          onChanged: (newValue) {
+                            final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                            if (selectedStateObject != null) {
+                              setState(() {
+                                cityList.clear();
+                                selectedCity = '';
+                                areaList.clear();
+                                selectedArea = '';
+                                branchList.clear();
+                                selectedBranch = '';
+                                selectedState = newValue;
+                                selectedStateId = selectedStateObject.id.toString();
+                              });
+                              fetchCityList(selectedStateId);
+                            }
+                          },
+                          selectedItem: selectedState,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select a state';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.w,
-                    //height: MediaQuery.of(context).size.height / 14.h,
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                      label: "Select city *",
-                      onChanged: (newValue) {
-                        final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
-                        if (selectedCityObject != null) {
-                          setState(() {
-                            selectedCity = '';
-                            areaList.clear();
-                            selectedArea = '';
-                            selectedCity = newValue;
-                            selectedCityId = selectedCityObject.id.toString();
-                          });
-                          fetchAreaList(selectedStateId, selectedCityId);
-                        }
-                      },
-                      selectedItem: selectedCity,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Select a city';
-                        }
-                        return null;
-                      },
+                    child: Stack(
+                      children: [
+                        Visibility(
+                          visible: cityLoading,
+                          child: Positioned(
+                            top: 10,
+                            right: 5,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        DropdownSearch<String>(
+                          mode: Mode.DIALOG,
+                          autoValidateMode: AutovalidateMode.onUserInteraction,
+                          showSearchBox: true,
+                          showSelectedItem: true,
+                          items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                          label: "Select city *",
+                          onChanged: (newValue) {
+                            final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                            if (selectedCityObject != null) {
+                              setState(() {
+                                selectedCity = '';
+                                areaList.clear();
+                                selectedArea = '';
+                                branchList.clear();
+                                selectedBranch = '';
+                                selectedCity = newValue;
+                                selectedCityId = selectedCityObject.id.toString();
+                              });
+                              fetchAreaList(selectedStateId, selectedCityId);
+                            }
+                          },
+                          selectedItem: selectedCity,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select a city';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.w,
                     //height: MediaQuery.of(context).size.height / 14.h,
-                    child: DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                      label: "Select area *",
-                      onChanged: (newValue) {
-                        final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
-                        if (selectedAreaObject != null) {
-                          setState(() {
-                            selectedArea = newValue;
-                            selectedAreaId = selectedAreaObject.id.toString();
-                          });
-                        }
-                      },
-                      selectedItem: selectedArea,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Select a area';
-                        }
-                        return null;
-                      },
+                    child: Stack(
+                      children: [
+                        Visibility(
+                          visible: areaLoading,
+                          child: Positioned(
+                            top: 10,
+                            right: 5,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        DropdownSearch<String>(
+                          mode: Mode.DIALOG,
+                          autoValidateMode: AutovalidateMode.onUserInteraction,
+                          showSearchBox: true,
+                          showSelectedItem: true,
+                          items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                          label: "Select area *",
+                          onChanged: (newValue) {
+                            final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                            if (selectedAreaObject != null) {
+                              setState(() {
+                                branchList.clear();
+                                selectedBranch = '';
+                                selectedArea = newValue;
+                                selectedAreaId = selectedAreaObject.id.toString();
+                                fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                              });
+                            }
+                          },
+                          selectedItem: selectedArea,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select a area';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10.h),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 1.w,
+                    //height: MediaQuery.of(context).size.height / 14.h,
+                    child: Stack(
+                      children: [
+                        Visibility(
+                          visible: branchLoading,
+                          child: Positioned(
+                            top: 10,
+                            right: 5,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                        DropdownSearch<String>(
+                          mode: Mode.DIALOG,
+                          autoValidateMode: AutovalidateMode.onUserInteraction,
+                          showSearchBox: true,
+                          showSelectedItem: true,
+                          items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                          label: "Select branch *",
+                          onChanged: (newValue) {
+                            final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                            if (selectedBranchObject != null) {
+                              setState(() {
+                                selectedBranch = newValue;
+                                selectedBranchId = selectedBranchObject.id.toString();
+                              });
+                            }
+                          },
+                          selectedItem: selectedBranch,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Select a branch';
+                            }
+                            return null;
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -561,10 +703,27 @@ class _TestMenuState extends State<TestMenu> {
                   padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
                   child: InkWell(
                     onTap: ()async{
-                      if (_formKey.currentState.validate()) {
-                        FocusScope.of(context).unfocus();
-                        if(selectedState == null || selectedCity == null || selectedArea == null){
-                          SnackBarMessageShow.warningMSG("Select location fields", context);
+                      if(userStatus == 0){
+                        SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                      }
+                      else if (userStatus == 1){
+                        if(pName.text.isEmpty){
+                          SnackBarMessageShow.warningMSG('Enter patient name', context);
+                        }
+                        else if(pMobile.text.isEmpty){
+                          SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                        }
+                        else if(selectedState == null || selectedState == ''){
+                          SnackBarMessageShow.warningMSG("Please select state field", context);
+                        }
+                        else if(selectedCity == null || selectedCity == ''){
+                          SnackBarMessageShow.warningMSG("Please select city field", context);
+                        }
+                        else if(selectedArea == null || selectedArea == ''){
+                          SnackBarMessageShow.warningMSG("Please select area field", context);
+                        }
+                        else if(selectedBranch == null || selectedBranch == ''){
+                          SnackBarMessageShow.warningMSG('Please select branch field', context);
                         }
                         else{
                           showDialog(
@@ -588,6 +747,37 @@ class _TestMenuState extends State<TestMenu> {
                           );
                           await instantBooking();
                         }
+                        // if (_formKey.currentState.validate()) {
+                        //   FocusScope.of(context).unfocus();
+                        //   if(selectedState == null || selectedCity == null || selectedArea == null){
+                        //     SnackBarMessageShow.warningMSG("Select location fields", context);
+                        //   }
+                        //   else{
+                        //     showDialog(
+                        //       context: context,
+                        //       barrierDismissible: false,
+                        //       builder: (BuildContext context) {
+                        //         return Dialog(
+                        //           child: Padding(
+                        //             padding: const EdgeInsets.all(16.0),
+                        //             child: Column(
+                        //               mainAxisSize: MainAxisSize.min,
+                        //               children: const [
+                        //                 CircularProgressIndicator(),
+                        //                 SizedBox(height: 16.0),
+                        //                 Text('Loading...'),
+                        //               ],
+                        //             ),
+                        //           ),
+                        //         );
+                        //       },
+                        //     );
+                        //     await instantBooking();
+                        //   }
+                        // }
+                      }
+                      else{
+                        SnackBarMessageShow.warningMSG('User Not Found', context);
                       }
                     },
                     child: Container(
@@ -645,11 +835,15 @@ class _TestMenuState extends State<TestMenu> {
   String selectedState;
   String selectedStateId;
   Future<void> fetchStateList() async {
+    setState(() {
+      stateLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<StateData> list = await locationFuture.getState();
       setState(() {
         stateList = list;
+        stateLoading = false;
       });
     } catch (e) {
       print("Error -> $e");
@@ -660,11 +854,15 @@ class _TestMenuState extends State<TestMenu> {
   String selectedCity;
   String selectedCityId;
   Future<void> fetchCityList(var sState) async {
+    setState(() {
+      cityLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<CityData> list = await locationFuture.getCity(sState);
       setState(() {
         cityList = list;
+        cityLoading = false;
       });
     } catch (e) {
       print("Error -> $e");
@@ -675,16 +873,40 @@ class _TestMenuState extends State<TestMenu> {
   String selectedArea;
   String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
+    setState(() {
+      areaLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<AreaData> list = await locationFuture.getArea(sState,sCity);
       setState(() {
         areaList = list;
+        areaLoading = false;
       });
     } catch (e) {
       print("Error -> $e");
     }
   }
+
+  List<BranchData> branchList = [];
+  String selectedBranch;
+  String selectedBranchId;
+  Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    setState(() {
+      branchLoading = true;
+    });
+    try {
+      LocationFuture locationFuture = LocationFuture();
+      List<BranchData> list = await locationFuture.getBranch(sState,sCity,sArea);
+      setState(() {
+        branchList = list;
+        branchLoading = false;
+      });
+    } catch (e) {
+      print("Branch Error -> $e");
+    }
+  }
+
   Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
@@ -737,6 +959,7 @@ class _TestMenuState extends State<TestMenu> {
       "state_id": selectedStateId ?? '',
       'city_id': selectedCityId ?? '',
       'area_id': selectedAreaId ?? '',
+      'cost_center_id': selectedBranchId ?? '',
       'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
@@ -758,16 +981,33 @@ class _TestMenuState extends State<TestMenu> {
 
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        selectedMobileNo = '';
+        selectedGender = '';
+        remark.text = '';
+        pName.text = '';
+        emailId.text = '';
+        pMobile.text = '';
+        pDob.text = '';
+        pAge.text = '';
+        pinCode.text = '';
+        address.text = '';
+        selectedState = '';
+        selectedCity = '';
+        selectedArea = '';
+        selectedBranch = '';
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ThankYouPage()));
       } else if (bodyStatus == 400) {
-        var msg = parsedResponse['error']['mobile_no'];
+        var msg = parsedResponse['error']['mobile_no'][0];
         SnackBarMessageShow.warningMSG('$msg', context);
+        Navigator.pop(context);
       } else {
-        SnackBarMessageShow.errorMSG('Something went wrong', context);
+        SnackBarMessageShow.warningMSG('Something went wrong', context);
+        Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Server error.\nPlease try again', context);
+      Navigator.pop(context);
     }
   }
 }

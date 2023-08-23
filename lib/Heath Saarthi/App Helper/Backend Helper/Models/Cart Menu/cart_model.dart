@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final cartModel = cartModelFromJson(jsonString);
+
 import 'dart:convert';
 
 CartModel cartModelFromJson(String str) => CartModel.fromJson(json.decode(str));
@@ -27,7 +31,7 @@ class CartModel {
 class Data {
   dynamic grossAmount;
   dynamic netAmount;
-  CartItems   cartItems;
+  CartItems cartItems;
   List<GlobalSettingSlot> globalSettingTestSlot;
   List<GlobalSettingSlot> globalSettingPackageSlot;
   List<GlobalSettingSlot> globalSettingProfileSlot;
@@ -255,7 +259,7 @@ class Item {
 class ItemInfo {
   int id;
   int costCenterId;
-  dynamic userId;
+  int userId;
   int stateId;
   int cityId;
   int areaId;
@@ -265,9 +269,9 @@ class ItemInfo {
   String applicableGender;
   int isPackage;
   int isProfile;
-  String? tatDays;
+  String tatDays;
   String tatHours;
-  String? tatMinutes;
+  String tatMinutes;
   String serviceClassification;
   String collect;
   String specimenVolume;
@@ -306,12 +310,13 @@ class ItemInfo {
   dynamic deletedAt;
   String encTestManagementId;
   String createAt;
+  int bookedStatus;
   String mrp;
 
   ItemInfo({
     required this.id,
     required this.costCenterId,
-    this.userId,
+    required this.userId,
     required this.stateId,
     required this.cityId,
     required this.areaId,
@@ -321,9 +326,9 @@ class ItemInfo {
     required this.applicableGender,
     required this.isPackage,
     required this.isProfile,
-    this.tatDays,
+    required this.tatDays,
     required this.tatHours,
-    this.tatMinutes,
+    required this.tatMinutes,
     required this.serviceClassification,
     required this.collect,
     required this.specimenVolume,
@@ -362,6 +367,7 @@ class ItemInfo {
     this.deletedAt,
     required this.encTestManagementId,
     required this.createAt,
+    required this.bookedStatus,
     required this.mrp,
   });
 
@@ -419,6 +425,7 @@ class ItemInfo {
     deletedAt: json["deleted_at"],
     encTestManagementId: json["enc_test_management_id"],
     createAt: json["create_at"],
+    bookedStatus: json["booked_status"],
     mrp: json["mrp"],
   );
 
@@ -476,6 +483,7 @@ class ItemInfo {
     "deleted_at": deletedAt,
     "enc_test_management_id": encTestManagementId,
     "create_at": createAt,
+    "booked_status": bookedStatus,
     "mrp": mrp,
   };
 }

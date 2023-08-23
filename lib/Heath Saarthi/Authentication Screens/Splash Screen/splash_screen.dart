@@ -2,19 +2,16 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-
-import 'package:device_info/device_info.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Internet%20Bloc/internet_bloc.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Internet%20Bloc/internet_state.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Service/notification_service.dart';
 import '../../App Helper/Backend Helper/Models/Authentication Models/login_model.dart';
 import '../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../DashBoard/hs_dashboard.dart';
 import '../Login Screen/login_screen.dart';
 
@@ -39,8 +36,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    notificationService.requestNotificationPermission();
-    notificationService.firebaseInit(context);
+    //notificationService.requestNotificationPermission();
+    //notificationService.firebaseInit(context);
     notificationService.getDeviceToken().then((value) {
       if (value == '' || value == null) {
         print("Do Not Get Device Token");
@@ -51,10 +48,7 @@ class _SplashScreenState extends State<SplashScreen> {
         storeDeviceToken(value).then((_) {
           retrieveDeviceDetails().then((value) {
             print("retrive Device token value->>>>$value");
-            if (deviceToken == '' ||
-                value == '' ||
-                deviceToken == null ||
-                value == null) {
+            if (deviceToken == '' || value == '' || deviceToken == null || value == null) {
               print("Do not get device token\nplease restart the app");
             } else {
               print("check Device Token->$deviceToken");
@@ -72,9 +66,11 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
+
       print("checkAuth Access Token => ${value.accessToken}");
       print("checkAuth UserStatus => ${value.userStatus}");
-      if (value.accessToken == "null") {
+
+      if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
           context,
@@ -84,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home(deviceToken: deviceToken)),
+          MaterialPageRoute(builder: (context) => Home()),
         );
       }
     }).onError((error, stackTrace) {
@@ -93,35 +89,35 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future retrieveDeviceDetails() async {
-    DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
     if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfoPlugin.androidInfo;
-      var release = androidInfo.version.release;
-      var sdkInt = androidInfo.version.sdkInt;
-      var manufacturer = androidInfo.manufacturer;
-      var model = androidInfo.model;
-      print('Android Release Version ->$release \n(SDK Version$sdkInt), \n$manufacturer \n$model');
+      String appName = packageInfo.appName;
+      String packageName = packageInfo.packageName;
+      String version = packageInfo.version;
+      String buildNumber = packageInfo.buildNumber;
+      print('Android Release Version appName->$appName \npackageName->$packageName, \nversion->$version \nbuildNumber->$buildNumber');
       setState(() {
         deviceType = 'Android';
-        deviceVersion = androidInfo.version.release;
+        deviceVersion = version;
       });
       return deviceType;
     } else if (Platform.isIOS) {
-      IosDeviceInfo iosInfo = await deviceInfoPlugin.iosInfo;
-      var systemName = iosInfo.systemName;
-      var version = iosInfo.systemVersion;
-      var name = iosInfo.name;
-      var model = iosInfo.model;
-      print('IOS ->$systemName \nVersion ->$version, \n$name \n$model');
+      String appName = packageInfo.appName;
+      String packageName = packageInfo.packageName;
+      String version = packageInfo.version;
+      String buildNumber = packageInfo.buildNumber;
+      print('IOS Release Version appName->$appName \npackageName->$packageName, \nversion->$version \nbuildNumber->$buildNumber');
       setState(() {
         deviceType = 'iOS';
-        deviceVersion = iosInfo.systemVersion;
+        deviceVersion = version;
       });
       return deviceType;
     }
     print('retrieve Device Type: $deviceType');
     print('retrieve Device Version: $deviceVersion');
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

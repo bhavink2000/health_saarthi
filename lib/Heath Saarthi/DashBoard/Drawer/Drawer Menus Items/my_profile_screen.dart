@@ -38,11 +38,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final state = TextEditingController();
   final city = TextEditingController();
   final area = TextEditingController();
+  final branch = TextEditingController();
 
   final bankNm = TextEditingController();
   final ifscCode = TextEditingController();
   final accountNo = TextEditingController();
-  final gstNo = TextEditingController();
+  var gstNo;
 
   final pincode = TextEditingController();
   var panCard;
@@ -58,10 +59,6 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   var chequeImg;
   var gstImg;
 
-  final currentPassword = TextEditingController();
-  final newPassword = TextEditingController();
-  final cPassword = TextEditingController();
-
   GetAccessToken getAccessToken = GetAccessToken();
   String deviceToken;
 
@@ -70,6 +67,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   File aadhaarCardBChange;
   File addressChange;
   File chequeChange;
+  File gstFileChange;
   @override
   void initState(){
     super.initState();
@@ -194,11 +192,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         showTextField('State', state,Icons.query_stats),
                         showTextField('City', city,Icons.reduce_capacity),
                         showTextField('Area', area,Icons.area_chart),
+                        showTextField('Branch', branch,Icons.location_city),
                         showTextField('PinCode', pincode,Icons.code),
                         showTextField('Bank name', bankNm,Icons.account_balance_rounded),
                         showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
                         showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
-                        showTextField('GST no', gstNo,Icons.app_registration_rounded),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: TextField(
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(hsPaddingM),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                              hintText: '${(gstNo == 'null' || gstNo == '') ? 'N/A' : '$gstNo'}',
+                              hintStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14
+                              ),
+                              prefixIcon: Icon(Icons.app_registration_rounded, color: hsBlack,size: 20),
+                            ),
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           child: InkWell(
@@ -226,16 +246,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 subtitle: Text(panCardChange == null ? '$panCard' : 'Pancard is picked',
                                   style: TextStyle(
                                       fontFamily: FontType.MontserratRegular,
-                                      color: panCardChange == null ? Colors.black87 : Colors.green,
+                                      color: panCardChange == null ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
                                 trailing: Container(
                                   width: 100,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                      TextButton(
+                                      userStatus == '0' ? TextButton(
                                           onPressed: ()async{
                                             var panCardCamera = await FileImagePicker().pickCamera(context);
                                             setState(() {
@@ -243,13 +263,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             });
                                           },
                                           child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                      )
+                                      ) : Container()
                                     ],
                                   ),
                                 ),
                                 children: [
-                                  panCardImg == null ? Text("Image not found") :Image(
-                                    image: NetworkImage("$panCardImg"),
+                                  panCardImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text("Image not found"),
+                                  ) : Image.network(
+                                    '$panCardImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -267,16 +306,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ? '$aadharCardF' : 'Aadhaar card front is picked',
                                   style: TextStyle(
                                       fontFamily: FontType.MontserratRegular,
-                                      color: aadhaarCardFChange == null  ? Colors.black87 : Colors.green,
+                                      color: aadhaarCardFChange == null  ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
                                 trailing: Container(
                                   width: 100,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                      TextButton(
+                                      userStatus == '0' ? TextButton(
                                           onPressed: ()async{
                                             var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
                                             setState(() {
@@ -284,13 +323,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             });
                                           },
                                           child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                      )
+                                      ) : Container()
                                     ],
                                   ),
                                 ),
                                 children: [
-                                  aadharCardFImg == null ? const Text("Image not found") :Image(
-                                    image: NetworkImage("$aadharCardFImg"),
+                                  aadharCardFImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("Image not found"),
+                                  ) :Image.network(
+                                    '$aadharCardFImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -308,30 +366,49 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ? '$aadharCardB' : 'Aadhaar card back is picked',
                                   style: TextStyle(
                                       fontFamily: FontType.MontserratRegular,
-                                      color: aadhaarCardBChange == null ? Colors.black87 : Colors.green,
+                                      color: aadhaarCardBChange == null ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
                                 trailing: Container(
                                   width: 100,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                      TextButton(
+                                      userStatus == '0' ? TextButton(
                                           onPressed: ()async {
-                                            var aadhaarCardBack = await FileImagePicker().pickFileManger(context);
+                                            var aadhaarCardBack = await FileImagePicker().pickCamera(context);
                                             setState(() {
                                               aadhaarCardBChange = aadhaarCardBack;
                                             });
                                           },
                                           child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                      )
+                                      ) : Container()
                                     ],
                                   ),
                                 ),
                                 children: [
-                                  aadharCardBImg == null ? const Text("Image not found") : Image(
-                                    image: NetworkImage("$aadharCardBImg"),
+                                  aadharCardBImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("Image not found"),
+                                  ) : Image.network(
+                                    '$aadharCardBImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -349,16 +426,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ? '$addressProfe' : 'Address proof is picked',
                                   style: TextStyle(
                                       fontFamily: FontType.MontserratRegular,
-                                      color: addressChange == null ? Colors.black87 : Colors.green,
+                                      color: addressChange == null ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
                                 trailing: Container(
                                   width: 100,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                      TextButton(
+                                      userStatus == '0' ? TextButton(
                                           onPressed: ()async{
                                             var addressProofCamera = await FileImagePicker().pickCamera(context);
                                             setState(() {
@@ -366,13 +443,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             });
                                           },
                                           child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                      )
+                                      ) : Container()
                                     ],
                                   ),
                                 ),
                                 children: [
-                                  addressProfeImg == null ? const Text("Image not found") : Image(
-                                    image: NetworkImage("$addressProfeImg"),
+                                  addressProfeImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("Image not found"),
+                                  ) : Image.network(
+                                    '$addressProfeImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -390,16 +486,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                     ? '$chequeFile' : 'Cheque img is picked',
                                   style: TextStyle(
                                       fontFamily: FontType.MontserratRegular,
-                                      color: chequeChange == null ? Colors.black87 : Colors.green,
+                                      color: chequeChange == null ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
                                 trailing: Container(
                                   width: 100,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                      TextButton(
+                                      userStatus == '0' ? TextButton(
                                           onPressed: ()async{
                                             var chequeFileCamera = await FileImagePicker().pickCamera(context);
                                             setState(() {
@@ -407,13 +503,32 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                             });
                                           },
                                           child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                      )
+                                      ) : Container()
                                     ],
                                   ),
                                 ),
                                 children: [
-                                  chequeImg == null ? const Text("Image not found") :Image(
-                                    image: NetworkImage("$chequeImg"),
+                                  chequeImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("Image not found"),
+                                  ) : Image.network(
+                                    '$chequeImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
@@ -427,20 +542,59 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               child: ExpansionTile(
                                 tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                 title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                                subtitle: Text("${gstFile == null ? 'No gst file' : 'GST file'}",
-                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                                subtitle: Text(gstFileChange == null
+                                    ? '${gstFile == 'null' ? 'N/A' : gstFile}' : 'GST img is picked',
+                                  style: TextStyle(
+                                      fontFamily: FontType.MontserratRegular,
+                                      color: gstFileChange == null ? Colors.black87 : hsPrime,
                                       fontSize: 12),
                                 ),
-                                trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                trailing: Container(
+                                  width: 100,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                      userStatus == '0' ? TextButton(
+                                          onPressed: ()async{
+                                            var gstImgCamera = await FileImagePicker().pickCamera(context);
+                                            setState(() {
+                                              gstFileChange = gstImgCamera;
+                                            });
+                                          },
+                                          child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                      ) : Container()
+                                    ],
+                                  ),
+                                ),
                                 children: [
-                                  gstImg == null ? const Text("Image not found") :Image(
-                                    image: NetworkImage("$gstImg"),
+                                  gstImg == 'null' ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: const Text("Image not found"),
+                                  ) : Image.network(
+                                    '$gstImg',
+                                    fit: BoxFit.fill,
+                                    loadingBuilder: (BuildContext context, Widget child,
+                                        ImageChunkEvent loadingProgress) {
+                                      if (loadingProgress == null) return child;
+                                      return Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: CircularProgressIndicator(
+                                            value: loadingProgress.expectedTotalBytes != null
+                                                ? loadingProgress.cumulativeBytesLoaded /
+                                                loadingProgress.expectedTotalBytes
+                                                : null,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               )
                           ),
                         ),
-                        ElevatedButton(
+                        userStatus == '0' ? ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                 backgroundColor: hsPrime
@@ -457,7 +611,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               }
                             },
                             child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium))
-                        )
+                        ) : Container()
                       ],
                     ),
                   ),
@@ -540,6 +694,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         formData.files.add(MapEntry(
             'cheque_image', await MultipartFile.fromFile(chequeChange.path)));
       }
+      if (gstFileChange != null) {
+        formData.files.add(MapEntry(
+            'gst_image', await MultipartFile.fromFile(gstFileChange.path)));
+      }
       Response response = await dio.post(
         apiUrl,
         data: formData,
@@ -562,7 +720,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         var data = response.data;
         var errorMsg = data['message'];
         if (data['status'] == 400) {
-          SnackBarMessageShow.errorMSG("$errorMsg", context);
+          SnackBarMessageShow.warningMSG("$errorMsg", context);
           Navigator.pop(context);
         }
       }
@@ -606,18 +764,21 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           state.text = pModel.data.state.stateName.toString();
           city.text = pModel.data.city.cityName.toString();
           area.text = pModel.data.area.areaName.toString();
+          branch.text = pModel.data.costCenter.branchName.toString();
           pincode.text = pModel.data.pincode.toString();
 
           bankNm.text = pModel.data.bankName.toString();
           ifscCode.text = pModel.data.ifsc.toString();
           accountNo.text = pModel.data.accountNumber.toString();
-          gstNo.text = pModel.data.gstNumber.toString();
+          gstNo = pModel.data.gstNumber.toString();
+
           panCard = pModel.data.pancard.toString();
           addressProfe = pModel.data.addressProof.toString();
           aadharCardF = pModel.data.aadharFront.toString();
           aadharCardB = pModel.data.aadharBack.toString();
           chequeFile = pModel.data.chequeImage.toString();
-          //gstFile = pModel.data!.chequeImage.toString();
+
+          gstFile = pModel.data.gstImage.toString();
 
           panCardImg = pModel.data.pancardImg.toString();
           addressProfeImg = pModel.data.addressProofImg.toString();
@@ -675,7 +836,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
     }
   }
 }

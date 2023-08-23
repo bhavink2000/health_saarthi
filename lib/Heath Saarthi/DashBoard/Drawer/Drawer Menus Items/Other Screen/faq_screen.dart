@@ -1,11 +1,15 @@
 //@dart=2.9
 // ignore_for_file: missing_return
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Drawer%20Menu/faqs_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
@@ -65,9 +69,9 @@ class _FaqScreenState extends State<FaqScreen> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return Center(child: Text(value.faqsList.message));
+                          return value.faqsList.data == null ? const Center(child: Text('No faq data',style: TextStyle(fontFamily: FontType.MontserratMedium),)) : Center(child: Text(value.faqsList.message));
                         case Status.completed:
-                          return ListView.builder(
+                          return value.faqsList.data.data.isNotEmpty ? ListView.builder(
                             itemCount: value.faqsList.data.data.length,
                             itemBuilder: (context, index){
                               var faqs = value.faqsList.data.data[index];
@@ -92,7 +96,7 @@ class _FaqScreenState extends State<FaqScreen> {
                                 ],
                               );
                             },
-                          );
+                          ) : const Center(child: Text('No data'),);
                       }
                     },
                   ),
@@ -104,4 +108,5 @@ class _FaqScreenState extends State<FaqScreen> {
       ),
     );
   }
+
 }

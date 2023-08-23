@@ -219,7 +219,7 @@ class _ReferChemistState extends State<ReferChemist> {
           var data = json.decode(response.body);
           var errorMsg = data['error']['email_id'][0];
           if (data['status'] == 400) {
-            SnackBarMessageShow.errorMSG("$errorMsg", context);
+            SnackBarMessageShow.warningMSG("$errorMsg", context);
           }
         }
       }

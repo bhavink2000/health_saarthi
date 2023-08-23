@@ -35,21 +35,21 @@ class SnackBarMessageShow{
     );
   }
 
-  static errorMSG(String message, BuildContext context){
-    return ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          elevation: 0,
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.transparent,
-          content: AwesomeSnackbarContent(
-            color: hsPrimeTwo,
-            title: 'Error',
-            message: message,
-            contentType: ContentType.failure,
-          ),
-        )
-    );
-  }
+  // static errorMSG(String message, BuildContext context){
+  //   return ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         elevation: 0,
+  //         behavior: SnackBarBehavior.floating,
+  //         backgroundColor: Colors.transparent,
+  //         content: AwesomeSnackbarContent(
+  //           color: hsPrimeTwo,
+  //           title: 'Error',
+  //           message: message,
+  //           contentType: ContentType.failure,
+  //         ),
+  //       )
+  //   );
+  // }
 
   static successsMSG(String message, BuildContext context){
     return ScaffoldMessenger.of(context).showSnackBar(

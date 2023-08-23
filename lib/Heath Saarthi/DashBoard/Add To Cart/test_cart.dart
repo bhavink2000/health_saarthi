@@ -51,7 +51,10 @@ class _TestCartState extends State<TestCart> {
   String sAreaId;
   String sBranchId;
 
+  bool setLocation = false;
   bool showDLocation = false;
+  bool showExpantile = true;
+
   final promoApply = TextEditingController();
   var grossAmount = '';
   var totalAmount = '';
@@ -63,6 +66,11 @@ class _TestCartState extends State<TestCart> {
   String packageD;
   String profileD;
 
+  bool stateLoading = false;
+  bool cityLoading = false;
+  bool areaLoading = false;
+  bool branchLoading = false;
+
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   int curentindex = 0;
@@ -71,20 +79,16 @@ class _TestCartState extends State<TestCart> {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
-      getUserStatus();
-    });
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        homeMenusProvider.fetchCart(1, getAccessToken.access_token, context);
-      });
-    });
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        cartCalculation();
-      });
+      cartScreenCall();
     });
   }
 
+  void cartScreenCall()async{
+    await getUserStatus();
+    await homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId);
+    await cartCalculation();
+  }
+  bool pageLoad = false;
   var userStatus;
   void getUserStatus()async{
     try{
@@ -94,11 +98,15 @@ class _TestCartState extends State<TestCart> {
         sStateId = userData.data.state.id.toString();
         sCityId = userData.data.city.id.toString();
         sAreaId = userData.data.area.id.toString();
+        sBranchId = userData.data.costCenter.id.toString();
         sStateName = userData.data.state.stateName.toString();
         sCityName = userData.data.city.cityName.toString();
         sAreaName = userData.data.area.areaName.toString();
+        sBranchName = userData.data.costCenter.branchName.toString();
+        pageLoad = true;
       });
       print("userStatus ==>>$userStatus");
+      print("branchId ==>>$sBranchId");
     }catch(e){
       print("get User Status Error->$e");
     }
@@ -111,7 +119,7 @@ class _TestCartState extends State<TestCart> {
     return Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      bottomSheet: Container(
+      bottomSheet: pageLoad == true ? Container(
         width: MediaQuery.of(context).size.width.w,
         height: MediaQuery.of(context).size.height / 3.8.h,
         decoration: BoxDecoration(
@@ -127,7 +135,7 @@ class _TestCartState extends State<TestCart> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
               child: Row(
                 children: [
-                  Text("Gross amount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
+                  Text("Gross amount",style: TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14.sp,color: Colors.white),),
                   const Spacer(),
                   Container(
                     alignment: Alignment.centerRight,
@@ -135,9 +143,10 @@ class _TestCartState extends State<TestCart> {
                     height: MediaQuery.of(context).size.height / 25.h,
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                     child: Text("\u{20B9}${grossAmount.isEmpty ? 0 : grossAmount}",style: const TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white,
                         fontFamily: FontType.MontserratRegular,
-                        fontSize: 14
+                        fontSize: 16,
+                      fontWeight: FontWeight.bold
                     )),
                   ),
                 ],
@@ -148,7 +157,7 @@ class _TestCartState extends State<TestCart> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
               child: Row(
                 children: [
-                  Text("Total discount",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,color: Colors.white),),
+                  Text("Total discount",style: TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14.sp,color: Colors.white),),
                   const Spacer(),
                   Container(
                     alignment: Alignment.centerRight,
@@ -156,9 +165,10 @@ class _TestCartState extends State<TestCart> {
                     height: MediaQuery.of(context).size.height / 25.h,
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
                     child: Text("$totalAmount",style: const TextStyle(
-                        color: Colors.white70,
+                        color: Colors.white,
                         fontFamily: FontType.MontserratRegular,
-                        fontSize: 14
+                        fontSize: 16,
+                      fontWeight: FontWeight.bold
                     )),
                   ),
                 ],
@@ -181,7 +191,7 @@ class _TestCartState extends State<TestCart> {
                             const Text(
                                 "Promo offer applied",
                                 style: TextStyle(
-                                    fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold,color: Colors.green)
+                                    fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold,color: Colors.orange)
                             ),
                             const Spacer(),
                             Text("\u{20B9}$applyPromo",style: const TextStyle(fontFamily: FontType.MontserratMedium),),
@@ -286,13 +296,13 @@ class _TestCartState extends State<TestCart> {
                         children: [
                           Text("Payable :-",
                             style: TextStyle(fontFamily: FontType.MontserratMedium,
-                                color: Colors.green,fontSize: 16.sp),
+                                color: Colors.orange,fontSize: 14.sp),
                           ),
                           SizedBox(width: 5.w,),
                           Text(
                             "\u{20B9}${netAmount.isEmpty ? 0.00 : netAmount}",
                             style: TextStyle(fontFamily: FontType.MontserratMedium,
-                                color: Colors.green,fontSize: 16.sp,fontWeight: FontWeight.bold),),
+                                color: Colors.orange,fontSize: 20.sp,fontWeight: FontWeight.bold),),
                         ],
                       ),
                     ),
@@ -312,20 +322,26 @@ class _TestCartState extends State<TestCart> {
                               SnackBarMessageShow.warningMSG('Please Select location', context);
                             }
                             else{
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
-                                testDis: testD,
-                                packageDis: packageD,
-                                profileDis: profileD,
-                                promoApply: promoApply.text,
-                                dStateId: selectLocation == 'cLocation' ? sStateId : selectedStateId,
-                                dStateNm: selectLocation == 'cLocation' ? sStateName : selectedState,
-                                dCityId: selectLocation == 'cLocation' ?  sCityId : selectedCityId,
-                                dCityNm: selectLocation == 'cLocation' ? sCityName : selectedCity,
-                                dAreaId: selectLocation == 'cLocation' ? sAreaId : selectedAreaId,
-                                dAreaNm: selectLocation == 'cLocation' ? sAreaName : selectedArea,
-                                dBranchId: selectedBranchId,
-                                dBranchNm: selectedBranch,
-                              )));
+                              if(setLocation == false){
+                                SnackBarMessageShow.warningMSG('Please set location', context);
+                              }
+                              else{
+                                print("branch->>${selectedBranch}/$sBranchName/$selectedBranch");
+                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
+                                  testDis: testD,
+                                  packageDis: packageD,
+                                  profileDis: profileD,
+                                  promoApply: promoApply.text,
+                                  dStateId: selectLocation == 'cLocation' ? sStateId : selectedStateId,
+                                  dStateNm: selectLocation == 'cLocation' ? sStateName : selectedState,
+                                  dCityId: selectLocation == 'cLocation' ?  sCityId : selectedCityId,
+                                  dCityNm: selectLocation == 'cLocation' ? sCityName : selectedCity,
+                                  dAreaId: selectLocation == 'cLocation' ? sAreaId : selectedAreaId,
+                                  dAreaNm: selectLocation == 'cLocation' ? sAreaName : selectedArea,
+                                  dBranchId: selectLocation == 'cLocation' ? sBranchId : selectedBranchId,
+                                  dBranchNm: selectLocation == 'cLocation' ? sBranchName : selectedBranch,
+                                )));
+                              }
                             }
                           }
                         }
@@ -340,7 +356,7 @@ class _TestCartState extends State<TestCart> {
                             width: MediaQuery.of(context).size.width / 2.9.w,
                             padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color:
-                            userStatus == 0 ? Colors.green.withOpacity(0.5) : Colors.green
+                            userStatus == 0 ? Colors.orange.withOpacity(0.5) : Colors.orange
                             ),
                             child: Row(
                               children: [
@@ -365,8 +381,8 @@ class _TestCartState extends State<TestCart> {
             )
           ],
         ),
-      ),
-      body: SafeArea(
+      ) : CenterLoading(),
+      body: pageLoad == true ? SafeArea(
         child: SingleChildScrollView(
           primary: false,
           physics: const BouncingScrollPhysics(),
@@ -390,16 +406,24 @@ class _TestCartState extends State<TestCart> {
               Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 child: Row(
                   children: [
                     Flexible(
                       child: RadioListTile(
                         contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        dense: true,
                         title: const Text('Current location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         value: 'cLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
+                          print("sbranchId---->>$sBranchId");
+                          homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId).then((value){
+                            Future.delayed(const Duration(seconds: 1),(){
+                              cartCalculation();
+                            });
+                          });
+                          print("sbranchId<<------$sBranchId");
                           setState(() {
                             selectLocation = value;
                             showDLocation = false;
@@ -411,24 +435,25 @@ class _TestCartState extends State<TestCart> {
                             selectedArea = '';
                             branchList.clear();
                             selectedBranch = '';
+                            setLocation = true;
                           });
-                          showCurrentLocation(context);
                         },
                       ),
                     ),
                     Flexible(
                       child: RadioListTile(
                         contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                        dense: true,
                         title: const Text('Different location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         value: 'dLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
                           fetchStateList();
                           setState(() {
+                            setLocation = false;
                             selectLocation = value;
                             showDLocation = true;
                           });
-                          //showDifferentLocation(context);
                         },
                       ),
                     ),
@@ -440,43 +465,56 @@ class _TestCartState extends State<TestCart> {
                 child: Form(
                   key: _locationFormKey,
                   child: ExpansionTile(
-                    title: Text('Choose location'),
+                    initiallyExpanded: true,
+                    title: const Text('Choose location',style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
                           //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownSearch<String>(
-                            mode: Mode.DIALOG,
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            showSearchBox: true,
-                            showSelectedItem: true,
-                            items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                            label: "Select state *",
-                            onChanged: (newValue) {
-                              final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
-                              if (selectedStateObject != null) {
-                                setState(() {
-                                  cityList.clear();
-                                  selectedCity = '';
-                                  areaList.clear();
-                                  selectedArea = '';
-                                  branchList.clear();
-                                  selectedBranch = '';
-                                  selectedState = newValue;
-                                  selectedStateId = selectedStateObject.id.toString();
-                                });
-                                fetchCityList(selectedStateId);
-                              }
-                            },
-                            selectedItem: selectedState,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a state';
-                              }
-                              return null;
-                            },
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: stateLoading,
+                                child: Positioned(
+                                  top: 10,
+                                  right: 5,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                                label: "Select state *",
+                                onChanged: (newValue) {
+                                  final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                                  if (selectedStateObject != null) {
+                                    setState(() {
+                                      cityList.clear();
+                                      selectedCity = '';
+                                      areaList.clear();
+                                      selectedArea = '';
+                                      branchList.clear();
+                                      selectedBranch = '';
+                                      selectedState = newValue;
+                                      selectedStateId = selectedStateObject.id.toString();
+                                    });
+                                    fetchCityList(selectedStateId);
+                                  }
+                                },
+                                selectedItem: selectedState,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a state';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -486,36 +524,48 @@ class _TestCartState extends State<TestCart> {
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
                           //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownSearch<String>(
-                            mode: Mode.DIALOG,
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            showSearchBox: true,
-                            showSelectedItem: true,
-                            items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                            label: "Select city *",
-                            onChanged: (newValue) {
-                              final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
-                              if (selectedCityObject != null) {
-                                setState(() {
-                                  selectedCity = '';
-                                  areaList.clear();
-                                  selectedArea = '';
-                                  branchList.clear();
-                                  selectedBranch = '';
-                                  selectedCity = newValue;
-                                  selectedCityId = selectedCityObject.id.toString();
-                                  fetchBranchList(selectedStateId, selectedCityId, '');
-                                });
-                                fetchAreaList(selectedStateId, selectedCityId);
-                              }
-                            },
-                            selectedItem: selectedCity,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a city';
-                              }
-                              return null;
-                            },
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: cityLoading,
+                                child: Positioned(
+                                  top: 10,
+                                  right: 5,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                                label: "Select city *",
+                                onChanged: (newValue) {
+                                  final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                                  if (selectedCityObject != null) {
+                                    setState(() {
+                                      selectedCity = '';
+                                      areaList.clear();
+                                      selectedArea = '';
+                                      branchList.clear();
+                                      selectedBranch = '';
+                                      selectedCity = newValue;
+                                      selectedCityId = selectedCityObject.id.toString();
+                                      //fetchBranchList(selectedStateId, selectedCityId, '');
+                                    });
+                                    fetchAreaList(selectedStateId, selectedCityId);
+                                  }
+                                },
+                                selectedItem: selectedCity,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a city';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -525,32 +575,44 @@ class _TestCartState extends State<TestCart> {
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
                           //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownSearch<String>(
-                            mode: Mode.DIALOG,
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            showSearchBox: true,
-                            showSelectedItem: true,
-                            items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                            label: "Select area *",
-                            onChanged: (newValue) {
-                              final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
-                              if (selectedAreaObject != null) {
-                                setState(() {
-                                  //branchList.clear();
-                                  //selectedBranch = '';
-                                  selectedArea = newValue;
-                                  selectedAreaId = selectedAreaObject.id.toString();
-                                  //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
-                                });
-                              }
-                            },
-                            selectedItem: selectedArea,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a area';
-                              }
-                              return null;
-                            },
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: areaLoading,
+                                child: Positioned(
+                                  top: 10,
+                                  right: 5,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                                label: "Select area *",
+                                onChanged: (newValue) {
+                                  final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                                  if (selectedAreaObject != null) {
+                                    setState(() {
+                                      branchList.clear();
+                                      selectedBranch = '';
+                                      selectedArea = newValue;
+                                      selectedAreaId = selectedAreaObject.id.toString();
+                                      fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                                    });
+                                  }
+                                },
+                                selectedItem: selectedArea,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a area';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -560,46 +622,67 @@ class _TestCartState extends State<TestCart> {
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
                           //height: MediaQuery.of(context).size.height / 14.h,
-                          child: DropdownSearch<String>(
-                            mode: Mode.DIALOG,
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            showSearchBox: true,
-                            showSelectedItem: true,
-                            items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                            label: "Select branch *",
-                            onChanged: (newValue) {
-                              final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
-                              if (selectedBranchObject != null) {
-                                setState(() {
-                                  selectedBranch = newValue;
-                                  selectedBranchId = selectedBranchObject.id.toString();
-                                });
-                              }
-                            },
-                            selectedItem: selectedBranch,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a branch';
-                              }
-                              return null;
-                            },
+                          child: Stack(
+                            children: [
+                              Visibility(
+                                visible: branchLoading,
+                                child: Positioned(
+                                  top: 10,
+                                  right: 5,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                              DropdownSearch<String>(
+                                mode: Mode.DIALOG,
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
+                                showSearchBox: true,
+                                showSelectedItem: true,
+                                items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                                label: "Select branch *",
+                                onChanged: (newValue) {
+                                  final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                                  if (selectedBranchObject != null) {
+                                    setState(() {
+                                      selectedBranch = newValue;
+                                      selectedBranchId = selectedBranchObject.id.toString();
+                                    });
+                                  }
+                                },
+                                selectedItem: selectedBranch,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Select a branch';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       ),
                       Align(
-                        alignment: Alignment.centerRight,
+                        alignment: Alignment.center,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                           child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: hsPrime
+                            ),
                             onPressed: (){
                               if(_locationFormKey.currentState.validate()){
                                 FocusScope.of(context).unfocus();
                                 setState(() {
                                   showDLocation = false;
+                                  setLocation = true;
+                                });
+                                homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,selectedBranchId).then((value){
+                                  Future.delayed(const Duration(seconds: 1),(){
+                                    cartCalculation();
+                                  });
                                 });
                               }
                             },
-                            child: Text('Continue')
+                            child: const Text('Set location',style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
                           ),
                         )
                       )
@@ -864,7 +947,25 @@ class _TestCartState extends State<TestCart> {
                                         ),
                                       ) : Container(),
 
-
+                                      const SizedBox(height: 10),
+                                      value.cartList.data.data.cartItems.testItems.isNotEmpty ? Container() : Center(
+                                        child: Column(
+                                          children: [
+                                            const SizedBox(height: 10),
+                                            const Text("Add test",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                            ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: hsPrime,
+                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                                ),
+                                                onPressed: (){
+                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                                },
+                                                child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                       const SizedBox(height: 10),
                                       value.cartList.data.data.cartItems.packageItems.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -1057,7 +1158,7 @@ class _TestCartState extends State<TestCart> {
                                             ],
                                           ),
                                         ),
-                                      ) : Center(
+                                      ) : value.cartList.data.data.cartItems.profileItems.isEmpty ? Center(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
@@ -1074,26 +1175,7 @@ class _TestCartState extends State<TestCart> {
                                             )
                                           ],
                                         ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      value.cartList.data.data.cartItems.testItems.isNotEmpty ? Container() : Center(
-                                        child: Column(
-                                          children: [
-                                            const SizedBox(height: 10),
-                                            const Text("Add test",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                                            ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor: hsPrime,
-                                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                                                ),
-                                                onPressed: (){
-                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
-                                                },
-                                                child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                                            )
-                                          ],
-                                        ),
-                                      ),
+                                      ) : Container(),
 
                                       value.cartList.data.data.cartItems.profileItems.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -1273,7 +1355,7 @@ class _TestCartState extends State<TestCart> {
                                                             ),
                                                             ...value.cartList.data.data.globalSettingProfileSlot?.map((packageDrop) => DropdownMenuItem<String>(
                                                               value: packageDrop.id.toString() ?? '',
-                                                              child: Text(packageDrop.slotValue),
+                                                              child: Text('${packageDrop.slotValue}%'),
                                                             ))?.toList() ?? []
                                                           ],
                                                         )
@@ -1299,7 +1381,7 @@ class _TestCartState extends State<TestCart> {
             ],
           ),
         ),
-      ),
+      ) : CenterLoading(),
     );
   }
 
@@ -1374,271 +1456,22 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  showCurrentLocation(BuildContext context){
-    showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return AlertDialog(
-          title: const Text('Current locations',style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
-          content: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 6,
-                      child: const Text('State',style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    ),
-                    const Text(": "),
-                    Expanded(child: Text('${sStateName == null ? 'N/A' : sStateName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 6,
-                      child: const Text('City ',style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    ),
-                    const Text(": "),
-                    Expanded(child: Text('${sCityName == null ? 'N/A' : sCityName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 6,
-                      child: const Text('Area ',style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    ),
-                    const Text(": "),
-                    Expanded(child: Text('${sAreaName == null ? 'N/A' : sAreaName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width / 6,
-                      child: const Text('Branch',style: TextStyle(fontFamily: FontType.MontserratMedium),),
-                    ),
-                    const Text(": "),
-                    Expanded(child: Text('${sBranchName == null ? 'N/A' : sBranchName}',style: const TextStyle(fontFamily: FontType.MontserratLight))),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: (){
-                Navigator.pop(context);
-              },
-              child: const Text('Continue',style: TextStyle(fontFamily: FontType.MontserratMedium))
-            )
-          ],
-        );
-      }
-    );
-  }
-
-  /*showDifferentLocation(BuildContext context){
-    showDialog(
-      context: context,
-      builder: (BuildContext context){
-        return StatefulBuilder(
-          builder: (context, setState){
-            return AlertDialog(
-              title: const Text("Different location", style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownSearch<String>(
-                        mode: Mode.DIALOG,
-                        showSearchBox: true,
-                        showSelectedItem: true,
-                        items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                        label: "Select state *",
-                        onChanged: (newValue) {
-                          final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
-                          if (selectedStateObject != null) {
-                            setState(() {
-                              cityList.clear();
-                              selectedCity = '';
-                              areaList.clear();
-                              selectedArea = '';
-                              branchList.clear();
-                              selectedBranch = '';
-                              selectedState = newValue;
-                              selectedStateId = selectedStateObject.id.toString();
-                            });
-                            fetchCityList(selectedStateId);
-                          }
-                        },
-                        selectedItem: selectedState,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select a state';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownSearch<String>(
-                        mode: Mode.DIALOG,
-                        showSearchBox: true,
-                        showSelectedItem: true,
-                        items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                        label: "Select city *",
-                        onChanged: (newValue) {
-                          final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
-                          if (selectedCityObject != null) {
-                            setState(() {
-                              selectedCity = '';
-                              areaList.clear();
-                              selectedArea = '';
-                              branchList.clear();
-                              selectedBranch = '';
-                              selectedCity = newValue;
-                              selectedCityId = selectedCityObject.id.toString();
-                              fetchBranchList(selectedStateId, selectedCityId, '');
-                            });
-                            fetchAreaList(selectedStateId, selectedCityId);
-                          }
-                        },
-                        selectedItem: selectedCity,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select a city';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownSearch<String>(
-                        mode: Mode.DIALOG,
-                        showSearchBox: true,
-                        showSelectedItem: true,
-                        items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                        label: "Select area *",
-                        onChanged: (newValue) {
-                          final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
-                          if (selectedAreaObject != null) {
-                            setState(() {
-                              //branchList.clear();
-                              //selectedBranch = '';
-                              selectedArea = newValue;
-                              selectedAreaId = selectedAreaObject.id.toString();
-                              //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
-                            });
-                          }
-                        },
-                        selectedItem: selectedArea,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select a area';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      //height: MediaQuery.of(context).size.height / 14.h,
-                      child: DropdownSearch<String>(
-                        mode: Mode.DIALOG,
-                        showSearchBox: true,
-                        showSelectedItem: true,
-                        items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                        label: "Select branch *",
-                        onChanged: (newValue) {
-                          final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
-                          if (selectedBranchObject != null) {
-                            setState(() {
-                              selectedBranch = newValue;
-                              selectedBranchId = selectedBranchObject.id.toString();
-                            });
-                          }
-                        },
-                        selectedItem: selectedBranch,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Select a branch';
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: (){
-                      setState((){
-                        selectedStateId = '';
-                        selectedState = '';
-                        selectedCityId = '';
-                        selectedCity = '';
-                        selectedAreaId = '';
-                        selectedArea = '';
-                        selectedBranchId = '';
-                        selectedBranch = '';
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Cancel',style: TextStyle(fontFamily: FontType.MontserratMedium))
-                ),
-                TextButton(
-                    onPressed: (){
-                      Navigator.pop(context);
-                    },
-                    child: const Text('Continue',style: TextStyle(fontFamily: FontType.MontserratMedium))
-                ),
-              ],
-            );
-          },
-        );
-      }
-    );
-  }*/
-
   List<StateData> stateList = [];
   String selectedState;
   String selectedStateId;
   Future<void> fetchStateList() async {
+    setState(() {
+      stateLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<StateData> list = await locationFuture.getState();
       setState(() {
         stateList = list;
+        stateLoading = false;
       });
     } catch (e) {
-      print("State Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1646,14 +1479,18 @@ class _TestCartState extends State<TestCart> {
   String selectedCity;
   String selectedCityId;
   Future<void> fetchCityList(var sState) async {
+    setState(() {
+      cityLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<CityData> list = await locationFuture.getCity(sState);
       setState(() {
         cityList = list;
+        cityLoading = false;
       });
     } catch (e) {
-      print("City Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1661,14 +1498,18 @@ class _TestCartState extends State<TestCart> {
   String selectedArea;
   String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
+    setState(() {
+      areaLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<AreaData> list = await locationFuture.getArea(sState,sCity);
       setState(() {
         areaList = list;
+        areaLoading = false;
       });
     } catch (e) {
-      print("Area Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1676,11 +1517,15 @@ class _TestCartState extends State<TestCart> {
   String selectedBranch;
   String selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    setState(() {
+      branchLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<BranchData> list = await locationFuture.getBranch(sState,sCity,sArea);
       setState(() {
         branchList = list;
+        branchLoading = false;
       });
     } catch (e) {
       print("Branch Error -> $e");

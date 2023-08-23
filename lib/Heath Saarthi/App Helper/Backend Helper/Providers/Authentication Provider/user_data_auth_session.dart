@@ -14,16 +14,16 @@ class UserDataSession with ChangeNotifier{
     return true;
   }
 
-  Future<LoginModel> getUserData()async{
+  Future<LoginModel> getUserData() async {
     final SharedPreferences sp = await SharedPreferences.getInstance();
     final String accessToken = sp.getString('access_token');
     final String tokenType = sp.getString('token_type');
     final String userStatus = sp.getString('status');
 
     return LoginModel(
-      accessToken: accessToken.toString(),
-      tokenType: tokenType.toString(),
-      userStatus: userStatus.toString(),
+      accessToken: accessToken ?? "",
+      tokenType: tokenType ?? "",
+      userStatus: userStatus ?? "",
     );
   }
 

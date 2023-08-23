@@ -154,11 +154,11 @@ class _LoginErrorHelperState extends State<LoginErrorHelper> {
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
       } else {
-        SnackBarMessageShow.errorMSG('$bodyMsg', context);
+        SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
     }
   }
 }

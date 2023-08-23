@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Authentication%20Models/login_model.dart';
 import 'package:provider/provider.dart';
 import '../../../../DashBoard/hs_dashboard.dart';
+import '../../../Frontend Helper/Dialog Helper/update_app_dialog.dart';
 import '../../../Frontend Helper/Loading Helper/loading_indicator.dart';
 import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Repo/User Authentication/user_authentication.dart';
@@ -39,77 +40,59 @@ class AuthProvider with ChangeNotifier{
         accessToken: value['access_token'].toString(),
         userStatus: value['data']['status'].toString(),
       ));
-      print("accessToken--------->${value['access_token'].toString()}");
-      SnackBarMessageShow.successsMSG('Login Successfully', context);
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-      if (kDebugMode) {
-        print(value);
+
+      if(value['access_token'] == null || value['access_token'] == ''){
+        SnackBarMessageShow.warningMSG('Login error,\nPlease try again', context);
+        LoadingIndicater().onLoadExit(false, context);
+        Navigator.pop(context);
+      }
+      else{
+        SnackBarMessageShow.successsMSG('Login Successfully', context);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
       }
     }).catchError((error, stackTrace) {
-      print("cathcError->$error");
-      print("cathcStackTrace->$stackTrace");
-      var errorString = error.toString();
-      var jsonStartIndex = errorString.indexOf('{');
-      var jsonEndIndex = errorString.lastIndexOf('}');
-      var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
-      var errorData = json.decode(jsonString) as Map<String, dynamic>;
-      var eError = errorData['error'];
-      print("e data->$errorData");
-      // if (error is UnAuthorizedException) {
-      //   SnackBarMessageShow.warningMSG('${eError}', context);
-      //   Navigator.pop(context);
-      //   return;
-      // }
-      var errorDatas = {};
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
+
       try {
         var errorString = error.toString();
-        print("errorStrig ->$errorString");
+        print("errorString -> $errorString");
 
         var jsonStartIndex = errorString.indexOf('{');
-        print("jsonStarti->$jsonStartIndex");
+        print("jsonStartIndex -> $jsonStartIndex");
 
         var jsonEndIndex = errorString.lastIndexOf('}');
-        print("jsonEndI->$jsonEndIndex");
+        print("jsonEndIndex -> $jsonEndIndex");
 
         var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
-        print("jsonString->$jsonString");
+        print("jsonString -> $jsonString");
 
-        errorDatas = json.decode(jsonString) as Map<String, dynamic>;
-        print("errorDates->$errorDatas");
+        var errorData = json.decode(jsonString) as Map<String, dynamic>;
+        print("errorData -> $errorData");
 
+        var errorObject = errorData['error'];
 
-        //print("email e->${errorDatas['error']['email_id'][0]}");
-        //print("password e->${errorDatas['error']['password'][0]}");
-        print("error e->${errorDatas['error']}");
+        if (errorObject != null) {
+          var errorMessage = errorObject['message'] != null ? errorObject['message'][0] : null;
+          var mobileError = errorObject['mobile'] != null ? errorObject['mobile'][0] : null;
+          var passwordError = errorObject['password'] != null ? errorObject['password'][0] : null;
 
-        if(errorDatas['error'] != null || errorDatas['error']['email_id'][0] == ''){
-          print("in first if");
-          var emailError = errorDatas['error'];
-          print("error ->$emailError");
-          SnackBarMessageShow.warningMSG('$emailError', context);
-        }
-        else if(errorDatas['error']['email_id'][0] != ''){
-          print("in second if");
-          var emailError = errorDatas['error']['email_id'][0];
-          print("email error->$emailError");
-          SnackBarMessageShow.warningMSG('$emailError', context);
-        }
-        else if(errorDatas['error']['password'][0] != ''){
-          print("in third if");
-          var passwordError = errorDatas['error']['password'][0];
-          print("password error->$passwordError");
-          SnackBarMessageShow.warningMSG('$passwordError', context);
-        }
-        else{
-          print("in else");
+          if (errorMessage != null) {
+            print("in errorMessage if");
+            SnackBarMessageShow.warningMSG('$errorMessage', context);
+          } else if (mobileError != null) {
+            print("in mobileError if");
+            SnackBarMessageShow.warningMSG('$mobileError', context);
+          } else if (passwordError != null) {
+            print("in passwordError if");
+            SnackBarMessageShow.warningMSG('$passwordError', context);
+          } else {
+            print("in else");
+          }
+        } else {
+          print("No 'error' key found in the response.");
         }
 
-        //var emailError = errorDatas['error']['email_id'][0];
-        //print("emailError->$emailError");
-
-        //var passwordError = errorDatas['error']['password'][0] as String;
-        //print("password error->$passwordError");
-        //SnackBarMessageShow.warningMSG('$emailError', context);
         Navigator.pop(context);
       } catch (e) {
         print('Error decoding response: $e');

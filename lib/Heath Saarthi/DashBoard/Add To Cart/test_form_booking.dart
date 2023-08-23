@@ -72,6 +72,26 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    selectedMobileNo = '';
+    selectedGender = '';
+    collectionDate.text = '';
+    remark.text = '';
+    pName.text = '';
+    emailId.text = '';
+    pMobile.text = '';
+    pDob.text = '';
+    pAge.text = '';
+    pinCode.text = '';
+    address.text = '';
+    widget.dStateNm = '';
+    widget.dCityNm = '';
+    widget.dAreaNm = '';
+    widget.dBranchNm = '';
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
     final initialTime = TimeOfDay(hour: now.hour, minute: now.minute).replacing(hour: now.hour + 1);
@@ -315,6 +335,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             children: [
                               Flexible(
                                 child: RadioListTile(
+                                  dense: true,
                                   contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                   title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                                   value: 'Female',
@@ -328,6 +349,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               ),
                               Flexible(
                                 child: RadioListTile(
+                                  dense: true,
                                   contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                   title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
                                   value: 'Male',
@@ -341,6 +363,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               ),
                               Flexible(
                                 child: RadioListTile(
+                                  dense: true,
                                   contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                   title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
                                   value: 'Other',
@@ -467,8 +490,13 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                           padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
                           child: InkWell(
                             onTap: ()async{
-                              if (_formKey.currentState.validate()) {
-                                FocusScope.of(context).unfocus();
+                              if(pName.text.isEmpty){
+                                SnackBarMessageShow.warningMSG('Enter patient name', context);
+                              }
+                              else if(pMobile.text.isEmpty){
+                                SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                              }
+                              else{
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,
@@ -490,6 +518,10 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 );
                                 await bookOrder();
                               }
+                              // if (_formKey.currentState.validate()) {
+                              //   FocusScope.of(context).unfocus();
+                              //
+                              // }
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -570,6 +602,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       "state_id": widget.dStateId ?? '',
       'city_id': widget.dCityId ?? '',
       'area_id': widget.dAreaId ?? '',
+      'cost_center_id': widget.dBranchId ?? '',
       'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
@@ -591,6 +624,20 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
 
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        selectedMobileNo = '';
+        selectedGender = '';
+        remark.text = '';
+        pName.text = '';
+        emailId.text = '';
+        pMobile.text = '';
+        pDob.text = '';
+        pAge.text = '';
+        pinCode.text = '';
+        address.text = '';
+        widget.dStateNm = '';
+        widget.dCityNm = '';
+        widget.dAreaNm = '';
+        widget.dBranchNm = '';
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       } else if (bodyStatus == 400) {
         if (responseData['error'] != null) {
@@ -608,14 +655,18 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             Navigator.pop(context);
           } else {
             SnackBarMessageShow.warningMSG('Something went wrong', context);
+            Navigator.pop(context);
           }
         }
       }
       else {
         SnackBarMessageShow.warningMSG('Something went wrong', context);
+        Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
+      SnackBarMessageShow.warningMSG('Server error.\nPlease try again', context);
+      Navigator.pop(context);
     }
   }
 

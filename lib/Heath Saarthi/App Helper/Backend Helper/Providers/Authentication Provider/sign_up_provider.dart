@@ -65,18 +65,18 @@ class SignUpProvider with ChangeNotifier {
           SnackBarMessageShow.successsMSG('$bodyMSG', context);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()),);
         } else {
-          SnackBarMessageShow.errorMSG('$bodyMSG', context);
+          SnackBarMessageShow.warningMSG('$bodyMSG', context);
         }
       } else if (response.statusCode == 400) {
         var errorData = response.data;
         var errorMessage = errorData['0']['email_id'][0]; // Extract the error message
-        SnackBarMessageShow.errorMSG(errorMessage, context);
+        SnackBarMessageShow.warningMSG(errorMessage, context);
       } else {
-        SnackBarMessageShow.errorMSG('Failed to load data', context);
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
       }
     } catch (e) {
       print('Error -> ${e.toString()}');
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/login_error_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 import 'package:provider/provider.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Backend Helper/Enums/enums_status.dart';
@@ -185,21 +186,9 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
                                                   child: InkWell(
                                                     onTap: (){
-                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                                        title: packageI.serviceName,
-                                                        mrp: packageI.mrpAmount,
-                                                        serviceCode: packageI.serviceCode,
-                                                        collect: packageI.collect,
-                                                        serviceClassification: packageI.serviceClassification,
-                                                        serviceVolume: packageI.specimenVolume,
-                                                        orderingInfo: packageI.orderingInfo,
-                                                        reported: packageI.reported,
-                                                        state: packageI.state.stateName,
-                                                        city: packageI.city.cityName,
-                                                        area: packageI.area.areaName,
-                                                        accessToken: getAccessToken.access_token,
+                                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
                                                         packageId: packageI.id,
-                                                        bookedStatus: packageI.bookedStatus,
+                                                        accessToken: getAccessToken.access_token,
                                                       )));
                                                     },
                                                     child: Card(
@@ -219,7 +208,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                             ),
                                                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                             child: Text(
-                                                                packageI.serviceName,
+                                                                '${packageI.serviceName == null ? 'N/A': packageI.serviceName}',
                                                                 style: TextStyle(
                                                                     fontFamily: FontType.MontserratMedium,
                                                                     fontSize: 15.sp,color: Colors.white
@@ -233,7 +222,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                               children: [
                                                                 Container(
                                                                     width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                    child: Text("${packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
+                                                                    child: Text("${packageI.specimenVolume == null ? 'N/A' : packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
                                                                 Row(
                                                                   children: [
                                                                     Text("\u{20B9}${packageI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
@@ -241,7 +230,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                                     InkWell(
                                                                       onTap: (){
                                                                         CartFuture().addToCartTest(getAccessToken.access_token, packageI.id, context).then((value) {
-                                                                          homeMenusProvider.fetchPackage(1, getAccessToken.access_token,packageData);
+                                                                          homeMenusProvider.fetchPackage(curentindex + 1, getAccessToken.access_token,packageData);
                                                                         });
                                                                       },
                                                                       child: Container(

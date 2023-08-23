@@ -1,6 +1,5 @@
 //@dart=2.9
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
-
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
@@ -73,7 +72,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                         padding: const EdgeInsets.fromLTRB(15, 5, 10, 10),
                         child: InkWell(
                           onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Home(deviceToken: deviceToken)));
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
                           },
                           child: Row(
                             children: [
@@ -262,20 +261,38 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                 ),
                                                 InkWell(
                                                   onTap: (){
-                                                    logoutUser().then((value){
-                                                      userDataSession.removeUserData().then((value){
-                                                        DeviceInfo().deleteDeviceToken(context, deviceToken,getAccessToken.access_token).then((value){
-                                                          if(value == 'success'){
-                                                            print("token is deleted $value");
-                                                            //SnackBarMessageShow.successsMSG("Token is Deleted", context);
+                                                    logoutUser().then((value) {
+                                                      var logoutUserStatus = value.toString();
+                                                      print("Logout user status ->$logoutUserStatus");
+
+                                                      if(logoutUserStatus == '200'){
+                                                        userDataSession.removeUserData().then((values) {
+                                                          DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+                                                            if (value == 'success') {
+                                                              print("token is deleted $value");
+                                                            } else {
+                                                              print("Token is not deleted");
+                                                            }
+                                                          });
+                                                          print("removeUserData->$values");
+                                                          var removeUser = values;
+                                                          if(removeUser == true){
+                                                            print("removeUser proper remove");
+                                                            Navigator.of(context).pushAndRemoveUntil(
+                                                              MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                                                  (Route<dynamic> route) => false,
+                                                            );
                                                           }
                                                           else{
-                                                            print("Token is not deleted");
-                                                            //SnackBarMessageShow.warningMSG("Token is Not Deleted", context);
+                                                            print("removeUser not proper remove");
+                                                            Navigator.pop(context);
                                                           }
                                                         });
-                                                      });
-                                                      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
+                                                      }
+                                                      else{
+                                                        print("user proper not logout,");
+                                                        Navigator.pop(context);
+                                                      }
                                                     });
                                                   },
                                                   child: Container(
@@ -323,29 +340,30 @@ class _DrawerScreenState extends State<DrawerScreen> {
   }
 
   var bodyMsg;
-  Future<void> logoutUser() async {
+  Future<dynamic> logoutUser() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
     };
     try {
       final response = await http.post(
-          Uri.parse(ApiUrls.logoutUrl),
-          headers: headers,
+        Uri.parse(ApiUrls.logoutUrl),
+        headers: headers,
       );
       final responseData = json.decode(response.body);
-      print("response -> $responseData");
+      print("drawer logout->$responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
         SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        return bodyStatus;
       } else {
-        //SnackBarMessageShow.errorMSG('$bodyMsg', context);
+        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
     }
   }
 }

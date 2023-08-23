@@ -4,11 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_list_details.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_list_item_details.dart';
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
+
+import '../Bottom Menus/Home Menu/Test List/test_item_details.dart';
 
 class GlobalSearch extends SearchDelegate{
   var accessToken;
@@ -126,40 +129,49 @@ class GlobalSearch extends SearchDelegate{
                                 InkWell(
                                   onTap: (){
                                     if(item['is_package'] == 1){
-                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                        title: item['service_name'],
-                                        mrp: item['mrp_amount'],
-                                        serviceCode: item['service_code'],
-                                        collect: item['collect'],
-                                        serviceClassification: item['service_classification'],
-                                        serviceVolume: item['specimen_volume'],
-                                        orderingInfo: item['ordering_info'],
-                                        reported: item['ordering_info'],
-                                        state: item['state_id'],
-                                        city: item['city_id'],
-                                        area: item['area_id'],
-                                        accessToken: accessToken,
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
                                         packageId: item['id'],
-                                        bookedStatus: item['booked_status'],
+                                        accessToken: accessToken,
                                       )));
+
+                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
+                                      //   title: item['service_name'],
+                                      //   mrp: item['mrp_amount'],
+                                      //   serviceCode: item['service_code'],
+                                      //   collect: item['collect'],
+                                      //   serviceClassification: item['service_classification'],
+                                      //   serviceVolume: item['specimen_volume'],
+                                      //   orderingInfo: item['ordering_info'],
+                                      //   reported: item['ordering_info'],
+                                      //   state: item['state_id'],
+                                      //   city: item['city_id'],
+                                      //   area: item['area_id'],
+                                      //   accessToken: accessToken,
+                                      //   packageId: item['id'],
+                                      //   bookedStatus: item['booked_status'],
+                                      // )));
                                     }
                                     else{
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-                                        title: item['service_name'],
-                                        mrp: item['mrp_amount'],
-                                        serviceCode: item['service_code'],
-                                        collect: item['collect'],
-                                        serviceClassification: item['service_classification'],
-                                        serviceVolume: item['specimen_volume'],
-                                        orderingInfo: item['ordering_info'],
-                                        reported: item['ordering_info'],
-                                        state: item['state_id'],
-                                        city: item['city_id'],
-                                        area: item['area_id'],
-                                        accessToken: accessToken,
                                         testId: item['id'],
-                                        bookedStatus: item['booked_status'],
+                                        accessToken: accessToken,
                                       )));
+                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
+                                      //   title: item['service_name'],
+                                      //   mrp: item['mrp_amount'],
+                                      //   serviceCode: item['service_code'],
+                                      //   collect: item['collect'],
+                                      //   serviceClassification: item['service_classification'],
+                                      //   serviceVolume: item['specimen_volume'],
+                                      //   orderingInfo: item['ordering_info'],
+                                      //   reported: item['ordering_info'],
+                                      //   state: item['state_id'],
+                                      //   city: item['city_id'],
+                                      //   area: item['area_id'],
+                                      //   accessToken: accessToken,
+                                      //   testId: item['id'],
+                                      //   bookedStatus: item['booked_status'],
+                                      // )));
                                     }
                                   },
                                   child: Container(

@@ -88,6 +88,7 @@ class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
         headers: headers,
       );
       final responseData = json.decode(response.body);
+      print("token logout->$responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
 

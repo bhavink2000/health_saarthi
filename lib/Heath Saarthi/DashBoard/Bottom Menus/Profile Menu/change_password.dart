@@ -315,7 +315,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           var data = json.decode(response.body);
           var errorMsg = data['message'];
           if (data['status'] == 400) {
-            SnackBarMessageShow.errorMSG("$errorMsg", context);
+            SnackBarMessageShow.warningMSG("$errorMsg", context);
             Navigator.pop(context);
           }
         }

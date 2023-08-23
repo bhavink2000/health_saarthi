@@ -28,6 +28,9 @@ class HomeMenusProvider with ChangeNotifier{
       setTestResponse(ApiResponseType.error(error.toString()));
       print("fetch Test onError->$error");
       print("fetch Test stackTrace->$stackTrace");
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -44,6 +47,9 @@ class HomeMenusProvider with ChangeNotifier{
       setPackageResponse(ApiResponseType.error(error.toString()));
       print("fetch Package onError->$error");
       print("fetch Package stackTrace->$stackTrace");
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -58,6 +64,9 @@ class HomeMenusProvider with ChangeNotifier{
       setBannerResponse(ApiResponseType.complate(value));
     }).onError((error, stackTrace){
       setBannerResponse(ApiResponseType.error(error.toString()));
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -73,6 +82,9 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setTodayDealResponse(ApiResponseType.error(error.toString()));
       print(error.toString());
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -88,6 +100,9 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setTodayDealDetailsResponse(ApiResponseType.error(error.toString()));
       print(error.toString());
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -96,13 +111,20 @@ class HomeMenusProvider with ChangeNotifier{
     cartList = cartResponse;
     notifyListeners();
   }
-  Future<void> fetchCart(var index,var access_token,BuildContext context)async{
+  Future<void> fetchCart(var index,var access_token,BuildContext context, var data)async{
+    Map sendData = {
+      'cost_center_id': data.toString()
+    };
+    print("sendData->$sendData");
     setCartResponse(ApiResponseType.loading());
-    homeRepo.cartData(index,access_token,context).then((value){
+    homeRepo.cartData(index,access_token,context, sendData).then((value){
       setCartResponse(ApiResponseType.complate(value));
     }).onError((error, stackTrace){
       setCartResponse(ApiResponseType.error(error.toString()));
       print(error.toString());
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -118,6 +140,9 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setBookingResponse(ApiResponseType.error(error.toString()));
       print(error.toString());
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -132,7 +157,10 @@ class HomeMenusProvider with ChangeNotifier{
       setFaqsResponse(ApiResponseType.complate(value));
     }).onError((error, stackTrace){
       setFaqsResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
+      print('on error -> ${error.toString()}');
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -148,6 +176,9 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setNotiResponse(ApiResponseType.error(error.toString()));
       print(error.toString());
+    }).catchError((error, stackTrace) {
+      print("cathcError -> $error");
+      print("cathcStackTrace -> $stackTrace");
     });
   }
 }

@@ -3,23 +3,19 @@
 
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Enums/enums_status.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_item_details.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
 import 'package:provider/provider.dart';
-import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_response_model.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
-import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Add To Cart/test_cart.dart';
-import 'test_list_item_details.dart';
 
 class TestListItems extends StatefulWidget {
   TestListItems({Key key}) : super(key: key);
@@ -141,7 +137,7 @@ class _TestListItemsState extends State<TestListItems> {
                 child: ChangeNotifierProvider<HomeMenusProvider>(
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
-                    builder: (context, value, __){
+                    builder: (context, value, index){
                       switch(value.testList.status){
                         case Status.loading:
                           return const CenterLoading();
@@ -181,20 +177,8 @@ class _TestListItemsState extends State<TestListItems> {
                                                     child: InkWell(
                                                       onTap: (){
                                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-                                                          title: testI.serviceName,
-                                                          mrp: testI.mrpAmount,
-                                                          serviceCode: testI.serviceCode,
-                                                          collect: testI.collect,
-                                                          serviceClassification: testI.serviceClassification,
-                                                          serviceVolume: testI.specimenVolume,
-                                                          orderingInfo: testI.orderingInfo,
-                                                          reported: testI.reported,
-                                                          state: testI.state.stateName,
-                                                          city: testI.city.cityName,
-                                                          area: testI.area.areaName,
-                                                          accessToken: getAccessToken.access_token,
                                                           testId: testI.id,
-                                                          bookedStatus: testI.bookedStatus,
+                                                          accessToken: getAccessToken.access_token,
                                                         )));
                                                       },
                                                       child: Card(
@@ -229,7 +213,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                   //Divider(color: hsOne,thickness: 1),
                                                                   Container(
                                                                       width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                      child: Text("${testI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
+                                                                      child: Text("${testI.specimenVolume == null ? 'N/A': testI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
                                                                   Row(
                                                                     children: [
                                                                       Text("\u{20B9}${testI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
@@ -237,7 +221,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                       InkWell(
                                                                         onTap: (){
                                                                           CartFuture().addToCartTest(getAccessToken.access_token, testI.id, context).then((value) {
-                                                                            homeMenusProvider.fetchTest(1, getAccessToken.access_token,testData);
+                                                                            homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
                                                                           });
                                                                         },
                                                                         child: Container(

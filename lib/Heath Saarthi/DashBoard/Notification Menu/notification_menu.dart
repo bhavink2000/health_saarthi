@@ -99,7 +99,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                                                   child: Padding(
                                                     padding: const EdgeInsets.fromLTRB(10, 8, 0, 8),
                                                     child: Text(
-                                                      notiFi.title,
+                                                      '${notiFi.title}',
                                                       style: const TextStyle(
                                                           fontFamily: FontType.MontserratRegular,color: Colors.white,
                                                           fontSize: 14,fontWeight: FontWeight.bold
@@ -113,7 +113,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
                                             child: Text(
-                                              notiFi.message,
+                                              '${notiFi.message == null ? 'N/A': notiFi.message}',
                                               style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
                                             ),
                                           ),
@@ -128,7 +128,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                                                     bottomRight: Radius.circular(10)
                                                 ),color: hsPrimeOne),
                                                 child: Text(
-                                                  notiFi.createAt,
+                                                  '${notiFi.createAt}',
                                                   style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 12),
                                                 ),
                                               ),

@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
+import '../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 
 class MyBookingScreen extends StatefulWidget {
@@ -175,7 +176,11 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return Center(child: Text(value.bookingList.message),);
+                          return value.bookingList.message == 'Token is Expired'
+                              ? TokenExpiredHelper(tokenMsg: value.testList.message)
+                              : Center(
+                            child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
+                          );
                         case Status.completed:
                           return value.bookingList.data.bookingData?.bookingItems?.isNotEmpty ? ListView.builder(
                             itemCount: value.bookingList.data.bookingData?.bookingItems?.length,
@@ -192,43 +197,39 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                     subtitle: Text("Booking No :- ${bookingH.bookingCode}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
                                     childrenPadding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Mobile Number ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
-                                          Text(bookingH.pharmacyPatient.mobileNo,style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
-                                        ],
-                                      ),
+                                      showRowContent('Mobile Number', '${bookingH.pharmacyPatient.mobileNo}'),
+                                      const SizedBox(height: 5),
+                                      showRowContent('Gross Amount', '\u{20B9}${bookingH.grossAmount == null ? 0 : bookingH.grossAmount}'),
+                                      const SizedBox(height: 5),
+                                      showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}'),
+                                      const SizedBox(height: 5),
+                                      showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
+                                      const SizedBox(height: 5),
+                                      showRowContent('Date', '${bookingH.pharmacyPatient.createAt}'),
                                       const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          const Text("Gross Amount  ",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14),),
-                                          Text("\u{20B9}${bookingH.grossAmount == null ? 0 : bookingH.grossAmount}",style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Net Amount  ",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14),),
-                                          Text("\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}",style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text("Earning Amount  ",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14),),
-                                          Text("\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12)),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Date ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
-                                          Text(bookingH.pharmacyPatient.createAt,style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
+                                          const Text("Booking Status ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(15),
+                                              color: hsPrime
+                                            ),
+                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                            child: Text(
+                                                bookingH.status == 0
+                                                    ? '${bookingH.bookingStatus.s0}'
+                                                    : bookingH.status == 1
+                                                      ? '${bookingH.bookingStatus.s1}'
+                                                      : bookingH.status == 2
+                                                        ? '${bookingH.bookingStatus.s2}'
+                                                        : bookingH.status == 3
+                                                          ? '${bookingH.bookingStatus.s3}'
+                                                          : '${bookingH.bookingStatus.s4}',
+                                                style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -237,7 +238,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                               );
                             },
                           ) : Center(
-                            child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
+                            child: Text("No booking data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
                           );
                       }
                     },
@@ -248,6 +249,15 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
           ],
         ),
       ),
+    );
+  }
+  Widget showRowContent(var lebal, var value){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("$lebal ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
+        Text('$value',style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
+      ],
     );
   }
 }

@@ -20,6 +20,7 @@ import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
+import '../../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Authentication Screens/Splash Screen/splash_screen.dart';
@@ -40,11 +41,12 @@ class _ProfileMenuState extends State<ProfileMenu> {
   final state = TextEditingController();
   final city = TextEditingController();
   final area = TextEditingController();
+  final branch = TextEditingController();
 
   final bankNm = TextEditingController();
   final ifscCode = TextEditingController();
   final accountNo = TextEditingController();
-  final gstNo = TextEditingController();
+  var gstNo;
 
   final pincode = TextEditingController();
   var panCard;
@@ -60,10 +62,6 @@ class _ProfileMenuState extends State<ProfileMenu> {
   var chequeImg;
   var gstImg;
 
-  final currentPassword = TextEditingController();
-  final newPassword = TextEditingController();
-  final cPassword = TextEditingController();
-
   GetAccessToken getAccessToken = GetAccessToken();
   String deviceToken;
 
@@ -72,6 +70,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
   File aadhaarCardBChange;
   File addressChange;
   File chequeChange;
+  File gstFileChange;
   @override
   void initState(){
     super.initState();
@@ -175,11 +174,33 @@ class _ProfileMenuState extends State<ProfileMenu> {
             showTextField('State', state,Icons.query_stats),
             showTextField('City', city,Icons.reduce_capacity),
             showTextField('Area', area,Icons.area_chart),
+            showTextField('Branch', branch,Icons.location_city),
             showTextField('PinCode', pincode,Icons.code),
             showTextField('Bank name', bankNm,Icons.account_balance_rounded),
             showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
             showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
-            showTextField('GST no', gstNo,Icons.app_registration_rounded),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: '${(gstNo == 'null' || gstNo == '') ? 'N/A' : '$gstNo'}',
+                  hintStyle: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14
+                  ),
+                  prefixIcon: Icon(Icons.app_registration_rounded, color: hsBlack,size: 20),
+                ),
+              ),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: InkWell(
@@ -196,6 +217,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
@@ -207,27 +229,49 @@ class _ProfileMenuState extends State<ProfileMenu> {
                     subtitle: Text(panCardChange == null ? '$panCard' : 'Pancard is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
-                          color: panCardChange == null ? Colors.black87 : Colors.green,
+                          color: panCardChange == null ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
                     trailing: Container(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                          TextButton(
-                            onPressed: (){
-                              _showFilePick(context, 'panCard');
-                            },
-                            child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                          )
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async{
+                                var panCardCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  panCardChange = panCardCamera;
+                                });
+                              },
+                              child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                          ) : Container()
                         ],
                       ),
                     ),
                     children: [
-                      panCardImg == null ? Text("Image not found") :Image(
-                        image: NetworkImage("$panCardImg"),
+                      panCardImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Image not found"),
+                      ) : Image.network(
+                        '$panCardImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
@@ -245,27 +289,49 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         ? '$aadharCardF' : 'Aadhaar card front is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
-                          color: aadhaarCardFChange == null  ? Colors.black87 : Colors.green,
+                          color: aadhaarCardFChange == null  ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
                     trailing: Container(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                          TextButton(
-                              onPressed: (){
-                                _showFilePick(context, 'aadhaarF');
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async{
+                                var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  aadhaarCardFChange = aadhaarCardFrontCamera;
+                                });
                               },
                               child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                          )
+                          ) : Container()
                         ],
                       ),
                     ),
                     children: [
-                      aadharCardFImg == null ? const Text("Image not found") :Image(
-                        image: NetworkImage("$aadharCardFImg"),
+                      aadharCardFImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text("Image not found"),
+                      ) :Image.network(
+                        '$aadharCardFImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
@@ -283,27 +349,49 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         ? '$aadharCardB' : 'Aadhaar card back is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
-                          color: aadhaarCardBChange == null ? Colors.black87 : Colors.green,
+                          color: aadhaarCardBChange == null ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
                     trailing: Container(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                          TextButton(
-                              onPressed: (){
-                                _showFilePick(context, 'aadhaarB');
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async {
+                                var aadhaarCardBack = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  aadhaarCardBChange = aadhaarCardBack;
+                                });
                               },
                               child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                          )
+                          ) : Container()
                         ],
                       ),
                     ),
                     children: [
-                      aadharCardBImg == null ? const Text("Image not found") : Image(
-                        image: NetworkImage("$aadharCardBImg"),
+                      aadharCardBImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text("Image not found"),
+                      ) : Image.network(
+                        '$aadharCardBImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
@@ -321,27 +409,49 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         ? '$addressProfe' : 'Address proof is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
-                          color: addressChange == null ? Colors.black87 : Colors.green,
+                          color: addressChange == null ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
                     trailing: Container(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                          TextButton(
-                              onPressed: (){
-                                _showFilePick(context, 'address');
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async{
+                                var addressProofCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  addressChange = addressProofCamera;
+                                });
                               },
                               child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                          )
+                          ) : Container()
                         ],
                       ),
                     ),
                     children: [
-                      addressProfeImg == null ? const Text("Image not found") : Image(
-                        image: NetworkImage("$addressProfeImg"),
+                      addressProfeImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text("Image not found"),
+                      ) : Image.network(
+                        '$addressProfeImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
@@ -359,27 +469,49 @@ class _ProfileMenuState extends State<ProfileMenu> {
                         ? '$chequeFile' : 'Cheque img is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
-                          color: chequeChange == null ? Colors.black87 : Colors.green,
+                          color: chequeChange == null ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
                     trailing: Container(
                       width: 100,
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                          TextButton(
-                              onPressed: (){
-                                _showFilePick(context, 'checkFile');
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async{
+                                var chequeFileCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  chequeChange = chequeFileCamera;
+                                });
                               },
                               child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
-                          )
+                          ) : Container()
                         ],
                       ),
                     ),
                     children: [
-                      chequeImg == null ? const Text("Image not found") :Image(
-                        image: NetworkImage("$chequeImg"),
+                      chequeImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text("Image not found"),
+                      ) : Image.network(
+                        '$chequeImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
@@ -393,20 +525,59 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                    subtitle: Text("${gstFile == null ? 'No gst file' : 'GST file'}",
-                      style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black87,
+                    subtitle: Text(gstFileChange == null
+                        ? '${gstFile == 'null' ? 'N/A' : gstFile}' : 'GST img is picked',
+                      style: TextStyle(
+                          fontFamily: FontType.MontserratRegular,
+                          color: gstFileChange == null ? Colors.black87 : hsPrime,
                           fontSize: 12),
                     ),
-                    trailing: const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                          userStatus == '0' ? TextButton(
+                              onPressed: ()async{
+                                var gstImgCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  gstFileChange = gstImgCamera;
+                                });
+                              },
+                              child: Text("Upload",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                          ) : Container()
+                        ],
+                      ),
+                    ),
                     children: [
-                      gstImg == null ? const Text("Image not found") :Image(
-                        image: NetworkImage("$gstImg"),
+                      gstImg == 'null' ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text("Image not found"),
+                      ) : Image.network(
+                        '$gstImg',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   )
               ),
             ),
-            ElevatedButton(
+            userStatus == '0'? ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 backgroundColor: hsPrime
@@ -423,12 +594,13 @@ class _ProfileMenuState extends State<ProfileMenu> {
                 }
               },
               child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium))
-            )
+            ) : Container()
           ],
         ),
       ),
     );
   }
+
   Widget showTextField(var lebal, TextEditingController controller, IconData iconData){
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
@@ -454,209 +626,6 @@ class _ProfileMenuState extends State<ProfileMenu> {
       ),
     );
   }
-
-  _showFilePick(BuildContext context,var type){
-    print("type->>>>>$type");
-    return showModalBottomSheet(
-        context: context,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0),),),
-        builder: (context) {
-          return StatefulBuilder(
-            builder: (context, setState){
-              return BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 0.5, sigmaY: 0.5),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height / 3,
-                    child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-                          child: Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 20),),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: () async {
-                                  try {
-                                    final pickedFile = await FilePicker.platform.pickFiles(type: FileType.any);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.files.single.path);
-                                    setState(() {
-                                      print("setState type->>$type");
-                                      switch (type) {
-                                        case 'panCard':
-                                          panCardChange = file;
-                                          break;
-                                        case 'address':
-                                          addressChange = file;
-                                          break;
-                                        case 'aadhaarF':
-                                          aadhaarCardFChange = file;
-                                          break;
-                                        case 'checkFile':
-                                          chequeChange = file;
-                                          break;
-                                        case 'aadhaarB':
-                                          aadhaarCardBChange = file;
-                                          break;
-                                        default:
-                                          gstFile = file;
-                                          break;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Failed to pick file: ${e.message}',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Unknown error: $e',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //fileOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.file_copy_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("File Manger",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                              color: hsTwo,
-                              child: InkWell(
-                                onTap: () async {
-                                  try {
-                                    final pickedFile = await ImagePicker().pickImage(source: ImageSource.camera);
-                                    if (pickedFile == null) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          backgroundColor: hsOne,
-                                          content: const Text(
-                                            'File picker canceled',
-                                            style: TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                          ),
-                                        ),
-                                      );
-                                      return;
-                                    }
-                                    final file = File(pickedFile.path);
-                                    setState(() {
-                                      switch (type) {
-                                        case 'panCard':
-                                          panCardChange = file;
-                                          break;
-                                        case 'address':
-                                          addressChange = file;
-                                          break;
-                                        case 'aadhaarF':
-                                          aadhaarCardFChange = file;
-                                          break;
-                                        case 'checkFile':
-                                          chequeChange = file;
-                                          break;
-                                        case 'aadhaarB':
-                                          aadhaarCardBChange = file;
-                                          break;
-                                        default:
-                                          gstFile = file;
-                                          break;
-                                      }
-                                    });
-                                    Navigator.pop(context);
-                                  } on PlatformException catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Failed to pick file: ${e.message}',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("platForm-> $e");
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: hsOne,
-                                        content: Text(
-                                          'Unknown error: $e',
-                                          style: const TextStyle(fontFamily: FontType.MontserratRegular, color: Colors.white),
-                                        ),
-                                      ),
-                                    );
-                                    print("error -> $e");
-                                  }
-                                  //cameraOpen(context, setState,type);
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.of(context).size.width / 2.5,
-                                  height: MediaQuery.of(context).size.height / 8,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(Icons.camera_alt_rounded,color: Colors.white,size: 30,),
-                                      SizedBox(height: 10),
-                                      Text("Camera",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white),)
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  )
-              );
-            },
-          );
-        }
-    );
-  }
-
 
   void updateProfileData(BuildContext context) async {
     Dio dio = Dio();
@@ -703,6 +672,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
         formData.files.add(MapEntry(
             'cheque_image', await MultipartFile.fromFile(chequeChange.path)));
       }
+      if (gstFileChange != null) {
+        formData.files.add(MapEntry(
+            'gst_image', await MultipartFile.fromFile(gstFileChange.path)));
+      }
       Response response = await dio.post(
         apiUrl,
         data: formData,
@@ -725,7 +698,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
         var data = response.data;
         var errorMsg = data['message'];
         if (data['status'] == 400) {
-          SnackBarMessageShow.errorMSG("$errorMsg", context);
+          SnackBarMessageShow.warningMSG("$errorMsg", context);
           Navigator.pop(context);
         }
       }
@@ -769,18 +742,21 @@ class _ProfileMenuState extends State<ProfileMenu> {
           state.text = pModel.data.state.stateName.toString();
           city.text = pModel.data.city.cityName.toString();
           area.text = pModel.data.area.areaName.toString();
+          branch.text = pModel.data.costCenter.branchName.toString();
           pincode.text = pModel.data.pincode.toString();
 
           bankNm.text = pModel.data.bankName.toString();
           ifscCode.text = pModel.data.ifsc.toString();
           accountNo.text = pModel.data.accountNumber.toString();
-          gstNo.text = pModel.data.gstNumber.toString();
+          gstNo = pModel.data.gstNumber.toString();
+
           panCard = pModel.data.pancard.toString();
           addressProfe = pModel.data.addressProof.toString();
           aadharCardF = pModel.data.aadharFront.toString();
           aadharCardB = pModel.data.aadharBack.toString();
           chequeFile = pModel.data.chequeImage.toString();
-          //gstFile = pModel.data!.chequeImage.toString();
+
+          gstFile = pModel.data.gstImage.toString();
 
           panCardImg = pModel.data.pancardImg.toString();
           addressProfeImg = pModel.data.addressProofImg.toString();
@@ -790,6 +766,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           gstImg = pModel.data.gstImg.toString();
         });
       }
+      print("--------------------");
       Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
@@ -838,7 +815,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.errorMSG('Something went wrong', context);
+      SnackBarMessageShow.warningMSG('Something went wrong', context);
     }
   }
 

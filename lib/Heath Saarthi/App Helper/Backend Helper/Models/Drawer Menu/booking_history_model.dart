@@ -47,9 +47,11 @@ class BookingItems {
   int? id;
   int? bookingCode;
   int? pharmacyPatientId;
-  String? grossAmount;
-  String? netAmount;
-  String? pharmacyDiscountAmount;
+  dynamic grossAmount;
+  dynamic netAmount;
+  dynamic pharmacyDiscountAmount;
+  int? status;
+  BookingStatus? bookingStatus;
   String? createdAt;
   String? encBookingDetailId;
   String? createAt;
@@ -62,6 +64,8 @@ class BookingItems {
         this.grossAmount,
         this.netAmount,
         this.pharmacyDiscountAmount,
+        this.status,
+        this.bookingStatus,
         this.createdAt,
         this.encBookingDetailId,
         this.createAt,
@@ -74,6 +78,10 @@ class BookingItems {
     grossAmount = json['gross_amount'];
     netAmount = json['net_amount'];
     pharmacyDiscountAmount = json['pharmacy_discount_amount'];
+    status = json['status'];
+    bookingStatus = json['booking_status'] != null
+        ? new BookingStatus.fromJson(json['booking_status'])
+        : null;
     createdAt = json['created_at'];
     encBookingDetailId = json['enc_booking_detail_id'];
     createAt = json['create_at'];
@@ -90,12 +98,44 @@ class BookingItems {
     data['gross_amount'] = this.grossAmount;
     data['net_amount'] = this.netAmount;
     data['pharmacy_discount_amount'] = this.pharmacyDiscountAmount;
+    data['status'] = this.status;
+    if (this.bookingStatus != null) {
+      data['booking_status'] = this.bookingStatus!.toJson();
+    }
     data['created_at'] = this.createdAt;
     data['enc_booking_detail_id'] = this.encBookingDetailId;
     data['create_at'] = this.createAt;
     if (this.pharmacyPatient != null) {
       data['pharmacy_patient'] = this.pharmacyPatient!.toJson();
     }
+    return data;
+  }
+}
+
+class BookingStatus {
+  String? s0;
+  String? s1;
+  String? s2;
+  String? s3;
+  String? s4;
+
+  BookingStatus({this.s0, this.s1, this.s2, this.s3, this.s4});
+
+  BookingStatus.fromJson(Map<String, dynamic> json) {
+    s0 = json['0'];
+    s1 = json['1'];
+    s2 = json['2'];
+    s3 = json['3'];
+    s4 = json['4'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['0'] = this.s0;
+    data['1'] = this.s1;
+    data['2'] = this.s2;
+    data['3'] = this.s3;
+    data['4'] = this.s4;
     return data;
   }
 }

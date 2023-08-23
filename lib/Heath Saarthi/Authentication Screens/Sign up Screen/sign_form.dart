@@ -4,19 +4,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
@@ -25,7 +21,6 @@ import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
-import '../Login Screen/login_screen.dart';
 import '../Splash Screen/splash_screen.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -52,10 +47,28 @@ class _SignUpFormState extends State<SignUpForm> {
   bool addressColor = false;
   bool chequeColor = false;
   bool gstColor = false;
-  
-  final createVendor = TextEditingController();
-  final firstNm = TextEditingController();
+
+  bool stateLoading = false;
+  bool cityLoading = false;
+  bool areaLoading = false;
+  bool branchLoading = false;
+
+  FocusNode fNameFocusNode = FocusNode();
+  FocusNode emailFocusNode = FocusNode();
+  FocusNode mobileFocusNode = FocusNode();
+  FocusNode shopFocusNode = FocusNode();
+  FocusNode addressFocusNode = FocusNode();
+  FocusNode pinCodeFocusNode = FocusNode();
+  FocusNode passwordFocusNode = FocusNode();
+  FocusNode cPasswordFocusNode = FocusNode();
+  FocusNode panCardNoFocusNode = FocusNode();
+  FocusNode bankNameFocusNode = FocusNode();
+  FocusNode ifscCodeFocusNode = FocusNode();
+  FocusNode accountNoFocusNode = FocusNode();
+
+  final fullName = TextEditingController();
   final emailId = TextEditingController();
+  final shopeName = TextEditingController();
   final mobile = TextEditingController();
   final address = TextEditingController();
   final seMobile = TextEditingController();
@@ -86,6 +99,23 @@ class _SignUpFormState extends State<SignUpForm> {
         fetchStateList();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    fNameFocusNode.dispose();
+    emailFocusNode.dispose();
+    mobileFocusNode.dispose();
+    shopFocusNode.dispose();
+    pinCodeFocusNode.dispose();
+    addressFocusNode.dispose();
+    panCardNoFocusNode.dispose();
+    bankNameFocusNode.dispose();
+    ifscCodeFocusNode.dispose();
+    accountNoFocusNode.dispose();
+    passwordFocusNode.dispose();
+    cPasswordFocusNode.dispose();
+    super.dispose();
   }
 
   bool obScured = true;
@@ -172,20 +202,43 @@ class _SignUpFormState extends State<SignUpForm> {
                 ],
               ),
             ),
-            showTextField(
-                'Full name *', firstNm,Icons.person,
-                    (value) {
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                controller: fullName,
+                focusNode: fNameFocusNode,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Full name *',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.person, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter full name';
                   }
                   return null;
-                }
+                }, // Set the validator function
+              ),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                controller: emailId,
+                focusNode: emailFocusNode,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -227,14 +280,36 @@ class _SignUpFormState extends State<SignUpForm> {
                 },// Set the validator function
               ),
             ),
-            showTextField(
-                'Shop name *', createVendor,Icons.person_pin,
-                    (value) {
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                controller: shopeName,
+                focusNode: shopFocusNode,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Shop name',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.person_pin, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter shop name';
                   }
                   return null;
-                }
+                }, // Set the validator function
+              ),
             ),
 
             Padding(
@@ -242,6 +317,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: mobile,
+                focusNode: mobileFocusNode,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly
@@ -278,36 +354,48 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.w,
                 //height: MediaQuery.of(context).size.height / 14.h,
-                child: DropdownSearch<String>(
-                  mode: Mode.DIALOG,
-                  autoValidateMode: AutovalidateMode.onUserInteraction,
-                  showSearchBox: true,
-                  showSelectedItem: true,
-                  items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                  label: "Select state *",
-                  onChanged: (newValue) {
-                    final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
-                    if (selectedStateObject != null) {
-                      setState(() {
-                        cityList.clear();
-                        selectedCity = '';
-                        areaList.clear();
-                        selectedArea = '';
-                        branchList.clear();
-                        selectedBranch = '';
-                        selectedState = newValue;
-                        selectedStateId = selectedStateObject.id.toString();
-                      });
-                      fetchCityList(selectedStateId);
-                    }
-                  },
-                  selectedItem: selectedState,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Select a state';
-                    }
-                    return null;
-                  },
+                child: Stack(
+                  children: [
+                    Visibility(
+                      visible: stateLoading,
+                      child: Positioned(
+                        top: 10,
+                        right: 5,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
+                      label: "Select state *",
+                      onChanged: (newValue) {
+                        final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                        if (selectedStateObject != null) {
+                          setState(() {
+                            cityList.clear();
+                            selectedCity = '';
+                            areaList.clear();
+                            selectedArea = '';
+                            branchList.clear();
+                            selectedBranch = '';
+                            selectedState = newValue;
+                            selectedStateId = selectedStateObject.id.toString();
+                          });
+                          fetchCityList(selectedStateId);
+                        }
+                      },
+                      selectedItem: selectedState,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a state';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -317,104 +405,140 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.w,
                 //height: MediaQuery.of(context).size.height / 14.h,
-                child: DropdownSearch<String>(
-                  mode: Mode.DIALOG,
-                  autoValidateMode: AutovalidateMode.onUserInteraction,
-                  showSearchBox: true,
-                  showSelectedItem: true,
-                  items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                  label: "Select city *",
-                  onChanged: (newValue) {
-                    final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
-                    if (selectedCityObject != null) {
-                      setState(() {
-                        selectedCity = '';
-                        areaList.clear();
-                        selectedArea = '';
-                        branchList.clear();
-                        selectedBranch = '';
-                        selectedCity = newValue;
-                        selectedCityId = selectedCityObject.id.toString();
-                        fetchBranchList(selectedStateId, selectedCityId, '');
-                      });
-                      fetchAreaList(selectedStateId, selectedCityId);
-                    }
-                  },
-                  selectedItem: selectedCity,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Select a city';
-                    }
-                    return null;
-                  },
+                child: Stack(
+                  children: [
+                    Visibility(
+                      visible: cityLoading,
+                      child: Positioned(
+                        top: 10,
+                        right: 5,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
+                      label: "Select city *",
+                      onChanged: (newValue) {
+                        final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                        if (selectedCityObject != null) {
+                          setState(() {
+                            selectedCity = '';
+                            areaList.clear();
+                            selectedArea = '';
+                            branchList.clear();
+                            selectedBranch = '';
+                            selectedCity = newValue;
+                            selectedCityId = selectedCityObject.id.toString();
+                            fetchBranchList(selectedStateId, selectedCityId, '');
+                          });
+                          fetchAreaList(selectedStateId, selectedCityId);
+                        }
+                      },
+                      selectedItem: selectedCity,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a city';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
             SizedBox(height: space),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Container(
-                width: MediaQuery.of(context).size.width / 1.w,
-                //height: MediaQuery.of(context).size.height / 14.h,
-                child: DropdownSearch<String>(
-                  mode: Mode.DIALOG,
-                  autoValidateMode: AutovalidateMode.onUserInteraction,
-                  showSearchBox: true,
-                  showSelectedItem: true,
-                  items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                  label: "Select area *",
-                  onChanged: (newValue) {
-                    final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
-                    if (selectedAreaObject != null) {
-                      setState(() {
-                        //branchList.clear();
-                        //selectedBranch = '';
-                        selectedArea = newValue;
-                        selectedAreaId = selectedAreaObject.id.toString();
-                        //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
-                      });
-                    }
-                  },
-                  selectedItem: selectedArea,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Select a area';
-                    }
-                    return null;
-                  },
-                ),
-              ),
-            ),
 
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.w,
+                //height: MediaQuery.of(context).size.height / 14.h,
+                child: Stack(
+                  children: [
+                    Visibility(
+                      visible: branchLoading,
+                      child: Positioned(
+                        top: 10,
+                        right: 5,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
+                      label: "Select branch *",
+                      onChanged: (newValue) {
+                        final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                        if (selectedBranchObject != null) {
+                          setState(() {
+                            selectedBranch = newValue;
+                            selectedBranchId = selectedBranchObject.id.toString();
+                          });
+                        }
+                      },
+                      selectedItem: selectedBranch,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a branch';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: space),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
               child: Container(
                 width: MediaQuery.of(context).size.width / 1.w,
                 //height: MediaQuery.of(context).size.height / 14.h,
-                child: DropdownSearch<String>(
-                  mode: Mode.DIALOG,
-                  autoValidateMode: AutovalidateMode.onUserInteraction,
-                  showSearchBox: true,
-                  showSelectedItem: true,
-                  items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                  label: "Select branch *",
-                  onChanged: (newValue) {
-                    final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
-                    if (selectedBranchObject != null) {
-                      setState(() {
-                        selectedBranch = newValue;
-                        selectedBranchId = selectedBranchObject.id.toString();
-                      });
-                    }
-                  },
-                  selectedItem: selectedBranch,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Select a branch';
-                    }
-                    return null;
-                  },
+                child: Stack(
+                  children: [
+                    Visibility(
+                      visible: areaLoading,
+                      child: Positioned(
+                        top: 10,
+                        right: 5,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                    DropdownSearch<String>(
+                      mode: Mode.DIALOG,
+                      autoValidateMode: AutovalidateMode.onUserInteraction,
+                      showSearchBox: true,
+                      showSelectedItem: true,
+                      items: areaList?.map((area) => area.areaName)?.toList() ?? [],
+                      label: "Select area *",
+                      onChanged: (newValue) {
+                        final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                        if (selectedAreaObject != null) {
+                          setState(() {
+                            //branchList.clear();
+                            //selectedBranch = '';
+                            selectedArea = newValue;
+                            selectedAreaId = selectedAreaObject.id.toString();
+                            //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+                          });
+                        }
+                      },
+                      selectedItem: selectedArea,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Select a area';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -506,6 +630,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: pincode,
+                focusNode: pinCodeFocusNode,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -516,7 +641,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Pincode *',
+                  hintText: 'Pincode',
                   hintStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
@@ -524,12 +649,12 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Enter pincode';
-                  }
-                  return null;
-                }, // Set the validator function
+                // validator: (value) {
+                //   if (value == null || value.isEmpty) {
+                //     return 'Enter pincode';
+                //   }
+                //   return null;
+                // }, // Set the validator function
               ),
             ),
 
@@ -551,12 +676,12 @@ class _SignUpFormState extends State<SignUpForm> {
                             ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
-                              child: Image.file(File(aadharCardFFile.path), fit: BoxFit.cover)
+                              child: buildImageDialog(aadharCardFFile, 'Aadhaar card front')
                           ),
                           const Spacer(),
                           IconButton(
                             onPressed: () async {
-                              var aadhaarCardFrontFile = await FileImagePicker().pickFileManger(context);
+                              var aadhaarCardFrontFile = await FileImagePicker().pickFileManager(context);
                               setState(() {
                                 aadharCardFFile = aadhaarCardFrontFile;
                               });
@@ -573,7 +698,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               });
                             },
                             icon: const Icon(
-                              Icons.camera
+                                Icons.camera_alt_rounded
                             )
                           ),
                         ],
@@ -591,12 +716,27 @@ class _SignUpFormState extends State<SignUpForm> {
                             ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
-                              child: Image.file(File(aadharCardBFile.path), fit: BoxFit.cover)
+                              child: buildImageDialog(aadharCardBFile, 'Aadhaar card back')
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     if (aadharCardBFile != null) {
+                              //       showDialog(
+                              //         context: context,
+                              //         builder: (BuildContext context) {
+                              //           return Dialog(
+                              //             child: Image.file(File(aadharCardBFile.path)),
+                              //           );
+                              //         },
+                              //       );
+                              //     }
+                              //   },
+                              //   child: Image.file(File(aadharCardBFile.path), fit: BoxFit.cover),
+                              // ),
                           ),
                           const Spacer(),
                           IconButton(
                             onPressed: ()async {
-                              var aadhaarCardBack = await FileImagePicker().pickFileManger(context);
+                              var aadhaarCardBack = await FileImagePicker().pickFileManager(context);
                               setState(() {
                                 aadharCardBFile = aadhaarCardBack;
                               });
@@ -613,7 +753,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               });
                             },
                             icon: const Icon(
-                              Icons.camera
+                                Icons.camera_alt_rounded
                             )
                           ),
                         ],
@@ -627,6 +767,7 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 controller: address,
+                focusNode: addressFocusNode,
                 minLines: 1,
                 maxLines: 4,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -665,15 +806,31 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       addressFile == null
-                          ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                          : Container(
+                       ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                       : Container(
                           width: 100,height: 50,
-                          child: Image.file(File(addressFile.path), fit: BoxFit.cover)
+                           child: buildImageDialog(addressFile, 'Address proof')
+
+                           // GestureDetector(
+                           //   onTap: () {
+                           //     if (addressFile != null) {
+                           //       showDialog(
+                           //         context: context,
+                           //         builder: (BuildContext context) {
+                           //           return Dialog(
+                           //             child: Image.file(File(addressFile.path)),
+                           //           );
+                           //         },
+                           //       );
+                           //     }
+                           //   },
+                           //   child: Image.file(File(addressFile.path), fit: BoxFit.cover),
+                           // ),
                       ),
                       const Spacer(),
                       IconButton(
                           onPressed: ()async {
-                            var addressProof = await FileImagePicker().pickFileManger(context);
+                            var addressProof = await FileImagePicker().pickFileManager(context);
                             setState(() {
                               addressFile = addressProof;
                             });
@@ -690,7 +847,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             });
                           },
                           icon: const Icon(
-                              Icons.camera
+                              Icons.camera_alt_rounded
                           )
                       ),
                     ],
@@ -703,6 +860,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: panCardNo,
+                  focusNode: panCardNoFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.characters,
                   decoration: InputDecoration(
@@ -722,14 +880,6 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     prefixIcon: const Icon(Icons.numbers_rounded, color: hsBlack, size: 20),
                   ),
-                  // onChanged: (value){
-                  //   if (value.length < 11) {
-                  //     print('Pancard length is less than 10 characters.');
-                  //   }
-                  //   if (!value.contains(RegExp(r'[0-9]'))) {
-                  //     print('Pancard does not contain a digit.');
-                  //   }
-                  // },
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Enter pancard number';
@@ -748,15 +898,15 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       panCardFile == null
-                          ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                          : Container(
-                          width: 100,height: 50,
-                          child: Image.file(File(panCardFile.path), fit: BoxFit.cover)
+                       ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                       : Container(
+                        width: 100,height: 50,
+                        child: buildImageDialog(panCardFile, 'PAN card')
                       ),
                       const Spacer(),
                       IconButton(
                           onPressed: ()async {
-                            var panCardFileManger = await FileImagePicker().pickFileManger(context);
+                            var panCardFileManger = await FileImagePicker().pickFileManager(context);
                             setState(() {
                               panCardFile = panCardFileManger;
                             });
@@ -773,7 +923,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             });
                           },
                           icon: const Icon(
-                              Icons.camera
+                              Icons.camera_alt_rounded
                           )
                       ),
                     ],
@@ -805,15 +955,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.confirmation_number_rounded, color: hsBlack, size: 20),
                 ),
-                // onChanged: (value){
-                //   if (value.length < 16) {
-                //     print('GST number length is less than 15 characters.');
-                //   }
-                //   if (!value.contains(RegExp(r'[0-9]'))) {
-                //     print('GST does not contain a digit.');
-                //   }
-                // },
-                // Set the validator function
               ),
             ),
             Padding(
@@ -826,15 +967,31 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       gstFile == null
-                          ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                          : Container(
-                          width: 100,height: 50,
-                          child: Image.file(File(gstFile.path), fit: BoxFit.cover)
+                       ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                       : Container(
+                        width: 100,height: 50,
+                        child: buildImageDialog(gstFile, 'GST file')
+
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     if (gstFile != null) {
+                        //       showDialog(
+                        //         context: context,
+                        //         builder: (BuildContext context) {
+                        //           return Dialog(
+                        //             child: Image.file(File(gstFile.path)),
+                        //           );
+                        //         },
+                        //       );
+                        //     }
+                        //   },
+                        //   child: Image.file(File(gstFile.path), fit: BoxFit.cover),
+                        // ),
                       ),
                       const Spacer(),
                       IconButton(
                           onPressed: ()async {
-                            var gstFileManger = await FileImagePicker().pickFileManger(context);
+                            var gstFileManger = await FileImagePicker().pickFileManager(context);
                             setState(() {
                               gstFile = gstFileManger;
                             });
@@ -851,7 +1008,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             });
                           },
                           icon: const Icon(
-                              Icons.camera
+                              Icons.camera_alt_rounded
                           )
                       ),
                     ],
@@ -859,20 +1016,44 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
-            showTextField(
-                'Bank name *', bankName,Icons.account_balance_rounded,
-                    (value) {
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                controller: bankName,
+                focusNode: bankNameFocusNode,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Bank name',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: Icon(Icons.account_balance_rounded, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter bank name';
                   }
                   return null;
-                }
+                }, // Set the validator function
+              ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: ifscCode,
+                  focusNode: ifscCodeFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.characters,
                   decoration: InputDecoration(
@@ -918,15 +1099,31 @@ class _SignUpFormState extends State<SignUpForm> {
                   child: Row(
                     children: [
                       checkFile == null
-                          ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                          : Container(
-                          width: 100,height: 50,
-                          child: Image.file(File(checkFile.path), fit: BoxFit.cover)
+                        ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                        : Container(
+                        width: 100,height: 50,
+                        child: buildImageDialog(checkFile, 'Cheque img')
+
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     if (checkFile != null) {
+                        //       showDialog(
+                        //         context: context,
+                        //         builder: (BuildContext context) {
+                        //           return Dialog(
+                        //             child: Image.file(File(checkFile.path)),
+                        //           );
+                        //         },
+                        //       );
+                        //     }
+                        //   },
+                        //   child: Image.file(File(checkFile.path), fit: BoxFit.cover),
+                        // ),
                       ),
                       const Spacer(),
                       IconButton(
                           onPressed: ()async {
-                            var chequeFileManger = await FileImagePicker().pickFileManger(context);
+                            var chequeFileManger = await FileImagePicker().pickFileManager(context);
                             setState(() {
                               checkFile = chequeFileManger;
                             });
@@ -943,7 +1140,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             });
                           },
                           icon: const Icon(
-                              Icons.camera
+                              Icons.camera_alt_rounded
                           )
                       ),
                     ],
@@ -957,6 +1154,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: accountNo,
+                  focusNode: accountNoFocusNode,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -988,6 +1186,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: password,
+                focusNode: passwordFocusNode,
                 obscureText: obScured,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1047,6 +1246,7 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: cPassword,
+                focusNode: cPasswordFocusNode,
                 obscureText: obCScured,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1127,7 +1327,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 onTap: ()async{
                   if (_formKey.currentState.validate()) {
                     FocusScope.of(context).unfocus();
-                    if(selectedState == null || selectedCity == null || selectedArea == null){
+                    if(selectedState == null || selectedCity == null || selectedArea == null || selectedState == '' || selectedCity == '' || selectedArea == ''){
                       SnackBarMessageShow.warningMSG("Please select location fields", context);
                     }
                     else if(panCardFile == null){
@@ -1149,26 +1349,13 @@ class _SignUpFormState extends State<SignUpForm> {
                       SnackBarMessageShow.warningMSG('Please select term & condition', context);
                     }
                     else{
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          return Dialog(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  CircularProgressIndicator(),
-                                  SizedBox(height: 16.0),
-                                  Text('Loading...'),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
+                      setState(() {
+                        isSigningUp = true;
+                      });
                       await signUpData();
+                      setState(() {
+                        isSigningUp = false;
+                      });
                     }
                   }
                 },
@@ -1177,9 +1364,23 @@ class _SignUpFormState extends State<SignUpForm> {
                   padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsBlack),
                   alignment: Alignment.center,
-                  child: const Text(
+                  child: isSigningUp == true
+                      ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text('Processing : ${loadingProgress.toStringAsFixed(1)}%',style: TextStyle(color: Colors.white),),
+                          SizedBox(width: 15),
+                          CircularProgressIndicator(color: Colors.white),
+                        ],
+                      ) // Show loading indicator
+                      : const Text(
                     "Create an account",
-                    style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontSize: 16),
+                    style: TextStyle(
+                      fontFamily: FontType.MontserratMedium,
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
@@ -1190,91 +1391,25 @@ class _SignUpFormState extends State<SignUpForm> {
       ),
     );
   }
-
-  /*void signUpData() async {
-      var response = await sendSignupRequest();
-      final jsonData = jsonDecode(response.body);
-      if (response.statusCode == 200) {
-        print("in if with status->${jsonData['status']}");
-        var bodyMSG = jsonData['message'];
-        SnackBarMessageShow.successsMSG('$bodyMSG', context);
-        storeStateCityAreaBranch();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SplashScreen()),
-        );
-      } else if (response.statusCode == 400) {
-        var errorData = jsonData;
-        if (errorData['error']['email_id'] != null) {
-          var errorMessage = errorData['error']['email_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        }else if (errorData['error']['name'] != null) {
-          var errorMessage = errorData['error']['name'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
+  GestureDetector buildImageDialog(File selectedFilePhoto, var label) {
+    return GestureDetector(
+      onTap: () {
+        if (selectedFilePhoto != null) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                child: Image.file(selectedFilePhoto),
+              );
+            },
+          );
         }
-        else if (errorData['error']['sales_executive_admin_id'] != null) {
-          var errorMessage = errorData['error']['sales_executive_admin_id'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        }else if (errorData['error']['password'] != null) {
-          var errorMessage = errorData['error']['password'][0];
-          SnackBarMessageShow.warningMSG(errorMessage, context);
-        }
-        else {
-          SnackBarMessageShow.warningMSG('Failed to load data', context);
-          Navigator.pop(context);
-        }
-        Navigator.pop(context);
-      } else {
-        SnackBarMessageShow.warningMSG('Failed to load data', context);
-        Navigator.pop(context);
-      }
+      },
+      child: selectedFilePhoto == null
+          ? Text("$label", style: TextStyle(fontFamily: FontType.MontserratMedium))
+          : Image.file(selectedFilePhoto, fit: BoxFit.cover),
+    );
   }
-  Future<http.Response> sendSignupRequest() async {
-    var url = ApiUrls.signUpUrl;
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-
-    request.fields["name"] = firstNm.text;
-    request.fields["email_id"] = emailId.text;
-    request.fields["password"] = password.text;
-    request.fields["mobile"] = mobile.text;
-    request.fields["vendor_name"] = createVendor.text;
-    request.fields["state_id"] = selectedStateId;
-    request.fields["city_id"] = selectedCityId;
-    request.fields["area_id"] = selectedAreaId;
-    request.fields["cost_center_id"] = selectedBranchId;
-    request.fields["address"] = address.text;
-    request.fields["pincode"] = pincode.text;
-    request.fields["pancard_number"] = panCardNo.text;
-    request.fields["sales_executive_admin_id"] = selectedSales ?? '';
-    request.fields["b2b_subadmin_id"] = selectedB2b ?? '';
-    request.fields["bank_name"] = bankName.text ?? '';
-    request.fields["ifsc"] = ifscCode.text ?? '';
-    request.fields["account_number"] = accountNo.text ?? '';
-    request.fields["gst_number"] = gstNo.text ?? '';
-
-    if (panCardFile != null) {
-      request.files.add(http.MultipartFile('pancard', panCardFile.readAsBytes().asStream(), panCardFile.lengthSync(), filename: 'pancard.jpg'));
-    }
-    if (addressFile != null) {
-      request.files.add(http.MultipartFile('address_proof', addressFile.readAsBytes().asStream(), addressFile.lengthSync(), filename: 'address_proof.jpg'));
-    }
-    if(aadharCardFFile != null){
-      request.files.add(http.MultipartFile('aadhar_front', aadharCardFFile.readAsBytes().asStream(), aadharCardFFile.lengthSync(), filename: 'aadhar_front.jpg'));
-    }
-    if(aadharCardBFile != null){
-      request.files.add(http.MultipartFile('aadhar_back', aadharCardBFile.readAsBytes().asStream(), aadharCardBFile.lengthSync(), filename: 'aadhar_back.jpg'));
-    }
-    if(checkFile != null){
-      request.files.add(http.MultipartFile('cheque_image', checkFile.readAsBytes().asStream(), checkFile.lengthSync(), filename: 'cheque_image.jpg'));
-    }
-    if(gstFile != null){
-      request.files.add(http.MultipartFile('gst_image', gstFile.readAsBytes().asStream(), gstFile.lengthSync(), filename: 'gst_image.jpg'));
-    }
-
-    var streamedResponse = await request.send();
-    return await http.Response.fromStream(streamedResponse);
-  }*/
-
 
   void _setAgreedToTOS(bool newValue) {
     setState(() {
@@ -1309,7 +1444,248 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
+  double loadingProgress = 0.0;
+  bool isSigningUp = false;
+  showProgressDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: StatefulBuilder(
+            builder: (BuildContext context, void Function(void Function()) setState){
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16.0),
+                    Text('Loading...'),
+                  ],
+                ),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
   void signUpData() async {
+    final dio = Dio();
+    var url = ApiUrls.signUpUrl;
+    try {
+      var formData = FormData();
+      formData.fields.addAll([
+        MapEntry("name", fullName.text),
+        MapEntry("email_id", emailId.text),
+        MapEntry("password", password.text),
+        MapEntry("mobile", mobile.text),
+        MapEntry("vendor_name", shopeName.text),
+        MapEntry("state_id", selectedStateId),
+        MapEntry("city_id", selectedCityId),
+        MapEntry("area_id", selectedAreaId),
+        MapEntry("cost_center_id", selectedBranchId),
+        MapEntry("address", address.text),
+        MapEntry("pincode", pincode.text),
+        MapEntry("pancard_number", panCardNo.text),
+        MapEntry("sales_executive_admin_id", selectedSales ?? ''),
+        MapEntry("b2b_subadmin_id", selectedB2b ?? ''),
+        MapEntry("bank_name", bankName.text ?? ''),
+        MapEntry("ifsc", ifscCode.text ?? ''),
+        MapEntry("account_number", accountNo.text ?? ''),
+        MapEntry("gst_number", gstNo.text ?? ''),
+      ]);
+      if (panCardFile != null) {
+        formData.files.add(MapEntry(
+          "pancard",
+          await MultipartFile.fromFile(
+            panCardFile.path,
+            filename: 'pancard.jpg',
+          ),
+        ));
+      }
+      if (addressFile != null) {
+        formData.files.add(MapEntry(
+          "address_proof",
+          await MultipartFile.fromFile(
+            addressFile.path,
+            filename: 'address_proof.jpg',
+          ),
+        ));
+      }
+      if (aadharCardFFile != null) {
+        formData.files.add(MapEntry(
+          "aadhar_front",
+          await MultipartFile.fromFile(
+            aadharCardFFile.path,
+            filename: 'aadhar_front.jpg',
+          ),
+        ));
+      }
+      if (aadharCardBFile != null) {
+        formData.files.add(MapEntry(
+          "aadhar_back",
+          await MultipartFile.fromFile(
+            aadharCardBFile.path,
+            filename: 'aadhar_back.jpg',
+          ),
+        ));
+      }
+      if (checkFile != null) {
+        formData.files.add(MapEntry(
+          "cheque_image",
+          await MultipartFile.fromFile(
+            checkFile.path,
+            filename: 'cheque_image.jpg',
+          ),
+        ));
+      }
+      if (gstFile != null) {
+        formData.files.add(MapEntry(
+          "gst_image",
+          await MultipartFile.fromFile(
+            gstFile.path,
+            filename: 'gst_image.jpg',
+          ),
+        ));
+      }
+      dio.interceptors.add(InterceptorsWrapper(
+       onError: (DioError err, ErrorInterceptorHandler handler) async {
+         print("in dio interceptor->${err.response}");
+         if (err.response != null) {
+           var responseData = err.response.data;
+           if (responseData['status'] == 400) {
+             var errorData = responseData['error'];
+             if (errorData['email_id'] != null) {
+               var errorMessage = errorData['email_id'][0];
+               print("errorMessage->$errorMessage");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               SnackBarMessageShow.warningMSG('$errorMessage', context);
+               //Navigator.pop(context);
+             }
+             else if (errorData['mobile'] != null) {
+               var errorMessage = errorData['mobile'][0];
+               print("errorMessage->$errorMessage");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               SnackBarMessageShow.warningMSG(errorMessage, context);
+               //Navigator.pop(context);
+             }
+             else if (errorData['pincode'] != null) {
+               var errorMessage = errorData['pincode'][0];
+               print("errorMessage->$errorMessage");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               SnackBarMessageShow.warningMSG(errorMessage, context);
+               //Navigator.pop(context);
+             }
+             else if (errorData['name'] != null) {
+               var errorMessage = errorData['name'][0];
+               print("errorMessage->$errorMessage");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               SnackBarMessageShow.warningMSG(errorMessage, context);
+               //Navigator.pop(context);
+             }
+             else if (errorData['password'] != null) {
+               var errorMessage = errorData['password'][0];
+               print("error Msg->$errorMessage");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               SnackBarMessageShow.warningMSG('$errorMessage', context);
+               //Navigator.pop(context);
+             } else {
+               print("in sub sub else");
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+             }
+           } else {
+            print("in sub else");
+            setState(() {
+              loadingProgress = 0.0;
+              isSigningUp = false;
+            });
+           }
+         } else {
+           print("in main else");
+           setState(() {
+             loadingProgress = 0.0;
+             isSigningUp = false;
+           });
+         }
+       }));
+      final response = await dio.post(
+        url,
+        data: formData,
+        options: Options(headers: {"Content-Type":"application/json"}),
+        onSendProgress: (int sent, int total) {
+          print('progress percentage: ${(sent / total * 100).toStringAsFixed(0)}% ($sent/$total)');
+          double progress = (sent / total) * 100;
+          setState(() {
+            loadingProgress = progress;
+          });
+        },
+      );
+      final jsonData = response.data;
+      print("sign jsonData-> $jsonData");
+      if (response.statusCode == 200) {
+        print("in if with status->${jsonData['status']}");
+        var bodyMSG = jsonData['message'];
+        SnackBarMessageShow.successsMSG('$bodyMSG', context);
+        storeStateCityAreaBranch();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SplashScreen()),
+        );
+        setState(() {
+          loadingProgress = 0.0;
+          isSigningUp = false;
+        });
+        print("out from if");
+      }
+      else if (response.statusCode == 400) {
+        var errorData = jsonData;
+        if (errorData['error']['email_id'] != null) {
+          var errorMessage = errorData['error']['email_id'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['name'] != null) {
+          var errorMessage = errorData['error']['name'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else if (errorData['error']['password'] != null) {
+          var errorMessage = errorData['error']['password'][0];
+          SnackBarMessageShow.warningMSG(errorMessage, context);
+        } else {
+          print("in sub else");
+          SnackBarMessageShow.warningMSG('Failed to load data', context);
+          Navigator.pop(context);
+        }
+        Navigator.pop(context);
+      } else {
+        print("in main else");
+        SnackBarMessageShow.warningMSG('Failed to load data', context);
+        Navigator.pop(context);
+      }
+    }
+    catch (e) {
+      print('Error -> ${e.toString()}');
+      Navigator.pop(context);
+    }
+  }
+  /*void signUpData() async {
     var url = ApiUrls.signUpUrl;
     try {
       var request = http.MultipartRequest('POST', Uri.parse(url));
@@ -1393,20 +1769,24 @@ class _SignUpFormState extends State<SignUpForm> {
       print('Error -> ${e.toString()}');
       Navigator.pop(context);
     }
-  }
+  }*/
 
   List<StateData> stateList = [];
   String selectedState;
   String selectedStateId;
   Future<void> fetchStateList() async {
+    setState(() {
+      stateLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<StateData> list = await locationFuture.getState();
       setState(() {
         stateList = list;
+        stateLoading = false;
       });
     } catch (e) {
-      print("State Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1414,14 +1794,18 @@ class _SignUpFormState extends State<SignUpForm> {
   String selectedCity;
   String selectedCityId;
   Future<void> fetchCityList(var sState) async {
+    setState(() {
+      cityLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<CityData> list = await locationFuture.getCity(sState);
       setState(() {
         cityList = list;
+        cityLoading = false;
       });
     } catch (e) {
-      print("City Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1429,14 +1813,18 @@ class _SignUpFormState extends State<SignUpForm> {
   String selectedArea;
   String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
+    setState(() {
+      areaLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<AreaData> list = await locationFuture.getArea(sState,sCity);
       setState(() {
         areaList = list;
+        areaLoading = false;
       });
     } catch (e) {
-      print("Area Error -> $e");
+      print("Error -> $e");
     }
   }
 
@@ -1444,11 +1832,15 @@ class _SignUpFormState extends State<SignUpForm> {
   String selectedBranch;
   String selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    setState(() {
+      branchLoading = true;
+    });
     try {
       LocationFuture locationFuture = LocationFuture();
       List<BranchData> list = await locationFuture.getBranch(sState,sCity,sArea);
       setState(() {
         branchList = list;
+        branchLoading = false;
       });
     } catch (e) {
       print("Branch Error -> $e");

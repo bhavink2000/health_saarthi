@@ -16,9 +16,9 @@ class ApiUrls{
   static String forgotPasswordUrl = '${mainUrls}pharmacy/forgot-password';
   static String changePasswordUrl = '${mainUrls}pharmacy/change-password';
 
-  static String sendOtpUrl = '${mainUrls}pharmacy/send-otp';
-  static String reSendOtpUrl = '${mainUrls}pharmacy/resend-otp';
-  static String verifyOtpUrl = '${mainUrls}pharmacy/verify-otp';
+  static String sendOtpUrl = '${mainUrls}pharmacy/send-forgot-password-otp';
+  static String reSendOtpUrl = '${mainUrls}pharmacy/send-forgot-password-otp';
+  static String verifyOtpUrl = '${mainUrls}pharmacy/verify-forgot-password-otp';
 
   static String b2b_Saless_Url = '${mainUrls}pharmacy/get-b2b-subadmin-list';
   static String stateUrl = '${mainUrls}pharmacy/get-state-list';
@@ -27,7 +27,9 @@ class ApiUrls{
   static String branchUrl = '${mainUrls}pharmacy/get-branches/';
 
   static String testListUrls = '${mainUrls}pharmacy/get-test-details-list';
+  static String testItemDetailsUrls = '${mainUrls}pharmacy/get-test-detail-by-id/';
   static String packageListUrls = '${mainUrls}pharmacy/get-package-details-list';
+  static String packageItemDetailsUrls = '${mainUrls}pharmacy/get-package-detail-by-id/';
 
   static String addItemsUrls = '${mainUrls}pharmacy/add-item-to-cart';
   static String removeItemsUrls = '${mainUrls}pharmacy/remove-item-from-cart';

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -57,7 +58,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),color: Colors.white),
                 child: SafeArea(
-                  child: Column(
+                  child: isLoading == true ? Column(
                     children: [
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 10),
@@ -79,9 +80,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${salesPersonNM ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${salesPersonNM == '' ? 'N/A' : salesPersonNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${salesPersonNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${salesPersonNo == '' ? 'N/A' : salesPersonNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -114,9 +115,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${superiorNM ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${superiorNM == null ? 'N/A' : superiorNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${superiorNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${superiorNo == null ? 'N/A' : superiorNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -149,9 +150,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${customerCareNm ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${customerCareNm == null ? 'N/A' : customerCareNm}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${customerCareNo ?? 'N/A'}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${customerCareNo == null ? 'N/A' : customerCareNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -165,7 +166,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         ),
                       ),
                     ],
-                  ),
+                  ) : CenterLoading(),
                 ),
               ),
             )
@@ -175,7 +176,11 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     );
   }
 
+  bool? isLoading;
   void fetchContact() async {
+    setState(() {
+      isLoading = false;
+    });
     final headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -197,6 +202,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
         customerCareNo = data['mobile_no_three'];
         otherNM = data['name_other'];
         otherNo = data['mobile_no_other'];
+        isLoading = true;
       });
       final id = data['id'];
       final status = data['status'];

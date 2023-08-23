@@ -1,8 +1,13 @@
 //@dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
+import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
+import '../../../../App Helper/Backend Helper/Api Repo/Home Menu Repo/home_menu_repo.dart';
+import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../Add To Cart/test_cart.dart';
+import '../Packages List/package_item_details.dart';
 import '../Test List/test_list_item_details.dart';
 import '../Test List/test_list_items.dart';
 
@@ -14,6 +19,47 @@ class HomeBodyCheckups extends StatefulWidget {
 }
 
 class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
+
+  GetAccessToken getAccessToken = GetAccessToken();
+  List<Map<String, dynamic>> popularPackage = [];
+  @override
+  void initState() {
+    super.initState();
+    getAccessToken.checkAuthentication(context, setState);
+    Future.delayed(const Duration(seconds: 1),(){
+      setState(() {
+        popularPack();
+      });
+    });
+  }
+
+  bool isLoading;
+  void popularPack() async {
+    setState(() {
+      isLoading = false;
+    });
+    Map<String, dynamic> popularP = await HomeMenuRepo().popularPackageData(0, getAccessToken.access_token, '');
+
+    if (popularP != null && popularP.containsKey('data')) {
+      Map<String, dynamic> dataMap = popularP['data'];
+      if (dataMap != null && dataMap['data'] is List) {
+        List<dynamic> dataList = dataMap['data'];
+        if (dataList.isNotEmpty) {
+          setState(() {
+            popularPackage = dataList.cast<Map<String, dynamic>>();
+            isLoading = true;
+          });
+          print('popularPackage----------->$popularPackage');
+        } else {
+          print("No service data available.");
+        }
+      } else {
+        print("Service data is not in the expected format.");
+      }
+    } else {
+      print("Popular package data is not available.");
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -23,16 +69,16 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(15, 15, 0, 0),
-            child: Text("Health Checkup",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold),),
+            child: Text("Popular package's",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold),),
           ),
           Container(
             width: MediaQuery.of(context).size.width.w,
             height: MediaQuery.of(context).size.height / 2.7.h,
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: ListView.builder(
+            child: isLoading == true ? ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
-              itemCount: 5,
+              itemCount: popularPackage.length,
               itemBuilder: (context, index){
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
@@ -41,7 +87,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                     child: InkWell(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                        //Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width / 1.2.w,
@@ -58,7 +104,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 60, 10, 5),
                               child: Text(
-                                "Health Saarthi Platinum Full Body Checkups",
+                                "${popularPackage[index]['service_name']}",
                                 style: TextStyle(
                                     fontFamily: FontType.MontserratMedium,
                                     fontSize: 16.sp,
@@ -69,7 +115,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 5, 10, 10),
-                              child: Text("Include 8 Test", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
+                              child: Text("${popularPackage[index]['service_classification']}", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 5, 10, 5),
@@ -82,11 +128,14 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                       color: Colors.white
                                     ),
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                    child: Text("\u{20B9}2555", style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12.sp,fontWeight: FontWeight.bold,color: hsPrime,)),
+                                    child: Text("\u{20B9}${popularPackage[index]['mrp']}", style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12.sp,fontWeight: FontWeight.bold,color: hsPrime,)),
                                   ),
                                   InkWell(
                                       onTap: (){
-                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                        Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
+                                          packageId: popularPackage[index]['id'],
+                                          accessToken: getAccessToken.access_token,
+                                        )));
                                       },
                                       child: Row(
                                         children: [
@@ -105,34 +154,10 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             const Spacer(),
                             InkWell(
                               onTap: (){
-                                final snackBar = SnackBar(
-                                  content: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Item Booked Successfully",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratRegular),),
-                                      Container(
-                                        child: Row(
-                                          children: [
-                                            Text("\u{20B9}2555",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratRegular),),
-                                            SizedBox(width: 10.w),
-                                            InkWell(
-                                              onTap: (){
-                                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                                              },
-                                              child: Container(
-                                                  padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-                                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color: Colors.white),
-                                                  child: Icon(Icons.shopping_cart_rounded,color: hsPrime)
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  backgroundColor: hsPrime,
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                CartFuture().addToCartTest(getAccessToken.access_token, popularPackage[index]['id'], context).then((value) {});
+                                setState(() {
+                                  popularPackage[index]['booked_status'] = 1;
+                                });
                               },
                               child: Container(
                                 padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
@@ -154,11 +179,10 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                      child: Text("Book Now",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontWeight: FontWeight.bold)),
+                                      child: Text(popularPackage[index]['booked_status'] == 0 ? "Book Now" : "Booked",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontWeight: FontWeight.bold)),
                                     ),
                                     Container(
                                       padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),
-
                                       child: Icon(Icons.shopping_cart_rounded,color: Colors.white,size: 20,)
                                     )
                                   ],
@@ -172,7 +196,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                   ),
                 );
               },
-            ),
+            ) : CenterLoading(),
           ),
         ],
       ),

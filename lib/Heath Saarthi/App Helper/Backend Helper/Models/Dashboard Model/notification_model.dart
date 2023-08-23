@@ -25,18 +25,18 @@ class NotificationModel {
 }
 
 class Data {
-  int? id;
-  int? pharmacyId;
-  int? bookingDetailId;
-  int? requestManagementsId;
-  String? title;
-  String? message;
-  int? status;
-  String? createdAt;
-  String? updatedAt;
+  dynamic id;
+  dynamic pharmacyId;
+  dynamic bookingDetailId;
+  dynamic requestManagementsId;
+  dynamic title;
+  dynamic message;
+  dynamic status;
+  dynamic createdAt;
+  dynamic updatedAt;
   dynamic deletedAt;
-  String? encId;
-  String? createAt;
+  dynamic encId;
+  dynamic createAt;
 
   Data(
       {this.id,

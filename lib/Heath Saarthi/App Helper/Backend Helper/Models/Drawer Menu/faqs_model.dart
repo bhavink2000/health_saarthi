@@ -31,7 +31,7 @@ class Data {
   int? status;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  dynamic deletedAt;
   String? encId;
   String? createAt;
 
