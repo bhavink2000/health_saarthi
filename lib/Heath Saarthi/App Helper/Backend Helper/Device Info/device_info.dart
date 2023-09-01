@@ -12,6 +12,11 @@ class DeviceInfo{
 
 
   Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
+    print("in send Device token");
+    print("------------------------");
+    print("Device token-->$deviceToken");
+    print("Device type-->$deviceType");
+    print("------------------------");
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     var dType = deviceType == 'Android' ? 0 : 1;
@@ -21,22 +26,49 @@ class DeviceInfo{
       'Authorization': 'Bearer $accessToken',
     };
 
-    var response = await http.post(
-      Uri.parse(ApiUrls.addDeviceUrl),
-      headers: headers,
-      body: {
-        'device_token': deviceToken ?? '',
-        'device_type': dType.toString() ?? '',
-        //'app_version': '${packageInfo.version}' ?? '',
-        'app_version': '1.5' ?? '',
-      },
-    );
+    try {
+      var response = await http.post(
+        Uri.parse(ApiUrls.addDeviceUrl),
+        headers: headers,
+        body: {
+          'device_token': deviceToken ?? '',
+          'device_type': dType.toString() ?? '',
+          'app_version': '1.0' ?? '',
+        },
+      );
+      print("Response Status Code -> ${response.statusCode}");
+      print("Device Token Response -> ${response.body}");
 
-    print("respose->$response");
-    print("Device Token Response -> ${response.body}");
+      if (response.statusCode == 200) {
+        print("in if");
+        return response.body;
+      }else if(response.statusCode == 201){
+        return response.body;
+      }
+      else {
+        throw Exception("Server returned status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Error sending device token: $e");
+    }
 
-    return response.body;
+    // var response = await http.post(
+    //   Uri.parse(ApiUrls.addDeviceUrl),
+    //   headers: headers,
+    //   body: {
+    //     'device_token': deviceToken ?? '',
+    //     'device_type': dType.toString() ?? '',
+    //     //'app_version': '${packageInfo.version}' ?? '',
+    //     'app_version': '1.5' ?? '',
+    //   },
+    // );
+    //
+    // print("respose->$response");
+    // print("Device Token Response -> ${response.body}");
+    //
+    // return response.body;
   }
+
   Future<String> deleteDeviceToken(BuildContext context, deviceToken,accessToken) async {
     print("Delete Device Token->$deviceToken");
 

@@ -3,6 +3,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Login%20Screen/Forgot%20Password/forgot_password_update.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Splash%20Screen/splash_screen.dart';
 import 'package:http/http.dart' as http;
@@ -11,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class OTPVerifyScreen extends StatefulWidget {
@@ -164,7 +166,7 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
                         child: ElevatedButton(
                           onPressed: () async{
                             if (otpVerify.text.isEmpty) {
-                              SnackBarMessageShow.warningMSG('Enter OTP', context);
+                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().enterOTP}');
                             } else {
                               showDialog(
                                 context: context,
@@ -243,7 +245,7 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
                     setState(() {
                       otpVerify.clear();
                     });
-                    enableResend ? resendOTP() : SnackBarMessageShow.warningMSG('Unable to resend OTP', context);
+                    enableResend ? resendOTP() : GetXSnackBarMsg.getWarningMsg('${AppTextHelper().resendOTP}');
                   },
                   child: Text(
                     "Resend New Code",
@@ -279,14 +281,15 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
     ).then((response) {
       var data = json.decode(response.body);
       if(data['status'] == 200){
-        SnackBarMessageShow.successsMSG('${data['message']}', context);
+        GetXSnackBarMsg.getSuccessMsg('${data['message']}');
+        //SnackBarMessageShow.successsMSG('${data['message']}', context);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>ForgotPasswordUpdate(
           mobileNo: widget.mobileNumber,
         )));
       }
       else if(data['status'] == 400){
         print("in else if");
-        SnackBarMessageShow.warningMSG('${data['message']}', context);
+        GetXSnackBarMsg.getWarningMsg('${data['message']}');
         Navigator.pop(context);
       }
       else{
@@ -332,11 +335,11 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
     Navigator.of(context).pop();
     var data = json.decode(response.body);
     if (data['status'] == 200) {
-      SnackBarMessageShow.successsMSG('${data['message']}', context);
+      GetXSnackBarMsg.getSuccessMsg('${data['message']}');
       _resendCode();
     } else if (data['status'] == 400) {
       var errorMsg = data['error']['mobile'][0];
-      SnackBarMessageShow.warningMSG('$errorMsg', context);
+      GetXSnackBarMsg.getWarningMsg('$errorMsg');
     }
   }
 }

@@ -68,7 +68,6 @@ class _SplashScreenState extends State<SplashScreen> {
     getUserData().then((value) async {
 
       print("checkAuth Access Token => ${value.accessToken}");
-      print("checkAuth UserStatus => ${value.userStatus}");
 
       if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
@@ -122,41 +121,54 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: BlocConsumer<InternetBloc, InternetState>(
-        listener: (context, state){
-          if(state is InternetGainedState){
-            print("Internet Connected");
-          }
-          else if(state is InternetLostState){
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.red,
-                content: Text("Internet Not Connected",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
-              )
-            );
-          }
-          else{
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                backgroundColor: Colors.orange,
-                content: Text("Internet Loading",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
-              )
-            );
-          }
-        },
-        builder: (context, state){
-          return SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const Padding(
-              padding: EdgeInsets.all(15),
-              child: Image(
-                image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
-              ),
-            ),
-          );
-        },
-      ),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: const Padding(
+          padding: EdgeInsets.all(15),
+          child: Image(
+            image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
+          ),
+        ),
+      )
+
+
+
+      // BlocConsumer<InternetBloc, InternetState>(
+      //   listener: (context, state){
+      //     if(state is InternetGainedState){
+      //       print("Internet Connected");
+      //     }
+      //     else if(state is InternetLostState){
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         const SnackBar(
+      //           backgroundColor: Colors.red,
+      //           content: Text("Internet Not Connected",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
+      //         )
+      //       );
+      //     }
+      //     else{
+      //       ScaffoldMessenger.of(context).showSnackBar(
+      //         const SnackBar(
+      //           backgroundColor: Colors.orange,
+      //           content: Text("Internet Loading",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
+      //         )
+      //       );
+      //     }
+      //   },
+      //   builder: (context, state){
+      //     return SizedBox(
+      //       width: MediaQuery.of(context).size.width,
+      //       height: MediaQuery.of(context).size.height,
+      //       child: const Padding(
+      //         padding: EdgeInsets.all(15),
+      //         child: Image(
+      //           image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
+      //         ),
+      //       ),
+      //     );
+      //   },
+      // ),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../Bottom Menus/Test Menu/thank_you_msg.dart';
 
@@ -491,10 +493,10 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                           child: InkWell(
                             onTap: ()async{
                               if(pName.text.isEmpty){
-                                SnackBarMessageShow.warningMSG('Enter patient name', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientName}');
                               }
                               else if(pMobile.text.isEmpty){
-                                SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
                               }
                               else{
                                 showDialog(
@@ -623,7 +625,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       final bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         selectedMobileNo = '';
         selectedGender = '';
         remark.text = '';
@@ -642,30 +644,30 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       } else if (bodyStatus == 400) {
         if (responseData['error'] != null) {
           if (responseData['error']['email_id'] != null) {
-            final bodyMsg = responseData['error']['email_id'][0];
-            SnackBarMessageShow.warningMSG('$bodyMsg', context);
+            final eMsg = responseData['error']['email_id'][0];
+            GetXSnackBarMsg.getWarningMsg('$eMsg');
             Navigator.pop(context);
           } else if (responseData['error']['mobile_no'] != null) {
-            final bodyMsg = responseData['error']['mobile_no'][0];
-            SnackBarMessageShow.warningMSG('$bodyMsg', context);
+            final mMsg = responseData['error']['mobile_no'][0];
+            GetXSnackBarMsg.getWarningMsg('$mMsg');
             Navigator.pop(context);
           } else if (responseData['error']['address'] != null) {
-            final bodyMsg = responseData['error']['address'][0];
-            SnackBarMessageShow.warningMSG('$bodyMsg', context);
+            final aMsg = responseData['error']['address'][0];
+            GetXSnackBarMsg.getWarningMsg('$aMsg');
             Navigator.pop(context);
           } else {
-            SnackBarMessageShow.warningMSG('Something went wrong', context);
+            GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
             Navigator.pop(context);
           }
         }
       }
       else {
-        SnackBarMessageShow.warningMSG('Something went wrong', context);
+        GetXSnackBarMsg.getWarningMsg('Server error');
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      SnackBarMessageShow.warningMSG('Server error.\nPlease try again', context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
       Navigator.pop(context);
     }
   }

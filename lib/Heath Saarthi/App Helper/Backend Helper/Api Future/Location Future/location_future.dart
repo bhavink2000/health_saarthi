@@ -18,13 +18,13 @@ class LocationFuture{
         },
       );
       if (response.statusCode == 200) {
+        print("state api response->${response.body}");
         final data = json.decode(response.body);
         StateModel stateModel = StateModel.fromJson(data);
         List<StateData>? stateList = stateModel.data;
         print("State List -> $stateList");
         return stateList ?? [];
       } else {
-
         throw Exception('Failed to fetch state list');
       }
     } catch (e) {

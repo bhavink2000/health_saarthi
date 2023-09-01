@@ -9,7 +9,6 @@ class UserDataSession with ChangeNotifier{
     final SharedPreferences sp = await SharedPreferences.getInstance();
     sp.setString('access_token', user.accessToken.toString());
     sp.setString('token_type', user.tokenType.toString());
-    sp.setString('status', user.userStatus).toString();
     notifyListeners();
     return true;
   }
@@ -23,7 +22,6 @@ class UserDataSession with ChangeNotifier{
     return LoginModel(
       accessToken: accessToken ?? "",
       tokenType: tokenType ?? "",
-      userStatus: userStatus ?? "",
     );
   }
 

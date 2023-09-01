@@ -9,6 +9,7 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20M
 import 'package:provider/provider.dart';
 import '../../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
+import '../../../../../App Helper/Frontend Helper/Error Helper/internet_problem.dart';
 import '../../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../Test List/test_list_items.dart';
 
@@ -44,7 +45,8 @@ class _HomeOffersState extends State<HomeOffers> {
             case Status.loading:
               return const CenterLoading();
             case Status.error:
-              return Center(child: Text("${value.todayDealList.message}"));
+              print("offers status.error ->${value.todayDealList.message}----------");
+              return value.todayDealList.message == 'Internet connection problem' ? CenterLoading() :Center(child: Text("${value.todayDealList.message}"));
             case Status.completed:
               return value.todayDealList.data.todayData.isEmpty ? Container() : Container(
                 width: MediaQuery.of(context).size.width.w,

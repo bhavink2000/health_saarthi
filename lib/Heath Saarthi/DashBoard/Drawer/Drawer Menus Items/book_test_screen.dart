@@ -5,12 +5,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Models/Authentication Models/user_model.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Bottom Menus/Home Menu/Home Widgets/attach_prescription.dart';
 import '../../Bottom Menus/Home Menu/Home Widgets/instant_booking.dart';
@@ -28,6 +31,7 @@ class BookTestScreen extends StatefulWidget {
 class _BookTestScreenState extends State<BookTestScreen> {
   File fileManger;
   GetAccessToken getAccessToken = GetAccessToken();
+  bool isLoading;
   @override
   void initState() {
     super.initState();
@@ -38,10 +42,14 @@ class _BookTestScreenState extends State<BookTestScreen> {
   }
   var userStatus;
   void getUserStatus()async{
+    setState(() {
+      isLoading = false;
+    });
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       setState(() {
         userStatus = userData.data.status;
+        isLoading = true;
       });
       print("userStatus ==>>$userStatus");
     }catch(e){
@@ -74,7 +82,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),color: Colors.white),
                 child: SafeArea(
-                  child: Container(
+                  child: isLoading == true ? Container(
                     width: MediaQuery.of(context).size.width.w,
                     padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
                     child: Column(
@@ -216,13 +224,13 @@ class _BookTestScreenState extends State<BookTestScreen> {
                                 onTap: (){
                                   print("pre->${userStatus}");
                                   if(userStatus == 0){
-                                    SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                                    GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                                   }
                                   else if (userStatus == 1){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>const AttachPrescription()));
                                   }
                                   else{
-                                    SnackBarMessageShow.warningMSG('User Not Found', context);
+                                    GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                                   }
                                 },
                                 child: Card(
@@ -285,13 +293,13 @@ class _BookTestScreenState extends State<BookTestScreen> {
                               child: InkWell(
                                 onTap: (){
                                   if(userStatus == 0){
-                                    SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                                    GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                                   }
                                   else if (userStatus == 1){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>const InstantBooking()));
                                   }
                                   else{
-                                    SnackBarMessageShow.warningMSG('User Not Found', context);
+                                    GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                                   }
 
                                 },
@@ -354,7 +362,7 @@ class _BookTestScreenState extends State<BookTestScreen> {
                         ),
                       ],
                     ),
-                  ),
+                  ) : CenterLoading(),
                 ),
               ),
             )

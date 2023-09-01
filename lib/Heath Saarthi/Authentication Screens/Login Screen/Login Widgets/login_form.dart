@@ -2,7 +2,9 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/update_app_dialog.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Login%20Screen/Forgot%20Password/forgot_password_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Sign%20up%20Screen/signup_screen.dart';
@@ -206,7 +208,8 @@ class _LoginFormState extends State<LoginForm> {
 
                     Map data = {
                       "mobile": mobileNumber.text,
-                      "password": password.text
+                      "password": password.text,
+                      "device_token": deviceToken
                     };
                     userAuth.loginApi(data, context,widget.deviceToken,widget.deviceType);
                   }
@@ -246,6 +249,7 @@ class _LoginFormState extends State<LoginForm> {
       ),
     );
   }
+
 
   Future<void> retrieveDeviceToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

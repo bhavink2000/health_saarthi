@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import '../../../../DashBoard/hs_dashboard.dart';
 import '../../../Frontend Helper/Dialog Helper/update_app_dialog.dart';
 import '../../../Frontend Helper/Loading Helper/loading_indicator.dart';
+import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Repo/User Authentication/user_authentication.dart';
 import '../../App Exceptions/app_exceptions.dart';
@@ -38,16 +39,15 @@ class AuthProvider with ChangeNotifier{
       final userDataSession = Provider.of<UserDataSession>(context, listen: false);
       userDataSession.saveUserData(LoginModel(
         accessToken: value['access_token'].toString(),
-        userStatus: value['data']['status'].toString(),
       ));
 
       if(value['access_token'] == null || value['access_token'] == ''){
-        SnackBarMessageShow.warningMSG('Login error,\nPlease try again', context);
+        GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
         LoadingIndicater().onLoadExit(false, context);
         Navigator.pop(context);
       }
       else{
-        SnackBarMessageShow.successsMSG('Login Successfully', context);
+        GetXSnackBarMsg.getSuccessMsg('login Successfully');
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
       }
     }).catchError((error, stackTrace) {
@@ -71,7 +71,9 @@ class AuthProvider with ChangeNotifier{
         print("errorData -> $errorData");
 
         var errorObject = errorData['error'];
-
+        if(errorString == 'Internet connection problem'){
+          GetXSnackBarMsg.getWarningMsg('Internet connection problem');
+        }
         if (errorObject != null) {
           var errorMessage = errorObject['message'] != null ? errorObject['message'][0] : null;
           var mobileError = errorObject['mobile'] != null ? errorObject['mobile'][0] : null;
@@ -79,13 +81,13 @@ class AuthProvider with ChangeNotifier{
 
           if (errorMessage != null) {
             print("in errorMessage if");
-            SnackBarMessageShow.warningMSG('$errorMessage', context);
+            GetXSnackBarMsg.getWarningMsg('$errorMessage');
           } else if (mobileError != null) {
             print("in mobileError if");
-            SnackBarMessageShow.warningMSG('$mobileError', context);
+            GetXSnackBarMsg.getWarningMsg('$mobileError');
           } else if (passwordError != null) {
             print("in passwordError if");
-            SnackBarMessageShow.warningMSG('$passwordError', context);
+            GetXSnackBarMsg.getWarningMsg('$passwordError');
           } else {
             print("in else");
           }

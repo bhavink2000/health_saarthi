@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
+import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Service/api_service_post_get.dart';
 import '../../Api Service/api_service_type_post_get.dart';
@@ -16,9 +17,15 @@ class UserAuthentication {
     print("login api data->$data");
     try {
       dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
+      print("loginApi response-=>$response");
       return response;
     } catch (e) {
       print("Login Error->$e");
+      if(e.toString() == 'Internet connection problem'){
+        GetXSnackBarMsg.getWarningMsg('Internet connection problem');
+      }
+      else{}
+      print("throw e->$e");
       throw e;
     }
   }
@@ -38,17 +45,17 @@ class UserAuthentication {
 
       if(forgotData['status'] == 200){
         var msg = forgotData['message'];
-        SnackBarMessageShow.successsMSG('$msg', context);
+        GetXSnackBarMsg.getWarningMsg('$msg');
         return forgotData['status'];
       }
       else if(forgotData['status'] == 400){
         if(forgotData['status'] == 400){
           var errorMsg = forgotData['error']['password'][0];
-          SnackBarMessageShow.warningMSG('$errorMsg', context);
+          GetXSnackBarMsg.getWarningMsg('$errorMsg');
         }
         else{
           var errorMsg = forgotData['message'];
-          SnackBarMessageShow.warningMSG('$errorMsg', context);
+          GetXSnackBarMsg.getWarningMsg('$errorMsg');
         }
       }
       else{

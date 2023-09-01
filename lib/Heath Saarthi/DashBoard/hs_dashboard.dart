@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:http/http.dart' as http;
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -60,13 +61,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     userDataSession = Provider.of<UserDataSession>(context, listen: false);
     retrieveCallAddDevice();
     Future.delayed(Duration(seconds: 1), () {
+      deviceTokenType();
       print("callAdddevice->$callAddDevice");
-      if(callAddDevice == null || callAddDevice == ''){
-        deviceTokenType();
-      }
-      else{
-        print("----->>>>> already device token add with access_token <<<<<-----");
-      }
     });
 
     _widgetList = [
@@ -221,9 +217,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
       } else {
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print("logoutUser catch->$error");

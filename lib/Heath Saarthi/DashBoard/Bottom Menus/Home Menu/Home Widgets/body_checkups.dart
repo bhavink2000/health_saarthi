@@ -38,15 +38,19 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
     setState(() {
       isLoading = false;
     });
-    Map<String, dynamic> popularP = await HomeMenuRepo().popularPackageData(0, getAccessToken.access_token, '');
 
-    if (popularP != null && popularP.containsKey('data')) {
-      Map<String, dynamic> dataMap = popularP['data'];
-      if (dataMap != null && dataMap['data'] is List) {
-        List<dynamic> dataList = dataMap['data'];
+    try {
+      Map<String, dynamic> popularP = await HomeMenuRepo().popularPackageData(0, getAccessToken.access_token, '');
+
+      if (popularP != null && popularP.containsKey('data')) {
+        List<dynamic> dataList = popularP['data'];
+
         if (dataList.isNotEmpty) {
+          // Ensure dataList contains maps before assigning to popularPackage
+          List<Map<String, dynamic>> packageList = dataList.cast<Map<String, dynamic>>();
+
           setState(() {
-            popularPackage = dataList.cast<Map<String, dynamic>>();
+            popularPackage = packageList;
             isLoading = true;
           });
           print('popularPackage----------->$popularPackage');
@@ -56,10 +60,13 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
       } else {
         print("Service data is not in the expected format.");
       }
-    } else {
-      print("Popular package data is not available.");
+    } catch (e) {
+      print("Error fetching popular package data: $e");
     }
   }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -104,7 +111,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 60, 10, 5),
                               child: Text(
-                                "${popularPackage[index]['service_name']}",
+                                "${popularPackage[index]['max_service_name']}",
                                 style: TextStyle(
                                     fontFamily: FontType.MontserratMedium,
                                     fontSize: 16.sp,
@@ -115,7 +122,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 5, 10, 10),
-                              child: Text("${popularPackage[index]['service_classification']}", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
+                              child: Text("${popularPackage[index]['test_management']['service_classification']}", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(25, 5, 10, 5),
@@ -128,12 +135,12 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                       color: Colors.white
                                     ),
                                     padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                    child: Text("\u{20B9}${popularPackage[index]['mrp']}", style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12.sp,fontWeight: FontWeight.bold,color: hsPrime,)),
+                                    child: Text("\u{20B9}${popularPackage[index]['test_management']['mrp']}", style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12.sp,fontWeight: FontWeight.bold,color: hsPrime,)),
                                   ),
                                   InkWell(
                                       onTap: (){
                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
-                                          packageId: popularPackage[index]['id'],
+                                          packageId: popularPackage[index]['test_management']['id'],
                                           accessToken: getAccessToken.access_token,
                                         )));
                                       },
@@ -154,9 +161,9 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                             const Spacer(),
                             InkWell(
                               onTap: (){
-                                CartFuture().addToCartTest(getAccessToken.access_token, popularPackage[index]['id'], context).then((value) {});
+                                CartFuture().addToCartTest(getAccessToken.access_token, popularPackage[index]['test_management_id'], context).then((value) {});
                                 setState(() {
-                                  popularPackage[index]['booked_status'] = 1;
+                                  popularPackage[index]['test_management']['booked_status'] = 1;
                                 });
                               },
                               child: Container(
@@ -179,7 +186,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                      child: Text(popularPackage[index]['booked_status'] == 0 ? "Book Now" : "Booked",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontWeight: FontWeight.bold)),
+                                      child: Text(popularPackage[index]['test_management']['booked_status'] == 0 ? "Book Now" : "Booked",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white,fontWeight: FontWeight.bold)),
                                     ),
                                     Container(
                                       padding: const EdgeInsets.fromLTRB(6, 3, 6, 3),

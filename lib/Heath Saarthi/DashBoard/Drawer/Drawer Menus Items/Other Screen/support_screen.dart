@@ -1,5 +1,6 @@
 //@dart=2.9
 import 'dart:convert';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -547,7 +548,7 @@ class _SupportScreenState extends State<SupportScreen> {
         var data = json.decode(response.body);
         var msg = data['message'];
         if (data['status'] == 200) {
-          SnackBarMessageShow.successsMSG("$msg", context);
+          GetXSnackBarMsg.getSuccessMsg('$msg');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home()));
         }
       }
@@ -556,7 +557,7 @@ class _SupportScreenState extends State<SupportScreen> {
           var data = json.decode(response.body);
           var errorMsg = data['error']['email_id'][0];
           if (data['status'] == 400) {
-            SnackBarMessageShow.warningMSG("$errorMsg", context);
+            GetXSnackBarMsg.getWarningMsg('$errorMsg');
           }
         }
       }
@@ -582,7 +583,7 @@ class _SupportScreenState extends State<SupportScreen> {
         var data = json.decode(response.body);
         var msg = data['message'];
         if (data['status'] == 200) {
-          SnackBarMessageShow.successsMSG("$msg", context);
+          GetXSnackBarMsg.getSuccessMsg('$msg');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home()));
         }
       }
@@ -591,7 +592,7 @@ class _SupportScreenState extends State<SupportScreen> {
           var data = json.decode(response.body);
           var errorMsg = data['error']['email_id'][0];
           if (data['status'] == 400) {
-            SnackBarMessageShow.warningMSG("$errorMsg", context);
+            GetXSnackBarMsg.getWarningMsg('$errorMsg');
           }
         }
       }

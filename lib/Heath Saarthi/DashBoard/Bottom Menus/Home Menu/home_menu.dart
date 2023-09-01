@@ -123,8 +123,6 @@ class _HomeMenuState extends State<HomeMenu> {
             HomeTestPackage(uStatus: userStatus),
             const HomeOffers(),
             const HomeBodyCheckups(),
-            //const HomeCategory(),
-
           ],
         ),
       ),

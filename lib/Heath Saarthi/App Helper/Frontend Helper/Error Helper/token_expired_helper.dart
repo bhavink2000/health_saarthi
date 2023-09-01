@@ -16,6 +16,7 @@ import '../../Backend Helper/Device Info/device_info.dart';
 import '../../Backend Helper/Get Access Token/get_access_token.dart';
 import '../../Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../Font & Color Helper/font_&_color_helper.dart';
+import '../Snack Bar Msg/getx_snackbar_msg.dart';
 import '../Snack Bar Msg/snackbar_msg_show.dart';
 
 class TokenExpiredHelper extends StatefulWidget {
@@ -93,9 +94,8 @@ class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
       } else {
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print("logoutUser catch->$error");

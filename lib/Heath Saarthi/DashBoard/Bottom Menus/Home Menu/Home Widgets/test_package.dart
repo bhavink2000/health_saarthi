@@ -3,8 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../Packages List/package_list.dart';
 import '../Test List/test_list_items.dart';
 import 'attach_prescription.dart';
@@ -170,13 +172,13 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   onTap: (){
                     print("pre->${widget.uStatus}");
                     if(widget.uStatus == 0){
-                      SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                     }
                     else if (widget.uStatus == 1){
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const AttachPrescription()));
                     }
                     else{
-                      SnackBarMessageShow.warningMSG('User Not Found', context);
+                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                     }
                   },
                   child: Card(
@@ -239,13 +241,13 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                 child: InkWell(
                   onTap: (){
                     if(widget.uStatus == 0){
-                      SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                     }
                     else if (widget.uStatus == 1){
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const InstantBooking()));
                     }
                     else{
-                      SnackBarMessageShow.warningMSG('User Not Found', context);
+                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                     }
 
                   },

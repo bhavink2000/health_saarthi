@@ -1,28 +1,29 @@
 //@dart=2.9
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Location%20Provider/location_provider.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Internet%20Bloc/internet_bloc.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
 import 'package:provider/provider.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Api Urls/api_urls.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Device Info/device_info.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Network Check/network_binding.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/authentication_provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import 'Heath Saarthi/Authentication Screens/Splash Screen/splash_screen.dart';
-
+import 'package:http/http.dart' as http;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  DependencyInjection.init();
   runApp(const MyApp());
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
@@ -34,6 +35,8 @@ Future<void> main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async{
   await Firebase.initializeApp();
   print(message.notification.title.toString());
+  print(message.data['title']);
+  print(message.data['message']);
 }
 
 
@@ -71,7 +74,6 @@ class _MyAppState extends State<MyApp> {
       print("firebase getInitialMessage : ${event}");
     });
   }
-
 
   Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     print("in firebaseBackgroundHandleer ->${message.data}");
@@ -186,7 +188,6 @@ class _MyAppState extends State<MyApp> {
 
   void onNotificationTap(event) {
     // onClick handel Events
-
   }
 
   void showFlutterNotification(RemoteMessage message) { // display android notification code
@@ -221,6 +222,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    //SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -236,14 +238,9 @@ class _MyAppState extends State<MyApp> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context , child) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider<InternetBloc>(create: (BuildContext context) => InternetBloc()),
-            ],
-            child: const MaterialApp(
-              debugShowCheckedModeBanner: false,
-              home: SplashScreen(),
-            ),
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SplashScreen(),
           );
         },
       ),

@@ -5,29 +5,27 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/cart_empty_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import '../../App Helper/Backend Helper/Models/Authentication Models/user_model.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/cart_calculation.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
-import '../../App Helper/Frontend Helper/Error Helper/login_error_helper.dart';
+import '../../App Helper/Frontend Helper/Error Helper/internet_problem.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../Bottom Menus/Home Menu/Packages List/package_list.dart';
 import '../Bottom Menus/Home Menu/Test List/test_list_items.dart';
@@ -258,7 +256,8 @@ class _TestCartState extends State<TestCart> {
                   ElevatedButton(
                     onPressed: (){
                       if(promoApply.text.isEmpty){
-                        SnackBarMessageShow.warningMSG('Please enter coupe code', context);
+                        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().couponCode}');
+
                       }
                       else{
                         _showLoadingDialog();
@@ -312,18 +311,18 @@ class _TestCartState extends State<TestCart> {
                     child: InkWell(
                       onTap: (){
                         if(userStatus == 0){
-                          SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                         }else if(userStatus == 1){
                           if(bodyMsg == 'There is no item in cart.'){
-                            SnackBarMessageShow.warningMSG('Cart is empty', context);
+                            GetXSnackBarMsg.getWarningMsg('${AppTextHelper().cartEmpty}');
                           }
                           else{
                             if(selectLocation == null){
-                              SnackBarMessageShow.warningMSG('Please Select location', context);
+                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectLocation}');
                             }
                             else{
                               if(setLocation == false){
-                                SnackBarMessageShow.warningMSG('Please set location', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().setLocation}');
                               }
                               else{
                                 print("branch->>${selectedBranch}/$sBranchName/$selectedBranch");
@@ -346,7 +345,7 @@ class _TestCartState extends State<TestCart> {
                           }
                         }
                         else{
-                          SnackBarMessageShow.warningMSG('User Not Found', context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                         }
                       },
                       child: Card(
@@ -720,9 +719,9 @@ class _TestCartState extends State<TestCart> {
                           : Column(
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
-                              value.cartList.message == 'Token is Expired'
+                              value.cartList.status == '402'
                                   ? TokenExpiredHelper(tokenMsg: value.cartList.message)
-                                  : const Center(child: Text('Please check internet connection'),),
+                                  : value.cartList.message == 'Internet connection problem' ? CenterLoading() : const Center(child: Text('Please check internet connection')),
                             ],
                           );
                       case Status.completed:
@@ -878,7 +877,7 @@ class _TestCartState extends State<TestCart> {
                                                   },
                                                 ),
                                                   )
-                                                 : const CartEmptyHelper(),
+                                                 : const Center(child: Text('No Items Available, \nSo You Need To Shopping.'),),
                                               ),
                                               SizedBox(height: 5.h),
                                               Container(
@@ -1091,7 +1090,7 @@ class _TestCartState extends State<TestCart> {
                                                   },
                                                 ),
                                                   )
-                                                 : const CartEmptyHelper(),
+                                                 : const Center(child: Text('No Items Available, \nSo You Need To Shopping.'),),
                                               ),
                                               SizedBox(height: 5.h),
                                               Container(
@@ -1299,7 +1298,7 @@ class _TestCartState extends State<TestCart> {
                                                   },
                                                 ),
                                                   )
-                                                 : const CartEmptyHelper(),
+                                                 : const Center(child: Text('No Items Available, \nSo You Need To Shopping.'),),
                                               ),
                                               SizedBox(height: 5.h),
                                               Container(
@@ -1448,11 +1447,9 @@ class _TestCartState extends State<TestCart> {
           promoApply.text = '';
         });
         print("netA ->$netAmount / grossA ->$grossAmount / totalA ->$totalAmount / promo ->$applyPromo");
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print("cart Calculation Error->$error");
-      //SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
 

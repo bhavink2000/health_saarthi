@@ -5,6 +5,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Enums/enums_status.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/internet_problem.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:provider/provider.dart';
@@ -45,15 +46,16 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
             case Status.loading:
               return const CenterLoading();
             case Status.error:
-              return TokenExpiredHelper();
+              print("image slider status.error->${value.bannerList.message}--------------");
+              return value.bannerList.message == 'Internet connection problem' ? CenterLoading() : TokenExpiredHelper();
             case Status.completed:
               return value.bannerList.data.data.isEmpty ? Container() :Container(
                 width: MediaQuery.of(context).size.width.w,
                 height: MediaQuery.of(context).size.height / 6.h,
                 child: value.bannerList.data.data.isEmpty
-                    ? const Center(child: Text("No Banner Available",style: TextStyle(fontFamily: FontType.MontserratMedium),),)
-                    : CarouselSlider.builder(
-                  options: CarouselOptions(
+                  ? const Center(child: Text("No Banner Available",style: TextStyle(fontFamily: FontType.MontserratMedium),),)
+                  : CarouselSlider.builder(
+                    options: CarouselOptions(
                     viewportFraction: 0.8,
                     initialPage: 0,
                     enableInfiniteScroll: true,

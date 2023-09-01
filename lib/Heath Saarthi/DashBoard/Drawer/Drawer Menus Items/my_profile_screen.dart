@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +47,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   final accountNo = TextEditingController();
   var gstNo;
 
-  final pincode = TextEditingController();
+  var pincode;
   var panCard;
   var addressProfe;
   var aadharCardF;
@@ -193,7 +195,28 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         showTextField('City', city,Icons.reduce_capacity),
                         showTextField('Area', area,Icons.area_chart),
                         showTextField('Branch', branch,Icons.location_city),
-                        showTextField('PinCode', pincode,Icons.code),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: TextField(
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(hsPaddingM),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                              hintText: '${(pincode == null || pincode == '') ? 'N/A' : '$pincode'}',
+                              hintStyle: const TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14
+                              ),
+                              prefixIcon: Icon(Icons.code_rounded, color: hsBlack,size: 20),
+                            ),
+                          ),
+                        ),
                         showTextField('Bank name', bankNm,Icons.account_balance_rounded),
                         showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
                         showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
@@ -604,10 +627,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                 updateProfileData(context);
                               }
                               else if(userStatus == '1'){
-                                SnackBarMessageShow.warningMSG('Not updatable for this user', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().notUpdateUser}');
                               }
                               else{
-                                SnackBarMessageShow.warningMSG('User not found', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                               }
                             },
                             child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium))
@@ -713,20 +736,20 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         var data = response.data;
         var msg = data['message'];
         if (data['status'] == 200) {
-          SnackBarMessageShow.successsMSG("$msg", context);
+          GetXSnackBarMsg.getSuccessMsg('$msg');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home()));
         }
       } else if (response.statusCode == 400) {
         var data = response.data;
         var errorMsg = data['message'];
         if (data['status'] == 400) {
-          SnackBarMessageShow.warningMSG("$errorMsg", context);
+          GetXSnackBarMsg.getWarningMsg('$errorMsg');
           Navigator.pop(context);
         }
       }
     } catch (e) {
       print("Error uploading documents: ${e}");
-      SnackBarMessageShow.successsMSG("Select at least one document update.", context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectDocuments}');
       Navigator.pop(context);
     }
   }
@@ -765,7 +788,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           city.text = pModel.data.city.cityName.toString();
           area.text = pModel.data.area.areaName.toString();
           branch.text = pModel.data.costCenter.branchName.toString();
-          pincode.text = pModel.data.pincode.toString();
+          pincode = pModel.data.pincode;
 
           bankNm.text = pModel.data.bankName.toString();
           ifscCode.text = pModel.data.ifsc.toString();
@@ -830,13 +853,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
       } else {
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.warningMSG('Something went wrong', context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 }

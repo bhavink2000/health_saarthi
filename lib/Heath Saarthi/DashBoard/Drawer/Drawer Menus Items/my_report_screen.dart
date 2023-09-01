@@ -1,5 +1,7 @@
 //@dart=2.9
 import 'dart:ui';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -184,7 +186,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                                             child: const Text("Submit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,color: Colors.white),),
                                                             onPressed: (){
                                                               if(monthYear.text.isEmpty){
-                                                                SnackBarMessageShow.warningMSG('Please Select Date', context);
+                                                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectYear}');
                                                               }
                                                               else{
                                                                 fetchDay(monthYear.text);
@@ -336,7 +338,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                                             child: const Text("Submit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,color: Colors.white),),
                                                             onPressed: (){
                                                               if(year.text.isEmpty){
-                                                                SnackBarMessageShow.warningMSG('Please Select Year', context);
+                                                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectYear}');
                                                               }
                                                               else{
                                                                 fetchMonth(year.text);
@@ -519,7 +521,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                                             child: const Text("Submit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,color: Colors.white),),
                                                             onPressed: (){
                                                               if(fromYear.text.isEmpty || toYear.text.isEmpty){
-                                                                SnackBarMessageShow.warningMSG('Please Select Year', context);
+                                                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectYear}');
                                                               }
                                                               else{
                                                                 fetchYear(fromYear.text, toYear.text);

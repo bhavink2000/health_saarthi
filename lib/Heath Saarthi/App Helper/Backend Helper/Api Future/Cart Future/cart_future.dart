@@ -7,6 +7,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Mod
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Cart%20Menu/patient_model.dart';
 import 'package:http/http.dart' as http;
 import '../../../../DashBoard/Add To Cart/test_cart.dart';
+import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Urls/api_urls.dart';
 import '../../Models/Cart Menu/mobile_number_model.dart';
@@ -35,17 +36,19 @@ class CartFuture{
       if (bodyStatus == 200) {
          count = responseData['data']['count'];
          amount = responseData['data']['amount'];
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
+        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
       }else if(bodyMsg == 400){
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
+        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
       }
        else {
-        SnackBarMessageShow.warningMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
       }
       return CartResponseModel(bodyStatus, bodyMsg,count, amount);
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.warningMSG('Something went wrong', context);
+      GetXSnackBarMsg.getWarningMsg('Please try again');
       return CartResponseModel(500, 'Something went wrong',0,'0.00');
     }
   }
@@ -69,15 +72,16 @@ class CartFuture{
       var count = responseData['data']['count'];
       var amount = responseData['data']['amount'];
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
+        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
         Navigator.pop(context);
       } else {
-        SnackBarMessageShow.warningMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
       }
       return CartResponseModel(bodyStatus, bodyMsg,count, amount);
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.warningMSG('Something went wrong', context);
+      GetXSnackBarMsg.getWarningMsg('Please try again');
       return CartResponseModel(500, 'Something went wrong',0,'0.00');
     }
   }

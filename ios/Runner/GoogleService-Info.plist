@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>617563943499-tccqithvo2k5gq8m715449dvi2ioh9vm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.617563943499-tccqithvo2k5gq8m715449dvi2ioh9vm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCzBo5DV1V8bQVQj_-n5NfR50OmIoQlG40</string>
+	<key>GCM_SENDER_ID</key>
+	<string>617563943499</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.healthSaarthi.hs</string>
+	<key>PROJECT_ID</key>
+	<string>healthsaarthi-fc4ab</string>
+	<key>STORAGE_BUCKET</key>
+	<string>healthsaarthi-fc4ab.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:617563943499:ios:110fa93adb2ff19b7ed3ce</string>
+</dict>
+</plist>

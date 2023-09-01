@@ -1,6 +1,9 @@
 
 class ApiUrls{
-  static String mainUrls = 'https://healthsaarthi.windzoon.in/api/v1/';
+  //static String mainUrls = 'https://healthsaarthi.windzoon.in/api/v1/';
+  static String mainUrls = 'http://3.6.102.7/api/v1/';
+
+  static String apkDownloadUrl = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
 
   static String loginUrl = '${mainUrls}pharmacy/login';
   static String logoutUrl = '${mainUrls}pharmacy/logout';
@@ -11,6 +14,7 @@ class ApiUrls{
   static String profileUrls = '${mainUrls}pharmacy/get-profile-data';
   static String updateProfileUrls = '${mainUrls}pharmacy/update-profile-data';
 
+  static String popularPackage = '${mainUrls}pharmacy/get-popular-package';
 
   static String signUpUrl = '${mainUrls}pharmacy/register';
   static String forgotPasswordUrl = '${mainUrls}pharmacy/forgot-password';

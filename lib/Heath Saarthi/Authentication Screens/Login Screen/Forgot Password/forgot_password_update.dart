@@ -5,7 +5,9 @@ import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Splash%2
 
 import '../../../App Helper/Backend Helper/Api Repo/User Authentication/user_authentication.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
+import '../../../App Helper/Frontend Helper/Text Helper/test_helper.dart';
 
 class ForgotPasswordUpdate extends StatefulWidget {
   var mobileNo;
@@ -235,10 +237,10 @@ class _ForgotPasswordUpdateState extends State<ForgotPasswordUpdate> {
                         child: ElevatedButton(
                           onPressed: () async {
                             if (password.text.isEmpty) {
-                              SnackBarMessageShow.warningMSG('Enter password', context);
+                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().enterPassword}');
                             } else {
                               if(cPassword.text.isEmpty){
-                                SnackBarMessageShow.warningMSG('Enter confirm password', context);
+                                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().enterCPassword}');
                               }
                               else{
                                 if(password.text == cPassword.text){
@@ -281,7 +283,7 @@ class _ForgotPasswordUpdateState extends State<ForgotPasswordUpdate> {
                                   }
                                 }
                                 else{
-                                  SnackBarMessageShow.warningMSG('Password & Confirm password not match', context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().enterCPNotMatch}');
                                 }
                               }
                             }

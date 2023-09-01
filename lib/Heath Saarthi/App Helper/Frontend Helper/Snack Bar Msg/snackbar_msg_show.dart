@@ -2,7 +2,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 
-class SnackBarMessageShow{
+/*class SnackBarMessageShow{
 
   static helpMSG(String message, BuildContext context){
     return ScaffoldMessenger.of(context).showSnackBar(
@@ -66,4 +66,4 @@ class SnackBarMessageShow{
         )
     );
   }
-}
+}*/

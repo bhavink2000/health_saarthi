@@ -10,6 +10,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -26,6 +27,8 @@ import '../../../../App Helper/Backend Helper/Models/Location Model/branch_model
 import '../../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
+import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Add To Cart/test_cart.dart';
 import '../../../Notification Menu/notification_menu.dart';
@@ -67,16 +70,22 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     colletionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        fetchMobileList();
-      });
-    });
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        fetchStateList();
-      });
-    });
+    functionCalling();
+    // Future.delayed(const Duration(seconds: 1),(){
+    //   setState(() {
+    //     fetchMobileList();
+    //   });
+    // });
+    // Future.delayed(const Duration(seconds: 2),(){
+    //   setState(() {
+    //     fetchStateList();
+    //   });
+    // });
+  }
+
+  void functionCalling()async{
+    await fetchStateList();
+    await fetchMobileList();
   }
   final _formKey = GlobalKey<FormState>();
 
@@ -144,7 +153,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
             ),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
             Expanded(
-              child: SingleChildScrollView(
+              child: stateLoading == false ? SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
@@ -753,22 +762,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             child: InkWell(
                               onTap: ()async{
                                 if(pName.text.isEmpty){
-                                  SnackBarMessageShow.warningMSG('Enter patient name', context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientName}');
                                 }
                                 else if(pMobile.text.isEmpty){
-                                  SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
                                 }
                                 else if(selectedState == null || selectedState == ''){
-                                  SnackBarMessageShow.warningMSG("Please select state fields", context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectState}');
                                 }
                                 else if(selectedCity == null || selectedCity == ''){
-                                  SnackBarMessageShow.warningMSG("Please select city fields", context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectCity}');
                                 }
                                 else if(selectedArea == null || selectedArea == ''){
-                                  SnackBarMessageShow.warningMSG("Please select area fields", context);
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectArea}');
+                                }
+                                else if(selectedBranch == null || selectedBranch == ''){
+                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectBranch}');
                                 }
                                 else if(presciptionFile == null){
-                                  SnackBarMessageShow.warningMSG('Please Select Prescription', context);
+                                  GetXSnackBarMsg.getWarningMsg('Please select prescription');
                                 }
                                 else{
                                   showDialog(
@@ -792,16 +804,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   );
                                   await attachPrescription();
                                 }
-                                // if (_formKey.currentState.validate()) {
-                                //   FocusScope.of(context).unfocus();
-                                //   if(selectedState == null || selectedCity == null || selectedArea == null){
-                                //     SnackBarMessageShow.warningMSG("Please Select Location Fields", context);
-                                //   }
-                                //   else if(presciptionFile == null){
-                                //     SnackBarMessageShow.warningMSG('Please Select Prescription', context);
-                                //   }
-                                //
-                                // }
                               },
                               child: Container(
                                 alignment: Alignment.center,
@@ -816,7 +818,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                     ),
                   ],
                 ),
-              ),
+              ) : CenterLoading(),
             )
           ],
         ),
@@ -862,10 +864,28 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       print('Error: $e');
     }
   }
+
+  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(
+            key: _loadingDialogKey,
+            child: const CenterLoading(),
+          ),
+        );
+      },
+    );
+  }
   List<StateData> stateList = [];
   String selectedState;
   String selectedStateId;
   Future<void> fetchStateList() async {
+    //_showLoadingDialog(context);
     setState(() {
       stateLoading = true;
     });
@@ -876,8 +896,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         stateList = list;
         stateLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -885,6 +907,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String selectedCity;
   String selectedCityId;
   Future<void> fetchCityList(var sState) async {
+    //_showLoadingDialog(context);
     setState(() {
       cityLoading = true;
     });
@@ -895,8 +918,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         cityList = list;
         cityLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -904,6 +929,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String selectedArea;
   String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
+    //_showLoadingDialog(context);
     setState(() {
       areaLoading = true;
     });
@@ -914,8 +940,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         areaList = list;
         areaLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -923,6 +951,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String selectedBranch;
   String selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    //_showLoadingDialog(context);
     setState(() {
       branchLoading = true;
     });
@@ -933,8 +962,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         branchList = list;
         branchLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Branch Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -1023,7 +1054,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       print("bS->$bodyStatus");
       print("bM->$bodyMsg");
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         selectedMobileNo = '';
         selectedGender = '';
         remark.text = '';
@@ -1041,16 +1072,16 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       }else if (bodyStatus == 400) {
         var errorMessage = parsedResponse['error']['mobile_no'][0];
-        SnackBarMessageShow.warningMSG('$errorMessage', context);
+        GetXSnackBarMsg.getWarningMsg('$errorMessage');
         Navigator.pop(context);
       }
       else {
-        SnackBarMessageShow.warningMSG('Something went wrong', context);
+        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      SnackBarMessageShow.warningMSG('Server error.\nPlease try again', context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
       Navigator.pop(context);
     }
   }

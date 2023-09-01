@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_list_details.dart';
@@ -34,7 +35,7 @@ class GlobalSearch extends SearchDelegate{
 
     if(bodyStatus == 400){
       var bodyMsg = jsonResponse['massage'];
-      SnackBarMessageShow.warningMSG('${bodyMsg}', context);
+      GetXSnackBarMsg.getWarningMsg('$bodyMsg');
     }
     else{
       if (response.statusCode == 200) {

@@ -4,6 +4,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -22,6 +24,7 @@ import '../../../App Helper/Backend Helper/Models/Location Model/branch_model.da
 import '../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import 'thank_you_msg.dart';
 
@@ -63,17 +66,24 @@ class _TestMenuState extends State<TestMenu> {
         getUserStatus();
       });
     });
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        fetchMobileList();
-      });
-    });
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        fetchStateList();
-      });
-    });
+    functionCalling();
+    // Future.delayed(const Duration(seconds: 1),(){
+    //   setState(() {
+    //     fetchMobileList();
+    //   });
+    // });
+    // Future.delayed(const Duration(seconds: 2),(){
+    //   setState(() {
+    //     fetchStateList();
+    //   });
+    // });
   }
+
+  void functionCalling()async{
+    await fetchStateList();
+    await fetchMobileList();
+  }
+
   final _formKey = GlobalKey<FormState>();
   void resetCityAndAreaSelection() {
     setState(() {
@@ -126,7 +136,7 @@ class _TestMenuState extends State<TestMenu> {
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: SafeArea(
-        child: SingleChildScrollView(
+        child: stateLoading == false ? SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
@@ -704,26 +714,26 @@ class _TestMenuState extends State<TestMenu> {
                   child: InkWell(
                     onTap: ()async{
                       if(userStatus == 0){
-                        SnackBarMessageShow.warningMSG('Account is under review\nPlease connect with support team', context);
+                        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                       }
                       else if (userStatus == 1){
                         if(pName.text.isEmpty){
-                          SnackBarMessageShow.warningMSG('Enter patient name', context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientName}');
                         }
                         else if(pMobile.text.isEmpty){
-                          SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
                         }
                         else if(selectedState == null || selectedState == ''){
-                          SnackBarMessageShow.warningMSG("Please select state field", context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectState}');
                         }
                         else if(selectedCity == null || selectedCity == ''){
-                          SnackBarMessageShow.warningMSG("Please select city field", context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectCity}');
                         }
                         else if(selectedArea == null || selectedArea == ''){
-                          SnackBarMessageShow.warningMSG("Please select area field", context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectArea}');
                         }
                         else if(selectedBranch == null || selectedBranch == ''){
-                          SnackBarMessageShow.warningMSG('Please select branch field', context);
+                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectBranch}');
                         }
                         else{
                           showDialog(
@@ -747,37 +757,9 @@ class _TestMenuState extends State<TestMenu> {
                           );
                           await instantBooking();
                         }
-                        // if (_formKey.currentState.validate()) {
-                        //   FocusScope.of(context).unfocus();
-                        //   if(selectedState == null || selectedCity == null || selectedArea == null){
-                        //     SnackBarMessageShow.warningMSG("Select location fields", context);
-                        //   }
-                        //   else{
-                        //     showDialog(
-                        //       context: context,
-                        //       barrierDismissible: false,
-                        //       builder: (BuildContext context) {
-                        //         return Dialog(
-                        //           child: Padding(
-                        //             padding: const EdgeInsets.all(16.0),
-                        //             child: Column(
-                        //               mainAxisSize: MainAxisSize.min,
-                        //               children: const [
-                        //                 CircularProgressIndicator(),
-                        //                 SizedBox(height: 16.0),
-                        //                 Text('Loading...'),
-                        //               ],
-                        //             ),
-                        //           ),
-                        //         );
-                        //       },
-                        //     );
-                        //     await instantBooking();
-                        //   }
-                        // }
                       }
                       else{
-                        SnackBarMessageShow.warningMSG('User Not Found', context);
+                        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                       }
                     },
                     child: Container(
@@ -791,7 +773,7 @@ class _TestMenuState extends State<TestMenu> {
               ],
             ),
           ),
-        ),
+        ) : CenterLoading(),
       ),
     );
   }
@@ -831,10 +813,28 @@ class _TestMenuState extends State<TestMenu> {
       print('Error: $e');
     }
   }
+
+  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
+  void _showLoadingDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: Center(
+            key: _loadingDialogKey,
+            child: const CenterLoading(),
+          ),
+        );
+      },
+    );
+  }
   List<StateData> stateList = [];
   String selectedState;
   String selectedStateId;
   Future<void> fetchStateList() async {
+    //_showLoadingDialog(context);
     setState(() {
       stateLoading = true;
     });
@@ -845,8 +845,10 @@ class _TestMenuState extends State<TestMenu> {
         stateList = list;
         stateLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -854,6 +856,7 @@ class _TestMenuState extends State<TestMenu> {
   String selectedCity;
   String selectedCityId;
   Future<void> fetchCityList(var sState) async {
+    //_showLoadingDialog(context);
     setState(() {
       cityLoading = true;
     });
@@ -864,8 +867,10 @@ class _TestMenuState extends State<TestMenu> {
         cityList = list;
         cityLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -873,6 +878,7 @@ class _TestMenuState extends State<TestMenu> {
   String selectedArea;
   String selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
+    //_showLoadingDialog(context);
     setState(() {
       areaLoading = true;
     });
@@ -883,8 +889,10 @@ class _TestMenuState extends State<TestMenu> {
         areaList = list;
         areaLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -892,6 +900,7 @@ class _TestMenuState extends State<TestMenu> {
   String selectedBranch;
   String selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
+    //_showLoadingDialog(context);
     setState(() {
       branchLoading = true;
     });
@@ -902,8 +911,10 @@ class _TestMenuState extends State<TestMenu> {
         branchList = list;
         branchLoading = false;
       });
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Branch Error -> $e");
+      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -980,7 +991,7 @@ class _TestMenuState extends State<TestMenu> {
       var bodyMsg = parsedResponse['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         selectedMobileNo = '';
         selectedGender = '';
         remark.text = '';
@@ -998,15 +1009,15 @@ class _TestMenuState extends State<TestMenu> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ThankYouPage()));
       } else if (bodyStatus == 400) {
         var msg = parsedResponse['error']['mobile_no'][0];
-        SnackBarMessageShow.warningMSG('$msg', context);
+        GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
       } else {
-        SnackBarMessageShow.warningMSG('Something went wrong', context);
+        GetXSnackBarMsg.getWarningMsg('booking problem');
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      SnackBarMessageShow.warningMSG('Server error.\nPlease try again', context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
       Navigator.pop(context);
     }
   }

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
@@ -306,7 +307,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         var data = json.decode(response.body);
         var msg = data['message'];
         if (data['status'] == 200) {
-          SnackBarMessageShow.successsMSG("$msg", context);
+          GetXSnackBarMsg.getSuccessMsg('$msg');
           Navigator.pop(context);
         }
       }
@@ -315,7 +316,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           var data = json.decode(response.body);
           var errorMsg = data['message'];
           if (data['status'] == 400) {
-            SnackBarMessageShow.warningMSG("$errorMsg", context);
+            GetXSnackBarMsg.getWarningMsg('$errorMsg');
             Navigator.pop(context);
           }
         }

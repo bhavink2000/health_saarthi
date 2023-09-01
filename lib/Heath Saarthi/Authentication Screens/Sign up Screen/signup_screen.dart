@@ -1,11 +1,12 @@
+
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Sign%20up%20Screen/sign_form.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import 'header_signup.dart';
 
 class SignUpScreen extends StatefulWidget {
-  var deviceType, deviceToken;
-  SignUpScreen({Key? key,this.deviceType,this.deviceToken}) : super(key: key);
+  SignUpScreen({Key? key}) : super(key: key);
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
@@ -15,6 +16,8 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
+    final space = height > 650 ? hsSpaceM : hsSpaceS;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: hsWhite,
@@ -23,7 +26,7 @@ class _SignUpScreenState extends State<SignUpScreen> with SingleTickerProviderSt
           child: Column(
             children: <Widget>[
               HeaderSignUp(),
-              SignUpForm(dType: widget.deviceType,dToken: widget.deviceToken),
+              SignUpForm(),
             ],
           ),
         ),

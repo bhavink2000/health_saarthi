@@ -2,11 +2,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import 'otp_verify_screen.dart';
 
@@ -121,7 +123,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       child: ElevatedButton(
                         onPressed: () async {
                           if (otpText.text.isEmpty) {
-                            SnackBarMessageShow.warningMSG('Enter mobile number', context);
+                            GetXSnackBarMsg.getWarningMsg('${AppTextHelper().enterMobileNo}');
                           } else {
                             showDialog(
                               context: context,
@@ -188,7 +190,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
     var data = json.decode(response.body);
     if (data['status'] == 200) {
-      SnackBarMessageShow.successsMSG('${data['message']}', context);
+      GetXSnackBarMsg.getWarningMsg('${data['message']}');
+      //SnackBarMessageShow.successsMSG('${data['message']}', context);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -199,7 +202,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
     } else if (data['status'] == 400) {
       var errorMsg = data['error']['mobile'][0];
-      SnackBarMessageShow.warningMSG('$errorMsg', context);
+      GetXSnackBarMsg.getWarningMsg('${errorMsg}');
       Navigator.pop(context);
       setState(() {
         mobileLoading = false;

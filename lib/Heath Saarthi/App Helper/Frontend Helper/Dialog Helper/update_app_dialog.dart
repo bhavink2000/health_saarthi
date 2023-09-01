@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:install_plugin/install_plugin.dart';
 import '../../Backend Helper/Api Urls/api_urls.dart';
 import '../../Backend Helper/Device Info/device_info.dart';
@@ -65,7 +66,7 @@ class UpdateAppDialog{
                                 fontFamily: FontType.MontserratMedium,
                                 fontWeight: FontWeight.bold)),
                         const SizedBox(height: 5),
-                        const Text("Minor update and \nimprovement",
+                        const Text("Add popular package and \nMake app smooth",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         Row(
@@ -73,7 +74,11 @@ class UpdateAppDialog{
                           children: [
                             TextButton(
                                 onPressed: ()async {
-                                  var url = 'https://healthsaarthi.windzoon.in/app-release.apk';
+
+                                  //var url = 'https://healthsaarthi.windzoon.in/app-release.apk';
+                                  var url = 'https://drive.google.com/uc?id=1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP&export=download';
+                                  //var url = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
+
                                   if(showLoading == true){
                                     showDialog(
                                       context: context,
@@ -113,6 +118,8 @@ class UpdateAppDialog{
                                           _showDownloadCompleteDialog(context);
                                         },
                                         onDownloadError: (String error) {
+                                          GetXSnackBarMsg.getWarningMsg('File download error.\n please try again');
+                                          Navigator.pop(context);
                                           print('DOWNLOAD ERROR: $error');
                                         });
                                   }

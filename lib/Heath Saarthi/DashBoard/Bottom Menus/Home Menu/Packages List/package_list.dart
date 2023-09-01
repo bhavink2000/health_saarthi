@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/login_error_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 import 'package:provider/provider.dart';
@@ -12,13 +11,12 @@ import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future
 import '../../../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
+import '../../../../App Helper/Frontend Helper/Error Helper/internet_problem.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
-import '../../../../App Helper/Frontend Helper/package_model.dart';
 import '../../../Add To Cart/test_cart.dart';
 import '../../../Notification Menu/notification_menu.dart';
-import 'package_list_details.dart';
 
 class PackageListItems extends StatefulWidget {
   const PackageListItems({Key key}) : super(key: key);
@@ -150,10 +148,10 @@ class _PackageListItemsState extends State<PackageListItems> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          print("${value.testList.message}-----------------");
-                          return value.packageList.message == 'Token is Expired'
+                          print("${value.packageList.message}-----------------");
+                          return value.packageList.status == '402'
                               ? TokenExpiredHelper(tokenMsg: "${value.packageList.message}")
-                              : value.packageList.data == []
+                              : value.packageList.message == 'Internet connection problem' ?  CenterLoading() : value.packageList.data == []
                               ? Container()
                               : Center(
                               child: Text(

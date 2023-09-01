@@ -49,7 +49,7 @@ class HomeMenuRepo{
     }
   }
   Future<dynamic> popularPackageData(var index, var access_token, var packageData) async {
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", access_token, packageData);
+    dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.popularPackage}", access_token);
     print("Response Package->$response");
 
     if (response['status'] == 'Token is Expired') {

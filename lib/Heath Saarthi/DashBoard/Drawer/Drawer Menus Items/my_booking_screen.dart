@@ -12,6 +12,7 @@ import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dar
 import '../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
 import '../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 
 class MyBookingScreen extends StatefulWidget {
   const MyBookingScreen({Key key}) : super(key: key);
@@ -140,7 +141,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   InkWell(
                     onTap: (){
                       if(fromDate.text.isEmpty || toDate.text.isEmpty){
-                        SnackBarMessageShow.warningMSG('Please Enter Dates', context);
+                        GetXSnackBarMsg.getWarningMsg('Please enter dates');
                       }
                       else{
                         Map data = {
@@ -176,7 +177,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return value.bookingList.message == 'Token is Expired'
+                          return value.bookingList.status == '402'
                               ? TokenExpiredHelper(tokenMsg: value.testList.message)
                               : Center(
                             child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),

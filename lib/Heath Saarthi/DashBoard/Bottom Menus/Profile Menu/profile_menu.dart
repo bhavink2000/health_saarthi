@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Profile%20Menu/change_password.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,7 @@ import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dar
 import '../../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Authentication Screens/Splash Screen/splash_screen.dart';
 
@@ -48,7 +50,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
   final accountNo = TextEditingController();
   var gstNo;
 
-  final pincode = TextEditingController();
+  var pincode;
   var panCard;
   var addressProfe;
   var aadharCardF;
@@ -175,7 +177,29 @@ class _ProfileMenuState extends State<ProfileMenu> {
             showTextField('City', city,Icons.reduce_capacity),
             showTextField('Area', area,Icons.area_chart),
             showTextField('Branch', branch,Icons.location_city),
-            showTextField('PinCode', pincode,Icons.code),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextField(
+                readOnly: true,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: '${(pincode == null || pincode == '') ? 'N/A' : '$pincode'}',
+                  hintStyle: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14
+                  ),
+                  prefixIcon: Icon(Icons.code_rounded, color: hsBlack,size: 20),
+                ),
+              ),
+            ),
+            //showTextField('PinCode', pincode,Icons.code),
             showTextField('Bank name', bankNm,Icons.account_balance_rounded),
             showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
             showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
@@ -587,10 +611,10 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   updateProfileData(context);
                 }
                 else if(userStatus == '1'){
-                  SnackBarMessageShow.warningMSG('Not updatable for this user', context);
+                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().notUpdateUser}');
                 }
                 else{
-                  SnackBarMessageShow.warningMSG('User not found', context);
+                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                 }
               },
               child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium))
@@ -691,20 +715,21 @@ class _ProfileMenuState extends State<ProfileMenu> {
         var data = response.data;
         var msg = data['message'];
         if (data['status'] == 200) {
-          SnackBarMessageShow.successsMSG("$msg", context);
+          GetXSnackBarMsg.getSuccessMsg('$msg');
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Home()));
         }
       } else if (response.statusCode == 400) {
         var data = response.data;
         var errorMsg = data['message'];
         if (data['status'] == 400) {
-          SnackBarMessageShow.warningMSG("$errorMsg", context);
+          GetXSnackBarMsg.getWarningMsg('$errorMsg');
           Navigator.pop(context);
         }
       }
     } catch (e) {
+
       print("Error uploading documents: ${e}");
-      SnackBarMessageShow.successsMSG("Select at least one document update.", context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectDocuments}');
       Navigator.pop(context);
     }
   }
@@ -743,7 +768,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           city.text = pModel.data.city.cityName.toString();
           area.text = pModel.data.area.areaName.toString();
           branch.text = pModel.data.costCenter.branchName.toString();
-          pincode.text = pModel.data.pincode.toString();
+          pincode = pModel.data.pincode;
 
           bankNm.text = pModel.data.bankName.toString();
           ifscCode.text = pModel.data.ifsc.toString();
@@ -766,7 +791,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           gstImg = pModel.data.gstImg.toString();
         });
       }
-      print("--------------------");
+      print("pincode--------------------$pincode");
       Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
@@ -809,13 +834,12 @@ class _ProfileMenuState extends State<ProfileMenu> {
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
       } else {
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
       print(error.toString());
-      SnackBarMessageShow.warningMSG('Something went wrong', context);
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 

@@ -2,6 +2,8 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
@@ -350,20 +352,20 @@ class _DrawerScreenState extends State<DrawerScreen> {
         Uri.parse(ApiUrls.logoutUrl),
         headers: headers,
       );
+      print("drawer logout response->${response.body}");
       final responseData = json.decode(response.body);
       print("drawer logout->$responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        SnackBarMessageShow.successsMSG('$bodyMsg', context);
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         return bodyStatus;
       } else {
-        //SnackBarMessageShow.warningMSG('$bodyMsg', context);
       }
     } catch (error) {
-      print(error.toString());
-      SnackBarMessageShow.warningMSG('Something went wrong', context);
+      print("logout catch -error-->>${error.toString()}");
+      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 }

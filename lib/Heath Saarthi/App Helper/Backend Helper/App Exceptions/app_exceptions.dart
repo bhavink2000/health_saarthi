@@ -12,7 +12,7 @@ class AppExceptions implements Exception{
 
 //If we can't communicate with the network then this will throw ann exception after a certain time
 class FetchDataException extends AppExceptions{
-  FetchDataException({String? message}) : super(message, "");
+  FetchDataException({String? message}) : super(message, "Internet connection problem");
 }
 
 //If the BaseUrl is wrong and if the api is not available
