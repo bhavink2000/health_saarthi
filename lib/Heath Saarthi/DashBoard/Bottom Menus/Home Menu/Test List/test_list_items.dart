@@ -9,6 +9,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Enu
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/internet_problem.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_item_details.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
 import 'package:provider/provider.dart';
@@ -143,7 +144,8 @@ class _TestListItemsState extends State<TestListItems> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          print("status.error test-->>${value.testList.message}-------------");
+                          print("status.error test msg-->>${value.testList.message}-------------");
+                          print("status.error test status-->>${value.testList.status}-------------");
                           return value.testList.status == '402'
                            ? TokenExpiredHelper(tokenMsg: value.testList.message)
                            : value.testList.message == 'Internet connection problem' ? CenterLoading() : value.testList.data == []
@@ -222,9 +224,14 @@ class _TestListItemsState extends State<TestListItems> {
                                                                       const Spacer(),
                                                                       InkWell(
                                                                         onTap: (){
-                                                                          CartFuture().addToCartTest(getAccessToken.access_token, testI.id, context).then((value) {
-                                                                            homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
-                                                                          });
+                                                                          if(testI.bookedStatus == 1){
+                                                                            GetXSnackBarMsg.getWarningMsg('Already booked this item');
+                                                                          }
+                                                                          else{
+                                                                            CartFuture().addToCartTest(getAccessToken.access_token, testI.id, context).then((value) {
+                                                                              homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
+                                                                            });
+                                                                          }
                                                                         },
                                                                         child: Container(
                                                                           decoration: BoxDecoration(borderRadius: const BorderRadius.only(

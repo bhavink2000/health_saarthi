@@ -847,7 +847,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo.id, context).then((value){}).then((value){
+                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo.id, context).then((value) async{
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },

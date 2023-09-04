@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Location%20Provider/location_provider.dart';
 import 'package:provider/provider.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Urls/api_urls.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Device Info/device_info.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Network Check/network_binding.dart';
@@ -53,10 +54,12 @@ class _MyAppState extends State<MyApp> {
   AndroidNotificationChannel channel;
   bool isFlutterLocalNotificationsInitialized = false;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  NotificationService notificationService = NotificationService();
 
   @override
   void initState() {
     super.initState();
+    notificationService.requestNotificationPermission();
     notificationCall();
   }
 

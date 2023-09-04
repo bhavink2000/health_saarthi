@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:http/http.dart' as http;
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
@@ -20,11 +21,15 @@ class ProfileFuture{
     print("Profile Response->${response.body}");
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print("Response -> $jsonResponse");
-      if (jsonResponse['status'] == 'Token is Expired') {
-        throw Exception('Token is Expired');
+      if(jsonResponse['status'] == '402'){
+        print("in if with status code ->${jsonResponse['status']}");
+        //GetXSnackBarMsg.getWarningMsg('${jsonResponse['message']}');
+        throw Exception(jsonResponse);
       }
-      return ProfileModel.fromJson(jsonResponse);
+      else{
+        print("in else with status code ->${jsonResponse['status']}");
+        return ProfileModel.fromJson(jsonResponse);
+      }
     } else {
       throw Exception('Request failed with status: ${response.statusCode}.');
     }

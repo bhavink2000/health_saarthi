@@ -220,7 +220,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             // }, // Set the validator function
                           ),
                         ),
-                        Padding(
+                       /* Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
                             controller: pDob,
@@ -266,7 +266,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               }else{}
                             },
                           ),
-                        ),
+                        ),*/
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
@@ -429,7 +429,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             },
                           ),
                         ),
-                        Padding(
+                        /*Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
                             controller: pinCode,
@@ -458,7 +458,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
                             ),
                           ),
-                        ),
+                        ),*/
 
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
@@ -599,13 +599,13 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       "email_id": emailId?.text ?? '',
       "mobile_no": pMobile?.text ?? '',
       "gender": '$pGender',
-      "date_of_birth": pDob?.text ?? '',
+      //"date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
       "state_id": widget.dStateId ?? '',
       'city_id': widget.dCityId ?? '',
       'area_id': widget.dAreaId ?? '',
       'cost_center_id': widget.dBranchId ?? '',
-      'pincode': pinCode?.text ?? '',
+      //'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
     print("Body ->$requestBody");

@@ -48,8 +48,8 @@ class HomeMenusProvider with ChangeNotifier{
       print("fetch Package onError->$error");
       print("fetch Package stackTrace->$stackTrace");
     }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
+      print("package cathcError -> $error");
+      print("package cathcStackTrace -> $stackTrace");
     });
   }
 

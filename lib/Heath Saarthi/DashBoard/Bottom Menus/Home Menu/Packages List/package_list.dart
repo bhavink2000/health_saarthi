@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 import 'package:provider/provider.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
@@ -42,7 +43,8 @@ class _PackageListItemsState extends State<PackageListItems> {
     });
   }
 
-  bool packageBook = false;
+  bool packageBookClick = false;
+
   @override
   Widget build(BuildContext context) {
     Map packageData = {
@@ -148,7 +150,8 @@ class _PackageListItemsState extends State<PackageListItems> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          print("${value.packageList.message}-----------------");
+                          print("status.error package msg-->>${value.packageList.message}-----------------");
+                          print("status.error package status-->>${value.packageList.status}-----------------");
                           return value.packageList.status == '402'
                               ? TokenExpiredHelper(tokenMsg: "${value.packageList.message}")
                               : value.packageList.message == 'Internet connection problem' ?  CenterLoading() : value.packageList.data == []
@@ -227,9 +230,14 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                                     const Spacer(),
                                                                     InkWell(
                                                                       onTap: (){
-                                                                        CartFuture().addToCartTest(getAccessToken.access_token, packageI.id, context).then((value) {
-                                                                          homeMenusProvider.fetchPackage(curentindex + 1, getAccessToken.access_token,packageData);
-                                                                        });
+                                                                        if(packageI.bookedStatus == 1){
+                                                                          GetXSnackBarMsg.getWarningMsg('Already booked this items');
+                                                                        }
+                                                                        else{
+                                                                          CartFuture().addToCartTest(getAccessToken.access_token, packageI.id, context).then((value) {
+                                                                            homeMenusProvider.fetchPackage(curentindex + 1, getAccessToken.access_token,packageData);
+                                                                          });
+                                                                        }
                                                                       },
                                                                       child: Container(
                                                                         decoration: BoxDecoration(borderRadius: const BorderRadius.only(

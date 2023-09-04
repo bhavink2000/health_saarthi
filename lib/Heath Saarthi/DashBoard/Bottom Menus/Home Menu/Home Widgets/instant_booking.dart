@@ -247,7 +247,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           // }, // Set the validator function
                         ),
                       ),
-                      Padding(
+                      /*Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
                           controller: pDob,
@@ -287,7 +287,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             }else{}
                           },
                         ),
-                      ),
+                      ),*/
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
@@ -637,7 +637,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           },
                         ),
                       ),
-                      Padding(
+                      /*Padding(
                         padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
                           controller: pinCode,
@@ -666,7 +666,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
                           ),
                         ),
-                      ),
+                      ),*/
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
@@ -944,13 +944,13 @@ class _InstantBookingState extends State<InstantBooking> {
       "email_id": emailId?.text ?? '',
       "mobile_no": pMobile?.text ?? '',
       "gender": '$pGender',
-      "date_of_birth": pDob?.text ?? '',
+      //"date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
       "state_id": selectedStateId ?? '',
       'city_id': selectedCityId ?? '',
       'area_id': selectedAreaId ?? '',
       'cost_center_id': selectedBranchId ?? '',
-      'pincode': pinCode?.text ?? '',
+      //'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
     print("Body ->$requestBody");

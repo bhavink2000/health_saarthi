@@ -238,7 +238,7 @@ class _TestMenuState extends State<TestMenu> {
                     // }, // Set the validator function
                   ),
                 ),
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                   child: TextFormField(
                     controller: pDob,
@@ -278,7 +278,7 @@ class _TestMenuState extends State<TestMenu> {
                       }else{}
                     },
                   ),
-                ),
+                ),*/
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                   child: TextFormField(
@@ -587,7 +587,56 @@ class _TestMenuState extends State<TestMenu> {
                 ),
 
                 SizedBox(height: 10.h),
-                Row(
+
+                Padding(
+                  padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                  child: TextFormField(
+                    controller: colletionDate,
+                    readOnly: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(hsPaddingM),
+                      border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      hintText: 'Collection date',
+                      hintStyle: const TextStyle(
+                        color: Colors.black54,
+                        fontFamily: FontType.MontserratRegular,
+                        fontSize: 14,
+                      ),
+                      prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
+                    ),
+                    // validator: (value) {
+                    //   if (value == null || value.isEmpty) {
+                    //     return 'Enter collection date';
+                    //   }
+                    //   return null;
+                    // },
+                    onTap: () async {
+                      DateTime pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2101),
+                      );
+                      if (pickedDate != null) {
+                        String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+                        setState(() {
+                          colletionDate.text = formattedDate;
+                        });
+                      }
+                    },
+                  ),
+                ),
+
+                /*Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
 
@@ -679,7 +728,7 @@ class _TestMenuState extends State<TestMenu> {
                       ),
                     ),
                   ],
-                ),
+                ),*/
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                   child: TextFormField(
@@ -965,13 +1014,13 @@ class _TestMenuState extends State<TestMenu> {
       "email_id": emailId?.text ?? '',
       "mobile_no": pMobile?.text ?? '',
       "gender": '$pGender',
-      "date_of_birth": pDob?.text ?? '',
+      //"date_of_birth": pDob?.text ?? '',
       "age": pAge?.text ?? '',
       "state_id": selectedStateId ?? '',
       'city_id': selectedCityId ?? '',
       'area_id': selectedAreaId ?? '',
       'cost_center_id': selectedBranchId ?? '',
-      'pincode': pinCode?.text ?? '',
+      //'pincode': pinCode?.text ?? '',
       'address': address?.text ?? '',
     };
 

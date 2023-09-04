@@ -56,12 +56,21 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
           print('popularPackage----------->$popularPackage');
         } else {
           print("No service data available.");
+          setState(() {
+            isLoading = true;
+          });
         }
       } else {
         print("Service data is not in the expected format.");
+        setState(() {
+          isLoading = true;
+        });
       }
     } catch (e) {
       print("Error fetching popular package data: $e");
+      setState(() {
+        isLoading = true;
+      });
     }
   }
 
@@ -82,7 +91,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
             width: MediaQuery.of(context).size.width.w,
             height: MediaQuery.of(context).size.height / 2.7.h,
             padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-            child: isLoading == true ? ListView.builder(
+            child: isLoading == true ? popularPackage.isNotEmpty ? ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: const BouncingScrollPhysics(),
               itemCount: popularPackage.length,
@@ -203,7 +212,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                   ),
                 );
               },
-            ) : CenterLoading(),
+            ): Center(child: Text('No popular package available'),) : CenterLoading(),
           ),
         ],
       ),

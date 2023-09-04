@@ -59,7 +59,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     getAccessToken = GetAccessToken();
     getAccessToken.checkAuthentication(context, setState);
     userDataSession = Provider.of<UserDataSession>(context, listen: false);
-    retrieveCallAddDevice();
     Future.delayed(Duration(seconds: 1), () {
       deviceTokenType();
       print("callAdddevice->$callAddDevice");
@@ -72,23 +71,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       const ProfileMenu(),
     ];
   }
-  Future<void> storeCallAddDevice() async {
-    print("calling store call add device");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('callAddDevice', true);
-  }
-  Future<dynamic> retrieveCallAddDevice() async {
-    print("call retrieve call add device");
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    callAddDevice = prefs.getBool('callAddDevice');
-    print("call Add Device --> $callAddDevice");
-    return callAddDevice;
-  }
 
   void deviceTokenType()async{
+    print("----->>>>>after(dashboard) login add device token api call with accesstoken<<<<<-----");
     await retrieveDeviceToken();
     await retrieveDeviceDetails();
-    print("----->>>>>after(dashboard) login add device token api call with accesstoken<<<<<-----");
     await DeviceInfo().sendDeviceToken(context, deviceToken, deviceType, getAccessToken.access_token).then((value) async{
       if (value == null) {
         var data = json.decode(value);
@@ -98,7 +85,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
         var data = json.decode(value);
         if (data['status'] == 200) {
           print("----->>>>>");
-          storeCallAddDevice();
           print("after(dashboard) login check device token check status->>${data['status']}");
           print("<<<<<-----");
         } else if (data['status'] == 201) {
@@ -172,7 +158,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                                               }
                                             });
                                           });
-                                          storeCallAddDevice();
                                           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
                                         });
                                       },

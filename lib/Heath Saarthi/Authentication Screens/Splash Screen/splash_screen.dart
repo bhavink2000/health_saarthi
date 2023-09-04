@@ -124,51 +124,29 @@ class _SplashScreenState extends State<SplashScreen> {
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: const Padding(
-          padding: EdgeInsets.all(15),
-          child: Image(
-            image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height / 4),
+            const Padding(
+              padding: EdgeInsets.all(15),
+              child: Image(
+                image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
+              ),
+            ),
+            Spacer(),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+              child: Image(
+                image: AssetImage("assets/health_saarthi_logo.png"),
+                width: 150,
+              ),
+            ),
+            Text("Version 1.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
+          ],
         ),
       )
-
-
-
-      // BlocConsumer<InternetBloc, InternetState>(
-      //   listener: (context, state){
-      //     if(state is InternetGainedState){
-      //       print("Internet Connected");
-      //     }
-      //     else if(state is InternetLostState){
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //         const SnackBar(
-      //           backgroundColor: Colors.red,
-      //           content: Text("Internet Not Connected",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
-      //         )
-      //       );
-      //     }
-      //     else{
-      //       ScaffoldMessenger.of(context).showSnackBar(
-      //         const SnackBar(
-      //           backgroundColor: Colors.orange,
-      //           content: Text("Internet Loading",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),)
-      //         )
-      //       );
-      //     }
-      //   },
-      //   builder: (context, state){
-      //     return SizedBox(
-      //       width: MediaQuery.of(context).size.width,
-      //       height: MediaQuery.of(context).size.height,
-      //       child: const Padding(
-      //         padding: EdgeInsets.all(15),
-      //         child: Image(
-      //           image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
-      //         ),
-      //       ),
-      //     );
-      //   },
-      // ),
     );
   }
 }

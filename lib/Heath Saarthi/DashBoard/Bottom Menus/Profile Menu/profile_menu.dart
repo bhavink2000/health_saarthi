@@ -795,7 +795,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
       Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
-      if (e.toString().contains('Token is Expired')) {
+      if (e.toString().contains('402')) {
         logoutUser().then((value) {
           userDataSession.removeUserData().then((value) {
             DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
@@ -812,7 +812,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           );
         });
       } else {
-        print('Error: $e');
+        print('Error: else $e');
       }
       Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }

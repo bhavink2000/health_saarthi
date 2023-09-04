@@ -98,6 +98,7 @@ class AuthProvider with ChangeNotifier{
         Navigator.pop(context);
       } catch (e) {
         print('Error decoding response: $e');
+        GetXSnackBarMsg.getWarningMsg('Internal server error 500');
         Navigator.pop(context);
       }
     });
