@@ -27,10 +27,8 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setTestResponse(ApiResponseType.error(error.toString()));
       print("fetch Test onError->$error");
-      print("fetch Test stackTrace->$stackTrace");
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -46,10 +44,8 @@ class HomeMenusProvider with ChangeNotifier{
     }).onError((error, stackTrace){
       setPackageResponse(ApiResponseType.error(error.toString()));
       print("fetch Package onError->$error");
-      print("fetch Package stackTrace->$stackTrace");
     }).catchError((error, stackTrace) {
       print("package cathcError -> $error");
-      print("package cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -66,7 +62,6 @@ class HomeMenusProvider with ChangeNotifier{
       setBannerResponse(ApiResponseType.error(error.toString()));
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -84,7 +79,6 @@ class HomeMenusProvider with ChangeNotifier{
       print(error.toString());
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -102,7 +96,6 @@ class HomeMenusProvider with ChangeNotifier{
       print(error.toString());
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -124,7 +117,6 @@ class HomeMenusProvider with ChangeNotifier{
       print(error.toString());
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -142,7 +134,6 @@ class HomeMenusProvider with ChangeNotifier{
       print(error.toString());
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -160,7 +151,6 @@ class HomeMenusProvider with ChangeNotifier{
       print('on error -> ${error.toString()}');
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 
@@ -178,7 +168,6 @@ class HomeMenusProvider with ChangeNotifier{
       print(error.toString());
     }).catchError((error, stackTrace) {
       print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
     });
   }
 }

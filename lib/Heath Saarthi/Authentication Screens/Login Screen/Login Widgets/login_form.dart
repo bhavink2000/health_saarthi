@@ -53,11 +53,22 @@ class _LoginFormState extends State<LoginForm> {
   String? buildNumber;
   String? installerStore;
   var deviceToken,deviceType;
+  var dType;
   @override
   void initState() {
     super.initState();
+    retriveDeviceInfo();
     deviceTokenType();
   }
+
+  void retriveDeviceInfo()async{
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    final String? deviceType = sp.getString('deviceType');
+    dType = deviceType == 'Android' ? 0 : 1;
+    print("dType->$dType");
+  }
+
+
   void deviceTokenType()async{
     await retrieveDeviceToken();
     await retrieveDeviceDetails();
@@ -188,7 +199,6 @@ class _LoginFormState extends State<LoginForm> {
               child: InkWell(
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>ForgotPasswordScreen()));
-                  //ForgotPasswordDialog.forgotPasswordDialogBox(context, _forgotPasswordKey);
                 },
                 child: Text("Forgot password",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,letterSpacing: 1),))
             ),
@@ -205,11 +215,11 @@ class _LoginFormState extends State<LoginForm> {
                     SharedPreferences prefs = await SharedPreferences.getInstance();
                     await prefs.setString('mobile', mobileNumber.text);
                     await prefs.setString('password', password.text);
-
                     Map data = {
                       "mobile": mobileNumber.text,
                       "password": password.text,
-                      "device_token": deviceToken
+                      "device_token": deviceToken,
+                      'device_type': dType.toString(),
                     };
                     userAuth.loginApi(data, context,widget.deviceToken,widget.deviceType);
                   }

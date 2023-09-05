@@ -1,3 +1,5 @@
+// ignore_for_file: import_of_legacy_library_into_null_safe
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -6,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/home_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Report%20Menu/report_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/drawer_menu.dart';
@@ -18,9 +19,7 @@ import '../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
-import '../App Helper/Frontend Helper/Dialog Helper/update_app_dialog.dart';
 import '../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../App Helper/Frontend Helper/UI Helper/app_icons_helper.dart';
 import '../Authentication Screens/Splash Screen/splash_screen.dart';
 import 'Add To Cart/test_cart.dart';
@@ -29,7 +28,7 @@ import 'Bottom Menus/Test Menu/test_menu_book_now.dart';
 
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -61,7 +60,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     userDataSession = Provider.of<UserDataSession>(context, listen: false);
     Future.delayed(Duration(seconds: 1), () {
       deviceTokenType();
-      print("callAdddevice->$callAddDevice");
     });
 
     _widgetList = [
@@ -73,20 +71,18 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   }
 
   void deviceTokenType()async{
-    print("----->>>>>after(dashboard) login add device token api call with accesstoken<<<<<-----");
+    print("----->>>>>after(dashboard) login add device token api call with access-token<<<<<-----");
     await retrieveDeviceToken();
     await retrieveDeviceDetails();
     await DeviceInfo().sendDeviceToken(context, deviceToken, deviceType, getAccessToken.access_token).then((value) async{
       if (value == null) {
         var data = json.decode(value);
-        print("after(dashboard) login check value-->${value}");
-        print("after(dashboard) login chack value data->${data}");
+        print("in if value");
       } else {
         var data = json.decode(value);
         if (data['status'] == 200) {
-          print("----->>>>>");
-          print("after(dashboard) login check device token check status->>${data['status']}");
-          print("<<<<<-----");
+          print("----->>>>>"); print("after(dashboard) login check device token check status->>${data['status']}");print("<<<<<-----");
+
         } else if (data['status'] == 201) {
           print("<<<<<-----");
           print("after(dashboard) login device status is ->${data['status']}");

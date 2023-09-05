@@ -3,12 +3,9 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Cart%20Menu/cart_calculation.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Cart%20Menu/patient_model.dart';
 import 'package:http/http.dart' as http;
-import '../../../../DashBoard/Add To Cart/test_cart.dart';
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Urls/api_urls.dart';
 import '../../Models/Cart Menu/mobile_number_model.dart';
 import 'cart_response_model.dart';
@@ -37,10 +34,8 @@ class CartFuture{
          count = responseData['data']['count'];
          amount = responseData['data']['amount'];
          GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
       }else if(bodyMsg == 400){
         GetXSnackBarMsg.getWarningMsg('$bodyMsg');
-        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
       }
        else {
         GetXSnackBarMsg.getWarningMsg('$bodyMsg');
@@ -73,7 +68,6 @@ class CartFuture{
       var amount = responseData['data']['amount'];
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        //SnackBarMessageShow.successsMSG('$bodyMsg', context);
         Navigator.pop(context);
       } else {
         GetXSnackBarMsg.getWarningMsg('$bodyMsg');

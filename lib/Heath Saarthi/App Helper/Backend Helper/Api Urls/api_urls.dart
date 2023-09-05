@@ -1,7 +1,8 @@
 
 class ApiUrls{
   //static String mainUrls = 'https://healthsaarthi.windzoon.in/api/v1/';
-  static String mainUrls = 'http://3.6.102.7/api/v1/';
+  //static String mainUrls = 'http://3.6.102.7/api/v1/';
+  static String mainUrls = 'http://hssawpl.com/api/v1/';
 
   static String apkDownloadUrl = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
 
@@ -64,4 +65,6 @@ class ApiUrls{
   static String globalSearchUrls = '${mainUrls}pharmacy/master-search';
   static String faqsUrls = '${mainUrls}pharmacy/faqs';
   static String requestManagementUrls = '${mainUrls}pharmacy/post-request-management';
+
+  static String qrCodeUrl = '${mainUrls}pharmacy/download-qr-code';
 }

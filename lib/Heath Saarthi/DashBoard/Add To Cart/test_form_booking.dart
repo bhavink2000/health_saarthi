@@ -4,7 +4,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
@@ -13,18 +12,11 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
-import 'package:search_choices/search_choices.dart';
-import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import '../../App Helper/Backend Helper/Models/Cart Menu/book_order_model.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
-import '../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
-import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
-import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../Bottom Menus/Test Menu/thank_you_msg.dart';
 
 class TestBookingScreen extends StatefulWidget {

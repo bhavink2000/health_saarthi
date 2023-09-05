@@ -1,7 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/notification_model.dart';
@@ -22,7 +19,7 @@ class HomeMenuRepo{
   Future<TestModel> testData(var index,var access_token, var testData)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.testListUrls}?page=$index", access_token, testData);
     print("Response Test->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -37,7 +34,7 @@ class HomeMenuRepo{
   Future<PackageModel> packageData(var index,var access_token, var packageData)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", access_token, packageData);
     print("Response Package->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -52,7 +49,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.popularPackage}", access_token);
     print("Response Package->$response");
 
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -66,7 +63,7 @@ class HomeMenuRepo{
   Future<BannerModel> bannerData(var index, var access_token) async {
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bannerUrls}", access_token, '');
     print("Response Banner->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -80,7 +77,7 @@ class HomeMenuRepo{
   Future<TodayDealModel> todayDealData(var index,var access_token)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealUrls}", access_token, '');
     print("Response Today Deal->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -94,7 +91,7 @@ class HomeMenuRepo{
   Future<TodayDealDetailsModel> todayDealDetailsData(var index,var access_token, var data)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealDetailsUrls}", access_token, data);
     print("Response Today Deal Details->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -109,7 +106,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.cartItemsUrls}", access_token, data);
     print("Response cart -> $response");
 
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       if (response['data']['cart_items'] == null) {
@@ -128,7 +125,7 @@ class HomeMenuRepo{
   Future<BookingHistoryModel> bookingData(var access_token, var data)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bookingHistoryUrls}", access_token, data);
     print("Response Booking->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {
@@ -142,7 +139,7 @@ class HomeMenuRepo{
   Future<FaqsModel> faqsData(var access_token)async{
     dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.faqsUrls}", access_token);
     print("Response faq->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       print("in else");
@@ -158,7 +155,7 @@ class HomeMenuRepo{
   Future<NotificationModel> notificationData(var access_token)async{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.notificationUrls}", access_token, '');
     print("Response Notification->$response");
-    if (response['status'] == 'Token is Expired') {
+    if (response['status'] == '402') {
       throw response['status'];
     } else {
       try {

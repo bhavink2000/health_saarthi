@@ -1,20 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:convert';
 import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:install_plugin/install_plugin.dart';
-import '../../Backend Helper/Api Urls/api_urls.dart';
-import '../../Backend Helper/Device Info/device_info.dart';
-import '../../Backend Helper/Get Access Token/get_access_token.dart';
 import '../Font & Color Helper/font_&_color_helper.dart';
-import 'package:http/http.dart' as http;
 
 class UpdateAppDialog{
 
@@ -36,8 +30,6 @@ class UpdateAppDialog{
                   contentPadding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
                   content: Container(
                     width: MediaQuery.of(context).size.width / 1.5,
-                    //height: MediaQuery.of(context).size.height / 2.8,
-                    //color: hsPrime,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -76,7 +68,8 @@ class UpdateAppDialog{
                                 onPressed: ()async {
 
                                   //var url = 'https://healthsaarthi.windzoon.in/app-release.apk';
-                                  var url = 'https://drive.google.com/uc?id=1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP&export=download';
+                                  //var url = 'https://drive.google.com/uc?id=1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP&export=download';
+                                  var url = 'http://hssawpl.com/mobile-app/healthsaarthi.apk';
                                   //var url = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
 
                                   if(showLoading == true){

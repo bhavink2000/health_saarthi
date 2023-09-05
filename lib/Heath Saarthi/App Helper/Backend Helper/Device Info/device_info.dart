@@ -8,11 +8,11 @@ import '../../../DashBoard/hs_dashboard.dart';
 import '../../Frontend Helper/Loading Helper/loading_indicator.dart';
 import '../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
+
 class DeviceInfo{
 
 
   Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
-    print("in send Device token");
     print("------------------------");
     print("Device token-->$deviceToken");
     print("Device type-->$deviceType");
@@ -20,12 +20,10 @@ class DeviceInfo{
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     var dType = deviceType == 'Android' ? 0 : 1;
-
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',
     };
-
     try {
       var response = await http.post(
         Uri.parse(ApiUrls.addDeviceUrl),
@@ -51,22 +49,6 @@ class DeviceInfo{
     } catch (e) {
       throw Exception("Error sending device token: $e");
     }
-
-    // var response = await http.post(
-    //   Uri.parse(ApiUrls.addDeviceUrl),
-    //   headers: headers,
-    //   body: {
-    //     'device_token': deviceToken ?? '',
-    //     'device_type': dType.toString() ?? '',
-    //     //'app_version': '${packageInfo.version}' ?? '',
-    //     'app_version': '1.5' ?? '',
-    //   },
-    // );
-    //
-    // print("respose->$response");
-    // print("Device Token Response -> ${response.body}");
-    //
-    // return response.body;
   }
 
   Future<String> deleteDeviceToken(BuildContext context, deviceToken,accessToken) async {

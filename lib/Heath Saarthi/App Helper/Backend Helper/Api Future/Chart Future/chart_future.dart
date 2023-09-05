@@ -7,8 +7,6 @@ import '../../Models/Dashboard Model/Reports Model/yers_report_model.dart';
 
 class ChartFuture{
   Future<DayReportModel> fetchDayData(var accessToken, var monthYear) async {
-    print("called==================");
-    print("monthYear->$monthYear");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',

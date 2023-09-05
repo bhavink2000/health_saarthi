@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../Api Service/api_service_post_get.dart';
 import '../../Api Service/api_service_type_post_get.dart';
 
@@ -39,10 +38,8 @@ class UserAuthentication {
           'confirm_password': cPass,
         },
       );
-      print("response->${response.body}");
       var forgotData = json.decode(response.body);
       print("forgot data->$forgotData");
-
       if(forgotData['status'] == 200){
         var msg = forgotData['message'];
         GetXSnackBarMsg.getWarningMsg('$msg');

@@ -9,16 +9,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Location%20Provider/location_provider.dart';
 import 'package:provider/provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Api Urls/api_urls.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Device Info/device_info.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Network Check/network_binding.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/authentication_provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import 'Heath Saarthi/Authentication Screens/Splash Screen/splash_screen.dart';
-import 'package:http/http.dart' as http;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,7 +84,7 @@ class _MyAppState extends State<MyApp> {
     if (message.data != null) {
       print("in if done");
       print("title->${message.data['title']}\nmessage->${message.data['message']}");
-      Future.delayed(Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () {
         print("in delayed");
         flutterLocalNotificationsPlugin.cancelAll();
         flutterLocalNotificationsPlugin.show(
@@ -101,7 +97,7 @@ class _MyAppState extends State<MyApp> {
               android: AndroidNotificationDetails(
                   channel.id, channel.name,
                   channelDescription: channel.description,
-                  largeIcon: DrawableResourceAndroidBitmap("ic_launcher")
+                  largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
                 // TODO add a proper drawable resource to android, for now using
                 //      one that already exists in example app.
               ),
@@ -130,12 +126,10 @@ class _MyAppState extends State<MyApp> {
     ///
     /// We use this channel in the `AndroidManifest.xml` file to override the
     /// default FCM channel to enable heads up notifications.
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) {});
-    final LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification');
+    final LinuxInitializationSettings initializationSettingsLinux = const LinuxInitializationSettings(defaultActionName: 'Open notification');
     final InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin, linux: initializationSettingsLinux);
     await flutterLocalNotificationsPlugin.initialize(
@@ -180,12 +174,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   handelAndroidNotification(String payload) {
-    Future.delayed(Duration(seconds: 2), () {
+    Future.delayed(const Duration(seconds: 2), () {
       print("-------------------------------------");
       print(payload);
-
       print("-------------------------------------");
-
     });
   }
 
@@ -199,7 +191,7 @@ class _MyAppState extends State<MyApp> {
 
       AndroidNotification android = message.notification?.android;
       if (message.data != null) {
-        Future.delayed(Duration(milliseconds: 300), () {
+        Future.delayed(const Duration(milliseconds: 300), () {
           flutterLocalNotificationsPlugin.show(
               message.hashCode,
               //notification.title,
@@ -211,7 +203,7 @@ class _MyAppState extends State<MyApp> {
                 android: AndroidNotificationDetails(
                   channel.id, channel.name,
                   channelDescription: channel.description,
-                  largeIcon: DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
+                  largeIcon: const DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
                   // TODO add a proper drawable resource to android, for now using
                   //      one that already exists in example app.
                 ),
@@ -234,14 +226,13 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_)=> AuthProvider()),
         ChangeNotifierProvider(create: (_)=> UserDataSession()),
-        ChangeNotifierProvider(create: (_)=> LocationProvider()),
         ChangeNotifierProvider(create: (_)=> HomeMenusProvider()),
       ],
       child: ScreenUtilInit(
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context , child) {
-          return GetMaterialApp(
+          return const GetMaterialApp(
             debugShowCheckedModeBanner: false,
             home: SplashScreen(),
           );

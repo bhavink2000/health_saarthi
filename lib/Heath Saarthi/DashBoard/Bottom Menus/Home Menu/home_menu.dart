@@ -13,7 +13,6 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20M
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/test_package.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import '../../../App Helper/Backend Helper/Models/Authentication Models/user_model.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../Global Search Screen/global_search_screen.dart';
 

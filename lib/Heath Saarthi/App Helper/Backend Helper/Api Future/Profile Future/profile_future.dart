@@ -1,11 +1,6 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:http/http.dart' as http;
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
-
-import '../../Models/Authentication Models/user_model.dart';
 import '../../Models/Dashboard Model/profile_model.dart';
 
 class ProfileFuture{
@@ -23,7 +18,6 @@ class ProfileFuture{
       var jsonResponse = json.decode(response.body);
       if(jsonResponse['status'] == '402'){
         print("in if with status code ->${jsonResponse['status']}");
-        //GetXSnackBarMsg.getWarningMsg('${jsonResponse['message']}');
         throw Exception(jsonResponse);
       }
       else{

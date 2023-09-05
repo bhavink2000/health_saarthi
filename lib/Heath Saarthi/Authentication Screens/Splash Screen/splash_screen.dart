@@ -3,9 +3,6 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Internet%20Bloc/internet_bloc.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Blocs/Internet%20Bloc/internet_state.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Service/notification_service.dart';
@@ -36,8 +33,6 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    //notificationService.requestNotificationPermission();
-    //notificationService.firebaseInit(context);
     notificationService.getDeviceToken().then((value) {
       if (value == '' || value == null) {
         print("Do Not Get Device Token");
@@ -46,8 +41,11 @@ class _SplashScreenState extends State<SplashScreen> {
           deviceToken = value;
         });
         storeDeviceToken(value).then((_) {
-          retrieveDeviceDetails().then((value) {
-            print("retrive Device token value->>>>$value");
+          retrieveDeviceDetails().then((value) async{
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            await prefs.setString('deviceType', value);
+            print("Device type value->>>>$value");
+
             if (deviceToken == '' || value == '' || deviceToken == null || value == null) {
               print("Do not get device token\nplease restart the app");
             } else {
@@ -66,9 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
-
       print("checkAuth Access Token => ${value.accessToken}");
-
       if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
@@ -79,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => Home()),
+          MaterialPageRoute(builder: (context) => const Home()),
         );
       }
     }).onError((error, stackTrace) {
@@ -135,7 +131,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 image: AssetImage("assets/Gif/HS_Blood test_GIF.gif"),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             const Padding(
               padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
               child: Image(
@@ -143,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 150,
               ),
             ),
-            Text("Version 1.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
+            const Text("Version 1.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
           ],
         ),
       )

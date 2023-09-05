@@ -18,7 +18,6 @@ class LocationFuture{
         },
       );
       if (response.statusCode == 200) {
-        print("state api response->${response.body}");
         final data = json.decode(response.body);
         StateModel stateModel = StateModel.fromJson(data);
         List<StateData>? stateList = stateModel.data;
