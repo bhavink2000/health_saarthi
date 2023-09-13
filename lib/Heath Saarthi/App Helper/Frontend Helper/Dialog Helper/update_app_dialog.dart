@@ -56,7 +56,8 @@ class UpdateAppDialog{
                         const Text("Release Notes:",
                             style: TextStyle(
                                 fontFamily: FontType.MontserratMedium,
-                                fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold
+                            )),
                         const SizedBox(height: 5),
                         const Text("Add popular package and \nMake app smooth",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
@@ -66,12 +67,7 @@ class UpdateAppDialog{
                           children: [
                             TextButton(
                                 onPressed: ()async {
-
-                                  //var url = 'https://healthsaarthi.windzoon.in/app-release.apk';
-                                  //var url = 'https://drive.google.com/uc?id=1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP&export=download';
-                                  var url = 'http://hssawpl.com/mobile-app/healthsaarthi.apk';
-                                  //var url = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
-
+                                  var url = 'https://hssawpl.com/mobile-app/healthsaarthi.apk';
                                   if(showLoading == true){
                                     showDialog(
                                       context: context,

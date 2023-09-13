@@ -25,8 +25,6 @@ class HomeMenu extends StatefulWidget {
 
 class _HomeMenuState extends State<HomeMenu> {
 
-  File fileManger;
-
   GetAccessToken getAccessToken = GetAccessToken();
 
   var userStatus;
@@ -117,7 +115,7 @@ class _HomeMenuState extends State<HomeMenu> {
                 ),
               ),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(height: 10),
             const HomeImageSlider(),
             HomeTestPackage(uStatus: userStatus),
             const HomeOffers(),

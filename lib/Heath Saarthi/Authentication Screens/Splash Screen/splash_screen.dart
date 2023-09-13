@@ -3,6 +3,7 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Service/notification_service.dart';
@@ -58,6 +59,7 @@ class _SplashScreenState extends State<SplashScreen> {
       }
     });
   }
+  var access_token = GetStorage();
   Future<void> storeDeviceToken(String token) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('deviceToken', token);
@@ -65,6 +67,9 @@ class _SplashScreenState extends State<SplashScreen> {
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
       print("checkAuth Access Token => ${value.accessToken}");
+
+      access_token.write('accessToken', value.accessToken);
+
       if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(
@@ -73,10 +78,8 @@ class _SplashScreenState extends State<SplashScreen> {
         );
       } else {
         await Future.delayed(const Duration(seconds: 3));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Home()),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Home()));
+        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HSDashboard()));
       }
     }).onError((error, stackTrace) {
       print(error);

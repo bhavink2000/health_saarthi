@@ -33,8 +33,6 @@ class _LoginFormState extends State<LoginForm> {
   final mobileNumber = TextEditingController();
   final password = TextEditingController();
 
-  final forgotEmail = TextEditingController();
-
   bool obScured = true;
 
   void _togglePasswordView() {
@@ -43,8 +41,6 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
   final _formKey = GlobalKey<FormState>();
-  bool isLoading = false;
-
 
   var appVersion, updateMsg;
   String? appName;

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WhiteTopClipper extends CustomClipper<Path> {
   final double yOffset;
 
-  const WhiteTopClipper({
+  const WhiteTopClipper({  
     required this.yOffset,
   });
 
