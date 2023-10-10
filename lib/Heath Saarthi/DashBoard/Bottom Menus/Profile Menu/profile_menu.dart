@@ -1,10 +1,6 @@
-//@dart=2.9
 import 'dart:convert';
 import 'dart:io';
-import 'dart:ui';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/services.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
@@ -13,7 +9,6 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,11 +19,10 @@ import '../../../App Helper/Backend Helper/Providers/Authentication Provider/use
 import '../../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Authentication Screens/Splash Screen/splash_screen.dart';
 
 class ProfileMenu extends StatefulWidget {
-  const ProfileMenu({Key key}) : super(key: key);
+  const ProfileMenu({Key? key}) : super(key: key);
 
   @override
   State<ProfileMenu> createState() => _ProfileMenuState();
@@ -65,14 +59,14 @@ class _ProfileMenuState extends State<ProfileMenu> {
   var gstImg;
 
   GetAccessToken getAccessToken = GetAccessToken();
-  String deviceToken;
+  String? deviceToken;
 
-  File panCardChange;
-  File aadhaarCardFChange;
-  File aadhaarCardBChange;
-  File addressChange;
-  File chequeChange;
-  File gstFileChange;
+  File? panCardChange;
+  File? aadhaarCardFChange;
+  File? aadhaarCardBChange;
+  File? addressChange;
+  File? chequeChange;
+  File? gstFileChange;
   @override
   void initState(){
     super.initState();
@@ -281,16 +275,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) : Image.network(
                         '$panCardImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -341,16 +334,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) :Image.network(
                         '$aadharCardFImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -401,16 +393,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) : Image.network(
                         '$aadharCardBImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -461,16 +452,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) : Image.network(
                         '$addressProfeImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -521,16 +511,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) : Image.network(
                         '$chequeImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -581,16 +570,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                       ) : Image.network(
                         '$gstImg',
                         fit: BoxFit.fill,
-                        loadingBuilder: (BuildContext context, Widget child,
-                            ImageChunkEvent loadingProgress) {
-                          if (loadingProgress == null) return child;
+                        loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) return child!;
                           return Center(
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircularProgressIndicator(
                                 value: loadingProgress.expectedTotalBytes != null
                                     ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes
+                                    loadingProgress.expectedTotalBytes!
                                     : null,
                               ),
                             ),
@@ -677,28 +665,28 @@ class _ProfileMenuState extends State<ProfileMenu> {
       FormData formData = FormData();
       if (panCardChange != null) {
         formData.files.add(MapEntry(
-            'pancard', await MultipartFile.fromFile(panCardChange.path)));
+            'pancard', await MultipartFile.fromFile(panCardChange!.path)));
       }
       if (addressChange != null) {
         formData.files.add(MapEntry(
-            'address_proof', await MultipartFile.fromFile(addressChange.path)));
+            'address_proof', await MultipartFile.fromFile(addressChange!.path)));
       }
       if (aadhaarCardFChange != null) {
         formData.files.add(MapEntry(
             'aadhar_front',
-            await MultipartFile.fromFile(aadhaarCardFChange.path)));
+            await MultipartFile.fromFile(aadhaarCardFChange!.path)));
       }
       if (aadhaarCardBChange != null) {
         formData.files.add(MapEntry(
-            'aadhar_back', await MultipartFile.fromFile(aadhaarCardBChange.path)));
+            'aadhar_back', await MultipartFile.fromFile(aadhaarCardBChange!.path)));
       }
       if (chequeChange != null) {
         formData.files.add(MapEntry(
-            'cheque_image', await MultipartFile.fromFile(chequeChange.path)));
+            'cheque_image', await MultipartFile.fromFile(chequeChange!.path)));
       }
       if (gstFileChange != null) {
         formData.files.add(MapEntry(
-            'gst_image', await MultipartFile.fromFile(gstFileChange.path)));
+            'gst_image', await MultipartFile.fromFile(gstFileChange!.path)));
       }
       Response response = await dio.post(
         apiUrl,
@@ -791,8 +779,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           gstImg = pModel.data.gstImg.toString();
         });
       }
-      print("pincode--------------------$pincode");
-      Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop(); // Dismiss the loading dialog
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
       if (e.toString().contains('402')) {
@@ -814,7 +801,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
       } else {
         print('Error: else $e');
       }
-      Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
     }
   }
 

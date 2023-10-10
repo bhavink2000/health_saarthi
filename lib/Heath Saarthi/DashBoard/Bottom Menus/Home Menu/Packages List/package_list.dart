@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ import '../../../Add To Cart/test_cart.dart';
 import '../../../Notification Menu/notification_menu.dart';
 
 class PackageListItems extends StatefulWidget {
-  const PackageListItems({Key key}) : super(key: key);
+  const PackageListItems({Key? key}) : super(key: key);
 
   @override
   State<PackageListItems> createState() => _PackageListItemsState();
@@ -145,7 +144,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, __){
-                      switch(value.packageList.status){
+                      switch(value.packageList.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
@@ -173,9 +172,9 @@ class _PackageListItemsState extends State<PackageListItems> {
                                   child: AnimationLimiter(
                                     child: ListView.builder(
                                       physics: const BouncingScrollPhysics(),
-                                      itemCount: value.packageList.data.packageData.data.length,
+                                      itemCount: value.packageList.data!.packageData!.data!.length,
                                       itemBuilder: (context, index){
-                                        var packageI = value.packageList.data.packageData.data[index];
+                                        var packageI = value.packageList.data!.packageData!.data![index];
                                         return AnimationConfiguration.staggeredList(
                                           position: index,
                                           duration: const Duration(milliseconds: 1000),
@@ -260,14 +259,14 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                 ),
                                               ),
 
-                                              if (value.packageList.data.packageData.data.length == 10 || index + 1 != value.packageList.data.packageData.data.length)
+                                              if (value.packageList.data!.packageData!.data!.length == 10 || index + 1 != value.packageList.data!.packageData!.data!.length)
                                                 Container()
                                               else
                                                 SizedBox(height: MediaQuery.of(context).size.height / 2.8),
 
-                                              index + 1 == value.packageList.data.packageData.data.length ? CustomPaginationWidget(
+                                              index + 1 == value.packageList.data!.packageData!.data!.length ? CustomPaginationWidget(
                                                 currentPage: curentindex,
-                                                lastPage: homeMenusProvider.packageList.data.packageData.lastPage,
+                                                lastPage: homeMenusProvider.packageList.data!.packageData!.lastPage!,
                                                 onPageChange: (page) {
                                                   setState(() {
                                                     curentindex = page - 1;
@@ -297,7 +296,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
                                         child: Text(
-                                          "Total Cart Items [ ${value.packageList.data.cartData.count} ]",
+                                          "Total Cart Items [ ${value.packageList.data!.cartData!.count} ]",
                                           style: const TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
                                         ),
                                       ),
@@ -310,7 +309,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                             child: Row(
                                               children: [
                                                 Text(
-                                                  "\u{20B9}${value.packageList.data.cartData.amount}",
+                                                  "\u{20B9}${value.packageList.data!.cartData!.amount}",
                                                   style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPackageColor,fontWeight: FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 5.w),

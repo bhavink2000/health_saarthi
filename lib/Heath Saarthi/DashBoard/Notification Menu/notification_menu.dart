@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_p
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 
 class NotificationMenu extends StatefulWidget {
-  const NotificationMenu({Key key}) : super(key: key);
+  const NotificationMenu({Key? key}) : super(key: key);
 
   @override
   State<NotificationMenu> createState() => _NotificationMenuState();
@@ -64,17 +63,17 @@ class _NotificationMenuState extends State<NotificationMenu> {
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, __){
-                      switch(value.notificationist.status){
+                      switch(value.notificationist.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
                           return const Center(child: Text("Error"));
                         case Status.completed:
-                          return value.notificationist.data.data.isEmpty ? Center(child: Text("Notification is not available"),) : AnimationLimiter(
+                          return value.notificationist.data!.data!.isEmpty ? Center(child: Text("Notification is not available"),) : AnimationLimiter(
                             child: ListView.builder(
-                              itemCount: value.notificationist.data.data.length,
+                              itemCount: value.notificationist.data!.data!.length,
                               itemBuilder: (context, index){
-                                var notiFi = value.notificationist.data.data[index];
+                                var notiFi = value.notificationist.data!.data![index];
                                 return Padding(
                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                   child: Card(

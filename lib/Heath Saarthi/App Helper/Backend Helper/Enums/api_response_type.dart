@@ -1,10 +1,9 @@
-//@dart=2.9
 import 'enums_status.dart';
 
 class ApiResponseType<T>{
-  Status status;
-  String message;
-  T data;
+  Status? status;
+  String? message;
+  T? data;
 
   ApiResponseType(this.status, this.message, this.data);
 

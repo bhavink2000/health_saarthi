@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: import_of_legacy_library_into_null_safe, use_build_context_synchronously
 
 import 'dart:io';
@@ -17,7 +16,7 @@ import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_hel
 import '../../Global Search Screen/global_search_screen.dart';
 
 class HomeMenu extends StatefulWidget {
-  const HomeMenu({Key key}) : super(key: key);
+  const HomeMenu({Key? key}) : super(key: key);
 
   @override
   State<HomeMenu> createState() => _HomeMenuState();

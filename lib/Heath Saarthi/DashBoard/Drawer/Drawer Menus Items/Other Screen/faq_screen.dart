@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'dart:convert';
@@ -16,7 +15,7 @@ import '../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 
 class FaqScreen extends StatefulWidget {
-  const FaqScreen({Key key}) : super(key: key);
+  const FaqScreen({Key? key}) : super(key: key);
 
   @override
   State<FaqScreen> createState() => _FaqScreenState();
@@ -65,28 +64,30 @@ class _FaqScreenState extends State<FaqScreen> {
                   create: (BuildContext context)=> homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, __){
-                      switch(value.faqsList.status){
+                      switch(value.faqsList.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return value.faqsList.data == null ? const Center(child: Text('No faq data',style: TextStyle(fontFamily: FontType.MontserratMedium),)) : Center(child: Text(value.faqsList.message));
+                          return value.faqsList.data == null
+                              ? const Center(child: Text('No faq data',style: TextStyle(fontFamily: FontType.MontserratMedium),))
+                              : Center(child: Text(value.faqsList.message!));
                         case Status.completed:
-                          return value.faqsList.data.data.isNotEmpty ? ListView.builder(
-                            itemCount: value.faqsList.data.data.length,
+                          return value.faqsList.data!.data!.isNotEmpty ? ListView.builder(
+                            itemCount: value.faqsList.data!.data!.length,
                             itemBuilder: (context, index){
-                              var faqs = value.faqsList.data.data[index];
+                              var faqs = value.faqsList.data!.data![index];
                               return ExpansionTile(
                                 collapsedTextColor: hsPrime,
                                 tilePadding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                                 backgroundColor: hsPrime.withOpacity(0.1),
-                                title: Text(faqs.question,style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime),),
+                                title: Text(faqs.question!,style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime),),
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Text(
-                                        faqs.answer,
+                                        faqs.answer!,
                                         style: const TextStyle(
                                           fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold
                                         ),

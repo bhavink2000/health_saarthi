@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'package:flutter/material.dart';
@@ -18,7 +17,7 @@ import '../../../../Notification Menu/notification_menu.dart';
 
 class TodayDealDetails extends StatefulWidget {
   var dealId;
-  TodayDealDetails({Key key,this.dealId}) : super(key: key);
+  TodayDealDetails({Key? key,this.dealId}) : super(key: key);
 
   @override
   State<TodayDealDetails> createState() => _TodayDealDetailsState();
@@ -96,19 +95,19 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, __){
-                      switch(value.todayDealDetailsList.status){
+                      switch(value.todayDealDetailsList.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
                           return Center(child: Text("${value.todayDealDetailsList.message}"),);
                         case Status.completed:
-                          return value.todayDealDetailsList.data.todayDetailsData.data.isNotEmpty
+                          return value.todayDealDetailsList.data!.todayDetailsData!.data!.isNotEmpty
                            ? AnimationLimiter(
                             child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
-                              itemCount: value.todayDealDetailsList.data.todayDetailsData.data.length,
+                              itemCount: value.todayDealDetailsList.data!.todayDetailsData!.data!.length,
                               itemBuilder: (context, index){
-                                var todayDealI = value.todayDealDetailsList.data.todayDetailsData.data[index];
+                                var todayDealI = value.todayDealDetailsList.data!.todayDetailsData!.data![index];
                                 return AnimationConfiguration.staggeredList(
                                   position: index,
                                   duration: const Duration(milliseconds: 1000),
@@ -129,9 +128,9 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text(todayDealI.serviceName,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold)),
+                                                      Text(todayDealI.serviceName!,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold)),
                                                       SizedBox(height: 5.h,),
-                                                      Text(todayDealI.specimenVolume,style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black54,fontSize: 12.sp),)
+                                                      Text(todayDealI.specimenVolume!,style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black54,fontSize: 12.sp),)
                                                     ],
                                                   ),
                                                 ),
@@ -162,14 +161,14 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                         ),
                                       ),
 
-                                      if (value.todayDealDetailsList.data.todayDetailsData.data.length == 10 || index + 1 != value.todayDealDetailsList.data.todayDetailsData.data.length)
+                                      if (value.todayDealDetailsList.data!.todayDetailsData!.data!.length == 10 || index + 1 != value.todayDealDetailsList.data!.todayDetailsData!.data!.length)
                                         Container()
                                       else
                                         SizedBox(height: MediaQuery.of(context).size.height / 4),
 
-                                      index + 1 == value.todayDealDetailsList.data.todayDetailsData.data.length ? CustomPaginationWidget(
+                                      index + 1 == value.todayDealDetailsList.data!.todayDetailsData!.data!.length ? CustomPaginationWidget(
                                         currentPage: curentindex,
-                                        lastPage: homeMenusProvider.todayDealDetailsList.data.todayDetailsData.lastPage,
+                                        lastPage: homeMenusProvider.todayDealDetailsList.data!.todayDetailsData!.lastPage!,
                                         onPageChange: (page) {
                                           setState(() {
                                             curentindex = page - 1;

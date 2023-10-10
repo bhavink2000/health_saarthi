@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
@@ -21,7 +20,7 @@ import '../Snack Bar Msg/snackbar_msg_show.dart';
 
 class TokenExpiredHelper extends StatefulWidget {
   var tokenMsg;
-  TokenExpiredHelper({Key key,this.tokenMsg}) : super(key: key);
+  TokenExpiredHelper({Key? key,this.tokenMsg}) : super(key: key);
 
   @override
   State<TokenExpiredHelper> createState() => _TokenExpiredHelperState();
@@ -29,7 +28,7 @@ class TokenExpiredHelper extends StatefulWidget {
 
 class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
   GetAccessToken getAccessToken = GetAccessToken();
-  String deviceToken;
+  String? deviceToken;
   @override
   void initState() {
     super.initState();

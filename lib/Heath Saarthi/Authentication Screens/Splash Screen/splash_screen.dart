@@ -1,11 +1,10 @@
-//@dart=2.9
-// ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+//import '../../../HealthSaarthi/HS_Dashboard/health_saarthi_dashboard.dart';
 import '../../App Helper/Backend Helper/Api Service/notification_service.dart';
 import '../../App Helper/Backend Helper/Models/Authentication Models/login_model.dart';
 import '../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
@@ -14,7 +13,7 @@ import '../../DashBoard/hs_dashboard.dart';
 import '../Login Screen/login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -27,9 +26,9 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<LoginModel> getUserData() => UserDataSession().getUserData();
   NotificationService notificationService = NotificationService();
 
-  String deviceType;
-  String deviceVersion;
-  String deviceToken;
+  String? deviceType;
+  String? deviceVersion;
+  String? deviceToken;
 
   @override
   void initState() {

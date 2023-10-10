@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return, null_aware_in_condition
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_hel
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 
 class MyBookingScreen extends StatefulWidget {
-  const MyBookingScreen({Key key}) : super(key: key);
+  const MyBookingScreen({Key? key}) : super(key: key);
 
   @override
   State<MyBookingScreen> createState() => _MyBookingScreenState();
@@ -87,7 +86,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
                       ),
                       onTap: () async {
-                        DateTime pickedDate = await showDatePicker(
+                        DateTime? pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2000),
@@ -121,7 +120,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                           labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
                       ),
                       onTap: () async {
-                        DateTime pickedDate = await showDatePicker(
+                        DateTime? pickedDate = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
                             firstDate: DateTime(2000),
@@ -173,7 +172,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, __){
-                      switch(value.bookingList.status){
+                      switch(value.bookingList.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
@@ -183,10 +182,10 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                             child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
                           );
                         case Status.completed:
-                          return value.bookingList.data.bookingData?.bookingItems?.isNotEmpty ? ListView.builder(
-                            itemCount: value.bookingList.data.bookingData?.bookingItems?.length,
+                          return value.bookingList.data!.bookingData!.bookingItems!.isNotEmpty ? ListView.builder(
+                            itemCount: value.bookingList.data!.bookingData?.bookingItems?.length,
                             itemBuilder: (context, index){
-                              var bookingH = value.bookingList.data.bookingData?.bookingItems[index];
+                              var bookingH = value.bookingList.data!.bookingData?.bookingItems![index];
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                                 child: Card(
@@ -194,19 +193,19 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   shadowColor: hsGrey.withOpacity(0.5),
                                   child: ExpansionTile(
-                                    title: Text(bookingH.pharmacyPatient.name,style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 16)),
-                                    subtitle: Text("Booking No :- ${bookingH.bookingCode}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
+                                    title: Text(bookingH!.pharmacyPatient!.name!,style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 16)),
+                                    subtitle: Text("Booking No :- ${bookingH.bookingCode!}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
                                     childrenPadding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                                     children: [
-                                      showRowContent('Mobile Number', '${bookingH.pharmacyPatient.mobileNo}'),
+                                      showRowContent('Mobile Number', '${bookingH!.pharmacyPatient!.mobileNo}'),
                                       const SizedBox(height: 5),
-                                      showRowContent('Gross Amount', '\u{20B9}${bookingH.grossAmount == null ? 0 : bookingH.grossAmount}'),
+                                      showRowContent('Gross Amount', '\u{20B9}${bookingH!.grossAmount == null ? 0 : bookingH!.grossAmount}'),
                                       const SizedBox(height: 5),
                                       showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}'),
                                       const SizedBox(height: 5),
                                       showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
                                       const SizedBox(height: 5),
-                                      showRowContent('Date', '${bookingH.pharmacyPatient.createAt}'),
+                                      showRowContent('Date', '${bookingH.pharmacyPatient!.createAt}'),
                                       const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,14 +219,14 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                             padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
                                             child: Text(
                                                 bookingH.status == 0
-                                                    ? '${bookingH.bookingStatus.s0}'
+                                                    ? '${bookingH.bookingStatus!.s0}'
                                                     : bookingH.status == 1
-                                                      ? '${bookingH.bookingStatus.s1}'
+                                                      ? '${bookingH.bookingStatus!.s1}'
                                                       : bookingH.status == 2
-                                                        ? '${bookingH.bookingStatus.s2}'
+                                                        ? '${bookingH.bookingStatus!.s2}'
                                                         : bookingH.status == 3
-                                                          ? '${bookingH.bookingStatus.s3}'
-                                                          : '${bookingH.bookingStatus.s4}',
+                                                          ? '${bookingH.bookingStatus!.s3}'
+                                                          : '${bookingH.bookingStatus!.s4}',
                                                 style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)
                                             ),
                                           ),

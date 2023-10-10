@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart
 
 class ChangePasswordScreen extends StatefulWidget {
   var accessToken;
-  ChangePasswordScreen({Key key,this.accessToken}) : super(key: key);
+  ChangePasswordScreen({Key? key,this.accessToken}) : super(key: key);
 
   @override
   State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
@@ -265,7 +264,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       color: hsPrime,
                       child: InkWell(
                         onTap: (){
-                          if(_changePasswordFormKey.currentState.validate()){
+                          if(_changePasswordFormKey.currentState!.validate()){
                             getChangePass();
                           }
                         },

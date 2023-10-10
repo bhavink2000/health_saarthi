@@ -1,5 +1,5 @@
-//@dart=2.9
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
@@ -7,29 +7,34 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
+import 'package:http/http.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Models/Drawer Menu/qr_code_model.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
+
 class QRCodeScreen extends StatefulWidget {
-  const QRCodeScreen({Key key}) : super(key: key);
+  const QRCodeScreen({Key? key}) : super(key: key);
 
   @override
   State<QRCodeScreen> createState() => _QRCodeScreenState();
 }
 
 class _QRCodeScreenState extends State<QRCodeScreen> {
-
   GetAccessToken getAccessToken = GetAccessToken();
-  QRCodeModel qrCodeModel;
+  QRCodeModel? qrCodeModel;
   bool isLoading = true;
   @override
   void initState() {
     getAccessToken.checkAuthentication(context, setState);
-    Future.delayed(const Duration(seconds: 1),(){
+    Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         isLoading = true;
-        getQRCodeData().then((value){
+        getQRCodeData().then((value) {
           setState(() {
             qrCodeModel = value;
             isLoading = false;
@@ -41,16 +46,14 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
     super.initState();
   }
 
-  Future<QRCodeModel> getQRCodeData()async{
+  Future<QRCodeModel?> getQRCodeData() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
     };
-    try{
-      final response = await http.get(
-        Uri.parse(ApiUrls.qrCodeUrl),
-        headers: headers
-      );
+    try {
+      final response =
+          await http.get(Uri.parse(ApiUrls.qrCodeUrl), headers: headers);
       print("response ->${response.body}");
       final jsonData = json.decode(response.body);
       if (jsonData['status'] == '402') {
@@ -60,7 +63,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
         final jsonData = json.decode(response.body);
         return QRCodeModel.fromJson(jsonData);
       }
-    }catch(e){
+    } catch (e) {
       print("e->$e");
     }
   }
@@ -80,60 +83,153 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back,color: Colors.white,size: 25,),
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: Colors.white,
+                      size: 25,
+                    ),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  Text("QR code",style: TextStyle(fontSize: 16,color: Colors.white,fontFamily: FontType.MontserratMedium,letterSpacing: 1),),
+                  const Text(
+                    "QR code",
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontFamily: FontType.MontserratMedium,
+                        letterSpacing: 1),
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),color: Colors.white),
-                child: isLoading == false ? SingleChildScrollView(
-                  child: qrCodeModel.status == '402' ? TokenExpiredHelper()
-                      :Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(40, 10, 40, 10),
-                        child: Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                          elevation: 5,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              border: Border.all(color: hsPrime,width: 1)
-                            ),
-                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                            child: Image.network('${qrCodeModel.data.qrcodeImagePath}'),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: (){
-                          downloadFile('${qrCodeModel.data.qrcodeImagePath}')
-                           .catchError((onError) {
-                           debugPrint('Error downloading: $onError');
-                          })
-                            .then((imagePath) {
-                           debugPrint('Download successful, path: $imagePath');
-                           GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
-                          });
-                        },
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsOne),
-                          child: Text('Download',style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      showDownload == true ? Center(
-                        child: Text('Downloading...${downloadProgress.toString().split('.').first} %'),
-                      ) : Container()
-                    ],
-                  )
-                ) : CenterLoading(),
+                decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20)),
+                    color: Colors.white),
+                child: isLoading == false
+                    ? SingleChildScrollView(
+                        child: qrCodeModel!.status == '402'
+                            ? TokenExpiredHelper()
+                            : Column(
+                                children: [
+                                  const SizedBox(height: 15,),
+                                  Stack(
+                                    alignment:  Alignment.topCenter,
+                                    children: [
+                                      Container(
+                                          width: MediaQuery.of(context).size.width / 1.2,
+                                          height: MediaQuery.of(context).size.height / 1.3,
+                                          decoration: BoxDecoration(border: Border.all(color: Colors.black,width: 5)),
+                                          //padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                          margin: const EdgeInsets.fromLTRB(15, 12, 15, 5),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              const Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 300,),
+                                              Text('${qrCodeModel!.data!.name}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                              Text('${qrCodeModel!.data!.mobile}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                              const Divider(color: Colors.grey,thickness: 0.9,endIndent: 20,indent: 20,),
+                                              Image(image: NetworkImage('${qrCodeModel!.data!.qrcodeImagePath}')),
+                                              const Text('All type laboratory test facility available 24x7 (365 Day)',style: TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),),
+                                              const Text('Digital Sample Facility 24 Hours\nAdvance Body Checkup Available',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                            ],
+                                          )
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(15),
+                                          color: Colors.black,
+                                        ),
+                                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                        child: const Text('All in one QR',style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white,fontWeight: FontWeight.bold),),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          var status = await Permission.storage.request();
+                                          if (status.isGranted) {
+                                            downloadFile(qrCodeModel!.data!.qrcodeImagePath)
+                                                .catchError((onError) {
+                                              debugPrint('Error downloading: $onError');
+                                            }).then((imagePath) {
+                                              debugPrint('Download successful, path: $imagePath');
+                                              GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
+                                            });
+                                          } else {
+                                            GetXSnackBarMsg.getWarningMsg('$status');
+                                            print("status-$status");
+                                          }
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 10, 20, 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: hsOne),
+                                          child: const Text(
+                                            'Download',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    FontType.MontserratMedium,
+                                                color: Colors.white),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () async {
+                                          final response = await get(
+                                              Uri.parse(qrCodeModel!.pdf!));
+                                          final directory =
+                                              await getTemporaryDirectory();
+                                          File file = await File(
+                                                  '${directory.path}/HSQRCode.pdf')
+                                              .writeAsBytes(response.bodyBytes);
+                                          await Share.shareXFiles(
+                                              [XFile(file.path)],
+                                              text: 'Share');
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width / 2.5,
+                                          padding: const EdgeInsets.fromLTRB(
+                                              20, 10, 20, 10),
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              color: hsOne),
+                                          child: const Text(
+                                            'Share',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    FontType.MontserratMedium,
+                                                color: Colors.white),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  showDownload == true
+                                      ? Center(
+                                          child: Text(
+                                              'Downloading...${downloadProgress.toString().split('.').first} %'),
+                                        )
+                                      : Container()
+                                ],
+                              ))
+                    : const CenterLoading(),
               ),
             )
           ],
@@ -152,17 +248,16 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       showDownload = true;
     });
     Dio dio = Dio();
-    var imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.jpg';
-    await dio.download(
-        imgUrl,
-        imageDownloadPath,
+    var imageDownloadPath =
+        '/storage/emulated/0/Download/hsQRCode_$imgCount.jpg';
+    await dio.download(imgUrl, imageDownloadPath,
         onReceiveProgress: (received, total) {
-          var progress = (received / total) * 100;
-          setState(() {
-            downloadProgress = progress;
-          });
-          print("IMG Download Progress -> $downloadProgress");
-        });
+      var progress = (received / total) * 100;
+      setState(() {
+        downloadProgress = progress;
+      });
+      print("IMG Download Progress -> $downloadProgress");
+    });
     setState(() {
       showDownload = false;
       downloadProgress = 0.0;

@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
@@ -17,7 +16,7 @@ import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart
 
 class OTPVerifyScreen extends StatefulWidget {
   var mobileNumber;
-  OTPVerifyScreen({Key key,this.mobileNumber}) : super(key: key);
+  OTPVerifyScreen({Key? key,this.mobileNumber}) : super(key: key);
 
   @override
   State<OTPVerifyScreen> createState() => _OTPVerifyScreenState();
@@ -29,7 +28,7 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
 
   int secondsRemaining = 30;
   bool enableResend = false;
-  Timer timer;
+  Timer? timer;
 
   @override
   initState() {
@@ -268,10 +267,10 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
 
   @override
   dispose(){
-    timer.cancel();
+    timer!.cancel();
     super.dispose();
   }
-  Future<String> submitOtp() async {
+  Future<String?> submitOtp() async {
     await http.post(
         Uri.parse(ApiUrls.verifyOtpUrl),
         body: {
@@ -303,7 +302,7 @@ class _OTPVerifyScreenState extends State<OTPVerifyScreen> {
       enableResend = false;
     });
   }
-  Future<String> resendOTP() async {
+  Future<String?> resendOTP() async {
     showDialog(
       context: context,
       barrierDismissible: false,

@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
@@ -6,14 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
-import 'package:smooth_star_rating/smooth_star_rating.dart';
-
+import 'package:smooth_star_rating_null_safety/smooth_star_rating_null_safety.dart';
 import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class SupportScreen extends StatefulWidget {
-  const SupportScreen({Key key}) : super(key: key);
+  const SupportScreen({Key? key}) : super(key: key);
 
   @override
   State<SupportScreen> createState() => _SupportScreenState();
@@ -31,8 +28,8 @@ class _SupportScreenState extends State<SupportScreen> {
   bool help = false;
   bool rating = false;
   bool reason = false;
-  String dropdownValue;
-  String reasonValue;
+  String? dropdownValue;
+  String? reasonValue;
   var ratingValue = 0.0;
 
   GetAccessToken getAccessToken = GetAccessToken();
@@ -131,18 +128,18 @@ class _SupportScreenState extends State<SupportScreen> {
                                 labelText: 'Email Id',
                                 prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
                               ),
-                              onChanged: (value) {
-                                if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                  // Password meets all the requirements
-                                } else if (!value.contains('gmail.com')) {
-                                  // If the email does not contain 'gmail.com', show an error message
-                                  setState(() {
-                                    return 'Email id must contain "gmail.com"';
-                                  });
-                                }else {
-                                  print('Please enter valid email id');
-                                }
-                              },
+                              // onChanged: (value) {
+                              //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                              //     // Password meets all the requirements
+                              //   } else if (value.contains('gmail.com')) {
+                              //     // If the email does not contain 'gmail.com', show an error message
+                              //     setState(() {
+                              //       return 'Email id must contain "gmail.com"';
+                              //     });
+                              //   }else {
+                              //     print('Please enter valid email id');
+                              //   }
+                              // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a email';
@@ -260,7 +257,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        if(_supportFormKey.currentState.validate()){
+                                        if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
                                         // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
@@ -320,7 +317,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        if(_supportFormKey.currentState.validate()){
+                                        if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
                                         // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
@@ -375,7 +372,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                           borderColor: hsPrime,
                                           size: 45,
                                           starCount: 5,
-                                          onRated: (value) {
+                                          onRatingChanged: (value) {
                                             setState(() {
                                               ratingValue = value;
                                               print("Rating->$ratingValue");
@@ -386,7 +383,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        if(_supportFormKey.currentState.validate()){
+                                        if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
                                         // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
@@ -491,7 +488,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                     ),
                                     InkWell(
                                       onTap: (){
-                                        if(_supportFormKey.currentState.validate()){
+                                        if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
                                         // if(description.text.isEmpty || reasonValue == ''){

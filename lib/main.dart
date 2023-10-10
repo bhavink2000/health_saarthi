@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
@@ -21,24 +20,33 @@ Future<void> main() async {
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   DependencyInjection.init();
+  HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.dumpErrorToConsole(details);
   };
 }
 
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
+}
+
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async{
   await Firebase.initializeApp();
-  print(message.notification.title.toString());
+  print(message.notification!.title.toString());
   print(message.data['title']);
   print(message.data['message']);
 }
 
 
 class MyApp extends StatefulWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -46,10 +54,10 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
-  String fcmToken;
-  AndroidNotificationChannel channel;
+  String? fcmToken;
+  AndroidNotificationChannel? channel;
   bool isFlutterLocalNotificationsInitialized = false;
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
   NotificationService notificationService = NotificationService();
 
   @override
@@ -78,16 +86,16 @@ class _MyAppState extends State<MyApp> {
     print("in firebaseBackgroundHandleer ->${message.data}");
     await Firebase.initializeApp();//initialize Firebase if not initialize when opend from background
     await setupFlutterNotifications();// initialize Local Notification services
-    RemoteNotification notification = message.notification;
+    RemoteNotification? notification = message.notification;
 
-    AndroidNotification android = message.notification?.android;  // IOS will show notification normaly for android need to do it manualy
+    AndroidNotification? android = message.notification?.android;  // IOS will show notification normaly for android need to do it manualy
     if (message.data != null) {
       print("in if done");
       print("title->${message.data['title']}\nmessage->${message.data['message']}");
       Future.delayed(const Duration(milliseconds: 300), () {
         print("in delayed");
-        flutterLocalNotificationsPlugin.cancelAll();
-        flutterLocalNotificationsPlugin.show(
+        flutterLocalNotificationsPlugin!.cancelAll();
+        flutterLocalNotificationsPlugin!.show(
             message.hashCode,
             //notification.title,
             //notification.body,
@@ -95,8 +103,8 @@ class _MyAppState extends State<MyApp> {
             message.data['message'],
             NotificationDetails(
               android: AndroidNotificationDetails(
-                  channel.id, channel.name,
-                  channelDescription: channel.description,
+                  channel!.id, channel!.name,
+                  channelDescription: channel!.description,
                   largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
                 // TODO add a proper drawable resource to android, for now using
                 //      one that already exists in example app.
@@ -126,24 +134,24 @@ class _MyAppState extends State<MyApp> {
     ///
     /// We use this channel in the `AndroidManifest.xml` file to override the
     /// default FCM channel to enable heads up notifications.
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
+    await flutterLocalNotificationsPlugin!.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel!);
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) {});
     final LinuxInitializationSettings initializationSettingsLinux = const LinuxInitializationSettings(defaultActionName: 'Open notification');
     final InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin, linux: initializationSettingsLinux);
-    await flutterLocalNotificationsPlugin.initialize(
+    await flutterLocalNotificationsPlugin!.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse payload) async {
-        handelAndroidNotification(payload.payload);
+        handelAndroidNotification(payload.payload!);
       },
     );
 
-    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((value) {
-      if (value.didNotificationLaunchApp) {
+    flutterLocalNotificationsPlugin!.getNotificationAppLaunchDetails().then((value) {
+      if (value!.didNotificationLaunchApp) {
         if (value.notificationResponse != null) {
-          handelAndroidNotification(value.notificationResponse.payload);
-          flutterLocalNotificationsPlugin.cancel(value.notificationResponse.id);
+          handelAndroidNotification(value.notificationResponse!.payload!);
+          flutterLocalNotificationsPlugin!.cancel(value.notificationResponse!.id!);
         }
       }
     });
@@ -187,12 +195,12 @@ class _MyAppState extends State<MyApp> {
 
   void showFlutterNotification(RemoteMessage message) { // display android notification code
     if (Platform.isAndroid) {
-      RemoteNotification notification = message.notification;
+      RemoteNotification? notification = message.notification;
 
-      AndroidNotification android = message.notification?.android;
+      AndroidNotification? android = message.notification?.android;
       if (message.data != null) {
         Future.delayed(const Duration(milliseconds: 300), () {
-          flutterLocalNotificationsPlugin.show(
+          flutterLocalNotificationsPlugin!.show(
               message.hashCode,
               //notification.title,
               //notification.body,
@@ -201,8 +209,8 @@ class _MyAppState extends State<MyApp> {
 
               NotificationDetails(
                 android: AndroidNotificationDetails(
-                  channel.id, channel.name,
-                  channelDescription: channel.description,
+                  channel!.id, channel!.name,
+                  channelDescription: channel!.description,
                   largeIcon: const DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
                   // TODO add a proper drawable resource to android, for now using
                   //      one that already exists in example app.
@@ -232,9 +240,14 @@ class _MyAppState extends State<MyApp> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context , child) {
-          return const GetMaterialApp(
+          return GetMaterialApp(
             debugShowCheckedModeBanner: false,
-            home: SplashScreen(),
+            home: const SplashScreen(),
+            theme: ThemeData(
+              scrollbarTheme: ScrollbarThemeData(
+                thumbVisibility: MaterialStateProperty.all<bool>(true),
+              )
+            ),
           );
         },
       ),

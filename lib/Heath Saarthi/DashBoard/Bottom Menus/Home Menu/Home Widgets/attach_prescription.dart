@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously, missing_return
 
 import 'dart:async';
@@ -35,7 +34,7 @@ import '../../../Notification Menu/notification_menu.dart';
 import '../../Test Menu/thank_you_msg.dart';
 
 class AttachPrescription extends StatefulWidget {
-  const AttachPrescription({Key key}) : super(key: key);
+  const AttachPrescription({Key? key}) : super(key: key);
 
   @override
   State<AttachPrescription> createState() => _AttachPrescriptionState();
@@ -43,7 +42,7 @@ class AttachPrescription extends StatefulWidget {
 
 class _AttachPrescriptionState extends State<AttachPrescription> {
 
-  File presciptionFile;
+  File? presciptionFile;
 
   Completer<XFile> filePickerCompleter = Completer<XFile>();
   var focusNode = FocusNode();
@@ -53,7 +52,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   final colletionDate = TextEditingController();
   final remark = TextEditingController();
 
-  String selectedGender;
+  String? selectedGender;
   final pAge = TextEditingController();
   final pDob = TextEditingController();
   final pName = TextEditingController();
@@ -88,14 +87,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     await fetchMobileList();
   }
   final _formKey = GlobalKey<FormState>();
-
-  void resetCityAndAreaSelection() {
-    setState(() {
-      selectedCity = null;
-      selectedArea = null;
-    });
-    fetchStateList();
-  }
 
   @override
   void dispose() {
@@ -182,7 +173,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return Dialog(
-                                                  child: Image.file(presciptionFile),
+                                                  child: Image.file(presciptionFile!),
                                                 );
                                               },
                                             );
@@ -190,7 +181,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                         },
                                         child: presciptionFile == null
                                             ? Text("Presciption", style: TextStyle(fontFamily: FontType.MontserratMedium))
-                                            : Image.file(presciptionFile, fit: BoxFit.cover),
+                                            : Image.file(presciptionFile!, fit: BoxFit.cover),
                                       )
                                     ),
                                     const Spacer(),
@@ -247,18 +238,18 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     controller: pMobile, // Assign the controller
                                   ),
                                   suggestionsCallback: (pattern) async {
-                                    return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
+                                    return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
                                   },
                                   itemBuilder: (context, MobileData suggestion) {
                                     return ListTile(
-                                      title: Text(suggestion.mobileNo),
+                                      title: Text(suggestion.mobileNo!),
                                     );
                                   },
                                   onSuggestionSelected: (MobileData suggestion) {
                                     setState(() {
                                       selectedMobileNo = suggestion.encPharmacyPatientId;
                                       getPatient(selectedMobileNo);
-                                      pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
+                                      pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
                                     });
                                   },
                                   validator: (value) {
@@ -483,14 +474,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     ),
                                   ),
                                   DropdownSearch<String>(
-                                    mode: Mode.DIALOG,
-                                    autoValidateMode: AutovalidateMode.onUserInteraction,
-                                    showSearchBox: true,
-                                    showSelectedItem: true,
-                                    items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                                    label: "Select state *",
+                                    popupProps: const PopupProps.dialog(
+                                      showSelectedItems: true,
+                                      showSearchBox: true,
+                                    ),
+                                    items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                                    dropdownDecoratorProps: DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                        labelText: "Select state *",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        ),
+                                      ),
+                                    ),
                                     onChanged: (newValue) {
-                                      final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                                      final selectedStateObject = stateList.firstWhere(
+                                            (state) => state!.stateName == newValue,
+                                        orElse: () => StateData(),
+                                      );
                                       if (selectedStateObject != null) {
                                         setState(() {
                                           cityList.clear();
@@ -512,7 +514,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       }
                                       return null;
                                     },
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -533,14 +535,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     ),
                                   ),
                                   DropdownSearch<String>(
-                                    mode: Mode.DIALOG,
-                                    autoValidateMode: AutovalidateMode.onUserInteraction,
-                                    showSearchBox: true,
-                                    showSelectedItem: true,
-                                    items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                                    label: "Select city *",
+                                    popupProps: const PopupProps.dialog(
+                                      showSelectedItems: true,
+                                      showSearchBox: true,
+                                    ),
+                                    items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                                    dropdownDecoratorProps: DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                        labelText: "Select city *",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        ),
+                                      ),
+                                    ),
                                     onChanged: (newValue) {
-                                      final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                                      final selectedCityObject = cityList.firstWhere(
+                                            (city) => city!.cityName == newValue,
+                                        orElse: () => CityData(), // Return an empty instance of StateData
+                                      );
                                       if (selectedCityObject != null) {
                                         setState(() {
                                           selectedCity = '';
@@ -550,6 +563,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                           selectedBranch = '';
                                           selectedCity = newValue;
                                           selectedCityId = selectedCityObject.id.toString();
+                                          //fetchBranchList(selectedStateId, selectedCityId, '');
                                         });
                                         fetchAreaList(selectedStateId, selectedCityId);
                                       }
@@ -561,7 +575,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       }
                                       return null;
                                     },
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -583,14 +597,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     ),
                                   ),
                                   DropdownSearch<String>(
-                                    mode: Mode.DIALOG,
-                                    autoValidateMode: AutovalidateMode.onUserInteraction,
-                                    showSearchBox: true,
-                                    showSelectedItem: true,
-                                    items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                                    label: "Select area *",
+                                    popupProps: const PopupProps.dialog(
+                                      showSelectedItems: true,
+                                      showSearchBox: true,
+                                    ),
+                                    items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                                    dropdownDecoratorProps: DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                        labelText: "Select area *",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        ),
+                                      ),
+                                    ),
                                     onChanged: (newValue) {
-                                      final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                                      final selectedAreaObject = areaList.firstWhere(
+                                            (area) => area!.areaName == newValue,
+                                        orElse: () => AreaData(), // Return an empty instance of StateData
+                                      );
                                       if (selectedAreaObject != null) {
                                         setState(() {
                                           branchList.clear();
@@ -608,7 +633,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       }
                                       return null;
                                     },
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -630,14 +655,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     ),
                                   ),
                                   DropdownSearch<String>(
-                                    mode: Mode.DIALOG,
-                                    autoValidateMode: AutovalidateMode.onUserInteraction,
-                                    showSearchBox: true,
-                                    showSelectedItem: true,
-                                    items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                                    label: "Select branch *",
+                                    popupProps: const PopupProps.dialog(
+                                      showSelectedItems: true,
+                                      showSearchBox: true,
+                                    ),
+                                    items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                                    dropdownDecoratorProps: DropDownDecoratorProps(
+                                      dropdownSearchDecoration: InputDecoration(
+                                        labelText: "Select branch *",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                        ),
+                                      ),
+                                    ),
                                     onChanged: (newValue) {
-                                      final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                                      final selectedBranchObject = branchList.firstWhere(
+                                            (branch) => branch!.branchName == newValue,
+                                        orElse: () => BranchData(), // Return an empty instance of StateData
+                                      );
                                       if (selectedBranchObject != null) {
                                         setState(() {
                                           selectedBranch = newValue;
@@ -652,7 +688,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       }
                                       return null;
                                     },
-                                  ),
+                                  )
                                 ],
                               ),
                             ),
@@ -683,7 +719,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
                               ),
                               onTap: () async {
-                                DateTime pickedDate = await showDatePicker(
+                                DateTime? pickedDate = await showDatePicker(
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime.now(),
@@ -827,7 +863,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   }
 
   List<MobileData> mobileList = [];
-  String selectedMobileNo;
+  String? selectedMobileNo;
   Future<void> fetchMobileList() async {
     print("fetchMobileCall");
     try {
@@ -845,21 +881,21 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   void getPatient(var patientId) async {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
-      pharmacyId = pModel.patientData.pharmacyId.toString();
-      pName.text = pModel.patientData.name.toString();
-      pDob.text = pModel.patientData.dateOfBirth.toString();
-      pAge.text = pModel.patientData.age.toString();
-      pMobile.text = pModel.patientData.mobileNo.toString();
-      emailId.text = pModel.patientData.emailId.toString();
-      address.text = pModel.patientData.address.toString();
-      selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
-      selectedState = pModel.patientData.state.stateName.toString();
-      selectedCity = pModel.patientData.city.cityName.toString();
-      selectedArea = pModel.patientData.area.areaName.toString();
-      selectedStateId = pModel.patientData.state.id.toString();
-      selectedCityId = pModel.patientData.city.id.toString();
-      selectedAreaId = pModel.patientData.area.id.toString();
-      pinCode.text = pModel.patientData.pincode.toString();
+      pharmacyId = pModel.patientData!.pharmacyId.toString();
+      pName.text = pModel.patientData!.name.toString();
+      pDob.text = pModel.patientData!.dateOfBirth.toString();
+      pAge.text = pModel.patientData!.age.toString();
+      pMobile.text = pModel.patientData!.mobileNo.toString();
+      emailId.text = pModel.patientData!.emailId.toString();
+      address.text = pModel.patientData!.address.toString();
+      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+      selectedState = pModel.patientData!.state!.stateName.toString();
+      selectedCity = pModel.patientData!.city!.cityName.toString();
+      selectedArea = pModel.patientData!.area!.areaName.toString();
+      selectedStateId = pModel.patientData!.state!.id.toString();
+      selectedCityId = pModel.patientData!.city!.id.toString();
+      selectedAreaId = pModel.patientData!.area!.id.toString();
+      pinCode.text = pModel.patientData!.pincode.toString();
     } catch (e) {
       print('Error: $e');
     }
@@ -881,9 +917,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       },
     );
   }
-  List<StateData> stateList = [];
-  String selectedState;
-  String selectedStateId;
+  List<StateData?> stateList = [];
+  String? selectedState;
+  String? selectedStateId;
   Future<void> fetchStateList() async {
     //_showLoadingDialog(context);
     setState(() {
@@ -903,9 +939,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     }
   }
 
-  List<CityData> cityList = [];
-  String selectedCity;
-  String selectedCityId;
+  List<CityData?> cityList = [];
+  String? selectedCity;
+  String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -925,9 +961,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     }
   }
 
-  List<AreaData> areaList = [];
-  String selectedArea;
-  String selectedAreaId;
+  List<AreaData?> areaList = [];
+  String? selectedArea;
+  String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -947,9 +983,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     }
   }
 
-  List<BranchData> branchList = [];
-  String selectedBranch;
-  String selectedBranchId;
+  List<BranchData?> branchList = [];
+  String? selectedBranch;
+  String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -969,7 +1005,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     }
   }
 
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: TextFormField(
@@ -1037,8 +1073,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
       if (presciptionFile != null) {
         var file = http.MultipartFile.fromBytes(
-          'prescription', await presciptionFile.readAsBytes(),
-          filename: presciptionFile.path.split('/').last,
+          'prescription', await presciptionFile!.readAsBytes(),
+          filename: presciptionFile!.path.split('/').last,
         );
         request.files.add(file);
       }
@@ -1091,7 +1127,7 @@ class MobileItem {
   final int encPharmacyPatientId;
   final String mobileNo;
 
-  MobileItem({this.encPharmacyPatientId, this.mobileNo});
+  MobileItem({required this.encPharmacyPatientId, required this.mobileNo});
 }
 
 class StateGetModel {

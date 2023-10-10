@@ -1,5 +1,3 @@
-//@dart=2.9
-// ignore_for_file: missing_return, use_build_context_synchronously
 
 import 'dart:convert';
 import 'dart:ui';
@@ -30,7 +28,7 @@ import '../Bottom Menus/Home Menu/Test List/test_list_items.dart';
 import 'test_form_booking.dart';
 
 class TestCart extends StatefulWidget {
-  const TestCart({Key key}) : super(key: key);
+  const TestCart({Key? key}) : super(key: key);
 
   @override
   State<TestCart> createState() => _TestCartState();
@@ -38,14 +36,14 @@ class TestCart extends StatefulWidget {
 
 class _TestCartState extends State<TestCart> {
 
-  String sStateName;
-  String sCityName;
-  String sAreaName;
-  String sBranchName;
-  String sStateId;
-  String sCityId;
-  String sAreaId;
-  String sBranchId;
+  String? sStateName;
+  String? sCityName;
+  String? sAreaName;
+  String? sBranchName;
+  String? sStateId;
+  String? sCityId;
+  String? sAreaId;
+  String? sBranchId;
 
   bool setLocation = false;
   bool showDLocation = false;
@@ -58,9 +56,9 @@ class _TestCartState extends State<TestCart> {
   bool callPromo = false;
   var isApplyPromo;
   var applyPromo;
-  String testD;
-  String packageD;
-  String profileD;
+  String? testD;
+  String? packageD;
+  String? profileD;
 
   bool stateLoading = false;
   bool cityLoading = false;
@@ -79,14 +77,14 @@ class _TestCartState extends State<TestCart> {
     });
   }
 
-  void cartScreenCall()async{
+  cartScreenCall()async{
     await getUserStatus();
     await homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId);
     await cartCalculation();
   }
   bool pageLoad = false;
   var userStatus;
-  void getUserStatus()async{
+  getUserStatus()async{
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       setState(() {
@@ -108,7 +106,7 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  String selectLocation;
+  String? selectLocation;
   final GlobalKey<FormState> _locationFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -481,14 +479,25 @@ class _TestCartState extends State<TestCart> {
                                 ),
                               ),
                               DropdownSearch<String>(
-                                mode: Mode.DIALOG,
-                                autoValidateMode: AutovalidateMode.onUserInteraction,
-                                showSearchBox: true,
-                                showSelectedItem: true,
-                                items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                                label: "Select state *",
+                                popupProps: const PopupProps.dialog(
+                                  showSelectedItems: true,
+                                  showSearchBox: true,
+                                ),
+                                items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Select state *",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    ),
+                                  ),
+                                ),
                                 onChanged: (newValue) {
-                                  final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                                  final selectedStateObject = stateList.firstWhere(
+                                        (state) => state!.stateName == newValue,
+                                    orElse: () => StateData(),
+                                  );
                                   if (selectedStateObject != null) {
                                     setState(() {
                                       cityList.clear();
@@ -510,7 +519,7 @@ class _TestCartState extends State<TestCart> {
                                   }
                                   return null;
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -532,14 +541,25 @@ class _TestCartState extends State<TestCart> {
                                 ),
                               ),
                               DropdownSearch<String>(
-                                mode: Mode.DIALOG,
-                                autoValidateMode: AutovalidateMode.onUserInteraction,
-                                showSearchBox: true,
-                                showSelectedItem: true,
-                                items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                                label: "Select city *",
+                                popupProps: const PopupProps.dialog(
+                                  showSelectedItems: true,
+                                  showSearchBox: true,
+                                ),
+                                items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Select city *",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    ),
+                                  ),
+                                ),
                                 onChanged: (newValue) {
-                                  final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                                  final selectedCityObject = cityList.firstWhere(
+                                        (city) => city!.cityName == newValue,
+                                    orElse: () => CityData(), // Return an empty instance of StateData
+                                  );
                                   if (selectedCityObject != null) {
                                     setState(() {
                                       selectedCity = '';
@@ -561,7 +581,7 @@ class _TestCartState extends State<TestCart> {
                                   }
                                   return null;
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -583,14 +603,25 @@ class _TestCartState extends State<TestCart> {
                                 ),
                               ),
                               DropdownSearch<String>(
-                                mode: Mode.DIALOG,
-                                autoValidateMode: AutovalidateMode.onUserInteraction,
-                                showSearchBox: true,
-                                showSelectedItem: true,
-                                items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                                label: "Select area *",
+                                popupProps: const PopupProps.dialog(
+                                  showSelectedItems: true,
+                                  showSearchBox: true,
+                                ),
+                                items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Select area *",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    ),
+                                  ),
+                                ),
                                 onChanged: (newValue) {
-                                  final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                                  final selectedAreaObject = areaList.firstWhere(
+                                        (area) => area!.areaName == newValue,
+                                    orElse: () => AreaData(), // Return an empty instance of StateData
+                                  );
                                   if (selectedAreaObject != null) {
                                     setState(() {
                                       branchList.clear();
@@ -608,7 +639,7 @@ class _TestCartState extends State<TestCart> {
                                   }
                                   return null;
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -630,14 +661,25 @@ class _TestCartState extends State<TestCart> {
                                 ),
                               ),
                               DropdownSearch<String>(
-                                mode: Mode.DIALOG,
-                                autoValidateMode: AutovalidateMode.onUserInteraction,
-                                showSearchBox: true,
-                                showSelectedItem: true,
-                                items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                                label: "Select branch *",
+                                popupProps: const PopupProps.dialog(
+                                  showSelectedItems: true,
+                                  showSearchBox: true,
+                                ),
+                                items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                                dropdownDecoratorProps: DropDownDecoratorProps(
+                                  dropdownSearchDecoration: InputDecoration(
+                                    labelText: "Select branch *",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                                    ),
+                                  ),
+                                ),
                                 onChanged: (newValue) {
-                                  final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                                  final selectedBranchObject = branchList.firstWhere(
+                                        (branch) => branch!.branchName == newValue,
+                                    orElse: () => BranchData(), // Return an empty instance of StateData
+                                  );
                                   if (selectedBranchObject != null) {
                                     setState(() {
                                       selectedBranch = newValue;
@@ -652,7 +694,7 @@ class _TestCartState extends State<TestCart> {
                                   }
                                   return null;
                                 },
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -666,7 +708,7 @@ class _TestCartState extends State<TestCart> {
                               backgroundColor: hsPrime
                             ),
                             onPressed: (){
-                              if(_locationFormKey.currentState.validate()){
+                              if(_locationFormKey.currentState!.validate()){
                                 FocusScope.of(context).unfocus();
                                 setState(() {
                                   showDLocation = false;
@@ -692,7 +734,7 @@ class _TestCartState extends State<TestCart> {
                 create: (BuildContext context) => homeMenusProvider,
                 child: Consumer<HomeMenusProvider>(
                   builder: (context, value, __){
-                    switch(value.cartList.status){
+                    switch(value.cartList.status!){
                       case Status.loading:
                         return Column(
                           children: [
@@ -701,6 +743,8 @@ class _TestCartState extends State<TestCart> {
                           ],
                         );
                       case Status.error:
+                        print("------------${value.cartList.status}");
+                        print("------------${value.cartList.message}");
                         return value.cartList.message == 'Cart is Empty'
                           ? Column(
                             children: [
@@ -717,9 +761,11 @@ class _TestCartState extends State<TestCart> {
                           : Column(
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
-                              value.cartList.status == '402'
+                              value.cartList.status == 402
                                   ? TokenExpiredHelper(tokenMsg: value.cartList.message)
-                                  : value.cartList.message == 'Internet connection problem' ? CenterLoading() : const Center(child: Text('Please check internet connection')),
+                                  : value.cartList.message == 'Internet connection problem'
+                                  ? CenterLoading()
+                                  : const Center(child: Text('Please check internet connection')),
                             ],
                           );
                       case Status.completed:
@@ -727,9 +773,9 @@ class _TestCartState extends State<TestCart> {
                           width: MediaQuery.of(context).size.width.w,
                           child: Column(
                             children: [
-                              value.cartList.data.data.cartItems.testItems.isEmpty
-                              && value.cartList.data.data.cartItems.packageItems.isEmpty
-                              && value.cartList.data.data.cartItems.profileItems.isEmpty
+                              value.cartList.data!.data!.cartItems!.testItems!.isEmpty
+                              && value.cartList.data!.data!.cartItems!.packageItems!.isEmpty
+                              && value.cartList.data!.data!.cartItems!.profileItems!.isEmpty
                                ? Center(
                                   child: Column(
                                     children: [
@@ -750,7 +796,7 @@ class _TestCartState extends State<TestCart> {
                                   padding: EdgeInsets.fromLTRB(0, 0, 0, MediaQuery.of(context).size.height / 4),
                                   child: Column(
                                     children: [
-                                      value.cartList.data.data.cartItems.testItems.isNotEmpty ? Padding(
+                                      value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -782,19 +828,19 @@ class _TestCartState extends State<TestCart> {
                                               Container(
                                                 //color: Colors.green,
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: value.cartList.data.data.cartItems.testItems.length == 1
-                                                    ? 50.h : value.cartList.data.data.cartItems.testItems.length == 2 ? 80.h
+                                                height: value.cartList.data!.data!.cartItems!.testItems!.length == 1
+                                                    ? 50.h : value.cartList.data!.data!.cartItems!.testItems!.length == 2 ? 80.h
                                                     : 175.h,
-                                                child: value.cartList.data.data.cartItems.testItems.isNotEmpty
+                                                child: value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty
                                                  ? Scrollbar(
-                                                    isAlwaysShown: true,
+                                                    //thumbVisibility: true,
                                                     thickness: 5,
                                                     radius: const Radius.circular(50),
                                                     child: ListView.builder(
                                                   physics: const BouncingScrollPhysics(),
-                                                  itemCount: value.cartList.data.data.cartItems.testItems.length,
+                                                  itemCount: value.cartList.data!.data!.cartItems!.testItems!.length,
                                                   itemBuilder: (context, tIndex){
-                                                      var cartI = value.cartList.data.data.cartItems.testItems[tIndex];
+                                                      var cartI = value.cartList.data!.data!.cartItems!.testItems![tIndex];
                                                       return Padding(
                                                         padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                                         child: Column(
@@ -805,9 +851,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   Container(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.testItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
+                                                                    child: Text(cartI.testItemInfo!.serviceName!,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.testItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.testItemInfo!.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -845,7 +891,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo.id, context).then((value) async{
+                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo!.id, context).then((value) async{
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -929,10 +975,10 @@ class _TestCartState extends State<TestCart> {
                                                               value: '',
                                                               child: Text("discount"),
                                                             ),
-                                                            ...value.cartList.data.data.globalSettingTestSlot?.map((testDrop) => DropdownMenuItem<String>(
+                                                            ...value.cartList.data!.data!.globalSettingTestSlot?.map((testDrop) => DropdownMenuItem<String>(
                                                               value: testDrop.id.toString() ?? '',
                                                               child: Text("${testDrop.slotValue}%"),
-                                                            ))?.toList() ?? []
+                                                            )).toList() ?? []
                                                           ],
                                                         )
                                                     ),
@@ -945,7 +991,7 @@ class _TestCartState extends State<TestCart> {
                                       ) : Container(),
 
                                       const SizedBox(height: 10),
-                                      value.cartList.data.data.cartItems.testItems.isNotEmpty ? Container() : Center(
+                                      value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty ? Container() : Center(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
@@ -964,7 +1010,7 @@ class _TestCartState extends State<TestCart> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
-                                      value.cartList.data.data.cartItems.packageItems.isNotEmpty ? Padding(
+                                      value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -997,17 +1043,17 @@ class _TestCartState extends State<TestCart> {
                                               Divider(color: Colors.grey.withOpacity(0.5),),
                                               Container(
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: value.cartList.data.data.cartItems.packageItems.length == 1 ? 50.h : 120.h,
-                                                child: value.cartList.data.data.cartItems.packageItems.isNotEmpty
+                                                height: value.cartList.data!.data!.cartItems!.packageItems!.length == 1 ? 50.h : 120.h,
+                                                child: value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty
                                                  ? Scrollbar(
-                                                    isAlwaysShown: true,
+                                                    //thumbVisibility: true,
                                                     thickness: 5,
                                                     radius: const Radius.circular(50),
                                                     child: ListView.builder(
                                                   physics: const BouncingScrollPhysics(),
-                                                  itemCount: value.cartList.data.data.cartItems.packageItems.length,
+                                                  itemCount: value.cartList.data!.data!.cartItems!.packageItems!.length,
                                                   itemBuilder: (context, pIndex){
-                                                      var cartI = value.cartList.data.data.cartItems.packageItems[pIndex];
+                                                      var cartI = value.cartList.data!.data!.cartItems!.packageItems![pIndex];
                                                       return Padding(
                                                         padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                                         child: Column(
@@ -1018,9 +1064,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   SizedBox(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.packageItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
+                                                                    child: Text(cartI.packageItemInfo!.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.packageItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.packageItemInfo!.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -1058,7 +1104,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.packageItemInfo.id, context).then((value){}).then((value){
+                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.packageItemInfo!.id, context).then((value){}).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1142,7 +1188,7 @@ class _TestCartState extends State<TestCart> {
                                                               value: '',
                                                               child: Text("Discount"),
                                                             ),
-                                                            ...value.cartList.data.data.globalSettingPackageSlot?.map((packageDrop) => DropdownMenuItem<String>(
+                                                            ...value.cartList.data!.data!.globalSettingPackageSlot?.map((packageDrop) => DropdownMenuItem<String>(
                                                               value: packageDrop.id.toString() ?? '',
                                                               child: Text("${packageDrop.slotValue}%"),
                                                             ))?.toList() ?? []
@@ -1155,7 +1201,7 @@ class _TestCartState extends State<TestCart> {
                                             ],
                                           ),
                                         ),
-                                      ) : value.cartList.data.data.cartItems.profileItems.isEmpty ? Center(
+                                      ) : value.cartList.data!.data!.cartItems!.profileItems!.isEmpty ? Center(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
@@ -1174,7 +1220,7 @@ class _TestCartState extends State<TestCart> {
                                         ),
                                       ) : Container(),
 
-                                      value.cartList.data.data.cartItems.profileItems.isNotEmpty ? Padding(
+                                      value.cartList.data!.data!.cartItems!.profileItems!.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -1205,17 +1251,17 @@ class _TestCartState extends State<TestCart> {
                                               Divider(color: Colors.grey.withOpacity(0.5),),
                                               Container(
                                                 width: MediaQuery.of(context).size.width.w,
-                                                height: value.cartList.data.data.cartItems.profileItems.length == 1 ? 50.h : 100.h,
-                                                child: value.cartList.data.data.cartItems.profileItems.isNotEmpty
+                                                height: value.cartList.data!.data!.cartItems!.profileItems!.length == 1 ? 50.h : 100.h,
+                                                child: value.cartList.data!.data!.cartItems!.profileItems!.isNotEmpty
                                                  ? Scrollbar(
-                                                    isAlwaysShown: true,
+                                                    //thumbVisibility: true,
                                                     thickness: 5,
                                                     radius: const Radius.circular(50),
                                                     child: ListView.builder(
                                                   physics: const BouncingScrollPhysics(),
-                                                  itemCount: value.cartList.data.data.cartItems.profileItems.length,
+                                                  itemCount: value.cartList.data!.data!.cartItems!.profileItems!.length,
                                                   itemBuilder: (context, pIndex){
-                                                      var cartI = value.cartList.data.data.cartItems.profileItems[pIndex];
+                                                      var cartI = value.cartList.data!.data!.cartItems!.profileItems![pIndex];
                                                       return Padding(
                                                         padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                                         child: Column(
@@ -1226,9 +1272,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   SizedBox(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.profileItemInfo.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
+                                                                    child: Text(cartI.profileItemInfo!.serviceName!,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.profileItemInfo.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartI.profileItemInfo!.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -1266,7 +1312,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.profileItemInfo.id, context).then((value){
+                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.profileItemInfo!.id, context).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1350,10 +1396,10 @@ class _TestCartState extends State<TestCart> {
                                                               value: '',
                                                               child: Text("Discount"),
                                                             ),
-                                                            ...value.cartList.data.data.globalSettingProfileSlot?.map((packageDrop) => DropdownMenuItem<String>(
+                                                            ...value.cartList.data!.data!.globalSettingProfileSlot?.map((packageDrop) => DropdownMenuItem<String>(
                                                               value: packageDrop.id.toString() ?? '',
                                                               child: Text('${packageDrop.slotValue}%'),
-                                                            ))?.toList() ?? []
+                                                            )).toList() ?? []
                                                           ],
                                                         )
                                                     ),
@@ -1404,8 +1450,9 @@ class _TestCartState extends State<TestCart> {
     );
   }
   var bodyMsg;
-  Future<CartCalculationModel> cartCalculation() async {
+  Future<CartCalculationModel?> cartCalculation() async {
     print("testDisId ->$testD / packageDisId ->$packageD / profileDisId ->$profileD / promo ->${promoApply.text}");
+    print("cart calu accestie->${getAccessToken.access_token}");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -1451,9 +1498,9 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  List<StateData> stateList = [];
-  String selectedState;
-  String selectedStateId;
+  List<StateData?> stateList = [];
+  String? selectedState;
+  String? selectedStateId;
   Future<void> fetchStateList() async {
     setState(() {
       stateLoading = true;
@@ -1470,9 +1517,9 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  List<CityData> cityList = [];
-  String selectedCity;
-  String selectedCityId;
+  List<CityData?> cityList = [];
+  String? selectedCity;
+  String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
     setState(() {
       cityLoading = true;
@@ -1489,9 +1536,9 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  List<AreaData> areaList = [];
-  String selectedArea;
-  String selectedAreaId;
+  List<AreaData?> areaList = [];
+  String? selectedArea;
+  String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     setState(() {
       areaLoading = true;
@@ -1508,9 +1555,9 @@ class _TestCartState extends State<TestCart> {
     }
   }
 
-  List<BranchData> branchList = [];
-  String selectedBranch;
-  String selectedBranchId;
+  List<BranchData?> branchList = [];
+  String? selectedBranch;
+  String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
     setState(() {
       branchLoading = true;

@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously, void_checks
 
 import 'dart:convert';
@@ -23,7 +22,7 @@ class TestBookingScreen extends StatefulWidget {
   var testDis,packageDis,profileDis,promoApply;
   var dStateId,dCityId,dAreaId,dBranchId,dStateNm,dCityNm,dAreaNm,dBranchNm;
   var locationType;
-  TestBookingScreen({Key key,this.testDis,this.packageDis,this.profileDis,this.promoApply,
+  TestBookingScreen({Key? key,this.testDis,this.packageDis,this.profileDis,this.promoApply,
   this.dStateId,this.dCityId,this.dAreaId,this.dBranchId,this.dStateNm,this.dCityNm,this.dAreaNm,this.dBranchNm,
     this.locationType
   }) : super(key: key);
@@ -35,7 +34,7 @@ class TestBookingScreen extends StatefulWidget {
 class _TestBookingScreenState extends State<TestBookingScreen> {
 
   bool addVendor = false;
-  File fileManger;
+  File? fileManger;
   //final mobileNo = TextEditingController();
   final emailId = TextEditingController();
   final address = TextEditingController();
@@ -44,7 +43,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   final collectionTime = TextEditingController();
   final remark = TextEditingController();
 
-  String selectedGender;
+  String? selectedGender;
   final pAge = TextEditingController();
   final pDob = TextEditingController();
   final pName = TextEditingController();
@@ -142,18 +141,18 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   controller: pMobile, // Assign the controller
                                 ),
                                 suggestionsCallback: (pattern) async {
-                                  return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
+                                  return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
                                 },
                                 itemBuilder: (context, MobileData suggestion) {
                                   return ListTile(
-                                    title: Text(suggestion.mobileNo),
+                                    title: Text(suggestion.mobileNo!),
                                   );
                                 },
                                 onSuggestionSelected: (MobileData suggestion) {
                                   setState(() {
-                                    selectedMobileNo = suggestion.encPharmacyPatientId;
+                                    selectedMobileNo = suggestion.encPharmacyPatientId!;
                                     getPatient(selectedMobileNo);
-                                    pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
+                                    pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
                                   });
                                 },
                                 validator: (value) {
@@ -162,7 +161,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   }
                                   return null;
                                 },
-                                onSaved: (value) => this.selectedMobileNo = value,
+                                onSaved: (value) => this.selectedMobileNo = value!,
                               )
                           ),
                         ),
@@ -406,7 +405,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
                             ),
                             onTap: () async {
-                              DateTime pickedDate = await showDatePicker(
+                              DateTime? pickedDate = await showDatePicker(
                                 context: context,
                                 initialDate: DateTime.now(),
                                 firstDate: DateTime.now(),
@@ -537,7 +536,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     );
   }
   List<MobileData> mobileList = [];
-  String selectedMobileNo;
+  String? selectedMobileNo;
   Future<void> fetchMobileList() async {
     try {
       CartFuture cartFuture = CartFuture();
@@ -555,15 +554,15 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
       setState(() {
-        pharmacyId = pModel.patientData.pharmacyId.toString();
-        pName.text = pModel.patientData.name.toString();
-        pDob.text = pModel.patientData.dateOfBirth.toString();
-        pAge.text = pModel.patientData.age.toString();
-        pMobile.text = pModel.patientData.mobileNo.toString();
-        emailId.text = pModel.patientData.emailId.toString();
-        address.text = pModel.patientData.address.toString();
-        selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
-        pinCode.text = pModel.patientData.pincode.toString();
+        pharmacyId = pModel.patientData!.pharmacyId.toString();
+        pName.text = pModel.patientData!.name.toString();
+        pDob.text = pModel.patientData!.dateOfBirth.toString();
+        pAge.text = pModel.patientData!.age.toString();
+        pMobile.text = pModel.patientData!.mobileNo.toString();
+        emailId.text = pModel.patientData!.emailId.toString();
+        address.text = pModel.patientData!.address.toString();
+        selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+        pinCode.text = pModel.patientData!.pincode.toString();
       });
     } catch (e) {
       print('Error: $e');
@@ -664,7 +663,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     }
   }
 
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: TextFormField(

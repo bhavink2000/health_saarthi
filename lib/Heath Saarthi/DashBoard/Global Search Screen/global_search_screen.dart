@@ -1,12 +1,8 @@
-//@dart=2.9
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_list_details.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -17,11 +13,11 @@ import '../Bottom Menus/Home Menu/Test List/test_item_details.dart';
 class GlobalSearch extends SearchDelegate{
   var accessToken;
   BuildContext context;
-  GlobalSearch({Key key,this.accessToken,this.context});
+  GlobalSearch({Key? key,this.accessToken,required this.context});
 
   var jsonData;
   int curentindex = 0;
-  Future<List<dynamic>> getGlobalData(var index) async {
+  Future<List<dynamic>?> getGlobalData(var index) async {
 
     final url = Uri.parse(ApiUrls.globalSearchUrls);
     final headers = {
@@ -73,9 +69,9 @@ class GlobalSearch extends SearchDelegate{
 
   @override
   Widget buildResults(BuildContext context) {
-    return FutureBuilder<List<dynamic>>(
+    return FutureBuilder<List<dynamic>?>(
       future: getGlobalData(curentindex + 1),
-      builder: (BuildContext context, AsyncSnapshot<List<dynamic>> snapshot) {
+      builder: (BuildContext? context, AsyncSnapshot<List<dynamic>?> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator(color: hsPrime));
         } else if (snapshot.hasError) {
@@ -85,7 +81,7 @@ class GlobalSearch extends SearchDelegate{
           final items = snapshot.data;
           return ListView.builder(
             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-            itemCount: items.length,
+            itemCount: items!.length,
             itemBuilder: (BuildContext context, int index) {
               final item = items[index];
               return Padding(

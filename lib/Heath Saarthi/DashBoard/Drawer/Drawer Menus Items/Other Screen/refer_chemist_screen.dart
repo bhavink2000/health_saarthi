@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +10,7 @@ import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.d
 import '../../../hs_dashboard.dart';
 
 class ReferChemist extends StatefulWidget {
-  const ReferChemist({Key key}) : super(key: key);
+  const ReferChemist({Key? key}) : super(key: key);
 
   @override
   State<ReferChemist> createState() => _ReferChemistState();
@@ -119,18 +118,18 @@ class _ReferChemistState extends State<ReferChemist> {
                                   labelText: 'Email Id',
                                   prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
                               ),
-                              onChanged: (value) {
-                                if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                                  // Password meets all the requirements
-                                } else if (!value.contains('gmail.com')) {
-                                  // If the email does not contain 'gmail.com', show an error message
-                                  setState(() {
-                                    return 'Email id must contain "gmail.com"';
-                                  });
-                                }else {
-                                  print('Please enter valid email id');
-                                }
-                              },
+                              // onChanged: (value) {
+                              //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                              //     // Password meets all the requirements
+                              //   } else if (!value.contains('gmail.com')) {
+                              //     // If the email does not contain 'gmail.com', show an error message
+                              //     setState(() {
+                              //       return 'Email id must contain "gmail.com"';
+                              //     });
+                              //   }else {
+                              //     print('Please enter valid email id');
+                              //   }
+                              // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a email';
@@ -161,7 +160,7 @@ class _ReferChemistState extends State<ReferChemist> {
                             ),
                             InkWell(
                               onTap: (){
-                                if(_referFormKey.currentState.validate()){
+                                if(_referFormKey.currentState!.validate()){
                                   sendReferralPharmacy();
                                 }
                                 // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty){

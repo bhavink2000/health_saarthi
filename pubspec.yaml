@@ -47,9 +47,9 @@ dependencies:
   carousel_slider: ^4.2.1
   lottie:
   flutter_typeahead: ^4.6.2
-  smooth_star_rating: ^1.1.1
+  smooth_star_rating_null_safety: ^1.0.4+2
   search_choices: ^2.2.5
-  dropdown_search: ^0.6.3
+  dropdown_search: ^5.0.6
 
   # file pick helper in app
   image_picker:
@@ -84,6 +84,8 @@ dependencies:
   flutter_file_downloader: ^1.1.0+1
   install_plugin: ^2.1.0
   package_info_plus: ^4.1.0
+  share_plus: ^7.1.0
+  flutter_cached_pdfview:
 
 dev_dependencies:
   flutter_test:

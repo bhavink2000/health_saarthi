@@ -1,5 +1,3 @@
-//@dart=2.9
-// ignore_for_file: use_build_context_synchronously, missing_return
 
 import 'dart:async';
 import 'dart:convert';
@@ -28,7 +26,7 @@ import '../Splash Screen/splash_screen.dart';
 import 'header_signup.dart';
 
 class SignUpForm extends StatefulWidget {
-  SignUpForm({Key key}) : super(key: key);
+  SignUpForm({Key? key}) : super(key: key);
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -37,12 +35,12 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  File panCardFile;
-  File addressFile;
-  File aadharCardFFile;
-  File aadharCardBFile;
-  File checkFile;
-  File gstFile;
+  File? panCardFile;
+  File? addressFile;
+  File? aadharCardFFile;
+  File? aadharCardBFile;
+  File? checkFile;
+  File? gstFile;
 
   bool panCardColor = false;
   bool aadhaarCardFColor = false;
@@ -83,11 +81,12 @@ class _SignUpFormState extends State<SignUpForm> {
   final panCardNo = TextEditingController();
   final bankName = TextEditingController();
   final ifscCode = TextEditingController();
+  final beneficiaryName = TextEditingController();
   final accountNo = TextEditingController();
   final gstNo = TextEditingController();
 
-  String selectedSales;
-  String selectedB2b;
+  String? selectedSales;
+  String? selectedB2b;
   var selectedSalesMobileNo;
   @override
   void initState() {
@@ -154,14 +153,14 @@ class _SignUpFormState extends State<SignUpForm> {
 
   Future<void> storeStateCityAreaBranch() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('signupStateId', selectedStateId);
-    await prefs.setString('signupCityId', selectedCityId);
-    await prefs.setString('signupAreaId', selectedAreaId);
-    await prefs.setString('signupBranchId', selectedBranchId);
-    await prefs.setString('signupStateName', selectedState);
-    await prefs.setString('signupCityName', selectedCity);
-    await prefs.setString('signupAreaName', selectedArea);
-    await prefs.setString('signupBranchName', selectedBranch);
+    await prefs.setString('signupStateId', selectedStateId!);
+    await prefs.setString('signupCityId', selectedCityId!);
+    await prefs.setString('signupAreaId', selectedAreaId!);
+    await prefs.setString('signupBranchId', selectedBranchId!);
+    await prefs.setString('signupStateName', selectedState!);
+    await prefs.setString('signupCityName', selectedCity!);
+    await prefs.setString('signupAreaName', selectedArea!);
+    await prefs.setString('signupBranchName', selectedBranch!);
   }
   @override
   Widget build(BuildContext context) {
@@ -234,7 +233,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                   ),
-                  prefixIcon: Icon(Icons.person, color: hsBlack, size: 20),
+                  prefixIcon: const Icon(Icons.person, color: hsBlack, size: 20),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -268,18 +267,18 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.email_rounded, color: hsBlack, size: 20),
                 ),
-                onChanged: (value) {
-                  if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                    // Password meets all the requirements
-                  } else if (!value.contains('gmail.com')) {
-                    // If the email does not contain 'gmail.com', show an error message
-                    setState(() {
-                      return 'Email id must contain "gmail.com"';
-                    });
-                  }else {
-                    print('Enter valid email id');
-                  }
-                },
+                // onChanged: (value) {
+                //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                //     // Password meets all the requirements
+                //   } else if (value.contains('gmail.com')) {
+                //     // If the email does not contain 'gmail.com', show an error message
+                //     setState(() {
+                //       return 'Email id must contain "gmail.com"';
+                //     });
+                //   }else {
+                //     print('Enter valid email id');
+                //   }
+                // },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter a email';
@@ -312,7 +311,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                   ),
-                  prefixIcon: Icon(Icons.person_pin, color: hsBlack, size: 20),
+                  prefixIcon: const Icon(Icons.person_pin, color: hsBlack, size: 20),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -369,21 +368,32 @@ class _SignUpFormState extends State<SignUpForm> {
                   children: [
                     Visibility(
                       visible: stateLoading,
-                      child: Positioned(
+                      child: const Positioned(
                         top: 10,
                         right: 5,
                         child: CircularProgressIndicator(),
                       ),
                     ),
                     DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                      label: "Select state *",
+                      popupProps: const PopupProps.dialog(
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                      ),
+                      items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select state *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          ),
+                        ),
+                      ),
                       onChanged: (newValue) {
-                        final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                        final selectedStateObject = stateList.firstWhere(
+                              (state) => state!.stateName == newValue,
+                          orElse: () => StateData(),
+                        );
                         if (selectedStateObject != null) {
                           setState(() {
                             cityList.clear();
@@ -405,7 +415,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         }
                         return null;
                       },
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -420,21 +430,32 @@ class _SignUpFormState extends State<SignUpForm> {
                   children: [
                     Visibility(
                       visible: cityLoading,
-                      child: Positioned(
+                      child: const Positioned(
                         top: 10,
                         right: 5,
                         child: CircularProgressIndicator(),
                       ),
                     ),
                     DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                      label: "Select city *",
+                      popupProps: const PopupProps.dialog(
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                      ),
+                      items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select city *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          ),
+                        ),
+                      ),
                       onChanged: (newValue) {
-                        final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                        final selectedCityObject = cityList.firstWhere(
+                              (city) => city!.cityName == newValue,
+                          orElse: () => CityData(), // Return an empty instance of StateData
+                        );
                         if (selectedCityObject != null) {
                           setState(() {
                             selectedCity = '';
@@ -456,7 +477,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         }
                         return null;
                       },
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -472,21 +493,32 @@ class _SignUpFormState extends State<SignUpForm> {
                   children: [
                     Visibility(
                       visible: branchLoading,
-                      child: Positioned(
+                      child: const Positioned(
                         top: 10,
                         right: 5,
                         child: CircularProgressIndicator(),
                       ),
                     ),
                     DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                      label: "Select branch *",
+                      popupProps: const PopupProps.dialog(
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                      ),
+                      items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select branch *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          ),
+                        ),
+                      ),
                       onChanged: (newValue) {
-                        final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                        final selectedBranchObject = branchList.firstWhere(
+                              (branch) => branch!.branchName == newValue,
+                          orElse: () => BranchData(), // Return an empty instance of StateData
+                        );
                         if (selectedBranchObject != null) {
                           setState(() {
                             selectedBranch = newValue;
@@ -501,7 +533,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         }
                         return null;
                       },
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -516,28 +548,36 @@ class _SignUpFormState extends State<SignUpForm> {
                   children: [
                     Visibility(
                       visible: areaLoading,
-                      child: Positioned(
+                      child: const Positioned(
                         top: 10,
                         right: 5,
                         child: CircularProgressIndicator(),
                       ),
                     ),
                     DropdownSearch<String>(
-                      mode: Mode.DIALOG,
-                      autoValidateMode: AutovalidateMode.onUserInteraction,
-                      showSearchBox: true,
-                      showSelectedItem: true,
-                      items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                      label: "Select area *",
+                      popupProps: const PopupProps.dialog(
+                        showSelectedItems: true,
+                        showSearchBox: true,
+                      ),
+                      items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                      dropdownDecoratorProps: DropDownDecoratorProps(
+                        dropdownSearchDecoration: InputDecoration(
+                          labelText: "Select area *",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                          ),
+                        ),
+                      ),
                       onChanged: (newValue) {
-                        final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                        final selectedAreaObject = areaList.firstWhere(
+                              (area) => area!.areaName == newValue,
+                          orElse: () => AreaData(), // Return an empty instance of StateData
+                        );
                         if (selectedAreaObject != null) {
                           setState(() {
-                            //branchList.clear();
-                            //selectedBranch = '';
                             selectedArea = newValue;
                             selectedAreaId = selectedAreaObject.id.toString();
-                            //fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
                           });
                         }
                       },
@@ -548,7 +588,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         }
                         return null;
                       },
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -687,7 +727,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
-                              child: buildImageDialog(aadharCardFFile, 'Aadhaar card front')
+                              child: buildImageDialog(aadharCardFFile!, 'Aadhaar card front')
                           ),
                           const Spacer(),
                           IconButton(
@@ -727,7 +767,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                             : Container(
                               width: 100,height: 50,
-                              child: buildImageDialog(aadharCardBFile, 'Aadhaar card back')
+                              child: buildImageDialog(aadharCardBFile!, 'Aadhaar card back')
                               // GestureDetector(
                               //   onTap: () {
                               //     if (aadharCardBFile != null) {
@@ -820,7 +860,7 @@ class _SignUpFormState extends State<SignUpForm> {
                        ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                        : Container(
                           width: 100,height: 50,
-                           child: buildImageDialog(addressFile, 'Address proof')
+                           child: buildImageDialog(addressFile!, 'Address proof')
 
                            // GestureDetector(
                            //   onTap: () {
@@ -870,6 +910,7 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  maxLength: 10,
                   controller: panCardNo,
                   focusNode: panCardNoFocusNode,
                   keyboardType: TextInputType.emailAddress,
@@ -883,7 +924,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'Pancard number *',
+                    hintText: 'Pan Card number *',
                     hintStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
@@ -891,12 +932,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     prefixIcon: const Icon(Icons.numbers_rounded, color: hsBlack, size: 20),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter pancard number';
-                    }
-                    return null;
-                  } // Set the validator function
+                  validator: validatePANCard // Set the validator function
               ),
             ),
             Padding(
@@ -912,7 +948,7 @@ class _SignUpFormState extends State<SignUpForm> {
                        ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                        : Container(
                         width: 100,height: 50,
-                        child: buildImageDialog(panCardFile, 'PAN card')
+                        child: buildImageDialog(panCardFile!, 'PAN card')
                       ),
                       const Spacer(),
                       IconButton(
@@ -981,7 +1017,7 @@ class _SignUpFormState extends State<SignUpForm> {
                        ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                        : Container(
                         width: 100,height: 50,
-                        child: buildImageDialog(gstFile, 'GST file')
+                        child: buildImageDialog(gstFile!, 'GST file')
 
                         // GestureDetector(
                         //   onTap: () {
@@ -1048,7 +1084,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                   ),
-                  prefixIcon: Icon(Icons.account_balance_rounded, color: hsBlack, size: 20),
+                  prefixIcon: const Icon(Icons.account_balance_rounded, color: hsBlack, size: 20),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -1063,6 +1099,7 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
+                  maxLength: 11,
                   controller: ifscCode,
                   focusNode: ifscCodeFocusNode,
                   keyboardType: TextInputType.emailAddress,
@@ -1084,20 +1121,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
                   ),
-                  // onChanged: (value){
-                  //   if (value.length < 12) {
-                  //     print('Pancard length is less than 10 characters.');
-                  //   }
-                  //   if (!value.contains(RegExp(r'[0-9]'))) {
-                  //     print('Pancard does not contain a digit.');
-                  //   }
-                  // },
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter IFSC code';
-                    }
-                    return null;
-                  } // Set the validator function
+                  validator: validateIFSC// Set the validator function
               ),
             ),
             Padding(
@@ -1113,7 +1137,7 @@ class _SignUpFormState extends State<SignUpForm> {
                         ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                         : Container(
                         width: 100,height: 50,
-                        child: buildImageDialog(checkFile, 'Cheque img')
+                        child: buildImageDialog(checkFile!, 'Cheque img')
 
                         // GestureDetector(
                         //   onTap: () {
@@ -1159,12 +1183,43 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+              child: TextFormField(
+                controller: beneficiaryName,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.all(hsPaddingM),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                  ),
+                  hintText: 'Beneficiary name as par cheque',
+                  hintStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(Icons.account_balance_outlined, color: hsBlack, size: 20),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter beneficiary name';
+                  }
+                  return null;
+                }, // Set the validator function
+              ),
+            ),
 
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: accountNo,
+                  maxLength: 20,
                   focusNode: accountNoFocusNode,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -1184,12 +1239,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     ),
                     prefixIcon: const Icon(Icons.account_balance_wallet_rounded, color: hsBlack, size: 20),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Enter account number';
-                    }
-                    return null;
-                  } // Set the validator function
+                  validator: validateAccountNumber // Set the validator function
               ),
             ),
             Padding(
@@ -1336,7 +1386,7 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
               child: InkWell(
                 onTap: ()async{
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     FocusScope.of(context).unfocus();
                     if(selectedState == null || selectedCity == null || selectedArea == null || selectedState == '' || selectedCity == '' || selectedArea == ''){
                       GetXSnackBarMsg.getWarningMsg('Please select location fields');
@@ -1380,9 +1430,9 @@ class _SignUpFormState extends State<SignUpForm> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text('Processing : ${loadingProgress.toStringAsFixed(1)}%',style: TextStyle(color: Colors.white),),
-                          SizedBox(width: 15),
-                          CircularProgressIndicator(color: Colors.white),
+                          Text('Processing : ${loadingProgress.toStringAsFixed(1)}%',style: const TextStyle(color: Colors.white),),
+                          const SizedBox(width: 15),
+                          const CircularProgressIndicator(color: Colors.white),
                         ],
                       ) // Show loading indicator
                       : const Text(
@@ -1405,8 +1455,8 @@ class _SignUpFormState extends State<SignUpForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SizedBox(height: MediaQuery.of(context).size.height / 2.5,),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
           child: Image(image: AssetImage('assets/Gif/HealthSaarthi_GIF.gif')),
         ),
       ],
@@ -1427,17 +1477,73 @@ class _SignUpFormState extends State<SignUpForm> {
         }
       },
       child: selectedFilePhoto == null
-          ? Text("$label", style: TextStyle(fontFamily: FontType.MontserratMedium))
+          ? Text("$label", style: const TextStyle(fontFamily: FontType.MontserratMedium))
           : Image.file(selectedFilePhoto, fit: BoxFit.cover),
     );
   }
 
-  void _setAgreedToTOS(bool newValue) {
+  String? validatePANCard(String? value) {
+    // PAN card pattern to validate: 5 uppercase letters followed by 4 digits and 1 uppercase letter
+    RegExp panCardRegExp = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
+    if (!panCardRegExp.hasMatch(value!)) {
+      return 'Enter a valid PAN card number (e.g., ABCDE1234F)';
+    }
+    return null;
+  }
+  String? validateIFSC(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'IFSC code is required';
+    }
+
+    // Remove any whitespace and convert to uppercase
+    value = value.replaceAll(RegExp(r'\s+'), '').toUpperCase();
+
+    // Check if the length of the IFSC code is exactly 11 characters
+    if (value.length != 11) {
+      return 'IFSC code must be 11 characters long';
+    }
+
+    // Check if the first four characters are letters
+    if (!RegExp(r'^[A-Z]{4}').hasMatch(value)) {
+      return 'Invalid IFSC code format';
+    }
+
+    // Check if the fifth character is '0'
+    if (value[4] != '0') {
+      return 'Invalid IFSC code format';
+    }
+
+    // Check if the remaining characters are alphanumeric
+    if (!RegExp(r'^[A-Z0-9]{6}$').hasMatch(value.substring(5, 11))) {
+      return 'Invalid IFSC code format';
+    }
+
+    // You can add additional checks here if needed, such as checking against a list of valid IFSC codes
+
+    // If all checks pass, the IFSC code is valid
+    return null; // Return null if the IFSC code is valid
+  }
+  String? validateAccountNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Account number is required';
+    }
+
+    // Check if the value contains only numeric characters
+    if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+      return 'Account number must contain only digits';
+    }
+
+    // You can add additional checks here based on your specific validation requirements
+
+    // If all checks pass, the account number is considered valid
+    return null; // Return null if the account number is valid
+  }
+  void _setAgreedToTOS(bool? newValue) {
     setState(() {
-      _agreedToTOS = newValue;
+      _agreedToTOS = newValue!;
     });
   }
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String?) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: TextFormField(
@@ -1475,8 +1581,8 @@ class _SignUpFormState extends State<SignUpForm> {
         return Dialog(
           child: StatefulBuilder(
             builder: (BuildContext context, void Function(void Function()) setState){
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
+              return const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -1492,7 +1598,7 @@ class _SignUpFormState extends State<SignUpForm> {
       },
     );
   }
-  void signUpData() async {
+  signUpData() async {
     final dio = Dio();
     var url = ApiUrls.signUpUrl;
     try {
@@ -1503,10 +1609,10 @@ class _SignUpFormState extends State<SignUpForm> {
         MapEntry("password", password.text),
         MapEntry("mobile", mobile.text),
         MapEntry("vendor_name", shopeName.text),
-        MapEntry("state_id", selectedStateId),
-        MapEntry("city_id", selectedCityId),
-        MapEntry("area_id", selectedAreaId),
-        MapEntry("cost_center_id", selectedBranchId),
+        MapEntry("state_id", selectedStateId!),
+        MapEntry("city_id", selectedCityId!),
+        MapEntry("area_id", selectedAreaId!),
+        MapEntry("cost_center_id", selectedBranchId!),
         MapEntry("address", address.text),
         MapEntry("pincode", pincode.text),
         MapEntry("pancard_number", panCardNo.text),
@@ -1514,6 +1620,7 @@ class _SignUpFormState extends State<SignUpForm> {
         MapEntry("b2b_subadmin_id", selectedB2b ?? ''),
         MapEntry("bank_name", bankName.text ?? ''),
         MapEntry("ifsc", ifscCode.text ?? ''),
+        MapEntry("beneficiary_name", beneficiaryName.text ?? ''),
         MapEntry("account_number", accountNo.text ?? ''),
         MapEntry("gst_number", gstNo.text ?? ''),
       ]);
@@ -1521,7 +1628,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "pancard",
           await MultipartFile.fromFile(
-            panCardFile.path,
+            panCardFile!.path,
             filename: 'pancard.jpg',
           ),
         ));
@@ -1530,7 +1637,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "address_proof",
           await MultipartFile.fromFile(
-            addressFile.path,
+            addressFile!.path,
             filename: 'address_proof.jpg',
           ),
         ));
@@ -1539,7 +1646,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "aadhar_front",
           await MultipartFile.fromFile(
-            aadharCardFFile.path,
+            aadharCardFFile!.path,
             filename: 'aadhar_front.jpg',
           ),
         ));
@@ -1548,7 +1655,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "aadhar_back",
           await MultipartFile.fromFile(
-            aadharCardBFile.path,
+            aadharCardBFile!.path,
             filename: 'aadhar_back.jpg',
           ),
         ));
@@ -1557,7 +1664,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "cheque_image",
           await MultipartFile.fromFile(
-            checkFile.path,
+            checkFile!.path,
             filename: 'cheque_image.jpg',
           ),
         ));
@@ -1566,7 +1673,7 @@ class _SignUpFormState extends State<SignUpForm> {
         formData.files.add(MapEntry(
           "gst_image",
           await MultipartFile.fromFile(
-            gstFile.path,
+            gstFile!.path,
             filename: 'gst_image.jpg',
           ),
         ));
@@ -1575,7 +1682,7 @@ class _SignUpFormState extends State<SignUpForm> {
        onError: (DioError err, ErrorInterceptorHandler handler) async {
          print("in dio interceptor->${err.response}");
          if (err.response != null) {
-           var responseData = err.response.data;
+           var responseData = err.response!.data;
            if (responseData['status'] == 400) {
              var errorData = responseData['error'];
              if (errorData['email_id'] != null) {
@@ -1709,9 +1816,9 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  List<StateData> stateList = [];
-  String selectedState;
-  String selectedStateId;
+  List<StateData?> stateList = [];
+  String? selectedState;
+  String? selectedStateId;
   Future<void> fetchStateList() async {
 
     setState(() {
@@ -1731,11 +1838,12 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  List<CityData> cityList = [];
-  String selectedCity;
-  String selectedCityId;
+  List<CityData?> cityList = [];
+  String? selectedCity;
+  String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
-
+    print('calling fetcxhCity');
+    print("sState ->$sState");
     setState(() {
       cityLoading = true;
     });
@@ -1753,9 +1861,9 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  List<AreaData> areaList = [];
-  String selectedArea;
-  String selectedAreaId;
+  List<AreaData?> areaList = [];
+  String? selectedArea;
+  String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     setState(() {
       areaLoading = true;
@@ -1772,9 +1880,9 @@ class _SignUpFormState extends State<SignUpForm> {
     }
   }
 
-  List<BranchData> branchList = [];
-  String selectedBranch;
-  String selectedBranchId;
+  List<BranchData?> branchList = [];
+  String? selectedBranch;
+  String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
 
     setState(() {

@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
@@ -10,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FileImagePicker{
-  Future<File> pickFileManager(BuildContext context) async {
+  Future<File?> pickFileManager(BuildContext context) async {
     try {
       final pickedFile = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -25,8 +24,7 @@ class FileImagePicker{
         );
         return null;
       }
-      print("1.----File size ->${pickedFile.files.single.size}");
-      final originalFile = File(pickedFile.files.single.path);
+      final originalFile = File(pickedFile.files.single.path!);
       return originalFile;
     } on PlatformException catch (e) {
       print("PlatformException -> $e");
@@ -37,7 +35,7 @@ class FileImagePicker{
     }
   }
 
-  Future<File> pickCamera(BuildContext context)async{
+  Future<File?> pickCamera(BuildContext context)async{
     try {
       final pickedFile = await ImagePicker().pickImage(
           source: ImageSource.camera,

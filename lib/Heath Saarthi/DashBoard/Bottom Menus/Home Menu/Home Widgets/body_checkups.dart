@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
@@ -6,13 +5,10 @@ import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future
 import '../../../../App Helper/Backend Helper/Api Repo/Home Menu Repo/home_menu_repo.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../../Add To Cart/test_cart.dart';
 import '../Packages List/package_item_details.dart';
-import '../Test List/test_list_item_details.dart';
-import '../Test List/test_list_items.dart';
 
 class HomeBodyCheckups extends StatefulWidget {
-  const HomeBodyCheckups({Key key}) : super(key: key);
+  const HomeBodyCheckups({Key? key}) : super(key: key);
 
   @override
   State<HomeBodyCheckups> createState() => _HomeBodyCheckupsState();
@@ -33,7 +29,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
     });
   }
 
-  bool isLoading;
+  bool? isLoading;
   void popularPack() async {
     setState(() {
       isLoading = false;

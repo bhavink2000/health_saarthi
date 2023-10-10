@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:ui';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +16,7 @@ import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart
 
 
 class ReportMenu extends StatefulWidget {
-  const ReportMenu({Key key}) : super(key: key);
+  const ReportMenu({Key? key}) : super(key: key);
 
   @override
   State<ReportMenu> createState() => _ReportMenuState();
@@ -30,10 +29,10 @@ class _ReportMenuState extends State<ReportMenu> {
   final fromYear = TextEditingController();
   final toYear = TextEditingController();
 
-  TooltipBehavior _tooltipBehavior;
-  List<DayData> dayData;
-  List<MonthData> monthData;
-  List<YearData> yearData;
+  TooltipBehavior? _tooltipBehavior;
+  List<DayData>? dayData;
+  List<MonthData>? monthData;
+  List<YearData>? yearData;
   GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
@@ -55,9 +54,9 @@ class _ReportMenuState extends State<ReportMenu> {
   Widget build(BuildContext context) {
     List<DayDataEntry> dayChartData = [];
     if (dayData != null) {
-      dayChartData = dayData.map((entry) {
+      dayChartData = dayData!.map((entry) {
         return DayDataEntry(
-          date: entry.date,
+          date: entry.date!,
           amount: entry.amount.toString(),
           count: entry.count,
         );
@@ -65,9 +64,9 @@ class _ReportMenuState extends State<ReportMenu> {
     }
     List<MonthDataEntry> monthChartData = [];
     if (monthData != null) {
-      monthChartData = monthData.map((entry) {
+      monthChartData = monthData!.map((entry) {
         return MonthDataEntry(
-          month: entry.month,
+          month: entry.month!,
           amount: entry.amount.toString(),
           count: entry.count,
         );
@@ -75,9 +74,9 @@ class _ReportMenuState extends State<ReportMenu> {
     }
     List<YearDataEntry> yearChartData = [];
     if (yearData != null) {
-      yearChartData = yearData.map((entry) {
+      yearChartData = yearData!.map((entry) {
         return YearDataEntry(
-          month: entry.month,
+          month: entry.month!,
           amount: entry.amount.toString(),
           count: entry.count,
         );
@@ -134,7 +133,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                                 labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
                                               ),
                                               onTap: () async {
-                                                DateTime pickedDate = await showDatePicker(
+                                                DateTime? pickedDate = await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(1999),
@@ -287,7 +286,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                                 labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
                                               ),
                                               onTap: () async {
-                                                DateTime pickedDate = await showDatePicker(
+                                                DateTime? pickedDate = await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(2000),
@@ -441,7 +440,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                                 labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
                                               ),
                                               onTap: () async {
-                                                DateTime pickedDate = await showDatePicker(
+                                                DateTime? pickedDate = await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(2000),
@@ -473,7 +472,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                                 labelStyle: TextStyle(color: hsPrimeOne.withOpacity(0.5),),
                                               ),
                                               onTap: () async {
-                                                DateTime pickedDate = await showDatePicker(
+                                                DateTime? pickedDate = await showDatePicker(
                                                     context: context,
                                                     initialDate: DateTime.now(),
                                                     firstDate: DateTime(2000),
@@ -630,7 +629,7 @@ class DayDataEntry {
   dynamic count;
 
   DayDataEntry({
-    this.date,
+    required this.date,
     this.amount,
     this.count,
   });
@@ -642,7 +641,7 @@ class MonthDataEntry {
   dynamic count;
 
   MonthDataEntry({
-    this.month,
+    required this.month,
     this.amount,
     this.count,
   });
@@ -654,7 +653,7 @@ class YearDataEntry {
   dynamic count;
 
   YearDataEntry({
-    this.month,
+    required this.month,
     this.amount,
     this.count,
   });

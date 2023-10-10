@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_
 
 class TestItemDetails extends StatefulWidget {
   var testId,accessToken;
-  TestItemDetails({Key key,this.testId,this.accessToken}) : super(key: key);
+  TestItemDetails({Key? key,this.testId,this.accessToken}) : super(key: key);
 
   @override
   State<TestItemDetails> createState() => _TestItemDetailsState();
@@ -27,7 +26,7 @@ class _TestItemDetailsState extends State<TestItemDetails> {
   }
 
   List<dynamic> testDetailsData = [];
-  bool isLoading;
+  bool? isLoading;
   Future<void> testById() async {
     setState(() {
       isLoading = true;

@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -25,7 +24,7 @@ import '../../Bottom Menus/Profile Menu/change_password.dart';
 import '../../hs_dashboard.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  const MyProfileScreen({Key key}) : super(key: key);
+  const MyProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<MyProfileScreen> createState() => _MyProfileScreenState();
@@ -62,14 +61,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   var gstImg;
 
   GetAccessToken getAccessToken = GetAccessToken();
-  String deviceToken;
+  String? deviceToken;
 
-  File panCardChange;
-  File aadhaarCardFChange;
-  File aadhaarCardBChange;
-  File addressChange;
-  File chequeChange;
-  File gstFileChange;
+  File? panCardChange;
+  File? aadhaarCardFChange;
+  File? aadhaarCardBChange;
+  File? addressChange;
+  File? chequeChange;
+  File? gstFileChange;
   @override
   void initState(){
     super.initState();
@@ -297,16 +296,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) : Image.network(
                                     '$panCardImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -357,16 +355,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) :Image.network(
                                     '$aadharCardFImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -417,16 +414,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) : Image.network(
                                     '$aadharCardBImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -477,16 +473,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) : Image.network(
                                     '$addressProfeImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -537,16 +532,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) : Image.network(
                                     '$chequeImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -597,16 +591,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                   ) : Image.network(
                                     '$gstImg',
                                     fit: BoxFit.fill,
-                                    loadingBuilder: (BuildContext context, Widget child,
-                                        ImageChunkEvent loadingProgress) {
-                                      if (loadingProgress == null) return child;
+                                    loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
+                                      if (loadingProgress == null) return child!;
                                       return Center(
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: CircularProgressIndicator(
                                             value: loadingProgress.expectedTotalBytes != null
                                                 ? loadingProgress.cumulativeBytesLoaded /
-                                                loadingProgress.expectedTotalBytes
+                                                loadingProgress.expectedTotalBytes!
                                                 : null,
                                           ),
                                         ),
@@ -698,28 +691,28 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       FormData formData = FormData();
       if (panCardChange != null) {
         formData.files.add(MapEntry(
-            'pancard', await MultipartFile.fromFile(panCardChange.path)));
+            'pancard', await MultipartFile.fromFile(panCardChange!.path)));
       }
       if (addressChange != null) {
         formData.files.add(MapEntry(
-            'address_proof', await MultipartFile.fromFile(addressChange.path)));
+            'address_proof', await MultipartFile.fromFile(addressChange!.path)));
       }
       if (aadhaarCardFChange != null) {
         formData.files.add(MapEntry(
             'aadhar_front',
-            await MultipartFile.fromFile(aadhaarCardFChange.path)));
+            await MultipartFile.fromFile(aadhaarCardFChange!.path)));
       }
       if (aadhaarCardBChange != null) {
         formData.files.add(MapEntry(
-            'aadhar_back', await MultipartFile.fromFile(aadhaarCardBChange.path)));
+            'aadhar_back', await MultipartFile.fromFile(aadhaarCardBChange!.path)));
       }
       if (chequeChange != null) {
         formData.files.add(MapEntry(
-            'cheque_image', await MultipartFile.fromFile(chequeChange.path)));
+            'cheque_image', await MultipartFile.fromFile(chequeChange!.path)));
       }
       if (gstFileChange != null) {
         formData.files.add(MapEntry(
-            'gst_image', await MultipartFile.fromFile(gstFileChange.path)));
+            'gst_image', await MultipartFile.fromFile(gstFileChange!.path)));
       }
       Response response = await dio.post(
         apiUrl,
@@ -811,7 +804,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           gstImg = pModel.data.gstImg.toString();
         });
       }
-      Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop(); // Dismiss the loading dialog
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
       print('Error: $e');
       if (e.toString().contains('Token is Expired')) {
@@ -833,7 +826,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       } else {
         print('Error: $e');
       }
-      Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
+      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
     }
   }
 

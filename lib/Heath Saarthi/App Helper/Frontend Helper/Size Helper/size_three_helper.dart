@@ -1,23 +1,22 @@
-//@dart=2.9
 import 'package:flutter/material.dart';
 
 class ResponsiveLayout {
-  static double screenWidth;
-  static double screenHeight;
-  static double blockSizeHorizontal;
-  static double blockSizeVertical;
+  static double? screenWidth;
+  static double? screenHeight;
+  static double? blockSizeHorizontal;
+  static double? blockSizeVertical;
 
-  static double textScaleFactor;
+  static double? textScaleFactor;
 
-  static Orientation currentOrientation;
-  static DeviceScreenType currentDeviceScreenType;
+  static Orientation? currentOrientation;
+  static DeviceScreenType? currentDeviceScreenType;
 
   static void init(BuildContext context) {
     MediaQueryData mediaQuery = MediaQuery.of(context);
     screenWidth = mediaQuery.size.width;
     screenHeight = mediaQuery.size.height;
-    blockSizeHorizontal = screenWidth / 100;
-    blockSizeVertical = screenHeight / 100;
+    blockSizeHorizontal = screenWidth! / 100;
+    blockSizeVertical = screenHeight! / 100;
 
     textScaleFactor = mediaQuery.textScaleFactor;
 

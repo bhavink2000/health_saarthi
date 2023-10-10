@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../../../../../App Helper/Backend Helper/Providers/Home Menu Provider/ho
 import '../../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 
 class HomeOffers extends StatefulWidget {
-  const HomeOffers({Key key}) : super(key: key);
+  const HomeOffers({Key? key}) : super(key: key);
 
   @override
   State<HomeOffers> createState() => _HomeOffersState();
@@ -39,14 +38,14 @@ class _HomeOffersState extends State<HomeOffers> {
       create: (BuildContext context)=> homeMenusProvider,
       child: Consumer<HomeMenusProvider>(
         builder: (context, value, __){
-          switch(value.todayDealList.status){
+          switch(value.todayDealList.status!){
             case Status.loading:
               return const CenterLoading();
             case Status.error:
               print("offers status.error ->${value.todayDealList.message}----------");
               return value.todayDealList.message == 'Internet connection problem' ? CenterLoading() :Center(child: Text("${value.todayDealList.message}"));
             case Status.completed:
-              return value.todayDealList.data.todayData.isEmpty ? Container() : Container(
+              return value.todayDealList.data!.todayData!.isEmpty ? Container() : Container(
                 width: MediaQuery.of(context).size.width.w,
                 height: MediaQuery.of(context).size.height / 7.4.h,
                 color: Colors.grey.withOpacity(0.3),
@@ -63,9 +62,9 @@ class _HomeOffersState extends State<HomeOffers> {
                       child: ListView.builder(
                         physics: const BouncingScrollPhysics(),
                         scrollDirection: Axis.horizontal,
-                        itemCount: value.todayDealList.data.todayData.length,
+                        itemCount: value.todayDealList.data!.todayData!.length,
                         itemBuilder: (context, index){
-                          var todayDeal = value.todayDealList.data.todayData[index];
+                          var todayDeal = value.todayDealList.data!.todayData![index];
                           return Padding(
                             padding: EdgeInsets.fromLTRB(5.w, 7.h, 5.w, 5.h),
                             child: InkWell(

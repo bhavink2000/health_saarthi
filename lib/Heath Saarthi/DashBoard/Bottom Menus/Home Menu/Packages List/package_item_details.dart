@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dar
 
 class PackageItemDetails extends StatefulWidget {
   var packageId,accessToken;
-  PackageItemDetails({Key key,this.packageId,this.accessToken}) : super(key: key);
+  PackageItemDetails({Key? key,this.packageId,this.accessToken}) : super(key: key);
 
   @override
   State<PackageItemDetails> createState() => _PackageItemDetailsState();
@@ -27,7 +26,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
   }
 
   List<dynamic> packageDetailsData = [];
-  bool isLoading;
+  bool? isLoading;
   Future<void> packageById() async {
     setState(() {
       isLoading = true;

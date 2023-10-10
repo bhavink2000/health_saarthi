@@ -1,14 +1,16 @@
 class QRCodeModel {
-  dynamic status;
+  int? status;
   String? massage;
   Data? data;
+  String? pdf;
 
-  QRCodeModel({this.status, this.massage, this.data});
+  QRCodeModel({this.status, this.massage, this.data, this.pdf});
 
   QRCodeModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     massage = json['massage'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    pdf = json['pdf'];
   }
 
   Map<String, dynamic> toJson() {
@@ -18,6 +20,7 @@ class QRCodeModel {
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
+    data['pdf'] = this.pdf;
     return data;
   }
 }
@@ -25,7 +28,7 @@ class QRCodeModel {
 class Data {
   int? id;
   dynamic parentId;
-  int? b2bSubadminId;
+  dynamic b2bSubadminId;
   int? salesExecutiveAdminId;
   int? pharmacyCode;
   dynamic msdCode;
@@ -50,13 +53,16 @@ class Data {
   String? aadharFront;
   String? aadharBack;
   String? chequeImage;
-  String? gstNumber;
+  dynamic gstNumber;
   dynamic gstImage;
   String? bankName;
+  dynamic beneficiaryName;
   String? ifsc;
   String? accountNumber;
   String? qrcodeImage;
+  dynamic orCodePdf;
   dynamic message;
+  int? isOldPharmacy;
   int? status;
   String? createdAt;
   String? updatedAt;
@@ -110,10 +116,13 @@ class Data {
         this.gstNumber,
         this.gstImage,
         this.bankName,
+        this.beneficiaryName,
         this.ifsc,
         this.accountNumber,
         this.qrcodeImage,
+        this.orCodePdf,
         this.message,
+        this.isOldPharmacy,
         this.status,
         this.createdAt,
         this.updatedAt,
@@ -167,10 +176,13 @@ class Data {
     gstNumber = json['gst_number'];
     gstImage = json['gst_image'];
     bankName = json['bank_name'];
+    beneficiaryName = json['beneficiary_name'];
     ifsc = json['ifsc'];
     accountNumber = json['account_number'];
     qrcodeImage = json['qrcode_image'];
+    orCodePdf = json['or_code_pdf'];
     message = json['message'];
+    isOldPharmacy = json['is_old_pharmacy'];
     status = json['status'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -226,10 +238,13 @@ class Data {
     data['gst_number'] = this.gstNumber;
     data['gst_image'] = this.gstImage;
     data['bank_name'] = this.bankName;
+    data['beneficiary_name'] = this.beneficiaryName;
     data['ifsc'] = this.ifsc;
     data['account_number'] = this.accountNumber;
     data['qrcode_image'] = this.qrcodeImage;
+    data['or_code_pdf'] = this.orCodePdf;
     data['message'] = this.message;
+    data['is_old_pharmacy'] = this.isOldPharmacy;
     data['status'] = this.status;
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;

@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
@@ -21,16 +20,16 @@ import '../../Bottom Menus/Home Menu/Test List/test_list_items.dart';
 import '../../Add To Cart/test_form_booking.dart';
 
 class BookTestScreen extends StatefulWidget {
-  const BookTestScreen({Key key}) : super(key: key);
+  const BookTestScreen({Key? key}) : super(key: key);
 
   @override
   State<BookTestScreen> createState() => _BookTestScreenState();
 }
 
 class _BookTestScreenState extends State<BookTestScreen> {
-  File fileManger;
+  File? fileManger;
   GetAccessToken getAccessToken = GetAccessToken();
-  bool isLoading;
+  bool? isLoading;
   @override
   void initState() {
     super.initState();

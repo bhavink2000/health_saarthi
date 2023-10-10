@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:dropdown_search/dropdown_search.dart';
@@ -29,7 +28,7 @@ import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart
 import 'thank_you_msg.dart';
 
 class TestMenu extends StatefulWidget {
-  const TestMenu({Key key}) : super(key: key);
+  const TestMenu({Key? key}) : super(key: key);
 
   @override
   State<TestMenu> createState() => _TestMenuState();
@@ -43,7 +42,7 @@ class _TestMenuState extends State<TestMenu> {
   final colletionDate = TextEditingController();
   final remark = TextEditingController();
 
-  String selectedGender;
+  String? selectedGender;
   final pAge = TextEditingController();
   final pDob = TextEditingController();
   final pName = TextEditingController();
@@ -85,13 +84,7 @@ class _TestMenuState extends State<TestMenu> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  void resetCityAndAreaSelection() {
-    setState(() {
-      selectedCity = null;
-      selectedArea = null;
-    });
-    fetchStateList();
-  }
+
   var userStatus;
   void getUserStatus()async{
     try{
@@ -168,18 +161,18 @@ class _TestMenuState extends State<TestMenu> {
                           controller: pMobile, // Assign the controller
                         ),
                         suggestionsCallback: (pattern) async {
-                          return mobileList.where((item) => item.mobileNo.toLowerCase().contains(pattern.toLowerCase()));
+                          return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
                         },
                         itemBuilder: (context, MobileData suggestion) {
                           return ListTile(
-                            title: Text(suggestion.mobileNo),
+                            title: Text(suggestion.mobileNo!),
                           );
                         },
                         onSuggestionSelected: (MobileData suggestion) {
                           setState(() {
-                            selectedMobileNo = suggestion.encPharmacyPatientId;
+                            selectedMobileNo = suggestion.encPharmacyPatientId!;
                             getPatient(selectedMobileNo);
-                            pMobile.text = suggestion.mobileNo; // Assign the selected mobile number to the controller's text property
+                            pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
                           });
                         },
                         validator: (value) {
@@ -188,7 +181,7 @@ class _TestMenuState extends State<TestMenu> {
                           }
                           return null;
                         },
-                        onSaved: (value) => this.selectedMobileNo = value,
+                        onSaved: (value) => this.selectedMobileNo = value!,
                       )
                   ),
                 ),
@@ -411,14 +404,25 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                         ),
                         DropdownSearch<String>(
-                          mode: Mode.DIALOG,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          showSearchBox: true,
-                          showSelectedItem: true,
-                          items: stateList.where((state) => state.stateName != null).map((state) => state.stateName).toList(),
-                          label: "Select state *",
+                          popupProps: const PopupProps.dialog(
+                            showSelectedItems: true,
+                            showSearchBox: true,
+                          ),
+                          items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                          dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              labelText: "Select state *",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                            ),
+                          ),
                           onChanged: (newValue) {
-                            final selectedStateObject = stateList.firstWhere((state) => state.stateName == newValue, orElse: () => null);
+                            final selectedStateObject = stateList.firstWhere(
+                                  (state) => state!.stateName == newValue,
+                              orElse: () => StateData(),
+                            );
                             if (selectedStateObject != null) {
                               setState(() {
                                 cityList.clear();
@@ -440,7 +444,7 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -461,14 +465,25 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                         ),
                         DropdownSearch<String>(
-                          mode: Mode.DIALOG,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          showSearchBox: true,
-                          showSelectedItem: true,
-                          items: cityList.where((city) => city.cityName != null).map((city) => city.cityName).toList(),
-                          label: "Select city *",
+                          popupProps: const PopupProps.dialog(
+                            showSelectedItems: true,
+                            showSearchBox: true,
+                          ),
+                          items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                          dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              labelText: "Select city *",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                            ),
+                          ),
                           onChanged: (newValue) {
-                            final selectedCityObject = cityList.firstWhere((city) => city.cityName == newValue, orElse: () => null);
+                            final selectedCityObject = cityList.firstWhere(
+                                  (city) => city!.cityName == newValue,
+                              orElse: () => CityData(), // Return an empty instance of StateData
+                            );
                             if (selectedCityObject != null) {
                               setState(() {
                                 selectedCity = '';
@@ -478,6 +493,7 @@ class _TestMenuState extends State<TestMenu> {
                                 selectedBranch = '';
                                 selectedCity = newValue;
                                 selectedCityId = selectedCityObject.id.toString();
+                                //fetchBranchList(selectedStateId, selectedCityId, '');
                               });
                               fetchAreaList(selectedStateId, selectedCityId);
                             }
@@ -489,7 +505,8 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                        ),
+                        )
+
                       ],
                     ),
                   ),
@@ -511,14 +528,25 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                         ),
                         DropdownSearch<String>(
-                          mode: Mode.DIALOG,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          showSearchBox: true,
-                          showSelectedItem: true,
-                          items: areaList?.map((area) => area.areaName)?.toList() ?? [],
-                          label: "Select area *",
+                          popupProps: const PopupProps.dialog(
+                            showSelectedItems: true,
+                            showSearchBox: true,
+                          ),
+                          items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                          dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              labelText: "Select area *",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                            ),
+                          ),
                           onChanged: (newValue) {
-                            final selectedAreaObject = areaList.firstWhere((area) => area.areaName  == newValue, orElse: () => null);
+                            final selectedAreaObject = areaList.firstWhere(
+                                  (area) => area!.areaName == newValue,
+                              orElse: () => AreaData(), // Return an empty instance of StateData
+                            );
                             if (selectedAreaObject != null) {
                               setState(() {
                                 branchList.clear();
@@ -536,7 +564,7 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -558,14 +586,25 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                         ),
                         DropdownSearch<String>(
-                          mode: Mode.DIALOG,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          showSearchBox: true,
-                          showSelectedItem: true,
-                          items: branchList?.map((branch) => branch.branchName)?.toList() ?? [],
-                          label: "Select branch *",
+                          popupProps: const PopupProps.dialog(
+                            showSelectedItems: true,
+                            showSearchBox: true,
+                          ),
+                          items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                          dropdownDecoratorProps: DropDownDecoratorProps(
+                            dropdownSearchDecoration: InputDecoration(
+                              labelText: "Select branch *",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                              ),
+                            ),
+                          ),
                           onChanged: (newValue) {
-                            final selectedBranchObject = branchList.firstWhere((branch) => branch.branchName  == newValue, orElse: () => null);
+                            final selectedBranchObject = branchList.firstWhere(
+                                  (branch) => branch!.branchName == newValue,
+                              orElse: () => BranchData(), // Return an empty instance of StateData
+                            );
                             if (selectedBranchObject != null) {
                               setState(() {
                                 selectedBranch = newValue;
@@ -580,7 +619,7 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -620,7 +659,7 @@ class _TestMenuState extends State<TestMenu> {
                     //   return null;
                     // },
                     onTap: () async {
-                      DateTime pickedDate = await showDatePicker(
+                      DateTime? pickedDate = await showDatePicker(
                         context: context,
                         initialDate: DateTime.now(),
                         firstDate: DateTime.now(),
@@ -827,7 +866,7 @@ class _TestMenuState extends State<TestMenu> {
     );
   }
   List<MobileData> mobileList = [];
-  String selectedMobileNo;
+  String? selectedMobileNo;
   Future<void> fetchMobileList() async {
     try {
       CartFuture cartFuture = CartFuture();
@@ -843,21 +882,21 @@ class _TestMenuState extends State<TestMenu> {
   void getPatient(var patientId) async {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
-      pharmacyId = pModel.patientData.pharmacyId.toString();
-      pName.text = pModel.patientData.name.toString();
-      pDob.text = pModel.patientData.dateOfBirth.toString();
-      pAge.text = pModel.patientData.age.toString();
-      pMobile.text = pModel.patientData.mobileNo.toString();
-      emailId.text = pModel.patientData.emailId.toString();
-      address.text = pModel.patientData.address.toString();
-      selectedGender = pModel.patientData.gender.toString() == '1' ? 'Male' : pModel.patientData.gender.toString() == '2' ? 'Female' : 'Other';
-      selectedState = pModel.patientData.state.stateName.toString();
-      selectedCity = pModel.patientData.city.cityName.toString();
-      selectedArea = pModel.patientData.area.areaName.toString();
-      selectedStateId = pModel.patientData.state.id.toString();
-      selectedCityId = pModel.patientData.city.id.toString();
-      selectedAreaId = pModel.patientData.area.id.toString();
-      pinCode.text = pModel.patientData.pincode.toString();
+      pharmacyId = pModel.patientData!.pharmacyId.toString();
+      pName.text = pModel.patientData!.name.toString();
+      pDob.text = pModel.patientData!.dateOfBirth.toString();
+      pAge.text = pModel.patientData!.age.toString();
+      pMobile.text = pModel.patientData!.mobileNo.toString();
+      emailId.text = pModel.patientData!.emailId.toString();
+      address.text = pModel.patientData!.address.toString();
+      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+      selectedState = pModel.patientData!.state!.stateName.toString();
+      selectedCity = pModel.patientData!.city!.cityName.toString();
+      selectedArea = pModel.patientData!.area!.areaName.toString();
+      selectedStateId = pModel.patientData!.state!.id.toString();
+      selectedCityId = pModel.patientData!.city!.id.toString();
+      selectedAreaId = pModel.patientData!.area!.id.toString();
+      pinCode.text = pModel.patientData!.pincode.toString();
     } catch (e) {
       print('Error: $e');
     }
@@ -879,9 +918,9 @@ class _TestMenuState extends State<TestMenu> {
       },
     );
   }
-  List<StateData> stateList = [];
-  String selectedState;
-  String selectedStateId;
+  List<StateData?> stateList = [];
+  String? selectedState;
+  String? selectedStateId;
   Future<void> fetchStateList() async {
     //_showLoadingDialog(context);
     setState(() {
@@ -901,9 +940,9 @@ class _TestMenuState extends State<TestMenu> {
     }
   }
 
-  List<CityData> cityList = [];
-  String selectedCity;
-  String selectedCityId;
+  List<CityData?> cityList = [];
+  String? selectedCity;
+  String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -923,9 +962,9 @@ class _TestMenuState extends State<TestMenu> {
     }
   }
 
-  List<AreaData> areaList = [];
-  String selectedArea;
-  String selectedAreaId;
+  List<AreaData?> areaList = [];
+  String? selectedArea;
+  String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -945,9 +984,9 @@ class _TestMenuState extends State<TestMenu> {
     }
   }
 
-  List<BranchData> branchList = [];
-  String selectedBranch;
-  String selectedBranchId;
+  List<BranchData?> branchList = [];
+  String? selectedBranch;
+  String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
     //_showLoadingDialog(context);
     setState(() {
@@ -967,7 +1006,7 @@ class _TestMenuState extends State<TestMenu> {
     }
   }
 
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String) validator) {
+  Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: TextFormField(

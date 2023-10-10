@@ -1,5 +1,3 @@
-//@dart=2.9
-// ignore_for_file: import_of_legacy_library_into_null_safe, non_constant_identifier_names
 
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Authentication%20Models/login_model.dart';

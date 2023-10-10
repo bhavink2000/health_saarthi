@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
@@ -10,19 +9,19 @@ import 'Login Widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
   var screenH,deviceToken,deviceType;
-  LoginScreen({Key key,this.screenH,this.deviceToken,this.deviceType}) : super(key: key);
+  LoginScreen({Key? key,this.screenH,this.deviceToken,this.deviceType}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin{
-  AnimationController _animationController;
-  Animation<double> _headerTextAnimation;
-  Animation<double> _formElementAnimation;
-  Animation<double> _whiteTopClipperAnimation;
-  Animation<double> _blueTopClipperAnimation;
-  Animation<double> _greyTopClipperAnimation;
+  AnimationController? _animationController;
+  late Animation<double> _headerTextAnimation;
+  late Animation<double> _formElementAnimation;
+  late Animation<double> _whiteTopClipperAnimation;
+  late Animation<double> _blueTopClipperAnimation;
+  late Animation<double> _greyTopClipperAnimation;
 
   @override
   void initState() {
@@ -34,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
 
     final fadeSlideTween = Tween<double>(begin: 0.0, end: 1.0);
     _headerTextAnimation = fadeSlideTween.animate(CurvedAnimation(
-      parent: _animationController,
+      parent: _animationController!,
       curve: const Interval(
         0.0,
         0.6,
@@ -42,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       ),
     ));
     _formElementAnimation = fadeSlideTween.animate(CurvedAnimation(
-      parent: _animationController,
+      parent: _animationController!,
       curve: const Interval(
         0.7,
         1.0,
@@ -57,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
     _blueTopClipperAnimation = clipperOffsetTween.animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _animationController!,
         curve: const Interval(
           0.2,
           0.7,
@@ -67,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
     _greyTopClipperAnimation = clipperOffsetTween.animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _animationController!,
         curve: const Interval(
           0.35,
           0.7,
@@ -77,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     );
     _whiteTopClipperAnimation = clipperOffsetTween.animate(
       CurvedAnimation(
-        parent: _animationController,
+        parent: _animationController!,
         curve: const Interval(
           0.5,
           0.7,
@@ -85,12 +84,12 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         ),
       ),
     );
-    _animationController.forward();
+    _animationController!.forward();
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController!.dispose();
     super.dispose();
   }
 
@@ -103,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         children: <Widget>[
           AnimatedBuilder(
             animation: _whiteTopClipperAnimation,
-            builder: (_, Widget child) {
+            builder: (_, Widget? child) {
               return ClipPath(
                 clipper: WhiteTopClipper(
                   yOffset: _whiteTopClipperAnimation.value,
@@ -115,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ),
           AnimatedBuilder(
             animation: _greyTopClipperAnimation,
-            builder: (_, Widget child) {
+            builder: (_, Widget? child) {
               return ClipPath(
                 clipper: GreyTopClipper(
                   yOffset: _greyTopClipperAnimation.value,
@@ -127,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           ),
           AnimatedBuilder(
             animation: _blueTopClipperAnimation,
-            builder: (_, Widget child) {
+            builder: (_, Widget? child) {
               return ClipPath(
                 clipper: BlueTopClipper(
                   yOffset: _blueTopClipperAnimation.value,

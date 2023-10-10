@@ -34,7 +34,7 @@ class UpdateAppDialog{
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 150,)),
+                        const Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 150,)),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         const Text(
                           "About update?",
@@ -43,7 +43,7 @@ class UpdateAppDialog{
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5,),
+                        const SizedBox(height: 5,),
                         Text(
                           "$updateMsg Version $appVersion is now available - \nYour current app version 1.0",
                           style: const TextStyle(
@@ -73,14 +73,14 @@ class UpdateAppDialog{
                                       context: context,
                                       builder: (BuildContext context) {
                                         return AlertDialog(
-                                          title: Text("Please Wait",style: TextStyle(fontFamily: FontType.MontserratMedium, fontWeight: FontWeight.bold)),
-                                          content: Text("A download is already in progress. Please wait.",style: TextStyle(fontFamily: FontType.MontserratLight)),
+                                          title: const Text("Please Wait",style: TextStyle(fontFamily: FontType.MontserratMedium, fontWeight: FontWeight.bold)),
+                                          content: const Text("A download is already in progress. Please wait.",style: TextStyle(fontFamily: FontType.MontserratLight)),
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text("OK"),
+                                              child: const Text("OK"),
                                             ),
                                           ],
                                         );
@@ -118,7 +118,7 @@ class UpdateAppDialog{
                           ],
                         ),
                         showLoading == true ? Text("Downloading : $downloadProgress",textAlign: TextAlign.right,) : Container(),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -143,7 +143,7 @@ class UpdateAppDialog{
             title: const Text("Download Complete",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold)),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
             //content: const Text("Download is complete. You can now install the update from the file location.\nDownloaded file :-/storage/emulated/0/Download",style: TextStyle(fontFamily: FontType.MontserratLight)),
-            content: Column(
+            content: const Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,9 +1,8 @@
-//@dart=2.9
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 
 class LoadingLogin extends StatelessWidget {
-  const LoadingLogin({Key key}) : super(key: key);
+  const LoadingLogin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class LoadingLogin extends StatelessWidget {
 }
 
 class LoadingOnly extends StatelessWidget {
-  const LoadingOnly({Key key}) : super(key: key);
+  const LoadingOnly({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +44,7 @@ class LoadingOnly extends StatelessWidget {
 }
 
 class CenterLoading extends StatelessWidget {
-  const CenterLoading({Key key}) : super(key: key);
+  const CenterLoading({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

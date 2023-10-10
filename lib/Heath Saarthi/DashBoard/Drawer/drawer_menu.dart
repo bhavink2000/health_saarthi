@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +27,7 @@ import 'Drawer Menus Items/my_profile_screen.dart';
 import 'Drawer Menus Items/my_report_screen.dart';
 
 class DrawerScreen extends StatefulWidget {
-  DrawerScreen({Key key}) : super(key: key);
+  DrawerScreen({Key? key}) : super(key: key);
 
   @override
   _DrawerScreenState createState() => _DrawerScreenState();
@@ -37,7 +36,7 @@ class DrawerScreen extends StatefulWidget {
 class _DrawerScreenState extends State<DrawerScreen> {
 
   GetAccessToken getAccessToken = GetAccessToken();
-  String deviceToken;
+  String? deviceToken;
   @override
   void initState() {
     super.initState();

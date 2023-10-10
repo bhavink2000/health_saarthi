@@ -1,5 +1,3 @@
-//@dart=2.9
-// ignore_for_file: prefer_typing_uninitialized_variables, missing_return, use_build_context_synchronously, unrelated_type_equality_checks
 
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +17,7 @@ import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_paginati
 import '../../../Add To Cart/test_cart.dart';
 
 class TestListItems extends StatefulWidget {
-  TestListItems({Key key}) : super(key: key);
+  TestListItems({Key? key}) : super(key: key);
 
   @override
   State<TestListItems> createState() => _TestListItemsState();
@@ -139,7 +137,7 @@ class _TestListItemsState extends State<TestListItems> {
                   create: (BuildContext context) => homeMenusProvider,
                   child: Consumer<HomeMenusProvider>(
                     builder: (context, value, index){
-                      switch(value.testList.status){
+                      switch(value.testList.status!){
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
@@ -166,9 +164,9 @@ class _TestListItemsState extends State<TestListItems> {
                                   child: AnimationLimiter(
                                       child: ListView.builder(
                                         physics: const BouncingScrollPhysics(),
-                                        itemCount: value.testList.data.testData.data.length,
+                                        itemCount: value.testList.data!.testData!.data!.length,
                                         itemBuilder: (context, index){
-                                          var testI = value.testList.data.testData.data[index];
+                                          var testI = value.testList.data!.testData!.data![index];
                                           return AnimationConfiguration.staggeredList(
                                             position: index,
                                             duration: const Duration(milliseconds: 1000),
@@ -201,7 +199,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                               ),
                                                               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                               child: Text(
-                                                                  testI.serviceName,
+                                                                  testI.serviceName!,
                                                                   style: TextStyle(
                                                                       fontFamily: FontType.MontserratMedium,
                                                                       fontSize: 15.sp,color: Colors.white
@@ -260,14 +258,14 @@ class _TestListItemsState extends State<TestListItems> {
                                                   ),
                                                 ),
 
-                                                if (value.testList.data.testData.data.length == 10 || index + 1 != value.testList.data.testData.data.length)
+                                                if (value.testList.data!.testData!.data!.length == 10 || index + 1 != value.testList.data!.testData!.data!.length)
                                                   Container()
                                                 else
                                                   SizedBox(height: MediaQuery.of(context).size.height / 1.9),
 
-                                                index + 1 == value.testList.data.testData.data.length ? CustomPaginationWidget(
+                                                index + 1 == value.testList.data!.testData!.data!.length ? CustomPaginationWidget(
                                                   currentPage: curentindex,
-                                                  lastPage: homeMenusProvider.testList.data.testData.lastPage,
+                                                  lastPage: homeMenusProvider.testList.data!.testData!.lastPage!,
                                                   onPageChange: (page) {
                                                     setState(() {
                                                       curentindex = page - 1;
@@ -297,7 +295,7 @@ class _TestListItemsState extends State<TestListItems> {
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
                                         child: Text(
-                                            "Total Cart Items [ ${value.testList.data.cartData.count} ]",
+                                            "Total Cart Items [ ${value.testList.data!.cartData!.count} ]",
                                           style: const TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
                                         ),
                                       ),
@@ -310,7 +308,7 @@ class _TestListItemsState extends State<TestListItems> {
                                             child: Row(
                                               children: [
                                                 Text(
-                                                  "\u{20B9}${value.testList.data.cartData.amount}",
+                                                  "\u{20B9}${value.testList.data!.cartData!.amount}",
                                                   style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsTestColor,fontWeight: FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 5.w),

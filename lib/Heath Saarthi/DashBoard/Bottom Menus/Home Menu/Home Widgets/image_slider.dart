@@ -1,4 +1,3 @@
-//@dart=2.9
 // ignore_for_file: missing_return
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -14,7 +13,7 @@ import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_
 import '../Test List/test_list_items.dart';
 
 class HomeImageSlider extends StatefulWidget {
-  const HomeImageSlider({Key key}) : super(key: key);
+  const HomeImageSlider({Key? key}) : super(key: key);
 
   @override
   State<HomeImageSlider> createState() => _HomeImageSliderState();
@@ -41,17 +40,17 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
       create: (BuildContext context)=>homeMenusProvider,
       child: Consumer<HomeMenusProvider>(
         builder: (context, value, __){
-          switch(value.bannerList.status){
+          switch(value.bannerList.status!){
             case Status.loading:
               return const CenterLoading();
             case Status.error:
               print("image slider status.error->${value.bannerList.message}--------------");
               return value.bannerList.message == 'Internet connection problem' ? CenterLoading() : TokenExpiredHelper();
             case Status.completed:
-              return value.bannerList.data.data.isEmpty ? Container() :Container(
+              return value.bannerList.data!.data!.isEmpty ? Container() :Container(
                 width: MediaQuery.of(context).size.width.w,
                 height: MediaQuery.of(context).size.height / 6.h,
-                child: value.bannerList.data.data.isEmpty
+                child: value.bannerList.data!.data!.isEmpty
                   ? const Center(child: Text("No Banner Available",style: TextStyle(fontFamily: FontType.MontserratMedium),),)
                   : CarouselSlider.builder(
                     options: CarouselOptions(
@@ -67,9 +66,9 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
                     enlargeFactor: 0.1,
                     scrollDirection: Axis.horizontal,
                   ),
-                  itemCount: value.bannerList.data.data.length,
+                  itemCount: value.bannerList.data!.data!.length,
                   itemBuilder: (BuildContext context, int itemIndex, int pageViewIndex){
-                    var bannerI = value.bannerList.data.data[itemIndex];
+                    var bannerI = value.bannerList.data!.data![itemIndex];
                     return Container(
                       width: MediaQuery.of(context).size.width.w,
                       height: MediaQuery.of(context).size.height / 7.h,
@@ -77,7 +76,7 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
                           onTap: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                           },
-                          child: Image(image: NetworkImage(bannerI.image),fit: BoxFit.fill,)),
+                          child: Image(image: NetworkImage(bannerI.image!),fit: BoxFit.fill,)),
                     );
                   },
                 ),
