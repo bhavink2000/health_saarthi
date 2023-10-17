@@ -31,7 +31,7 @@ class DeviceInfo{
         body: {
           'device_token': deviceToken ?? '',
           'device_type': dType.toString() ?? '',
-          'app_version': '1.5' ?? '',
+          'app_version': '2.0' ?? '',
         },
       );
       print("Response Status Code -> ${response.statusCode}");

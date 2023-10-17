@@ -40,6 +40,8 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
         Uri.parse("${ApiUrls.packageItemDetailsUrls}${widget.packageId}"),
         headers: headers,
       ).timeout(const Duration(seconds: 30));
+      print('response--->${response.body}');
+      print('response--->${response.statusCode}');
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         setState(() {
@@ -48,10 +50,12 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
         });
         print("booked status->${packageDetailsData[0]['booked_status']}");
       } else {
+        isLoading = false;
         throw Exception("Failed to load data");
       }
     } catch (e) {
       print("e->$e");
+      isLoading = false;
       throw Exception("Failed to load data $e");
     }
   }
@@ -60,7 +64,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: isLoading == false ? Column(
+        child: Column(
           children: [
             Container(
               color: hsTestColor,
@@ -79,7 +83,9 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
                     ),
                     Container(
                         width: MediaQuery.of(context).size.width / 1.5,
-                        child: Text("${packageDetailsData[0]['service_code']}",style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold),textAlign: TextAlign.right,))
+                        child: Text(isLoading == false ? "${packageDetailsData[0]['service_code']}" : '',
+                          style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,color: Colors.white,fontWeight: FontWeight.bold),textAlign: TextAlign.right,)
+                    )
                   ],
                 ),
               ),
@@ -87,7 +93,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: Column(
+                child: isLoading == false ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
@@ -156,11 +162,16 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
                       ),
                     ),
                   ],
+                ) : Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 2),
+                    CenterLoading(),
+                  ],
                 ),
               ),
             )
           ],
-        ) : CenterLoading(),
+        ),
       ),
     );
   }

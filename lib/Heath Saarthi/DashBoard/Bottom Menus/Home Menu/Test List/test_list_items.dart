@@ -227,9 +227,8 @@ class _TestListItemsState extends State<TestListItems> {
                                                                           else{
                                                                             CartFuture().addToCartTest(getAccessToken.access_token, testI.id, context).then((value) {
                                                                               setState(() {
-                                                                                testI.bookedStatus = 1;
+                                                                                homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
                                                                               });
-
                                                                               //homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
                                                                             });
                                                                           }

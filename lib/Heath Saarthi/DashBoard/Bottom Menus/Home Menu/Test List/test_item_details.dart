@@ -48,10 +48,12 @@ class _TestItemDetailsState extends State<TestItemDetails> {
         });
         print("booked status->${testDetailsData[0]['booked_status']}");
       } else {
+        isLoading = false;
         throw Exception("Failed to load data");
       }
     } catch (e) {
       print("e->$e");
+      isLoading = false;
       throw Exception("Failed to load data $e");
     }
   }

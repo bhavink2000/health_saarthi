@@ -1,11 +1,9 @@
 
 class ApiUrls{
-  //static String mainUrls = 'https://healthsaarthi.windzoon.in/api/v1/';
-  //static String mainUrls = 'http://3.6.102.7/api/v1/';
-  //static String mainUrls = 'http://hssawpl.com/api/v1/';
-  static String mainUrls = 'https://hs.windzoon.in/api/v1/';
 
-  //static String apkDownloadUrl = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
+  static String mainUrls = 'https://hssawpl.com/api/v1/'; // live url (2.0 live on 11-10-2023)
+  //static String mainUrls = 'https://hs.windzoon.in/api/v1/'; //demo url
+
 
   static String loginUrl = '${mainUrls}pharmacy/login';
   static String logoutUrl = '${mainUrls}pharmacy/logout';

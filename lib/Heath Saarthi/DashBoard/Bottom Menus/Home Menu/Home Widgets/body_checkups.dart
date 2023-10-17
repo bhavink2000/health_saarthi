@@ -144,6 +144,8 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                   ),
                                   InkWell(
                                       onTap: (){
+                                        print('id ->${popularPackage[index]['test_management']['id']}');
+                                        print('access ->${getAccessToken.access_token}');
                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
                                           packageId: popularPackage[index]['test_management']['id'],
                                           accessToken: getAccessToken.access_token,

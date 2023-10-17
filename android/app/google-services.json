@@ -29,6 +29,13 @@
             {
               "client_id": "617563943499-e62jdoa57gvfb8948e3ag0fg3m1cddr1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "617563943499-tccqithvo2k5gq8m715449dvi2ioh9vm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.healthSaarthi.hs"
+              }
             }
           ]
         }
