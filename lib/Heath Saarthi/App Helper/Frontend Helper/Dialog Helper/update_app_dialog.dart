@@ -59,7 +59,7 @@ class UpdateAppDialog{
                                 fontWeight: FontWeight.bold
                             )),
                         const SizedBox(height: 5),
-                        const Text("Add popular package and \nMake app smooth",
+                        const Text("QR Code Pdf Download, \nAdd Prescription in cart",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         Row(

@@ -13,15 +13,12 @@ class ProfileFuture{
       Uri.parse(ApiUrls.profileUrls),
       headers: headers,
     );
-    print("Profile Response->${response.body}");
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
       if(jsonResponse['status'] == '402'){
-        print("in if with status code ->${jsonResponse['status']}");
         throw Exception(jsonResponse);
       }
       else{
-        print("in else with status code ->${jsonResponse['status']}");
         return ProfileModel.fromJson(jsonResponse);
       }
     } else {

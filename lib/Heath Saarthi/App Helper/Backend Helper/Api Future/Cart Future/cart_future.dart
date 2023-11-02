@@ -97,7 +97,6 @@ class CartFuture{
         final data = json.decode(response.body);
         MobileNumberModel mobileNumberModel = MobileNumberModel.fromJson(data);
         List<MobileData>? mobileNumberList = mobileNumberModel.mobileData;
-        print("MobileData -> $mobileNumberList");
         return mobileNumberList ?? [];
       } else {
         throw Exception('Failed to fetch state list');

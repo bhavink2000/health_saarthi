@@ -46,12 +46,10 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       ).timeout(Duration(seconds: 30));
       responseJson = returnResponse(response);
     }on SocketException{
-      print("in after get api socketMessage");
       throw FetchDataException(message: "");
     }
     catch(e){
-      print("after Get Api Response catch e->$e");
-      //return e.toString();
+      return e.toString();
     }
     return responseJson;
   }
@@ -70,10 +68,9 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
       );
       responseJson = returnResponse(response);
     } on SocketException {
-      print("in after post response -> socketException");
       throw FetchDataException(message: "");
     }catch(e){
-      print("after Post Api Response catch e->$e");
+      return e;
     }
     return responseJson;
   }

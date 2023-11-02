@@ -50,19 +50,10 @@ class AuthProvider with ChangeNotifier{
         //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HSDashboard()), (Route<dynamic> route) => false);
       }
     }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-      print("cathcStackTrace -> $stackTrace");
-
       try {
         var errorString = error.toString();
-        print("errorString -> $errorString");
-
         var jsonStartIndex = errorString.indexOf('{');
-        print("jsonStartIndex -> $jsonStartIndex");
-
         var jsonEndIndex = errorString.lastIndexOf('}');
-        print("jsonEndIndex -> $jsonEndIndex");
-
         var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
         print("jsonString -> $jsonString");
 
@@ -79,13 +70,13 @@ class AuthProvider with ChangeNotifier{
           var passwordError = errorObject['password'] != null ? errorObject['password'][0] : null;
 
           if (errorMessage != null) {
-            print("in errorMessage if");
+
             GetXSnackBarMsg.getWarningMsg('$errorMessage');
           } else if (mobileError != null) {
-            print("in mobileError if");
+
             GetXSnackBarMsg.getWarningMsg('$mobileError');
           } else if (passwordError != null) {
-            print("in passwordError if");
+
             GetXSnackBarMsg.getWarningMsg('$passwordError');
           } else {
             print("in else");

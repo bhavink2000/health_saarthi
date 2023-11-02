@@ -18,6 +18,8 @@ Color hsOne = const Color(0xff7c54a4);
 Color hsTwo = const Color(0xff7c54a4);
 Color hsThree = const Color(0xff7c54a4);
 
+Color qrCodeColor = Color(0xffd5ecfa);
+
 
 class FontType{
   static const String MontserratExtra = "Montserrat-Extra";

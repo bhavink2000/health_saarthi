@@ -74,7 +74,7 @@ dependencies:
 
   # firebase and local notification
   flutter_local_notifications: ^15.1.0+1
-  firebase_messaging:
+  firebase_messaging: ^14.7.3
   firebase_core: ^2.15.1
   firebase_core_platform_interface:
 
@@ -114,6 +114,7 @@ flutter:
     - assets/
     - assets/Gif/
     - assets/Home/
+    - assets/Drawer/
 
   fonts:
     - family: Montserrat-Extra

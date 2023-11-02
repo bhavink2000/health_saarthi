@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,13 +36,12 @@ class MyHttpOverrides extends HttpOverrides{
   }
 }
 
-
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async{
+  log('----- >>>> ${message.data}');
+  log(message.data['title']);
+  log(message.data['message']);
   await Firebase.initializeApp();
-  print(message.notification!.title.toString());
-  print(message.data['title']);
-  print(message.data['message']);
 }
 
 
@@ -55,9 +55,11 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   String? fcmToken;
-  AndroidNotificationChannel? channel;
+  late AndroidNotificationChannel channel;
   bool isFlutterLocalNotificationsInitialized = false;
-  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+
+
   NotificationService notificationService = NotificationService();
 
   @override
@@ -89,31 +91,29 @@ class _MyAppState extends State<MyApp> {
     RemoteNotification? notification = message.notification;
 
     AndroidNotification? android = message.notification?.android;  // IOS will show notification normaly for android need to do it manualy
-    if (message.data != null) {
-      print("in if done");
-      print("title->${message.data['title']}\nmessage->${message.data['message']}");
-      Future.delayed(const Duration(milliseconds: 300), () {
-        print("in delayed");
-        flutterLocalNotificationsPlugin!.cancelAll();
-        flutterLocalNotificationsPlugin!.show(
-            message.hashCode,
-            //notification.title,
-            //notification.body,
-            message.data['title'],
-            message.data['message'],
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                  channel!.id, channel!.name,
-                  channelDescription: channel!.description,
-                  largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-              ),
+    print("in if done");
+    print("title->${message.data['title']}\nmessage->${message.data['message']}");
+    Future.delayed(const Duration(milliseconds: 300), () {
+      print("in delayed");
+      flutterLocalNotificationsPlugin.cancelAll();
+      flutterLocalNotificationsPlugin.show(
+          message.hashCode,
+          //notification.title,
+          //notification.body,
+          message.data['title'],
+          message.data['message'],
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+                channel.id, channel.name,
+                channelDescription: channel.description,
+                largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
             ),
-            payload: jsonEncode(message.data).replaceAll("/", "")); // handel infromation from noticication
-      });
-    }
-    print('Handling a background message ${jsonEncode(message.data)}');
+          ),
+          payload: jsonEncode(message.data).replaceAll("/", "")); // handel infromation from noticication
+    });
+      print('Handling a background message ${jsonEncode(message.data)}');
   }
 
   Future<void> setupFlutterNotifications() async {// Local Notification setup
@@ -134,24 +134,24 @@ class _MyAppState extends State<MyApp> {
     ///
     /// We use this channel in the `AndroidManifest.xml` file to override the
     /// default FCM channel to enable heads up notifications.
-    await flutterLocalNotificationsPlugin!.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel!);
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
     const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) {});
     final LinuxInitializationSettings initializationSettingsLinux = const LinuxInitializationSettings(defaultActionName: 'Open notification');
     final InitializationSettings initializationSettings =
     InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin, linux: initializationSettingsLinux);
-    await flutterLocalNotificationsPlugin!.initialize(
+    await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse payload) async {
         handelAndroidNotification(payload.payload!);
       },
     );
 
-    flutterLocalNotificationsPlugin!.getNotificationAppLaunchDetails().then((value) {
+    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((value) {
       if (value!.didNotificationLaunchApp) {
         if (value.notificationResponse != null) {
           handelAndroidNotification(value.notificationResponse!.payload!);
-          flutterLocalNotificationsPlugin!.cancel(value.notificationResponse!.id!);
+          flutterLocalNotificationsPlugin.cancel(value.notificationResponse!.id!);
         }
       }
     });
@@ -170,11 +170,9 @@ class _MyAppState extends State<MyApp> {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');
 
-      if (message.data != null) {
-        print('Message also contained a notification: ${message.data}');
-        showFlutterNotification(message);
-      }
-    });
+      print('Message also contained a notification: ${message.data}');
+      showFlutterNotification(message);
+        });
 
     FirebaseMessaging.onMessageOpenedApp.listen((event) {
       onNotificationTap(event);// onClick Events
@@ -198,30 +196,29 @@ class _MyAppState extends State<MyApp> {
       RemoteNotification? notification = message.notification;
 
       AndroidNotification? android = message.notification?.android;
-      if (message.data != null) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          flutterLocalNotificationsPlugin!.show(
-              message.hashCode,
-              //notification.title,
-              //notification.body,
-              message.data['title'],
-              message.data['message'],
+      Future.delayed(const Duration(milliseconds: 300), () {
+        flutterLocalNotificationsPlugin.show(
+            message.hashCode,
+            //notification.title,
+            //notification.body,
+            message.data['title'],
+            message.data['message'],
 
-              NotificationDetails(
-                android: AndroidNotificationDetails(
-                  channel!.id, channel!.name,
-                  channelDescription: channel!.description,
-                  largeIcon: const DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
-                  // TODO add a proper drawable resource to android, for now using
-                  //      one that already exists in example app.
-                ),
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel.id, channel.name,
+                channelDescription: channel.description,
+                largeIcon: const DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
+                // TODO add a proper drawable resource to android, for now using
+                //      one that already exists in example app.
               ),
-              payload: jsonEncode(message.data).replaceAll("/", ""));
-        });
-      }
-      print('Handling a background message ${jsonEncode(message.data)}');
+            ),
+            payload: jsonEncode(message.data).replaceAll("/", ""));
+      });
+          print('Handling a background message ${jsonEncode(message.data)}');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

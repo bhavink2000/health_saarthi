@@ -76,13 +76,13 @@ class _PackageListItemsState extends State<PackageListItems> {
                             onTap: (){
                               //Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestBookingDetails()));
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                            },child: Icon(Icons.shopping_cart_rounded,color: hsPackageColor,size: 24)
+                            },child: Icon(Icons.shopping_cart_outlined,color: hsPackageColor,size: 24)
                           ),
                           SizedBox(width: 10.w),
                           InkWell(
                             onTap: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                            },child: Icon(Icons.circle_notifications_rounded,color: hsPackageColor,size: 30)
+                            },child: Icon(Icons.circle_notifications_rounded,color: hsPackageColor,size: 24)
                           ),
                         ],
                       )
@@ -152,9 +152,9 @@ class _PackageListItemsState extends State<PackageListItems> {
                           print("status.error package status-->>${value.packageList.status}-----------------");
                           return value.packageList.status == '402'
                               ? TokenExpiredHelper(tokenMsg: "${value.packageList.message}")
-                              : value.packageList.message == 'Internet connection problem' ?  CenterLoading() : value.packageList.data == []
+                              : value.packageList.message == 'Internet connection problem' ?  const CenterLoading() : value.packageList.data == []
                               ? Container()
-                              : Center(
+                              : const Center(
                               child: Text(
                                   "Package Not found your branch",
                                   style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16

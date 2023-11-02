@@ -205,7 +205,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                       const SizedBox(height: 5),
                                       showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
                                       const SizedBox(height: 5),
-                                      showRowContent('Date', '${bookingH.pharmacyPatient!.createAt}'),
+                                      showRowContent('Date', '${bookingH.createAt}'),
                                       const SizedBox(height: 5),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

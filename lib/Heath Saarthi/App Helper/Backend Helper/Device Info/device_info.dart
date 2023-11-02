@@ -16,6 +16,7 @@ class DeviceInfo{
     print("------------------------");
     print("Device token-->$deviceToken");
     print("Device type-->$deviceType");
+
     print("------------------------");
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -31,14 +32,13 @@ class DeviceInfo{
         body: {
           'device_token': deviceToken ?? '',
           'device_type': dType.toString() ?? '',
-          'app_version': '2.0' ?? '',
+          'app_version': '2.02' ?? '',
         },
       );
       print("Response Status Code -> ${response.statusCode}");
       print("Device Token Response -> ${response.body}");
 
       if (response.statusCode == 200) {
-        print("in if");
         return response.body;
       }else if(response.statusCode == 201){
         return response.body;
@@ -52,7 +52,6 @@ class DeviceInfo{
   }
 
   Future<String> deleteDeviceToken(BuildContext context, deviceToken,accessToken) async {
-    print("Delete Device Token->$deviceToken");
 
     var returnMessage;
     Completer<String> completer = Completer<String>();

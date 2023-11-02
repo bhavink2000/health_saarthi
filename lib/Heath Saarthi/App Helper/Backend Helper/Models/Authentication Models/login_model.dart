@@ -68,7 +68,7 @@ class Data {
   String? accountNumber;
   dynamic message;
   int? status;
-  dynamic? deletedAt;
+  dynamic deletedAt;
   String? createAt;
   String? updateAt;
   String? encPharmacyId;

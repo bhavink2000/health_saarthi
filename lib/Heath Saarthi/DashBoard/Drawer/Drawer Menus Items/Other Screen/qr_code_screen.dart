@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
@@ -116,39 +116,125 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                             : Column(
                                 children: [
                                   const SizedBox(height: 15,),
-                                  Stack(
-                                    alignment:  Alignment.topCenter,
-                                    children: [
-                                      Container(
-                                          width: MediaQuery.of(context).size.width / 1.2,
-                                          height: MediaQuery.of(context).size.height / 1.3,
-                                          decoration: BoxDecoration(border: Border.all(color: Colors.black,width: 5)),
-                                          //padding: EdgeInsets.fromLTRB(15, 5, 15, 5),
-                                          margin: const EdgeInsets.fromLTRB(15, 12, 15, 5),
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              const Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 300,),
-                                              Text('${qrCodeModel!.data!.name}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
-                                              Text('${qrCodeModel!.data!.mobile}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
-                                              const Divider(color: Colors.grey,thickness: 0.9,endIndent: 20,indent: 20,),
-                                              Image(image: NetworkImage('${qrCodeModel!.data!.qrcodeImagePath}')),
-                                              const Text('All type laboratory test facility available 24x7 (365 Day)',style: TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),),
-                                              const Text('Digital Sample Facility 24 Hours\nAdvance Body Checkup Available',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
-                                            ],
-                                          )
-                                      ),
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(15),
-                                          color: Colors.black,
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    //height: MediaQuery.of(context).size.height / 1.1,
+                                    color: qrCodeColor,
+                                    margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                    child: Stack(
+                                      alignment:  Alignment.topCenter,
+                                      children: [
+                                        Container(
+                                            width: MediaQuery.of(context).size.width / 1.2,
+                                            //height: MediaQuery.of(context).size.height / 1.3,
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.white,width: 2),
+                                              borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                            margin: const EdgeInsets.fromLTRB(15, 12, 15, 5),
+                                            child: Column(
+                                              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                const SizedBox(height: 30),
+                                                const Text('F  U  L  L   B  O  D  Y',style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontWeight: FontWeight.bold)),
+                                                const Divider(color: Colors.grey,thickness: 1,endIndent: 80,indent: 80),
+                                                Text('CHECKUP AT HOME',style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold)),
+                                                const SizedBox(height: 10),
+                                                Text('${qrCodeModel!.data!.name}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                                const SizedBox(height: 3),
+                                                Text('${qrCodeModel!.data!.mobile}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                                const SizedBox(height: 5),
+                                                Padding(
+                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                  child: Stack(
+                                                    children: [
+                                                      const Padding(
+                                                        padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                                        child: Image(image: AssetImage('assets/Drawer/qrboxbg.png'),width: 300),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
+                                                        child: Container(
+                                                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                                                            decoration: BoxDecoration(
+                                                                color: Colors.white,
+                                                                borderRadius: BorderRadius.circular(10)
+                                                            ),
+                                                            child: Image(image: NetworkImage('${qrCodeModel!.data!.qrcodeImagePath}'))
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Text('Book Full Body Checkup',style: TextStyle(fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold),),
+                                                const SizedBox(height: 2,),
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(10),
+                                                    color: hsPrime,
+                                                  ),
+                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                                  child: RichText(
+                                                    text: TextSpan(
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Accuris B+',
+                                                          style: TextStyle(color: Colors.white),
+                                                        ),
+                                                        WidgetSpan(
+                                                          child: Transform.translate(
+                                                            offset: const Offset(2, -8),
+                                                            child: const Text(
+                                                              've',
+                                                              textScaleFactor: 0.8,
+                                                              style: TextStyle(fontSize: 13,color: Colors.white),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                const Text('With Health Sarthi',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                                Container(
+                                                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          bottomIconText(AppIcons().qrImgOne, 'Authorized', 'Collection Center'),
+                                                          bottomIconText(AppIcons().qrImgTwo, 'Cash & Digital', 'Payment options'),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 10),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          bottomIconText(AppIcons().qrImgThree, 'Strict Safety and', 'Hygiene Measures'),
+                                                          bottomIconText(AppIcons().qrImgFour, 'Reports via', 'Whatsapp & Email'),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                const Text('All type Laboratory test \nfacility 24x7 (365 Day)',style: TextStyle(fontFamily: FontType.MontserratRegular),textAlign: TextAlign.center,)
+
+                                              ],
+                                            )
                                         ),
-                                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                        child: const Text('All in one QR',style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white,fontWeight: FontWeight.bold),),
-                                      )
-                                    ],
+                                        Container(
+                                          color: qrCodeColor,
+                                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                            child: const Image(image: AssetImage('assets/Drawer/applogo.png'),width: 130)
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -157,15 +243,20 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                         onTap: () async {
                                           var status = await Permission.storage.request();
                                           if (status.isGranted) {
-                                            downloadFile(qrCodeModel!.data!.qrcodeImagePath)
-                                                .catchError((onError) {
+                                            downloadFile(qrCodeModel!.pdf).catchError((onError) {
                                               debugPrint('Error downloading: $onError');
                                             }).then((imagePath) {
                                               debugPrint('Download successful, path: $imagePath');
                                               GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
                                             });
                                           } else {
-                                            GetXSnackBarMsg.getWarningMsg('$status');
+                                            downloadFile(qrCodeModel!.pdf).catchError((onError) {
+                                              debugPrint('Error downloading: $onError');
+                                            }).then((imagePath) {
+                                              debugPrint('Download successful, path: $imagePath');
+                                              GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
+                                            });
+                                            //GetXSnackBarMsg.getWarningMsg('$status');
                                             print("status-$status");
                                           }
                                         },
@@ -238,10 +329,25 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
     );
   }
 
+  Widget bottomIconText(var imgIcon, var textOne, var textTwo){
+    return Container(
+      width: MediaQuery.of(context).size.width / 2.8,
+      child: Row(
+        children: [
+          Image(image: imgIcon,width: 30),
+          const SizedBox(width: 5),
+          Text('$textOne\n$textTwo',style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 11,fontWeight: FontWeight.bold),)
+        ],
+      ),
+    );
+  }
+
+
   //final imageSrc = 'https://picsum.photos/250?image=9';
   var downloadProgress = 0.0, imgCount = 0;
   bool showDownload = false;
   Future downloadFile(var imgUrl) async {
+    print("imgUrl --> $imgUrl");
     setState(() {
       imgCount++;
       downloadProgress = 0.0;
@@ -249,7 +355,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
     });
     Dio dio = Dio();
     var imageDownloadPath =
-        '/storage/emulated/0/Download/hsQRCode_$imgCount.jpg';
+        '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
     await dio.download(imgUrl, imageDownloadPath,
         onReceiveProgress: (received, total) {
       var progress = (received / total) * 100;

@@ -14,6 +14,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
+import '../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../Bottom Menus/Test Menu/thank_you_msg.dart';
@@ -49,6 +50,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   final pName = TextEditingController();
   final pMobile = TextEditingController();
 
+  List<File> prescriptionFiles = [];
   GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
@@ -116,6 +118,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
                           child: Container(
@@ -420,37 +423,107 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             },
                           ),
                         ),
-                        /*Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                          child: TextFormField(
-                            controller: pinCode,
-                            keyboardType: TextInputType.number,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                            decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              contentPadding: const EdgeInsets.all(hsPaddingM),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
+
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                          child: Card(
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Upload prescription",
+                                        style: TextStyle(fontFamily: FontType.MontserratMedium),
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                        onPressed: () async {
+                                          var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                                          setState(() {
+                                            prescriptionFiles.add(prescriptionFileManager!);
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.file_copy_rounded,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          var prescriptionCamera = await FileImagePicker().pickCamera(context);
+                                          setState(() {
+                                            prescriptionFiles.add(prescriptionCamera!);
+                                          });
+                                        },
+                                        icon: const Icon(
+                                          Icons.camera_alt_rounded,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height / 20,
+                                    child: prescriptionFiles.isNotEmpty ? ListView.builder(
+                                      itemCount: prescriptionFiles.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: (context, index){
+                                        return Padding(
+                                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                                          child: Container(
+                                            // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                            decoration: BoxDecoration(
+                                                color: hsPrime,
+                                                borderRadius: BorderRadius.circular(10)
+                                            ),
+                                            padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                            child: GestureDetector(
+                                              onTap: (){
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context){
+                                                      return Dialog(
+                                                        child: Image.file(prescriptionFiles[index]),
+                                                      );
+                                                    }
+                                                );
+                                              },
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                      prescriptionFiles[index].path.split('/').last,
+                                                      style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
+                                                  ),
+                                                  SizedBox(width: 10),
+                                                  IconButton(
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          prescriptionFiles.remove(prescriptionFiles[index]);
+                                                        });
+                                                      },
+                                                      icon: const Icon(Icons.delete_rounded,color: Colors.white,)
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ) ;
+                                      },
+                                    ) : const Center(child: Text('No file chosen'),),
+                                  ),
+                                ],
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              hintText: 'Pin code',
-                              hintStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14
-                              ),
-                              prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
                             ),
                           ),
-                        ),*/
-
+                        ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
@@ -555,13 +628,18 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
       setState(() {
         pharmacyId = pModel.patientData!.pharmacyId.toString();
-        pName.text = pModel.patientData!.name.toString();
-        pDob.text = pModel.patientData!.dateOfBirth.toString();
-        pAge.text = pModel.patientData!.age.toString();
-        pMobile.text = pModel.patientData!.mobileNo.toString();
-        emailId.text = pModel.patientData!.emailId.toString();
-        address.text = pModel.patientData!.address.toString();
-        selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+        pName.text = pModel.patientData!.name ?? '';
+        pDob.text = pModel.patientData!.dateOfBirth ?? '';
+        pAge.text = pModel.patientData!.age ?? '';
+        pMobile.text = pModel.patientData!.mobileNo ?? '';
+        emailId.text = pModel.patientData!.emailId ?? '';
+        address.text = pModel.patientData!.address ?? '';
+        selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male'
+            : pModel.patientData!.gender.toString() == '2'
+            ? 'Female'
+            : pModel.patientData!.gender.toString() == '3'
+            ? 'Other'
+            : '';
         pinCode.text = pModel.patientData!.pincode.toString();
       });
     } catch (e) {
@@ -585,31 +663,43 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       "promo_offer_code": '${widget.promoApply ?? ''}',
       "collection_date": collectionDate.text ?? '',
       "collection_time": collectionTime.text ?? '',
-      "remark": remark?.text ?? '',
-      "name": pName?.text ?? '',
-      "email_id": emailId?.text ?? '',
-      "mobile_no": pMobile?.text ?? '',
+      "remark": remark.text ?? '',
+      "name": pName.text ?? '',
+      "email_id": emailId.text ?? '',
+      "mobile_no": pMobile.text ?? '',
       "gender": '$pGender',
-      //"date_of_birth": pDob?.text ?? '',
-      "age": pAge?.text ?? '',
+      "age": pAge.text ?? '',
       "state_id": widget.dStateId ?? '',
       'city_id': widget.dCityId ?? '',
       'area_id': widget.dAreaId ?? '',
       'cost_center_id': widget.dBranchId ?? '',
-      //'pincode': pinCode?.text ?? '',
-      'address': address?.text ?? '',
+      'address': address.text ?? '',
     };
+
+
     print("Body ->$requestBody");
     try {
-      print("in try");
+      var request = http.MultipartRequest('POST', Uri.parse(ApiUrls.bookOrderUrls));
+      request.headers.addAll(headers);
+      requestBody.forEach((key, value) {
+        request.fields[key] = value.toString();
+      });
 
-      final response = await http.post(
-        Uri.parse(ApiUrls.bookOrderUrls),
-        headers: headers,
-        body: requestBody,
-      );
-
-      final responseData = json.decode(response.body);
+      if(prescriptionFiles.isNotEmpty){
+        await Future.forEach(
+          prescriptionFiles, (file) async => {
+          request.files.add(http.MultipartFile(
+            'prescription[]',
+            (http.ByteStream(file.openRead())).cast(),
+            await file.length(), filename: file.path.split('/').last,
+          ),
+          )
+        },
+        );
+      }
+      var response = await request.send();
+      var responsData = await response.stream.bytesToString();
+      var responseData = json.decode(responsData);
       print("response -> $responseData");
 
       final bodyStatus = responseData['status'];
@@ -646,7 +736,13 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             final aMsg = responseData['error']['address'][0];
             GetXSnackBarMsg.getWarningMsg('$aMsg');
             Navigator.pop(context);
-          } else {
+          }
+          else if(bodyStatus == 400){
+            var errorMessage = responseData['data']['prescription[]'][0];
+            GetXSnackBarMsg.getWarningMsg('$errorMessage');
+            Navigator.pop(context);
+          }
+          else {
             GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
             Navigator.pop(context);
           }

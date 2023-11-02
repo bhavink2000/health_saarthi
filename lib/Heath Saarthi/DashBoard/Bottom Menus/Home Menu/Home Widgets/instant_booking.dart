@@ -181,6 +181,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                 setState(() {
                                   selectedMobileNo = suggestion.encPharmacyPatientId!;
                                   getPatient(selectedMobileNo);
+
                                   pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
                                 });
                               },
@@ -215,7 +216,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           ],
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15)
@@ -232,55 +233,8 @@ class _InstantBookingState extends State<InstantBooking> {
                             ),
                             prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
                           ),
-                          // validator: (value) {
-                          //   if (value == null || value.isEmpty) {
-                          //     return 'Enter age';
-                          //   }
-                          //   return null;
-                          // }, // Set the validator function
                         ),
                       ),
-                      /*Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                        child: TextFormField(
-                          controller: pDob,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            hintText: 'DOB',
-                            hintStyle: const TextStyle(
-                                color: Colors.black54,
-                                fontFamily: FontType.MontserratRegular,
-                                fontSize: 14
-                            ),
-                            prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
-                          ),
-                          onTap: () async {
-                            DateTime pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: DateTime.now(),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                            );
-                            if(pickedDate != null ){
-                              String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                              setState(() {
-                                pDob.text = formattedDate;
-                              });
-                            }else{}
-                          },
-                        ),
-                      ),*/
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
@@ -288,7 +242,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15)
@@ -303,7 +257,7 @@ class _InstantBookingState extends State<InstantBooking> {
                               fontFamily: FontType.MontserratRegular,
                               fontSize: 14,
                             ),
-                            prefixIcon: Icon(Icons.email, color: hsBlack, size: 20),
+                            prefixIcon: const Icon(Icons.email, color: hsBlack, size: 20),
                           ),
                           onChanged: (value) {
                             _formKey.currentState?.validate(); // Trigger validation manually
@@ -325,7 +279,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15)
@@ -340,7 +294,7 @@ class _InstantBookingState extends State<InstantBooking> {
                               fontFamily: FontType.MontserratRegular,
                               fontSize: 14,
                             ),
-                            prefixIcon: Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
+                            prefixIcon: const Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
                           ),
                         ),
                       ),
@@ -401,12 +355,11 @@ class _InstantBookingState extends State<InstantBooking> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: stateLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -418,6 +371,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                   showSearchBox: true,
                                 ),
                                 items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     labelText: "Select state *",
@@ -467,7 +421,7 @@ class _InstantBookingState extends State<InstantBooking> {
                             children: [
                               Visibility(
                                 visible: cityLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -479,6 +433,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                   showSearchBox: true,
                                 ),
                                 items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     labelText: "Select city *",
@@ -524,12 +479,11 @@ class _InstantBookingState extends State<InstantBooking> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: areaLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -541,6 +495,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                   showSearchBox: true,
                                 ),
                                 items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     labelText: "Select area *",
@@ -582,12 +537,11 @@ class _InstantBookingState extends State<InstantBooking> {
                         padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: branchLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -599,6 +553,7 @@ class _InstantBookingState extends State<InstantBooking> {
                                   showSearchBox: true,
                                 ),
                                 items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     labelText: "Select branch *",
@@ -635,7 +590,7 @@ class _InstantBookingState extends State<InstantBooking> {
 
                       SizedBox(height: 10.h),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                        padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
                           controller: colletionDate,
                           readOnly: true,
@@ -675,36 +630,6 @@ class _InstantBookingState extends State<InstantBooking> {
                           },
                         ),
                       ),
-                      /*Padding(
-                        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
-                        child: TextFormField(
-                          controller: pinCode,
-                          keyboardType: TextInputType.number,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                          ],
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            contentPadding: const EdgeInsets.all(hsPaddingM),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                borderRadius: BorderRadius.circular(15)
-                            ),
-                            hintText: 'Pin code',
-                            hintStyle: const TextStyle(
-                                color: Colors.black54,
-                                fontFamily: FontType.MontserratRegular,
-                                fontSize: 14
-                            ),
-                            prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
-                          ),
-                        ),
-                      ),*/
                       Padding(
                         padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                         child: TextFormField(
@@ -714,7 +639,7 @@ class _InstantBookingState extends State<InstantBooking> {
                           minLines: 1,
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(hsPaddingM),
-                            border: OutlineInputBorder(),
+                            border: const OutlineInputBorder(),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15)
@@ -729,7 +654,7 @@ class _InstantBookingState extends State<InstantBooking> {
                               fontFamily: FontType.MontserratRegular,
                               fontSize: 14,
                             ),
-                            prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
+                            prefixIcon: const Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
                           ),
                         ),
                       ),
@@ -738,34 +663,34 @@ class _InstantBookingState extends State<InstantBooking> {
                         child: InkWell(
                           onTap: ()async{
                             if(pName.text.isEmpty){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientName}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
                             }
                             else if(pMobile.text.isEmpty){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
                             }
                             else if(selectedState == null || selectedState == ''){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectState}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
                             }
                             else if(selectedCity == null || selectedCity == ''){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectCity}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
                             }
                             else if(selectedArea == null || selectedArea == ''){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectArea}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
                             }
                             else if(selectedBranch == null || selectedBranch == ''){
-                              GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectBranch}');
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
                             }
                             else{
                               showDialog(
                                 context: context,
                                 barrierDismissible: false,
                                 builder: (BuildContext context) {
-                                  return Dialog(
+                                  return const Dialog(
                                     child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
+                                      padding: EdgeInsets.all(16.0),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children: const [
+                                        children: [
                                           CircularProgressIndicator(),
                                           SizedBox(height: 16.0),
                                           Text('Loading...'),
@@ -789,7 +714,7 @@ class _InstantBookingState extends State<InstantBooking> {
                     ],
                   ),
                 ),
-              ) : CenterLoading(),
+              ) : const CenterLoading(),
             )
           ],
         ),
@@ -804,7 +729,7 @@ class _InstantBookingState extends State<InstantBooking> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
@@ -835,6 +760,7 @@ class _InstantBookingState extends State<InstantBooking> {
       setState(() {
         mobileList = list;
       });
+      print("mobilelsit0---->>${mobileList}");
     } catch (e) {
       print("Error -> $e");
     }
@@ -844,41 +770,41 @@ class _InstantBookingState extends State<InstantBooking> {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
       pharmacyId = pModel.patientData!.pharmacyId.toString();
-      pName.text = pModel.patientData!.name.toString();
-      pDob.text = pModel.patientData!.dateOfBirth.toString();
-      pAge.text = pModel.patientData!.age.toString();
-      pMobile.text = pModel.patientData!.mobileNo.toString();
-      emailId.text = pModel.patientData!.emailId.toString();
-      address.text = pModel.patientData!.address.toString();
-      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+      pName.text = pModel.patientData!.name ?? '';
+      pDob.text = pModel.patientData!.dateOfBirth ?? '';
+      pAge.text = pModel.patientData!.age ?? '';
+      pMobile.text = pModel.patientData!.mobileNo ?? '';
+      emailId.text = pModel.patientData!.emailId ?? '';
+      address.text = pModel.patientData!.address ?? '';
+      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male'
+          : pModel.patientData!.gender.toString() == '2'
+          ? 'Female'
+          : pModel.patientData!.gender.toString() == '3'
+          ? 'Other'
+          : '';
+      pinCode.text = pModel.patientData!.pincode ?? '';
+
       selectedState = pModel.patientData!.state!.stateName.toString();
       selectedCity = pModel.patientData!.city!.cityName.toString();
       selectedArea = pModel.patientData!.area!.areaName.toString();
+
       selectedStateId = pModel.patientData!.state!.id.toString();
       selectedCityId = pModel.patientData!.city!.id.toString();
       selectedAreaId = pModel.patientData!.area!.id.toString();
-      pinCode.text = pModel.patientData!.pincode.toString();
+
+      if(selectedStateId != null){
+        fetchCityList(selectedStateId).then((value){
+          fetchAreaList(selectedStateId, selectedCityId).then((value){
+            fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+          });
+        });
+      }
     } catch (e) {
       print('Error: $e');
     }
   }
 
-  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Center(
-            key: _loadingDialogKey,
-            child: const CenterLoading(),
-          ),
-        );
-      },
-    );
-  }
+
   List<StateData?> stateList = [];
   String? selectedState;
   String? selectedStateId;
@@ -905,7 +831,6 @@ class _InstantBookingState extends State<InstantBooking> {
   String? selectedCity;
   String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
-    //_showLoadingDialog(context);
     setState(() {
       cityLoading = true;
     });
@@ -916,10 +841,8 @@ class _InstantBookingState extends State<InstantBooking> {
         cityList = list;
         cityLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -927,7 +850,6 @@ class _InstantBookingState extends State<InstantBooking> {
   String? selectedArea;
   String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
-    //_showLoadingDialog(context);
     setState(() {
       areaLoading = true;
     });
@@ -938,10 +860,8 @@ class _InstantBookingState extends State<InstantBooking> {
         areaList = list;
         areaLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -949,7 +869,6 @@ class _InstantBookingState extends State<InstantBooking> {
   String? selectedBranch;
   String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
-    //_showLoadingDialog(context);
     setState(() {
       branchLoading = true;
     });
@@ -960,10 +879,8 @@ class _InstantBookingState extends State<InstantBooking> {
         branchList = list;
         branchLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Branch Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -977,24 +894,23 @@ class _InstantBookingState extends State<InstantBooking> {
     final Map<String, dynamic> requestBody = {
       "pharmacy_patient_id": selectedMobileNo ?? '',
       "collection_date": colletionDate.text ?? '',
-      "remark": remark?.text ?? '',
-      "name": pName?.text ?? '',
-      "email_id": emailId?.text ?? '',
-      "mobile_no": pMobile?.text ?? '',
+      "remark": remark.text ?? '',
+      "name": pName.text ?? '',
+      "email_id": emailId.text ?? '',
+      "mobile_no": pMobile.text ?? '',
       "gender": '$pGender',
-      //"date_of_birth": pDob?.text ?? '',
-      "age": pAge?.text ?? '',
+      "age": pAge.text ?? '',
       "state_id": selectedStateId ?? '',
       'city_id': selectedCityId ?? '',
       'area_id': selectedAreaId ?? '',
       'cost_center_id': selectedBranchId ?? '',
-      //'pincode': pinCode?.text ?? '',
-      'address': address?.text ?? '',
+      'address': address.text ?? '',
     };
-    print("Body ->$requestBody");
-    try {
-      print("in try");
 
+    print("---------------");
+    print("body data -->>$requestBody");
+    print("---------");
+    try {
       final response = await http.post(
         Uri.parse(ApiUrls.instantBookingUrls),
         headers: headers,
@@ -1029,13 +945,12 @@ class _InstantBookingState extends State<InstantBooking> {
         GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
       } else {
-        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().bookingProblem);
       }
     } catch (error) {
       print("Error: $error");
-      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
+      GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
       Navigator.pop(context);
-      //SnackBarMessageShow.errorMSG('Something went wrong', context);
     }
   }
 }

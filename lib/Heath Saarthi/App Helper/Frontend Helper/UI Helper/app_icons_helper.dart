@@ -8,4 +8,11 @@ class AppIcons{
   AssetImage HRecord = const AssetImage("assets/record.png");
   AssetImage HProfile = const AssetImage("assets/profile.png");
   AssetImage Menu = const AssetImage("assets/menu.png");
+
+
+  AssetImage qrImgOne = const AssetImage("assets/Drawer/icon_1.png");
+  AssetImage qrImgTwo = const AssetImage("assets/Drawer/icon_2.png");
+  AssetImage qrImgThree = const AssetImage("assets/Drawer/icon_3.png");
+  AssetImage qrImgFour = const AssetImage("assets/Drawer/icon_4.png");
+
 }

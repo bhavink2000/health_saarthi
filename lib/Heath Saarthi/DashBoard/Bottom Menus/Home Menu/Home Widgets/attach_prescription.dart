@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -28,7 +27,6 @@ import '../../../../App Helper/Backend Helper/Models/Location Model/state_model.
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../Add To Cart/test_cart.dart';
 import '../../../Notification Menu/notification_menu.dart';
 import '../../Test Menu/thank_you_msg.dart';
@@ -42,7 +40,7 @@ class AttachPrescription extends StatefulWidget {
 
 class _AttachPrescriptionState extends State<AttachPrescription> {
 
-  File? presciptionFile;
+  //File? presciptionFile;
 
   Completer<XFile> filePickerCompleter = Completer<XFile>();
   var focusNode = FocusNode();
@@ -70,16 +68,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     getAccessToken.checkAuthentication(context, setState);
     colletionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     functionCalling();
-    // Future.delayed(const Duration(seconds: 1),(){
-    //   setState(() {
-    //     fetchMobileList();
-    //   });
-    // });
-    // Future.delayed(const Duration(seconds: 2),(){
-    //   setState(() {
-    //     fetchStateList();
-    //   });
-    // });
   }
 
   void functionCalling()async{
@@ -106,6 +94,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     selectedBranch = '';
     super.dispose();
   }
+
+  List<File> prescriptionFiles = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,52 +151,93 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               child: Padding(
                                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                child: Row(
+                                child: Column(
                                   children: [
-                                    presciptionFile == null
-                                     ? const Text("Upload prescription",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                                     : Container(
-                                      width: 100,height: 50,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          if (presciptionFile != null) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return Dialog(
-                                                  child: Image.file(presciptionFile!),
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                        child: presciptionFile == null
-                                            ? Text("Presciption", style: TextStyle(fontFamily: FontType.MontserratMedium))
-                                            : Image.file(presciptionFile!, fit: BoxFit.cover),
-                                      )
+                                    Row(
+                                      children: [
+                                        Text(
+                                          "Upload prescription",
+                                          style: TextStyle(fontFamily: FontType.MontserratMedium),
+                                        ),
+                                        const Spacer(),
+                                        IconButton(
+                                          onPressed: () async {
+                                            var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                                            setState(() {
+                                              prescriptionFiles.add(prescriptionFileManager!);
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.file_copy_rounded,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () async {
+                                            var prescriptionCamera = await FileImagePicker().pickCamera(context);
+                                            setState(() {
+                                              prescriptionFiles.add(prescriptionCamera!);
+                                            });
+                                          },
+                                          icon: const Icon(
+                                            Icons.camera_alt_rounded,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const Spacer(),
-                                    IconButton(
-                                        onPressed: ()async {
-                                          var presciptionFileManger = await FileImagePicker().pickFileManager(context);
-                                          setState(() {
-                                            presciptionFile = presciptionFileManger;
-                                          });
+
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height: MediaQuery.of(context).size.height / 20,
+                                      child: prescriptionFiles.isNotEmpty ? ListView.builder(
+                                        itemCount: prescriptionFiles.length,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index){
+                                          return Padding(
+                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                                            child: Container(
+                                             // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                              decoration: BoxDecoration(
+                                                color: hsPrime,
+                                                borderRadius: BorderRadius.circular(10)
+                                              ),
+                                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                              child: GestureDetector(
+                                                onTap: (){
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context){
+                                                      return Dialog(
+                                                        child: Image.file(prescriptionFiles[index]),
+                                                      );
+                                                    }
+                                                  );
+                                                },
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      prescriptionFiles[index].path.split('/').last,
+                                                      style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    IconButton(
+                                                        onPressed: (){
+                                                          setState(() {
+                                                            prescriptionFiles.remove(prescriptionFiles[index]);
+                                                          });
+                                                        },
+                                                        icon: const Icon(Icons.delete_rounded,color: Colors.white,)
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ) ;
                                         },
-                                        icon: const Icon(
-                                            Icons.file_copy_rounded
-                                        )
-                                    ),
-                                    IconButton(
-                                        onPressed: () async{
-                                          var presciptionCamera = await FileImagePicker().pickCamera(context);
-                                          setState(() {
-                                            presciptionFile = presciptionCamera;
-                                          });
-                                        },
-                                        icon: const Icon(
-                                            Icons.camera_alt_rounded
-                                        )
+                                      ) : const Center(child: Text('No file chosen'),),
                                     ),
                                   ],
                                 ),
@@ -302,47 +334,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               ),
                             ),
                           ),
-                          /*Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                            child: TextFormField(
-                              controller: pDob,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              readOnly: true,
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.all(hsPaddingM),
-                                border: const OutlineInputBorder(),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                    borderRadius: BorderRadius.circular(15)
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                    borderRadius: BorderRadius.circular(15)
-                                ),
-                                hintText: 'DOB',
-                                hintStyle: const TextStyle(
-                                    color: Colors.black54,
-                                    fontFamily: FontType.MontserratRegular,
-                                    fontSize: 14
-                                ),
-                                prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
-                              ),
-                              onTap: () async {
-                                DateTime pickedDate = await showDatePicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  firstDate: DateTime(1900),
-                                  lastDate: DateTime.now(),
-                                );
-                                if(pickedDate != null ){
-                                  String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                  setState(() {
-                                    pDob.text = formattedDate;
-                                  });
-                                }else{}
-                              },
-                            ),
-                          ),*/
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                             child: TextFormField(
@@ -467,7 +458,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 children: [
                                   Visibility(
                                     visible: stateLoading,
-                                    child: Positioned(
+                                    child: const Positioned(
                                       top: 10,
                                       right: 5,
                                       child: CircularProgressIndicator(),
@@ -478,6 +469,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       showSelectedItems: true,
                                       showSearchBox: true,
                                     ),
+                                    autoValidateMode: AutovalidateMode.onUserInteraction,
                                     items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
                                     dropdownDecoratorProps: DropDownDecoratorProps(
                                       dropdownSearchDecoration: InputDecoration(
@@ -519,7 +511,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 15,),
+                          const SizedBox(height: 15),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Container(
@@ -528,7 +520,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 children: [
                                   Visibility(
                                     visible: cityLoading,
-                                    child: Positioned(
+                                    child: const Positioned(
                                       top: 10,
                                       right: 5,
                                       child: CircularProgressIndicator(),
@@ -539,6 +531,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       showSelectedItems: true,
                                       showSearchBox: true,
                                     ),
+                                    autoValidateMode: AutovalidateMode.onUserInteraction,
                                     items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
                                     dropdownDecoratorProps: DropDownDecoratorProps(
                                       dropdownSearchDecoration: InputDecoration(
@@ -580,7 +573,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 15,),
+                          const SizedBox(height: 15),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Container(
@@ -590,7 +583,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 children: [
                                   Visibility(
                                     visible: areaLoading,
-                                    child: Positioned(
+                                    child: const Positioned(
                                       top: 10,
                                       right: 5,
                                       child: CircularProgressIndicator(),
@@ -601,6 +594,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       showSelectedItems: true,
                                       showSearchBox: true,
                                     ),
+                                    autoValidateMode: AutovalidateMode.onUserInteraction,
                                     items: areaList.map((area) => area!.areaName!).toList() ?? [],
                                     dropdownDecoratorProps: DropDownDecoratorProps(
                                       dropdownSearchDecoration: InputDecoration(
@@ -643,12 +637,11 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Container(
                               width: MediaQuery.of(context).size.width / 1.w,
-                              //height: MediaQuery.of(context).size.height / 14.h,
                               child: Stack(
                                 children: [
                                   Visibility(
                                     visible: branchLoading,
-                                    child: Positioned(
+                                    child: const Positioned(
                                       top: 10,
                                       right: 5,
                                       child: CircularProgressIndicator(),
@@ -659,6 +652,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                       showSelectedItems: true,
                                       showSearchBox: true,
                                     ),
+                                    autoValidateMode: AutovalidateMode.onUserInteraction,
                                     items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
                                     dropdownDecoratorProps: DropDownDecoratorProps(
                                       dropdownSearchDecoration: InputDecoration(
@@ -734,36 +728,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               },
                             ),
                           ),
-                          /*Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                            child: TextFormField(
-                              controller: pinCode,
-                              keyboardType: TextInputType.number,
-                              autovalidateMode: AutovalidateMode.onUserInteraction,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                contentPadding: const EdgeInsets.all(hsPaddingM),
-                                focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                    borderRadius: BorderRadius.circular(15)
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                    borderRadius: BorderRadius.circular(15)
-                                ),
-                                hintText: 'Pin code',
-                                hintStyle: const TextStyle(
-                                    color: Colors.black54,
-                                    fontFamily: FontType.MontserratRegular,
-                                    fontSize: 14
-                                ),
-                                prefixIcon: const Icon(Icons.pin, color: hsBlack,size: 20),
-                              ),
-                            ),
-                          ),*/
                           Padding(
                             padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                             child: TextFormField(
@@ -798,24 +762,24 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             child: InkWell(
                               onTap: ()async{
                                 if(pName.text.isEmpty){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientName}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
                                 }
                                 else if(pMobile.text.isEmpty){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
                                 }
                                 else if(selectedState == null || selectedState == ''){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectState}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
                                 }
                                 else if(selectedCity == null || selectedCity == ''){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectCity}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
                                 }
                                 else if(selectedArea == null || selectedArea == ''){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectArea}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
                                 }
                                 else if(selectedBranch == null || selectedBranch == ''){
-                                  GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectBranch}');
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
                                 }
-                                else if(presciptionFile == null){
+                                else if(prescriptionFiles.isEmpty){
                                   GetXSnackBarMsg.getWarningMsg('Please select prescription');
                                 }
                                 else{
@@ -823,12 +787,12 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     context: context,
                                     barrierDismissible: false,
                                     builder: (BuildContext context) {
-                                      return Dialog(
+                                      return const Dialog(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
+                                          padding: EdgeInsets.all(16.0),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
-                                            children: const [
+                                            children: [
                                               CircularProgressIndicator(),
                                               SizedBox(height: 16.0),
                                               Text('Loading...'),
@@ -854,7 +818,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                     ),
                   ],
                 ),
-              ) : CenterLoading(),
+              ) : const CenterLoading(),
             )
           ],
         ),
@@ -872,7 +836,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       setState(() {
         mobileList = list;
       });
-      print("mobileList->${mobileList} / length${mobileList.length}");
     } catch (e) {
       print("Error -> $e");
     }
@@ -882,46 +845,45 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     try {
       var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
       pharmacyId = pModel.patientData!.pharmacyId.toString();
-      pName.text = pModel.patientData!.name.toString();
-      pDob.text = pModel.patientData!.dateOfBirth.toString();
-      pAge.text = pModel.patientData!.age.toString();
-      pMobile.text = pModel.patientData!.mobileNo.toString();
-      emailId.text = pModel.patientData!.emailId.toString();
-      address.text = pModel.patientData!.address.toString();
-      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male' : pModel.patientData!.gender.toString() == '2' ? 'Female' : 'Other';
+      pName.text = pModel.patientData!.name ?? '';
+      pDob.text = pModel.patientData!.dateOfBirth ?? '';
+      pAge.text = pModel.patientData!.age ?? '';
+      pMobile.text = pModel.patientData!.mobileNo ?? '';
+      emailId.text = pModel.patientData!.emailId ?? '';
+      address.text = pModel.patientData!.address ?? '';
+      selectedGender = pModel.patientData!.gender.toString() == '1' ? 'Male'
+          : pModel.patientData!.gender.toString() == '2'
+            ? 'Female'
+            : pModel.patientData!.gender.toString() == '3'
+              ? 'Other'
+              : '';
+      pinCode.text = pModel.patientData!.pincode.toString();
+
       selectedState = pModel.patientData!.state!.stateName.toString();
       selectedCity = pModel.patientData!.city!.cityName.toString();
       selectedArea = pModel.patientData!.area!.areaName.toString();
+
       selectedStateId = pModel.patientData!.state!.id.toString();
       selectedCityId = pModel.patientData!.city!.id.toString();
       selectedAreaId = pModel.patientData!.area!.id.toString();
-      pinCode.text = pModel.patientData!.pincode.toString();
+
+      if(selectedStateId != null){
+        fetchCityList(selectedStateId).then((value){
+          fetchAreaList(selectedStateId, selectedCityId).then((value){
+            fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+          });
+        });
+      }
+
     } catch (e) {
       print('Error: $e');
     }
   }
 
-  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Center(
-            key: _loadingDialogKey,
-            child: const CenterLoading(),
-          ),
-        );
-      },
-    );
-  }
   List<StateData?> stateList = [];
   String? selectedState;
   String? selectedStateId;
   Future<void> fetchStateList() async {
-    //_showLoadingDialog(context);
     setState(() {
       stateLoading = true;
     });
@@ -932,10 +894,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         stateList = list;
         stateLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -943,7 +903,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String? selectedCity;
   String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
-    //_showLoadingDialog(context);
     setState(() {
       cityLoading = true;
     });
@@ -954,10 +913,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         cityList = list;
         cityLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -965,7 +922,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String? selectedArea;
   String? selectedAreaId;
   Future<void> fetchAreaList(var sState, var sCity) async {
-    //_showLoadingDialog(context);
     setState(() {
       areaLoading = true;
     });
@@ -976,10 +932,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         areaList = list;
         areaLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -987,7 +941,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   String? selectedBranch;
   String? selectedBranchId;
   Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
-    //_showLoadingDialog(context);
     setState(() {
       branchLoading = true;
     });
@@ -998,10 +951,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         branchList = list;
         branchLoading = false;
       });
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     } catch (e) {
       print("Branch Error -> $e");
-      //Navigator.of(_loadingDialogKey.currentContext, rootNavigator: true).pop();
     }
   }
 
@@ -1031,7 +982,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
           prefixIcon: Icon(iconData, color: hsBlack, size: 20),
         ),
         validator: validator,
-
       ),
     );
   }
@@ -1048,19 +998,17 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     final Map<String, dynamic> requestBody = {
       "pharmacy_patient_id": selectedMobileNo ?? '',
       "collection_date": colletionDate.text ?? '',
-      "remark": remark?.text ?? '',
-      "name": pName?.text ?? '',
-      "email_id": emailId?.text ?? '',
-      "mobile_no": pMobile?.text ?? '',
+      "remark": remark.text ?? '',
+      "name": pName.text ?? '',
+      "email_id": emailId.text ?? '',
+      "mobile_no": pMobile.text ?? '',
       "gender": '$pGender',
-      //"date_of_birth": pDob?.text ?? '',
-      "age": pAge?.text ?? '',
+      "age": pAge.text ?? '',
       "state_id": selectedStateId ?? '',
       'city_id': selectedCityId ?? '',
       'area_id': selectedAreaId ?? '',
       'cost_center_id': selectedBranchId ?? '',
-      //'pincode': pinCode?.text ?? '',
-      'address': address?.text ?? '',
+      'address': address.text ?? '',
     };
 
     try {
@@ -1070,25 +1018,23 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       requestBody.forEach((key, value) {
         request.fields[key] = value.toString();
       });
-
-      if (presciptionFile != null) {
-        var file = http.MultipartFile.fromBytes(
-          'prescription', await presciptionFile!.readAsBytes(),
-          filename: presciptionFile!.path.split('/').last,
-        );
-        request.files.add(file);
-      }
+      await Future.forEach(
+        prescriptionFiles, (file) async => {
+        request.files.add(http.MultipartFile(
+          'prescription[]',
+          (http.ByteStream(file.openRead())).cast(),
+          await file.length(), filename: file.path.split('/').last,
+        ),
+        )
+      },
+      );
 
       var response = await request.send();
       var responseData = await response.stream.bytesToString();
 
       var parsedResponse = json.decode(responseData);
-      print("response -> $parsedResponse");
-
       var bodyStatus = parsedResponse['status'];
       var bodyMsg = parsedResponse['message'];
-      print("bS->$bodyStatus");
-      print("bM->$bodyMsg");
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         selectedMobileNo = '';
@@ -1106,33 +1052,25 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         selectedArea = '';
         selectedBranch = '';
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
-      }else if (bodyStatus == 400) {
+      }
+      else if (bodyStatus == 400) {
         var errorMessage = parsedResponse['error']['mobile_no'][0];
         GetXSnackBarMsg.getWarningMsg('$errorMessage');
         Navigator.pop(context);
       }
+      else if(bodyStatus == 400){
+        var errorMessage = parsedResponse['data']['prescription[]'][0];
+        GetXSnackBarMsg.getWarningMsg('$errorMessage');
+        Navigator.pop(context);
+      }
       else {
-        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().bookingProblem);
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
-      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
+      GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
       Navigator.pop(context);
     }
   }
-}
-
-class MobileItem {
-  final int encPharmacyPatientId;
-  final String mobileNo;
-
-  MobileItem({required this.encPharmacyPatientId, required this.mobileNo});
-}
-
-class StateGetModel {
-  final int id;
-  final String stateName;
-
-  StateGetModel(this.id, this.stateName);
 }

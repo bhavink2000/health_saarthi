@@ -13,13 +13,10 @@ class UserAuthentication {
   ApiServicesTypePostGet apiServicesTypePostGet = ApiServicePostGet();
 
   Future<dynamic> loginApi(dynamic data) async {
-    print("login api data->$data");
     try {
       dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
-      print("loginApi response-=>$response");
       return response;
     } catch (e) {
-      print("Login Error->$e");
       if(e.toString() == 'Internet connection problem'){
         GetXSnackBarMsg.getWarningMsg('Internet connection problem');
       }
@@ -56,7 +53,6 @@ class UserAuthentication {
         }
       }
       else{
-        print("in main else");
         Navigator.pop(context);
       }
     } catch (e) {

@@ -56,7 +56,6 @@ class _LoginFormState extends State<LoginForm> {
     retriveDeviceInfo();
     deviceTokenType();
   }
-
   void retriveDeviceInfo()async{
     final SharedPreferences sp = await SharedPreferences.getInstance();
     final String? deviceType = sp.getString('deviceType');

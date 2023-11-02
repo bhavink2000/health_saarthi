@@ -45,15 +45,14 @@ class LocationFuture{
         final data = json.decode(response.body);
         CityModel cityModel = CityModel.fromJson(data);
         List<CityData>? cityList = cityModel.data;
-        print("city List ->$cityList");
+        print("City List ->$cityList");
         return cityList ?? [];
       }
       else{
-        throw Exception('Failed to fetch state list');
+        throw Exception('Failed to fetch city list');
       }
     }
     catch(e){
-      print("Error -> $e");
       throw Exception('Failed to fetch City list');
     }
   }
@@ -71,11 +70,11 @@ class LocationFuture{
         final data = json.decode(response.body);
         AreaModel areaModel = AreaModel.fromJson(data);
         List<AreaData>? areaList = areaModel.data;
-        print("area List ->$areaList");
+        print("Area List ->$areaList");
         return areaList ?? [];
       }
       else{
-        throw Exception('Failed to fetch state list');
+        throw Exception('Failed to fetch area list');
       }
     }
     catch(e){
@@ -97,16 +96,16 @@ class LocationFuture{
         final data = json.decode(response.body);
         BranchModel branchModel = BranchModel.fromJson(data);
         List<BranchData>? branchList = branchModel.data;
-        print("branch List ->$branchList");
+        print("Branch List ->$branchList");
         return branchList ?? [];
       }
       else{
-        throw Exception('Failed to fetch state list');
+        throw Exception('Failed to fetch branch list');
       }
     }
     catch(e){
       print("Error -> $e");
-      throw Exception('Failed to fetch Area list');
+      throw Exception('Failed to fetch branch list');
     }
   }
 }

@@ -751,7 +751,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
           firstNm.text = pModel.data.name.toString();
           mobile.text = pModel.data.mobile.toString();
           email.text = pModel.data.emailId.toString();
-          address.text = pModel.data.address.toString();
+          address.text = pModel.data.address ?? '';
           state.text = pModel.data.state.stateName.toString();
           city.text = pModel.data.city.cityName.toString();
           area.text = pModel.data.area.areaName.toString();

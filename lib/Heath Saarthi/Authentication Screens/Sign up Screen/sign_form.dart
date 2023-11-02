@@ -20,10 +20,8 @@ import '../../App Helper/Backend Helper/Models/Location Model/branch_model.dart'
 import '../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
-import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../Splash Screen/splash_screen.dart';
-import 'header_signup.dart';
+
 
 class SignUpForm extends StatefulWidget {
   SignUpForm({Key? key}) : super(key: key);
@@ -42,30 +40,10 @@ class _SignUpFormState extends State<SignUpForm> {
   File? checkFile;
   File? gstFile;
 
-  bool panCardColor = false;
-  bool aadhaarCardFColor = false;
-  bool aadhaarCardBColor = false;
-  bool addressColor = false;
-  bool chequeColor = false;
-  bool gstColor = false;
-
   bool stateLoading = false;
   bool cityLoading = false;
   bool areaLoading = false;
   bool branchLoading = false;
-
-  FocusNode fNameFocusNode = FocusNode();
-  FocusNode emailFocusNode = FocusNode();
-  FocusNode mobileFocusNode = FocusNode();
-  FocusNode shopFocusNode = FocusNode();
-  FocusNode addressFocusNode = FocusNode();
-  FocusNode pinCodeFocusNode = FocusNode();
-  FocusNode passwordFocusNode = FocusNode();
-  FocusNode cPasswordFocusNode = FocusNode();
-  FocusNode panCardNoFocusNode = FocusNode();
-  FocusNode bankNameFocusNode = FocusNode();
-  FocusNode ifscCodeFocusNode = FocusNode();
-  FocusNode accountNoFocusNode = FocusNode();
 
   final fullName = TextEditingController();
   final emailId = TextEditingController();
@@ -92,18 +70,6 @@ class _SignUpFormState extends State<SignUpForm> {
   void initState() {
     super.initState();
     functionCalling();
-    // Future.delayed(const Duration(seconds: 1),(){
-    //   setState(() {
-    //     fetchStateList();
-    //     //getB2bSalesList();
-    //   });
-    // });
-    // Future.delayed(const Duration(seconds: 2),(){
-    //   setState(() {
-    //     getB2bSalesList();
-    //     //fetchStateList();
-    //   });
-    // });
   }
 
   void functionCalling()async{
@@ -111,22 +77,6 @@ class _SignUpFormState extends State<SignUpForm> {
     await getB2bSalesList();
   }
 
-  @override
-  void dispose() {
-    fNameFocusNode.dispose();
-    emailFocusNode.dispose();
-    mobileFocusNode.dispose();
-    shopFocusNode.dispose();
-    pinCodeFocusNode.dispose();
-    addressFocusNode.dispose();
-    panCardNoFocusNode.dispose();
-    bankNameFocusNode.dispose();
-    ifscCodeFocusNode.dispose();
-    accountNoFocusNode.dispose();
-    passwordFocusNode.dispose();
-    cPasswordFocusNode.dispose();
-    super.dispose();
-  }
 
   bool obScured = true;
   void _togglePasswordView() {
@@ -140,15 +90,7 @@ class _SignUpFormState extends State<SignUpForm> {
       obCScured = !obCScured;
     });
   }
-  String getMobileNumber(String selectedName) {
-    final selectedExecutive = salesExecutiveList.firstWhere(
-          (executive) => executive['name'] == selectedName,
-      orElse: () => null,
-    );
-    return selectedExecutive != null ? selectedExecutive['mobile_no'] : '';
-  }
-  bool isFirstNameFieldTouched = false;
-  bool isVendorNameFieldTouched = false;
+
   bool _agreedToTOS = false;
 
   Future<void> storeStateCityAreaBranch() async {
@@ -216,7 +158,6 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 controller: fullName,
-                focusNode: fNameFocusNode,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -248,7 +189,6 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                controller: emailId,
-                focusNode: emailFocusNode,
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -267,18 +207,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.email_rounded, color: hsBlack, size: 20),
                 ),
-                // onChanged: (value) {
-                //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                //     // Password meets all the requirements
-                //   } else if (value.contains('gmail.com')) {
-                //     // If the email does not contain 'gmail.com', show an error message
-                //     setState(() {
-                //       return 'Email id must contain "gmail.com"';
-                //     });
-                //   }else {
-                //     print('Enter valid email id');
-                //   }
-                // },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Enter a email';
@@ -294,7 +222,6 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 controller: shopeName,
-                focusNode: shopFocusNode,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -327,7 +254,6 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: mobile,
-                focusNode: mobileFocusNode,
                 keyboardType: TextInputType.phone,
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly
@@ -681,7 +607,6 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: pincode,
-                focusNode: pinCodeFocusNode,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -700,12 +625,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   ),
                   prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
                 ),
-                // validator: (value) {
-                //   if (value == null || value.isEmpty) {
-                //     return 'Enter pincode';
-                //   }
-                //   return null;
-                // }, // Set the validator function
               ),
             ),
 
@@ -768,21 +687,6 @@ class _SignUpFormState extends State<SignUpForm> {
                             : Container(
                               width: 100,height: 50,
                               child: buildImageDialog(aadharCardBFile!, 'Aadhaar card back')
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     if (aadharCardBFile != null) {
-                              //       showDialog(
-                              //         context: context,
-                              //         builder: (BuildContext context) {
-                              //           return Dialog(
-                              //             child: Image.file(File(aadharCardBFile.path)),
-                              //           );
-                              //         },
-                              //       );
-                              //     }
-                              //   },
-                              //   child: Image.file(File(aadharCardBFile.path), fit: BoxFit.cover),
-                              // ),
                           ),
                           const Spacer(),
                           IconButton(
@@ -818,7 +722,6 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 controller: address,
-                focusNode: addressFocusNode,
                 minLines: 1,
                 maxLines: 4,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -861,22 +764,6 @@ class _SignUpFormState extends State<SignUpForm> {
                        : Container(
                           width: 100,height: 50,
                            child: buildImageDialog(addressFile!, 'Address proof')
-
-                           // GestureDetector(
-                           //   onTap: () {
-                           //     if (addressFile != null) {
-                           //       showDialog(
-                           //         context: context,
-                           //         builder: (BuildContext context) {
-                           //           return Dialog(
-                           //             child: Image.file(File(addressFile.path)),
-                           //           );
-                           //         },
-                           //       );
-                           //     }
-                           //   },
-                           //   child: Image.file(File(addressFile.path), fit: BoxFit.cover),
-                           // ),
                       ),
                       const Spacer(),
                       IconButton(
@@ -912,7 +799,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   maxLength: 10,
                   controller: panCardNo,
-                  focusNode: panCardNoFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.characters,
                   decoration: InputDecoration(
@@ -1018,22 +904,6 @@ class _SignUpFormState extends State<SignUpForm> {
                        : Container(
                         width: 100,height: 50,
                         child: buildImageDialog(gstFile!, 'GST file')
-
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     if (gstFile != null) {
-                        //       showDialog(
-                        //         context: context,
-                        //         builder: (BuildContext context) {
-                        //           return Dialog(
-                        //             child: Image.file(File(gstFile.path)),
-                        //           );
-                        //         },
-                        //       );
-                        //     }
-                        //   },
-                        //   child: Image.file(File(gstFile.path), fit: BoxFit.cover),
-                        // ),
                       ),
                       const Spacer(),
                       IconButton(
@@ -1067,7 +937,6 @@ class _SignUpFormState extends State<SignUpForm> {
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
                 controller: bankName,
-                focusNode: bankNameFocusNode,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1101,7 +970,6 @@ class _SignUpFormState extends State<SignUpForm> {
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   maxLength: 11,
                   controller: ifscCode,
-                  focusNode: ifscCodeFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   textCapitalization: TextCapitalization.characters,
                   decoration: InputDecoration(
@@ -1138,22 +1006,6 @@ class _SignUpFormState extends State<SignUpForm> {
                         : Container(
                         width: 100,height: 50,
                         child: buildImageDialog(checkFile!, 'Cheque img')
-
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     if (checkFile != null) {
-                        //       showDialog(
-                        //         context: context,
-                        //         builder: (BuildContext context) {
-                        //           return Dialog(
-                        //             child: Image.file(File(checkFile.path)),
-                        //           );
-                        //         },
-                        //       );
-                        //     }
-                        //   },
-                        //   child: Image.file(File(checkFile.path), fit: BoxFit.cover),
-                        // ),
                       ),
                       const Spacer(),
                       IconButton(
@@ -1220,7 +1072,6 @@ class _SignUpFormState extends State<SignUpForm> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                   controller: accountNo,
                   maxLength: 20,
-                  focusNode: accountNoFocusNode,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1247,7 +1098,6 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: password,
-                focusNode: passwordFocusNode,
                 obscureText: obScured,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1307,7 +1157,6 @@ class _SignUpFormState extends State<SignUpForm> {
               child: TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: cPassword,
-                focusNode: cPasswordFocusNode,
                 obscureText: obCScured,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -1392,19 +1241,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       GetXSnackBarMsg.getWarningMsg('Please select location fields');
                     }
                     else if(panCardFile == null){
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().panCardSelect}');
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().panCardSelect);
                     }
                     else if(addressFile == null){
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().addressSelect}');
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().addressSelect);
                     }
                     else if(aadharCardFFile == null){
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().aadhaarCardFSelect}');
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().aadhaarCardFSelect);
                     }
                     else if(aadharCardBFile == null){
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().aadhaarCardBSelect}');
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().aadhaarCardBSelect);
                     }
                     else if(checkFile == null){
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().chequeImgSelect}');
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().chequeImgSelect);
                     }
                     else if(_agreedToTOS == false){
                       GetXSnackBarMsg.getWarningMsg('Please select term & condition');
@@ -1573,49 +1422,25 @@ class _SignUpFormState extends State<SignUpForm> {
 
   double loadingProgress = 0.0;
   bool isSigningUp = false;
-  showProgressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: StatefulBuilder(
-            builder: (BuildContext context, void Function(void Function()) setState){
-              return const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16.0),
-                    Text('Loading...'),
-                  ],
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
+
   signUpData() async {
     final dio = Dio();
     var url = ApiUrls.signUpUrl;
     try {
       var formData = FormData();
       formData.fields.addAll([
-        MapEntry("name", fullName.text),
-        MapEntry("email_id", emailId.text),
-        MapEntry("password", password.text),
-        MapEntry("mobile", mobile.text),
-        MapEntry("vendor_name", shopeName.text),
-        MapEntry("state_id", selectedStateId!),
-        MapEntry("city_id", selectedCityId!),
-        MapEntry("area_id", selectedAreaId!),
-        MapEntry("cost_center_id", selectedBranchId!),
-        MapEntry("address", address.text),
-        MapEntry("pincode", pincode.text),
-        MapEntry("pancard_number", panCardNo.text),
+        MapEntry("name", fullName.text ?? ''),
+        MapEntry("email_id", emailId.text ?? ''),
+        MapEntry("password", password.text ?? ''),
+        MapEntry("mobile", mobile.text ?? ''),
+        MapEntry("vendor_name", shopeName.text ?? ''),
+        MapEntry("state_id", selectedStateId! ?? ''),
+        MapEntry("city_id", selectedCityId! ?? ''),
+        MapEntry("area_id", selectedAreaId! ?? ''),
+        MapEntry("cost_center_id", selectedBranchId! ?? ''),
+        MapEntry("address", address.text ?? ''),
+        MapEntry("pincode", pincode.text ?? ''),
+        MapEntry("pancard_number", panCardNo.text ?? ''),
         MapEntry("sales_executive_admin_id", selectedSales ?? ''),
         MapEntry("b2b_subadmin_id", selectedB2b ?? ''),
         MapEntry("bank_name", bankName.text ?? ''),
@@ -1687,69 +1512,56 @@ class _SignUpFormState extends State<SignUpForm> {
              var errorData = responseData['error'];
              if (errorData['email_id'] != null) {
                var errorMessage = errorData['email_id'][0];
-               print("errorMessage->$errorMessage");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
                GetXSnackBarMsg.getWarningMsg('$errorMessage');
-               //Navigator.pop(context);
              }
              else if (errorData['mobile'] != null) {
                var errorMessage = errorData['mobile'][0];
-               print("errorMessage->$errorMessage");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
                GetXSnackBarMsg.getWarningMsg('${errorMessage}');
-               //Navigator.pop(context);
              }
              else if (errorData['pincode'] != null) {
                var errorMessage = errorData['pincode'][0];
-               print("errorMessage->$errorMessage");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
                GetXSnackBarMsg.getWarningMsg('$errorMessage');
-               //Navigator.pop(context);
              }
              else if (errorData['name'] != null) {
                var errorMessage = errorData['name'][0];
-               print("errorMessage->$errorMessage");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
                GetXSnackBarMsg.getWarningMsg('$errorMessage');
-               //Navigator.pop(context);
              }
              else if (errorData['password'] != null) {
                var errorMessage = errorData['password'][0];
-               print("error Msg->$errorMessage");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
                GetXSnackBarMsg.getWarningMsg('$errorMessage');
-               //Navigator.pop(context);
              } else {
-               print("in sub sub else");
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
              }
            } else {
-            print("in sub else");
             setState(() {
               loadingProgress = 0.0;
               isSigningUp = false;
             });
            }
          } else {
-           print("in main else");
            setState(() {
              loadingProgress = 0.0;
              isSigningUp = false;
@@ -1769,12 +1581,9 @@ class _SignUpFormState extends State<SignUpForm> {
         },
       );
       final jsonData = response.data;
-      print("sign jsonData-> $jsonData");
       if (response.statusCode == 200) {
-        print("in if with status->${jsonData['status']}");
         var bodyMSG = jsonData['message'];
         GetXSnackBarMsg.getSuccessMsg('$bodyMSG');
-        //SnackBarMessageShow.successsMSG('$bodyMSG', context);
         storeStateCityAreaBranch();
         Navigator.pushReplacement(
           context,
@@ -1784,7 +1593,6 @@ class _SignUpFormState extends State<SignUpForm> {
           loadingProgress = 0.0;
           isSigningUp = false;
         });
-        print("out from if");
       }
       else if (response.statusCode == 400) {
         var errorData = jsonData;
@@ -1798,20 +1606,18 @@ class _SignUpFormState extends State<SignUpForm> {
           var errorMessage = errorData['error']['password'][0];
           GetXSnackBarMsg.getWarningMsg('$errorMessage');
         } else {
-          print("in sub else");
           GetXSnackBarMsg.getWarningMsg('Create account problem');
           Navigator.pop(context);
         }
         Navigator.pop(context);
       } else {
-        print("in main else");
         GetXSnackBarMsg.getWarningMsg('Sign up problem');
         Navigator.pop(context);
       }
     }
     catch (e) {
       print('Error -> ${e.toString()}');
-      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
+      GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
       Navigator.pop(context);
     }
   }
@@ -1842,8 +1648,6 @@ class _SignUpFormState extends State<SignUpForm> {
   String? selectedCity;
   String? selectedCityId;
   Future<void> fetchCityList(var sState) async {
-    print('calling fetcxhCity');
-    print("sState ->$sState");
     setState(() {
       cityLoading = true;
     });
@@ -1920,8 +1724,6 @@ class _SignUpFormState extends State<SignUpForm> {
           b2bSubAdminList = data['data']['b2b_subadmins'];
           salesExecutiveList = data['data']['sales_executive_admins'];
         });
-        print("b2b -> $b2bSubAdminList");
-        print("sales -> $salesExecutiveList");
       } else {
       }
     } catch (e) {

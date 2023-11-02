@@ -47,7 +47,7 @@ class HomeMenuRepo{
   }
   Future<dynamic> popularPackageData(var index, var access_token, var packageData) async {
     dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.popularPackage}", access_token);
-    print("Response Package->$response");
+    print("Response Popular Package->$response");
 
     if (response['status'] == '402') {
       throw response['status'];
@@ -142,9 +142,7 @@ class HomeMenuRepo{
     if (response['status'] == '402') {
       throw response['status'];
     } else {
-      print("in else");
       try {
-        print("in try");
         return response = FaqsModel.fromJson(response);
       } catch (e) {
         print("faq e->$e");

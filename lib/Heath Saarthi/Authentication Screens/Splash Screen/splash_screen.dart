@@ -141,7 +141,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 150,
               ),
             ),
-            const Text("Version 1.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
+            const Text("Version 2.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
           ],
         ),
       )
