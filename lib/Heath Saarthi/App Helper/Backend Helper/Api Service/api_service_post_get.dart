@@ -1,7 +1,9 @@
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../App Exceptions/app_exceptions.dart';
 import 'api_service_type_post_get.dart';
 
@@ -45,12 +47,17 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
         },
       ).timeout(Duration(seconds: 30));
       responseJson = returnResponse(response);
-    }on SocketException{
+    }
+    on SocketException{
       throw FetchDataException(message: "");
     }
-    catch(e){
-      return e.toString();
-    }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    // }
+    // catch(e){
+    //   return e.toString();
+    // }
     return responseJson;
   }
 
@@ -67,9 +74,12 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
           body: data
       );
       responseJson = returnResponse(response);
-    } on SocketException {
-      throw FetchDataException(message: "");
-    }catch(e){
+    }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    // }
+    catch(e){
       return e;
     }
     return responseJson;

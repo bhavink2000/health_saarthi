@@ -142,7 +142,7 @@ class _SupportScreenState extends State<SupportScreen> {
                               // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter a email';
+                                  return 'Enter email id';
                                 }
                                 if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                                   return 'email id must contain at least one special character';
@@ -422,13 +422,8 @@ class _SupportScreenState extends State<SupportScreen> {
                                       style: const TextStyle(fontSize: 10, color: Colors.black87),
                                       decoration: InputDecoration(
                                         contentPadding: const EdgeInsets.all(hsPaddingM),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                        ),
-                                        hintText: 'Select Option',
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(5)),
+                                        hintText: 'Select option',
                                         hintStyle: const TextStyle(
                                           color: Colors.black54,
                                           fontFamily: FontType.MontserratRegular,

@@ -1,9 +1,9 @@
 class AppTextHelper{
 
 
-  var patientName = 'Enter patient name';
-  var patientMobile = 'Enter mobile number';
-  var bookingProblem = 'Booking problem';
+  var patientName = 'The name field is required.';
+  var patientMobile = 'The mobile no field is required.';
+  //var bookingProblem = 'Booking problem';
 
   var logoutProblem = 'Logout problem';
 
@@ -21,6 +21,7 @@ class AppTextHelper{
   var userNotFound = 'User not found';
 
   var serverError = 'Server error\nPlease try again';
+  var internalServerError = 'Internal server error\nPlease try again';
 
 //----->>>>> forgot password
   var enterMobileNo = 'Enter mobile number';
@@ -40,10 +41,10 @@ class AppTextHelper{
   var selectDay = 'Please select day';
 
 //----->>>>> location check
-  var selectState = 'Please select state';
-  var selectCity = 'Please select city';
-  var selectArea = 'Please select area';
-  var selectBranch = 'Please select branch';
+  var selectState = 'The state id field is required.';
+  var selectCity = 'The city id field is required.';
+  var selectArea = 'The area id field is required.';
+  var selectBranch = 'The cost center id field is required.';
 
 //----->>>>> document check
   var panCardSelect = 'Please select PAN card img';

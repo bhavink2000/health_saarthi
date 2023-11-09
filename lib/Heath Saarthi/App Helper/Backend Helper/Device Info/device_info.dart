@@ -13,12 +13,6 @@ class DeviceInfo{
 
 
   Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
-    print("------------------------");
-    print("Device token-->$deviceToken");
-    print("Device type-->$deviceType");
-
-    print("------------------------");
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
     var dType = deviceType == 'Android' ? 0 : 1;
     Map<String, String> headers = {
@@ -35,9 +29,7 @@ class DeviceInfo{
           'app_version': '2.02' ?? '',
         },
       );
-      print("Response Status Code -> ${response.statusCode}");
       print("Device Token Response -> ${response.body}");
-
       if (response.statusCode == 200) {
         return response.body;
       }else if(response.statusCode == 201){

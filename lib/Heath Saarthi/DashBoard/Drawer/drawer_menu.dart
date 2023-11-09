@@ -293,10 +293,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                                 print("Token is not deleted");
                                                               }
                                                             });
-                                                            print("removeUserData->$values");
                                                             var removeUser = values;
                                                             if(removeUser == true){
-                                                              print("removeUser proper remove");
                                                               Navigator.of(context).pushAndRemoveUntil(
                                                                 MaterialPageRoute(builder: (context) => const SplashScreen()),
                                                                     (Route<dynamic> route) => false,
@@ -308,7 +306,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                             }
                                                           });
                                                         }
-                                                        else{
+                                                        else if(logoutUserStatus == '402'){
+                                                          GetXSnackBarMsg.getWarningMsg('Token is Invalid');
                                                           print("user proper not logout,");
                                                           Navigator.pop(context);
                                                         }
@@ -370,7 +369,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
         Uri.parse(ApiUrls.logoutUrl),
         headers: headers,
       );
-      print("drawer logout response->${response.body}");
       final responseData = json.decode(response.body);
       print("drawer logout->$responseData");
       var bodyStatus = responseData['status'];
@@ -379,7 +377,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         return bodyStatus;
-      } else {
+      } else if(bodyStatus == '402'){
+        return bodyStatus;
       }
     } catch (error) {
       print("logout catch -error-->>${error.toString()}");

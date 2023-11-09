@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dio/dio.dart';
@@ -85,7 +86,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     setState(() {
       deviceToken = prefs.getString('deviceToken');
     });
-    print("SharedPreferences DeviceToken->$deviceToken");
+    log("SharedPreferences DeviceToken->$deviceToken");
   }
   @override
   Widget build(BuildContext context) {
@@ -724,7 +725,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           },
         ),
       );
-      print(response.data);
+      log(response.data);
       if (response.statusCode == 200) {
         var data = response.data;
         var msg = data['message'];
@@ -741,7 +742,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         }
       }
     } catch (e) {
-      print("Error uploading documents: ${e}");
+      log("Error uploading documents: ${e}");
       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectDocuments}');
       Navigator.pop(context);
     }
@@ -806,15 +807,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       }
       Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop(); // Dismiss the loading dialog
     } catch (e) {
-      print('Error: $e');
+      log('Error: $e');
       if (e.toString().contains('Token is Expired')) {
         logoutUser().then((value) {
           userDataSession.removeUserData().then((value) {
             DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
               if (value == 'success') {
-                print("token is deleted $value");
+                log("token is deleted $value");
               } else {
-                print("Token is not deleted");
+                log("Token is not deleted");
               }
             });
           });
@@ -824,7 +825,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           );
         });
       } else {
-        print('Error: $e');
+        log('Error: $e');
       }
       Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
     }
@@ -850,7 +851,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       } else {
       }
     } catch (error) {
-      print(error.toString());
+      log(error.toString());
       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }

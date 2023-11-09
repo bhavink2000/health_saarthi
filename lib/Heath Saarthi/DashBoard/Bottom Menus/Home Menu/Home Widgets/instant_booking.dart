@@ -906,10 +906,6 @@ class _InstantBookingState extends State<InstantBooking> {
       'cost_center_id': selectedBranchId ?? '',
       'address': address.text ?? '',
     };
-
-    print("---------------");
-    print("body data -->>$requestBody");
-    print("---------");
     try {
       final response = await http.post(
         Uri.parse(ApiUrls.instantBookingUrls),
@@ -944,8 +940,13 @@ class _InstantBookingState extends State<InstantBooking> {
         final msg = responseData['error']['mobile_no'][0];
         GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
-      } else {
-        GetXSnackBarMsg.getWarningMsg(AppTextHelper().bookingProblem);
+      }
+      else if(response.statusCode == 500){
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        Navigator.pop(context);
+      }
+      else {
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
       }
     } catch (error) {
       print("Error: $error");

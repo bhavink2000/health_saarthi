@@ -1,16 +1,9 @@
 import 'dart:math';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-import '../../../DashBoard/Notification Menu/notification_menu.dart';
 
 class NotificationService{
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  //final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   void requestNotificationPermission()async{
     NotificationSettings settings = await messaging.requestPermission(
         alert: true,
@@ -37,90 +30,55 @@ class NotificationService{
     String? token = await messaging.getToken();
     return token!;
   }
+}
 
-  // void initLocalNotification(BuildContext context, RemoteMessage message) async {
-  //   var androidInitializationSettings = const AndroidInitializationSettings("@mipmap/ic_launcher");
-  //   var iosInitializationSettings = const DarwinInitializationSettings();
-  //
-  //   var initializationSettings = InitializationSettings(
-  //     android: androidInitializationSettings,
-  //     iOS: iosInitializationSettings,
-  //   );
-  //   await _flutterLocalNotificationsPlugin.initialize(
-  //     initializationSettings,
-  //     onDidReceiveNotificationResponse: (payload) {
-  //       handleMessage(context, message);
-  //     },
-  //   );
-  // }
-  // void firebaseInit(BuildContext context) {
-  //   FirebaseMessaging.onMessage.listen((message) {
-  //
-  //     print("---------------------------------------");
-  //     print("message data->${message.data}");
-  //     print("message notification->${message.notification}");
-  //
-  //
-  //     print("notification title->${message.data['title']}");
-  //     print("notification message->${message.data['message']}");
-  //
-  //     print("---------------------------------------");
-  //     initLocalNotification(context, message);
-  //     showNotification(message);
-  //   });
-  // }
-  //
-  // Future<void> showNotification(RemoteMessage message)async{
-  //   print("showNotification message data->${message.data}");
-  //   print("showNotification message noti->${message.notification}");
-  //   AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //       Random.secure().nextInt(100000).toString(),
-  //       'High Importance Notification',
-  //       importance: Importance.max
-  //   );
-  //   AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
-  //       channel.id.toString(),
-  //       channel.name.toString(),
-  //       icon: "@mipmap/ic_launcher",
-  //       channelDescription: 'your channel description',
-  //       importance: Importance.high,
-  //       priority: Priority.high,
-  //       ticker: 'ticker'
-  //   );
-  //   DarwinNotificationDetails darwinNotificationDetails = const DarwinNotificationDetails(
-  //     presentAlert: true,
-  //     presentBadge: true,
-  //     presentSound: true,
-  //   );
-  //   NotificationDetails notificationDetails = NotificationDetails(
-  //       android: androidNotificationDetails,
-  //       iOS: darwinNotificationDetails
-  //   );
-  //   Future.delayed(Duration.zero,(){
-  //     _flutterLocalNotificationsPlugin.show(
-  //         0,
-  //         //message.notification!.title.toString(),
-  //         //message.notification!.body.toString(),
-  //         message.data!['title'],
-  //         message.data!['message'],
-  //         notificationDetails
-  //     );
-  //   });
-  // }
-  //
-  // void handleMessage(BuildContext context, RemoteMessage message) {
-  //   print("calling handleMessage");
-  //   if(message.data['title'] != null){
-  //     print("in if");
-  //     print("No data");
-  //   }
-  //   else{
-  //     print("in else");
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => NotificationMenu()),
-  //     );
-  //   }
-  //   print("called handleMessage");
-  // }
+class LocalNotificationService {
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
+  FlutterLocalNotificationsPlugin();
+
+  static void initialize() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    const InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
+    _notificationsPlugin.initialize(
+      initializationSettings,
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      displayNotification(message);
+    });
+  }
+
+  static void displayNotification(RemoteMessage message) async {
+    try {
+      final id = Random().nextInt(20000);
+      const NotificationDetails notificationDetails = NotificationDetails(
+        android: AndroidNotificationDetails(
+            "high_importance_channel",
+            "High Importance Notifications",
+            priority: Priority.high
+        ),
+      );
+      await _notificationsPlugin.show(
+        id,
+        message.data['title'],
+        message.data['message'],
+        notificationDetails,
+        payload: message.data['_id'],
+      );
+    } catch (e) {
+      log('e -> $e' as num);
+    }
+  }
+
+  static void handleNotificationSelection(String? payload) {
+    // Handle the action when the user selects the notification.
+    if (payload != null) {
+      print("Notification selected with payload: $payload");
+      // You can navigate to a specific screen or perform an action based on the payload.
+    }
+  }
 }

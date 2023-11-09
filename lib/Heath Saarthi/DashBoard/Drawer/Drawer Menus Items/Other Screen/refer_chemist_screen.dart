@@ -132,7 +132,7 @@ class _ReferChemistState extends State<ReferChemist> {
                               // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter a email';
+                                  return 'Enter email id';
                                 }
                                 if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                                   return 'email id must contain at least one special character';

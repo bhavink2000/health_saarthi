@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
@@ -43,7 +44,9 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                 padding: const EdgeInsets.fromLTRB(5, 10, 0, 10),
                 child: InkWell(
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                    //Get.to(TestListItems());
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestListItems()));
+                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                   },
                   child: Card(
                     elevation: 5,

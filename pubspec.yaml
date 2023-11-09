@@ -73,7 +73,7 @@ dependencies:
   get_storage: ^2.1.1
 
   # firebase and local notification
-  flutter_local_notifications: ^15.1.0+1
+  flutter_local_notifications: ^16.1.0
   firebase_messaging: ^14.7.3
   firebase_core: ^2.15.1
   firebase_core_platform_interface:

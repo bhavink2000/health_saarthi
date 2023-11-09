@@ -584,10 +584,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 );
                                 await bookOrder();
                               }
-                              // if (_formKey.currentState.validate()) {
-                              //   FocusScope.of(context).unfocus();
-                              //
-                              // }
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -649,7 +645,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   Future<void> bookOrder() async {
     final pGender = selectedGender == 'Male' ? 1 : selectedGender == 'Female' ? 2 : selectedGender == 'Other' ? 3 : 0;
 
-    print("test->${widget.testDis}/${widget.packageDis}.${widget.profileDis}/${widget.promoApply}");
     final headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -676,8 +671,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       'address': address.text ?? '',
     };
 
-
-    print("Body ->$requestBody");
     try {
       var request = http.MultipartRequest('POST', Uri.parse(ApiUrls.bookOrderUrls));
       request.headers.addAll(headers);
@@ -722,7 +715,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
         widget.dAreaNm = '';
         widget.dBranchNm = '';
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
-      } else if (bodyStatus == 400) {
+      }
+      else if (bodyStatus == 400) {
         if (responseData['error'] != null) {
           if (responseData['error']['email_id'] != null) {
             final eMsg = responseData['error']['email_id'][0];
@@ -743,13 +737,17 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             Navigator.pop(context);
           }
           else {
-            GetXSnackBarMsg.getWarningMsg('${AppTextHelper().bookingProblem}');
+            GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
             Navigator.pop(context);
           }
         }
       }
+      else if(response.statusCode == 500){
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        Navigator.pop(context);
+      }
       else {
-        GetXSnackBarMsg.getWarningMsg('Server error');
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
         Navigator.pop(context);
       }
     } catch (error) {

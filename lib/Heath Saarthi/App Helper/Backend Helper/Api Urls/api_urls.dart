@@ -1,8 +1,8 @@
 
 class ApiUrls{
 
-  static String mainUrls = 'https://hssawpl.com/api/v1/'; // live url
-  //static String mainUrls = 'https://hs.windzoon.in/api/v1/'; //demo url
+  //static String mainUrls = 'http://hssawpl.com/api/v1/'; // live url
+  static String mainUrls = 'https://hs.windzoon.in/api/v1/'; //demo url
 
 
   static String loginUrl = '${mainUrls}pharmacy/login';

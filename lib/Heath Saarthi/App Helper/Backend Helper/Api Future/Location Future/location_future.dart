@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Location%20Model/city_model.dart';
 import 'package:http/http.dart' as http;
+import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../Api Urls/api_urls.dart';
 import '../../Models/Location Model/area_model.dart';
 import '../../Models/Location Model/branch_model.dart';
@@ -21,13 +24,13 @@ class LocationFuture{
         final data = json.decode(response.body);
         StateModel stateModel = StateModel.fromJson(data);
         List<StateData>? stateList = stateModel.data;
-        print("State List -> $stateList");
+        log("State List -> $stateList");
         return stateList ?? [];
       } else {
         throw Exception('Failed to fetch state list');
       }
     } catch (e) {
-      print("Error -> $e");
+      log("Error -> $e");
       throw Exception('Failed to fetch state list');
     }
   }
@@ -45,13 +48,18 @@ class LocationFuture{
         final data = json.decode(response.body);
         CityModel cityModel = CityModel.fromJson(data);
         List<CityData>? cityList = cityModel.data;
-        print("City List ->$cityList");
+        log("City List ->$cityList");
         return cityList ?? [];
       }
       else{
         throw Exception('Failed to fetch city list');
       }
     }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    //   throw Exception('${e.message}');
+    // }
     catch(e){
       throw Exception('Failed to fetch City list');
     }
@@ -70,15 +78,20 @@ class LocationFuture{
         final data = json.decode(response.body);
         AreaModel areaModel = AreaModel.fromJson(data);
         List<AreaData>? areaList = areaModel.data;
-        print("Area List ->$areaList");
+        log("Area List ->$areaList");
         return areaList ?? [];
       }
       else{
         throw Exception('Failed to fetch area list');
       }
     }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    //   throw Exception('${e.message}');
+    // }
     catch(e){
-      print("Error -> $e");
+      log("Error -> $e");
       throw Exception('Failed to fetch Area list');
     }
   }
@@ -96,15 +109,20 @@ class LocationFuture{
         final data = json.decode(response.body);
         BranchModel branchModel = BranchModel.fromJson(data);
         List<BranchData>? branchList = branchModel.data;
-        print("Branch List ->$branchList");
+        log("Branch List ->$branchList");
         return branchList ?? [];
       }
       else{
         throw Exception('Failed to fetch branch list');
       }
     }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    //   throw Exception('${e.message}');
+    // }
     catch(e){
-      print("Error -> $e");
+      log("Error -> $e");
       throw Exception('Failed to fetch branch list');
     }
   }

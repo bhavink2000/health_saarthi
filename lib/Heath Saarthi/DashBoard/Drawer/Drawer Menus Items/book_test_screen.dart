@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:file_picker/file_picker.dart';
@@ -50,7 +51,12 @@ class _BookTestScreenState extends State<BookTestScreen> {
         isLoading = true;
       });
       print("userStatus ==>>$userStatus");
-    }catch(e){
+    }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    // }
+    catch(e){
       print("get User Status Error->$e");
     }
   }

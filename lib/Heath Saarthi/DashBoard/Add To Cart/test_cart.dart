@@ -1,5 +1,7 @@
 
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
@@ -101,7 +103,12 @@ class _TestCartState extends State<TestCart> {
       });
       print("userStatus ==>>$userStatus");
       print("branchId ==>>$sBranchId");
-    }catch(e){
+    }
+    // on SocketException catch (e) {
+    //   log('${e.message}');
+    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
+    // }
+    catch(e){
       print("get User Status Error->$e");
     }
   }

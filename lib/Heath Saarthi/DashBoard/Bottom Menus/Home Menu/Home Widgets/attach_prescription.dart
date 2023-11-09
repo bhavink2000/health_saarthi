@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, missing_return
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -1063,8 +1064,12 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         GetXSnackBarMsg.getWarningMsg('$errorMessage');
         Navigator.pop(context);
       }
-      else {
-        GetXSnackBarMsg.getWarningMsg(AppTextHelper().bookingProblem);
+      else if(response.statusCode == 500){
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        Navigator.pop(context);
+      }
+      else{
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
         Navigator.pop(context);
       }
     } catch (error) {
