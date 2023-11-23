@@ -750,8 +750,6 @@ class _TestCartState extends State<TestCart> {
                           ],
                         );
                       case Status.error:
-                        print("------------${value.cartList.status}");
-                        print("------------${value.cartList.message}");
                         return value.cartList.message == 'Cart is Empty'
                           ? Column(
                             children: [
@@ -871,9 +869,10 @@ class _TestCartState extends State<TestCart> {
                                                                               filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                                                                               child: AlertDialog(
                                                                                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                                                                backgroundColor: Colors.white,
                                                                                 content: Container(
                                                                                   decoration: BoxDecoration(
-                                                                                    color: Colors.white,
+                                                                                    //color: Colors.white,
                                                                                     borderRadius: BorderRadius.circular(30),
                                                                                   ),
                                                                                   child: Column(
@@ -1011,7 +1010,7 @@ class _TestCartState extends State<TestCart> {
                                                 onPressed: (){
                                                   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                                                 },
-                                                child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                                child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
                                             )
                                           ],
                                         ),
@@ -1086,7 +1085,7 @@ class _TestCartState extends State<TestCart> {
                                                                                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
                                                                                 content: Container(
                                                                                   decoration: BoxDecoration(
-                                                                                    color: Colors.white,
+                                                                                    //color: Colors.white,
                                                                                     borderRadius: BorderRadius.circular(30),
                                                                                   ),
                                                                                   child: Column(
@@ -1221,7 +1220,7 @@ class _TestCartState extends State<TestCart> {
                                               onPressed: (){
                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
                                               },
-                                              child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular))
+                                              child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
                                             )
                                           ],
                                         ),
@@ -1294,7 +1293,7 @@ class _TestCartState extends State<TestCart> {
                                                                                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
                                                                                 content: Container(
                                                                                   decoration: BoxDecoration(
-                                                                                    color: Colors.white,
+                                                                                    //color: Colors.white,
                                                                                     borderRadius: BorderRadius.circular(30),
                                                                                   ),
                                                                                   child: Column(

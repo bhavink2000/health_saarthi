@@ -114,7 +114,7 @@ class _TestMenuState extends State<TestMenu> {
     // }
     catch(e){
       print("get User Status Error->$e");
-      GetXSnackBarMsg.getWarningMsg('Authorization Token not found');
+      //GetXSnackBarMsg.getWarningMsg('Authorization Token not found');
       //Navigator.pop(context);
     }
   }
@@ -140,6 +140,7 @@ class _TestMenuState extends State<TestMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: SafeArea(
@@ -956,16 +957,13 @@ class _TestMenuState extends State<TestMenu> {
       }
       else if(response.statusCode == 500){
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
-        //Navigator.pop(context);
       }
       else {
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
-        //Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
       GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
-      //Navigator.pop(context);
     }
   }
 }

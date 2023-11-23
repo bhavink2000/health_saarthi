@@ -243,9 +243,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                       filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                                       child: AlertDialog(
                                         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                                        //backgroundColor: Colors.white,
                                         content: Container(
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            //color: Colors.white,
                                             borderRadius: BorderRadius.circular(30),
                                           ),
                                           child: Column(

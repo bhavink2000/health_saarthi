@@ -1,6 +1,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -638,80 +639,92 @@ class _SignUpFormState extends State<SignUpForm> {
                   Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: [
-                          aadharCardFFile == null
-                            ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                            : Container(
-                              width: 100,height: 50,
-                              child: buildImageDialog(aadharCardFFile!, 'Aadhaar card front')
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: () async {
-                              var aadhaarCardFrontFile = await FileImagePicker().pickFileManager(context);
-                              setState(() {
-                                aadharCardFFile = aadhaarCardFrontFile;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.file_copy_rounded
-                            )
-                          ),
-                          IconButton(
-                            onPressed: () async{
-                              var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
-                              setState(() {
-                                aadharCardFFile = aadhaarCardFrontCamera;
-                              });
-                            },
-                            icon: const Icon(
-                                Icons.camera_alt_rounded
-                            )
-                          ),
-                        ],
+                    child: Container(
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Row(
+                          children: [
+                            aadharCardFFile == null
+                              ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                              : Container(
+                                alignment: Alignment.centerLeft,
+                                width: aadharCardFFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
+                                child: aadharCardFFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                    ? Text(aadharCardFFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                                    : buildImageDialog(aadharCardFFile!, 'Aadhaar card front')
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              onPressed: () async {
+                                var aadhaarCardFrontFile = await FileImagePicker().pickFileManager(context);
+                                setState(() {
+                                  aadharCardFFile = aadhaarCardFrontFile;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.file_copy_rounded
+                              )
+                            ),
+                            IconButton(
+                              onPressed: () async{
+                                var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  aadharCardFFile = aadhaarCardFrontCamera;
+                                });
+                              },
+                              icon: const Icon(
+                                  Icons.camera_alt_rounded
+                              )
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   Card(
                     elevation: 5,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        children: [
-                          aadharCardBFile == null
-                            ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                            : Container(
-                              width: 100,height: 50,
-                              child: buildImageDialog(aadharCardBFile!, 'Aadhaar card back')
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: ()async {
-                              var aadhaarCardBack = await FileImagePicker().pickFileManager(context);
-                              setState(() {
-                                aadharCardBFile = aadhaarCardBack;
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.file_copy_rounded
-                            )
-                          ),
-                          IconButton(
-                            onPressed: ()async{
-                              var aadhaarCardBackCamera = await FileImagePicker().pickCamera(context);
-                              setState(() {
-                                aadharCardBFile = aadhaarCardBackCamera;
-                              });
-                            },
-                            icon: const Icon(
-                                Icons.camera_alt_rounded
-                            )
-                          ),
-                        ],
+                    child: Container(
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Row(
+                          children: [
+                            aadharCardBFile == null
+                              ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                              : Container(
+                                alignment: Alignment.centerLeft,
+                                width: aadharCardBFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
+                                child: aadharCardBFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                    ? Text(aadharCardBFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                                    : buildImageDialog(aadharCardBFile!, 'Aadhaar card back')
+                            ),
+                            const Spacer(),
+                            IconButton(
+                              onPressed: ()async {
+                                var aadhaarCardBack = await FileImagePicker().pickFileManager(context);
+                                setState(() {
+                                  aadharCardBFile = aadhaarCardBack;
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.file_copy_rounded
+                              )
+                            ),
+                            IconButton(
+                              onPressed: ()async{
+                                var aadhaarCardBackCamera = await FileImagePicker().pickCamera(context);
+                                setState(() {
+                                  aadharCardBFile = aadhaarCardBackCamera;
+                                });
+                              },
+                              icon: const Icon(
+                                  Icons.camera_alt_rounded
+                              )
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -755,40 +768,46 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Row(
-                    children: [
-                      addressFile == null
-                       ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                       : Container(
-                          width: 100,height: 50,
-                           child: buildImageDialog(addressFile!, 'Address proof')
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: ()async {
-                            var addressProof = await FileImagePicker().pickFileManager(context);
-                            setState(() {
-                              addressFile = addressProof;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.file_copy_rounded
-                          )
-                      ),
-                      IconButton(
-                          onPressed: () async{
-                            var addressProofCamera = await FileImagePicker().pickCamera(context);
-                            setState(() {
-                              addressFile = addressProofCamera;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.camera_alt_rounded
-                          )
-                      ),
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Row(
+                      children: [
+                        addressFile == null
+                         ? const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                         : Container(
+                            alignment: Alignment.centerLeft,
+                            width: addressFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
+                             child: addressFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                 ? Text(addressFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                                 : buildImageDialog(addressFile!, 'Address proof')
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: ()async {
+                              var addressProof = await FileImagePicker().pickFileManager(context);
+                              setState(() {
+                                addressFile = addressProof;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.file_copy_rounded
+                            )
+                        ),
+                        IconButton(
+                            onPressed: () async{
+                              var addressProofCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                addressFile = addressProofCamera;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.camera_alt_rounded
+                            )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -826,40 +845,46 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Row(
-                    children: [
-                      panCardFile == null
-                       ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                       : Container(
-                        width: 100,height: 50,
-                        child: buildImageDialog(panCardFile!, 'PAN card')
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: ()async {
-                            var panCardFileManger = await FileImagePicker().pickFileManager(context);
-                            setState(() {
-                              panCardFile = panCardFileManger;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.file_copy_rounded
-                          )
-                      ),
-                      IconButton(
-                          onPressed: () async{
-                            var panCardCamera = await FileImagePicker().pickCamera(context);
-                            setState(() {
-                              panCardFile = panCardCamera;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.camera_alt_rounded
-                          )
-                      ),
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Row(
+                      children: [
+                        panCardFile == null
+                         ? const Text("PAN card",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                         : Container(
+                          alignment: Alignment.centerLeft,
+                          width: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
+                          child: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                              ? Text(panCardFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              : buildImageDialog(panCardFile!, 'PAN card')
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: ()async {
+                              var panCardFileManger = await FileImagePicker().pickFileManager(context);
+                              setState(() {
+                                panCardFile = panCardFileManger;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.file_copy_rounded
+                            )
+                        ),
+                        IconButton(
+                            onPressed: () async{
+                              var panCardCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                panCardFile = panCardCamera;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.camera_alt_rounded
+                            )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -895,40 +920,46 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Row(
-                    children: [
-                      gstFile == null
-                       ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                       : Container(
-                        width: 100,height: 50,
-                        child: buildImageDialog(gstFile!, 'GST file')
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: ()async {
-                            var gstFileManger = await FileImagePicker().pickFileManager(context);
-                            setState(() {
-                              gstFile = gstFileManger;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.file_copy_rounded
-                          )
-                      ),
-                      IconButton(
-                          onPressed: () async{
-                            var gstFileCamera = await FileImagePicker().pickCamera(context);
-                            setState(() {
-                              gstFile = gstFileCamera;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.camera_alt_rounded
-                          )
-                      ),
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Row(
+                      children: [
+                        gstFile == null
+                         ? const Text("GST img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                         : Container(
+                          alignment: Alignment.centerLeft,
+                          width: gstFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 :100,height: 50,
+                          child: gstFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                              ? Text(gstFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              : buildImageDialog(gstFile!, 'GST file')
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: ()async {
+                              var gstFileManger = await FileImagePicker().pickFileManager(context);
+                              setState(() {
+                                gstFile = gstFileManger;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.file_copy_rounded
+                            )
+                        ),
+                        IconButton(
+                            onPressed: () async{
+                              var gstFileCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                gstFile = gstFileCamera;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.camera_alt_rounded
+                            )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -997,40 +1028,46 @@ class _SignUpFormState extends State<SignUpForm> {
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Row(
-                    children: [
-                      checkFile == null
-                        ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
-                        : Container(
-                        width: 100,height: 50,
-                        child: buildImageDialog(checkFile!, 'Cheque img')
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: ()async {
-                            var chequeFileManger = await FileImagePicker().pickFileManager(context);
-                            setState(() {
-                              checkFile = chequeFileManger;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.file_copy_rounded
-                          )
-                      ),
-                      IconButton(
-                          onPressed: () async{
-                            var chequeFileCamera = await FileImagePicker().pickCamera(context);
-                            setState(() {
-                              checkFile = chequeFileCamera;
-                            });
-                          },
-                          icon: const Icon(
-                              Icons.camera_alt_rounded
-                          )
-                      ),
-                    ],
+                child: Container(
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Row(
+                      children: [
+                        checkFile == null
+                          ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
+                          : Container(
+                          alignment: Alignment.centerLeft,
+                          width: checkFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
+                          child: checkFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                              ? Text(checkFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              : buildImageDialog(checkFile!, 'Cheque img')
+                        ),
+                        const Spacer(),
+                        IconButton(
+                            onPressed: ()async {
+                              var chequeFileManger = await FileImagePicker().pickFileManager(context);
+                              setState(() {
+                                checkFile = chequeFileManger;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.file_copy_rounded
+                            )
+                        ),
+                        IconButton(
+                            onPressed: () async{
+                              var chequeFileCamera = await FileImagePicker().pickCamera(context);
+                              setState(() {
+                                checkFile = chequeFileCamera;
+                              });
+                            },
+                            icon: const Icon(
+                                Icons.camera_alt_rounded
+                            )
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -1454,7 +1491,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "pancard",
           await MultipartFile.fromFile(
             panCardFile!.path,
-            filename: 'pancard.jpg',
+            filename: '${panCardFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1463,7 +1500,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "address_proof",
           await MultipartFile.fromFile(
             addressFile!.path,
-            filename: 'address_proof.jpg',
+            filename: '${addressFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1472,7 +1509,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "aadhar_front",
           await MultipartFile.fromFile(
             aadharCardFFile!.path,
-            filename: 'aadhar_front.jpg',
+            filename: '${aadharCardFFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1481,7 +1518,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "aadhar_back",
           await MultipartFile.fromFile(
             aadharCardBFile!.path,
-            filename: 'aadhar_back.jpg',
+            filename: '${aadharCardBFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1490,7 +1527,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "cheque_image",
           await MultipartFile.fromFile(
             checkFile!.path,
-            filename: 'cheque_image.jpg',
+            filename: '${checkFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1499,7 +1536,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "gst_image",
           await MultipartFile.fromFile(
             gstFile!.path,
-            filename: 'gst_image.jpg',
+            filename: '${gstFile!.path.split('/').last.toString()}',
           ),
         ));
       }

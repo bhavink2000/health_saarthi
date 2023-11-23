@@ -150,97 +150,100 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             child: Card(
                               elevation: 5,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                              child: Padding(
-                                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          "Upload prescription",
-                                          style: TextStyle(fontFamily: FontType.MontserratMedium),
-                                        ),
-                                        const Spacer(),
-                                        IconButton(
-                                          onPressed: () async {
-                                            var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
-                                            setState(() {
-                                              prescriptionFiles.add(prescriptionFileManager!);
-                                            });
-                                          },
-                                          icon: const Icon(
-                                            Icons.file_copy_rounded,
-                                            color: Colors.black,
+                              child: Container(
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                                child: Padding(
+                                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "Upload prescription",
+                                            style: TextStyle(fontFamily: FontType.MontserratMedium),
                                           ),
-                                        ),
-                                        IconButton(
-                                          onPressed: () async {
-                                            var prescriptionCamera = await FileImagePicker().pickCamera(context);
-                                            setState(() {
-                                              prescriptionFiles.add(prescriptionCamera!);
-                                            });
-                                          },
-                                          icon: const Icon(
-                                            Icons.camera_alt_rounded,
-                                            color: Colors.black,
+                                          const Spacer(),
+                                          IconButton(
+                                            onPressed: () async {
+                                              var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                                              setState(() {
+                                                prescriptionFiles.add(prescriptionFileManager!);
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.file_copy_rounded,
+                                              color: Colors.black,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
+                                          IconButton(
+                                            onPressed: () async {
+                                              var prescriptionCamera = await FileImagePicker().pickCamera(context);
+                                              setState(() {
+                                                prescriptionFiles.add(prescriptionCamera!);
+                                              });
+                                            },
+                                            icon: const Icon(
+                                              Icons.camera_alt_rounded,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
 
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: MediaQuery.of(context).size.height / 20,
-                                      child: prescriptionFiles.isNotEmpty ? ListView.builder(
-                                        itemCount: prescriptionFiles.length,
-                                        scrollDirection: Axis.horizontal,
-                                        itemBuilder: (context, index){
-                                          return Padding(
-                                            padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
-                                            child: Container(
-                                             // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                              decoration: BoxDecoration(
-                                                color: hsPrime,
-                                                borderRadius: BorderRadius.circular(10)
-                                              ),
-                                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                              child: GestureDetector(
-                                                onTap: (){
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context){
-                                                      return Dialog(
-                                                        child: Image.file(prescriptionFiles[index]),
-                                                      );
-                                                    }
-                                                  );
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      prescriptionFiles[index].path.split('/').last,
-                                                      style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
-                                                    ),
-                                                    SizedBox(width: 10),
-                                                    IconButton(
-                                                        onPressed: (){
-                                                          setState(() {
-                                                            prescriptionFiles.remove(prescriptionFiles[index]);
-                                                          });
-                                                        },
-                                                        icon: const Icon(Icons.delete_rounded,color: Colors.white,)
-                                                    )
-                                                  ],
+                                      Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.height / 20,
+                                        child: prescriptionFiles.isNotEmpty ? ListView.builder(
+                                          itemCount: prescriptionFiles.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index){
+                                            return Padding(
+                                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
+                                              child: Container(
+                                               // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                                decoration: BoxDecoration(
+                                                  color: hsPrime,
+                                                  borderRadius: BorderRadius.circular(10)
+                                                ),
+                                                padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                                child: GestureDetector(
+                                                  onTap: (){
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context){
+                                                        return Dialog(
+                                                          child: Image.file(prescriptionFiles[index]),
+                                                        );
+                                                      }
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        prescriptionFiles[index].path.split('/').last,
+                                                        style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      IconButton(
+                                                          onPressed: (){
+                                                            setState(() {
+                                                              prescriptionFiles.remove(prescriptionFiles[index]);
+                                                            });
+                                                          },
+                                                          icon: const Icon(Icons.delete_rounded,color: Colors.white,)
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          ) ;
-                                        },
-                                      ) : const Center(child: Text('No file chosen'),),
-                                    ),
-                                  ],
+                                            ) ;
+                                          },
+                                        ) : const Center(child: Text('No file chosen'),),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

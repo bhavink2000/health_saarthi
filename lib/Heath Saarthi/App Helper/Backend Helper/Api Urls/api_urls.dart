@@ -75,6 +75,8 @@ class ApiUrls{
 (2.01 live on 30-10-2023) -> add multiple prescription / show cart price in bottom
 (2.02 live on 02-11-2023) -> QR code design change/ add prescription in cart booking
 
+ -> Notification update / Make UI attractive / Img show in signup
+
   */
 
 

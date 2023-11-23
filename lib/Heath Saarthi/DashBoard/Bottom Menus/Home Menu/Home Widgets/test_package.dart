@@ -61,7 +61,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -122,7 +122,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -197,7 +197,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -267,7 +267,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                           Padding(
                             padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: Colors.white),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,

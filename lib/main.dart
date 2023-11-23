@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -8,8 +9,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:provider/provider.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
+import 'Heath Saarthi/App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Network Check/network_binding.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/authentication_provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
@@ -46,7 +50,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   String? fcmToken;
   late AndroidNotificationChannel channel;
@@ -55,11 +59,38 @@ class _MyAppState extends State<MyApp> {
 
   NotificationService notificationService = NotificationService();
 
+  GetAccessToken getAccessToken = GetAccessToken();
+  HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   @override
   void initState() {
     super.initState();
+    getAccessToken.checkAuthentication(context, setState);
+    WidgetsBinding.instance!.addObserver(this);
     notificationService.requestNotificationPermission();
     notificationCall();
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.resumed) {
+
+      //getUserStatus();
+
+      setState(() {
+      });
+      log('---->>>>> come to foreground');
+    }
+    else if(state == AppLifecycleState.paused){
+
+      setState(() {
+      });
+      log('---->>>>>  go to background');
+    }
   }
 
   void notificationCall()async{

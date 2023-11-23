@@ -3,6 +3,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:http/http.dart' as http;
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
@@ -19,6 +21,7 @@ import '../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
+import '../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../App Helper/Frontend Helper/UI Helper/app_icons_helper.dart';
 import '../Authentication Screens/Splash Screen/splash_screen.dart';
@@ -35,6 +38,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin{
+  final controller = Get.put(BottomBarController());
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GetAccessToken getAccessToken = GetAccessToken();
@@ -211,33 +215,67 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       key: _scaffoldKey,
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      bottomNavigationBar: FloatingNavbar(
-        backgroundColor: hsPrimeOne,
-        selectedItemColor: hsOne,
-        iconSize: 20,
-        fontSize: 12,
-        unselectedItemColor: Colors.white60,
-        onTap: onTapScreen,
-        currentIndex: _currentIndex,
-        items: [
-          FloatingNavbarItem(
-            title: 'Home',
-            customWidget: Image(image: AppIcons().HHome,width: _currentIndex == 0 ? 25 : 20,color: _currentIndex == 0 ? Colors.black87 : Colors.white60)
-          ),
-          FloatingNavbarItem(
-            title: 'Book Now',
-            customWidget: Image(image: AppIcons().HBookNow,width: _currentIndex == 1 ? 25 : 20,color: _currentIndex == 1 ? Colors.black87 : Colors.white60)
-          ),
-          FloatingNavbarItem(
-            title: 'Record',
-            customWidget: Image(image: AppIcons().HRecord,width: _currentIndex == 2 ? 25 : 20,color: _currentIndex == 2 ? Colors.black87 : Colors.white60)
-          ),
-          FloatingNavbarItem(
-            title: 'Profile',
-            customWidget: Image(image: AppIcons().HProfile,width: _currentIndex == 3 ? 25 : 20,color: _currentIndex == 3 ? Colors.black87 : Colors.white60)
-          ),
-        ],
-      ),
+      bottomNavigationBar: bottomNavBar(),
+      // bottomNavigationBar: FloatingNavbar(
+      //   backgroundColor: hsPrimeOne,
+      //   selectedItemColor: hsOne,
+      //   iconSize: 20,
+      //   fontSize: 12,
+      //   unselectedItemColor: Colors.white60,
+      //   onTap: onTapScreen,
+      //   currentIndex: _currentIndex,
+      //   items: [
+      //     FloatingNavbarItem(
+      //       title: 'Home',
+      //       customWidget: Image(image: AppIcons().HHome,width: _currentIndex == 0 ? 25 : 20,color: _currentIndex == 0 ? Colors.black87 : Colors.white60)
+      //     ),
+      //     FloatingNavbarItem(
+      //       title: 'Book Now',
+      //       customWidget: Image(image: AppIcons().HBookNow,width: _currentIndex == 1 ? 25 : 20,color: _currentIndex == 1 ? Colors.black87 : Colors.white60)
+      //     ),
+      //     FloatingNavbarItem(
+      //       title: 'Record',
+      //       customWidget: Image(image: AppIcons().HRecord,width: _currentIndex == 2 ? 25 : 20,color: _currentIndex == 2 ? Colors.black87 : Colors.white60)
+      //     ),
+      //     FloatingNavbarItem(
+      //       title: 'Profile',
+      //       customWidget: Image(image: AppIcons().HProfile,width: _currentIndex == 3 ? 25 : 20,color: _currentIndex == 3 ? Colors.black87 : Colors.white60)
+      //     ),
+      //   ],
+      // ),
+
+      // bottomNavigationBar: BottomNavyBar(
+      //   backgroundColor: hsPrimeOne,
+      //   selectedIndex: _currentIndex,
+      //   showElevation: true,
+      //   onItemSelected: onTapScreen,
+      //   items: [
+      //     BottomNavyBarItem(
+      //       icon: Image(image: AppIcons().HHome,width: _currentIndex == 0 ? 25 : 20,color: _currentIndex == 0 ? Colors.black87 : Colors.white60),
+      //       title: Text('Home'),
+      //       activeColor: Colors.white,
+      //       inactiveColor: Colors.white60
+      //     ),
+      //     BottomNavyBarItem(
+      //         icon: Image(image: AppIcons().HBookNow,width: _currentIndex == 1 ? 25 : 20,color: _currentIndex == 1 ? Colors.black87 : Colors.white60),
+      //         title: Text('Book Now'),
+      //         activeColor: Colors.white,
+      //       inactiveColor: Colors.white60
+      //     ),
+      //     BottomNavyBarItem(
+      //         icon: Image(image: AppIcons().HRecord,width: _currentIndex == 2 ? 25 : 20,color: _currentIndex == 2 ? Colors.black87 : Colors.white60),
+      //         title: Text('Record'),
+      //         activeColor: Colors.white,
+      //       inactiveColor: Colors.white60
+      //     ),
+      //     BottomNavyBarItem(
+      //         icon: Image(image: AppIcons().HProfile,width: _currentIndex == 3 ? 25 : 20,color: _currentIndex == 3 ? Colors.black87 : Colors.white60),
+      //         title: Text('Profile'),
+      //         activeColor: Colors.white,
+      //       inactiveColor: Colors.white60
+      //     ),
+      //   ],
+      // ),
       body: SafeArea(
         child: Column(
           children: [
@@ -294,8 +332,9 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
               ),
             ),
             Expanded(
-              child: _widgetList[_currentIndex]
-            )
+              //child: _widgetList[_currentIndex]
+              child: Obx(() => controller.screens[controller.index.value]),
+            ),
           ],
         ),
       ),

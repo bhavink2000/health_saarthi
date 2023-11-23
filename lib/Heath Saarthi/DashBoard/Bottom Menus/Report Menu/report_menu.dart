@@ -86,6 +86,7 @@ class _ReportMenuState extends State<ReportMenu> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 1.28,
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+      color: Colors.white,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -113,7 +114,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                     contentPadding: const EdgeInsets.only(top: 10.0),
                                     content: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        //color: Colors.white,
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       height: MediaQuery.of(context).size.height / 4.9.h,
@@ -266,7 +267,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                     contentPadding: const EdgeInsets.only(top: 10.0),
                                     content: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        //color: Colors.white,
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       height: MediaQuery.of(context).size.height / 4.9.h,
@@ -420,7 +421,7 @@ class _ReportMenuState extends State<ReportMenu> {
                                     contentPadding: const EdgeInsets.only(top: 10.0),
                                     content: Container(
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        //color: Colors.white,
                                         borderRadius: BorderRadius.circular(30),
                                       ),
                                       height: MediaQuery.of(context).size.height / 3.9.h,

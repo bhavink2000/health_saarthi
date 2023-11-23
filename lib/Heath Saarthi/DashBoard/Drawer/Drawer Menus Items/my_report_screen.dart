@@ -129,7 +129,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                               contentPadding: const EdgeInsets.only(top: 10.0),
                                               content: Container(
                                                 decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  //color: Colors.white,
                                                   borderRadius: BorderRadius.circular(30),
                                                 ),
                                                 height: MediaQuery.of(context).size.height / 4.9.h,
@@ -281,7 +281,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                               contentPadding: const EdgeInsets.only(top: 10.0),
                                               content: Container(
                                                 decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  //color: Colors.white,
                                                   borderRadius: BorderRadius.circular(30),
                                                 ),
                                                 height: MediaQuery.of(context).size.height / 4.9.h,
@@ -433,7 +433,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
                                               contentPadding: const EdgeInsets.only(top: 10.0),
                                               content: Container(
                                                 decoration: BoxDecoration(
-                                                  color: Colors.white,
+                                                  //color: Colors.white,
                                                   borderRadius: BorderRadius.circular(30),
                                                 ),
                                                 height: MediaQuery.of(context).size.height / 3.5.h,

@@ -91,6 +91,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 1.28,
       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+      color: Colors.white,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -229,7 +230,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   elevation: 5,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: const ListTile(
-                    title: Text("Change password",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: Text("Change password",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     trailing: Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                 ),
@@ -243,15 +244,15 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("Pancard",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("Pancard",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(panCardChange == null ? '$panCard' : 'Pancard is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: panCardChange == null ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -301,16 +302,16 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(aadhaarCardFChange == null
                         ? '$aadharCardF' : 'Aadhaar card front is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: aadhaarCardFChange == null  ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -360,16 +361,16 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(aadhaarCardBChange == null
                         ? '$aadharCardB' : 'Aadhaar card back is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: aadhaarCardBChange == null ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -419,16 +420,16 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(addressChange == null
                         ? '$addressProfe' : 'Address proof is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: addressChange == null ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -478,16 +479,16 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("Cheque image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("Cheque image",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(chequeChange == null
                         ? '$chequeFile' : 'Cheque img is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: chequeChange == null ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -537,16 +538,16 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   child: ExpansionTile(
                     tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                    title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                    title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                     subtitle: Text(gstFileChange == null
                         ? '${gstFile == 'null' ? 'N/A' : gstFile}' : 'GST img is picked',
                       style: TextStyle(
                           fontFamily: FontType.MontserratRegular,
                           color: gstFileChange == null ? Colors.black87 : hsPrime,
-                          fontSize: 12),
+                          fontSize: 10),
                     ),
                     trailing: Container(
-                      width: 100,
+                      width: 110,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -605,7 +606,7 @@ class _ProfileMenuState extends State<ProfileMenu> {
                   GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                 }
               },
-              child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium))
+              child: Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white))
             ) : Container()
           ],
         ),
