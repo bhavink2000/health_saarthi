@@ -1,4 +1,3 @@
-
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,6 +13,7 @@ import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.
 import '../../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
+import '../../../../App Helper/Widget Helper/appbar_helper.dart';
 import '../../../Add To Cart/test_cart.dart';
 
 class TestListItems extends StatefulWidget {
@@ -53,35 +53,7 @@ class _TestListItemsState extends State<TestListItems> {
           children: [
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                          child: Row(
-                            children: [
-                              IconButton(onPressed: (){
-                                Navigator.pop(context);
-                                }, icon: const Icon(Icons.arrow_back,color: Colors.black,size: 24)),
-                              SizedBox(width: 10.w),
-                              Text("Test Items",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.black,fontSize: 14.sp,fontWeight: FontWeight.bold),)
-                            ],
-                          )
-                      ),
-                      Row(
-                        children: [
-                          IconButton(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                          }, icon: Icon(Icons.shopping_cart_outlined,color: hsTestColor,size: 24)),
-                          IconButton(onPressed: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                          }, icon: Icon(Icons.circle_notifications_rounded,color: hsTestColor,size: 24)),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                const AppBarHelper(appBarLabel: 'Test Items'),
                 Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -89,10 +61,10 @@ class _TestListItemsState extends State<TestListItems> {
                     elevation: 0,
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                     child: Container(
-                      height: MediaQuery.of(context).size.height / 19.h,
+                      height: MediaQuery.of(context).size.height / 18.h,
                       decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          border: Border.all(color: Colors.grey.withOpacity(1),width: 1),
+                          color: hsPrime.withOpacity(0.1),
+                          border: Border.all(color: hsPrime,width: 0.2),
                           borderRadius: const BorderRadius.all(Radius.circular(4))
                       ),
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -144,11 +116,11 @@ class _TestListItemsState extends State<TestListItems> {
                           print("status.error test msg-->>${value.testList.message}-------------");
                           print("status.error test status-->>${value.testList.status}-------------");
                           return value.testList.status == '402'
-                           ? TokenExpiredHelper(tokenMsg: value.testList.message)
-                           : value.testList.message == 'Internet connection problem' ? CenterLoading() : value.testList.data == []
-                                ? Container()
-                                : const Center(
-                                  child: Text(
+                              ? TokenExpiredHelper(tokenMsg: value.testList.message)
+                              : value.testList.message == 'Internet connection problem' ? CenterLoading() : value.testList.data == []
+                              ? Container()
+                              : const Center(
+                              child: Text(
                                   "Test Not found your branch",
                                   style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16
                                   ),textAlign: TextAlign.center
@@ -195,7 +167,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                 borderRadius: const BorderRadius.only(
                                                                     topLeft: Radius.circular(10),topRight: Radius.circular(10)
                                                                 ),
-                                                                color: hsTestColor.withOpacity(0.5),
+                                                                color: hsPrime.withOpacity(0.8),
                                                               ),
                                                               padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                               child: Text(
@@ -229,7 +201,6 @@ class _TestListItemsState extends State<TestListItems> {
                                                                               setState(() {
                                                                                 homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
                                                                               });
-                                                                              //homeMenusProvider.fetchTest(curentindex + 1, getAccessToken.access_token,testData);
                                                                             });
                                                                           }
                                                                         },
@@ -237,7 +208,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                           decoration: BoxDecoration(borderRadius: const BorderRadius.only(
                                                                               bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
                                                                           ),
-                                                                           color: testI.bookedStatus == 1 ? hsTestColor.withOpacity(0.2): hsTestColor
+                                                                              color: testI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
                                                                           ),
                                                                           padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                                                                           child: Text(
@@ -283,7 +254,7 @@ class _TestListItemsState extends State<TestListItems> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height / 12.h,
-                                color: hsTestColor,
+                                color: hsPrime,
                                 child: InkWell(
                                   onTap: (){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
@@ -294,7 +265,7 @@ class _TestListItemsState extends State<TestListItems> {
                                       Padding(
                                         padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
                                         child: Text(
-                                            "Total Cart Items [ ${value.testList.data!.cartData!.count} ]",
+                                          "Total Cart Items [ ${value.testList.data!.cartData!.count} ]",
                                           style: const TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
                                         ),
                                       ),
@@ -308,10 +279,10 @@ class _TestListItemsState extends State<TestListItems> {
                                               children: [
                                                 Text(
                                                   "\u{20B9}${value.testList.data!.cartData!.amount}",
-                                                  style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsTestColor,fontWeight: FontWeight.bold),
+                                                  style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 5.w),
-                                                Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsTestColor),
+                                                Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPrime),
                                               ],
                                             ),
                                           ),
@@ -335,3 +306,4 @@ class _TestListItemsState extends State<TestListItems> {
     );
   }
 }
+

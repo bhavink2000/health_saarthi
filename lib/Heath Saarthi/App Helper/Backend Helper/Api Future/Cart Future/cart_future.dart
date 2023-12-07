@@ -1,8 +1,10 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Cart%20Menu/patient_model.dart';
 import 'package:http/http.dart' as http;
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
@@ -12,11 +14,13 @@ import 'cart_response_model.dart';
 
 class CartFuture{
   var count, amount;
+
+  final box = GetStorage();
   Future<CartResponseModel> addToCartTest(accessToken, testId, BuildContext context) async {
-    print("add to cart ->$testId /$accessToken");
+    print("add to cart ->$testId /${box.read('accessToken')}");
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(
@@ -26,6 +30,7 @@ class CartFuture{
           'test_managements_id': testId.toString(),
         },
       );
+
       final responseData = json.decode(response.body);
       var bodyStatus = responseData['status'];
       var bodyMsg = responseData['message'];
@@ -93,6 +98,7 @@ class CartFuture{
           'mobile_no': mobileNumber?.toString() ?? '',
         }
       );
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         MobileNumberModel mobileNumberModel = MobileNumberModel.fromJson(data);

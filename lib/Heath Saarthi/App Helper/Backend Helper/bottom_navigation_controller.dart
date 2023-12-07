@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
@@ -15,124 +14,140 @@ bottomNavBar() {
   final controller = Get.put(BottomBarController());
   return Container(
     height: 65,
-    margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+    margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       color: hsPrimeOne,
     ),
-    padding: EdgeInsets.symmetric(vertical: 5.0),
+    padding: const EdgeInsets.symmetric(vertical: 5.0),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Obx(
-              ()=> GestureDetector(
+          () => GestureDetector(
               onTap: () {
                 controller.index.value = 0;
                 log('index ==> ${controller.index.value}');
               },
               child: Container(
                 width: 80,
-                decoration: controller.index.value == 0 ? BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)
-                ) : BoxDecoration(),
-                padding: EdgeInsets.only(top: 5,),
+                decoration: controller.index.value == 0
+                    ? BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10))
+                    : const BoxDecoration(),
+                padding: const EdgeInsets.only(
+                  top: 5,
+                ),
                 child: Column(
                   children: [
-                    ImageIcon(
-                        AppIcons().HHome,
+                    ImageIcon(AppIcons().HHome,
                         size: 25,
                         color: controller.index.value == 0
                             ? Colors.black
                             : Colors.white),
-                    Text('Home',style: TextStyle(color: controller.index.value == 0
-                        ? hsOne
-                        : Colors.white),)
+                    Text(
+                      'Home',
+                      style: TextStyle(
+                          color: controller.index.value == 0
+                              ? hsPrime
+                              : Colors.white),
+                    )
                   ],
                 ),
               )),
         ),
         Obx(
-              ()=> GestureDetector(
+          () => GestureDetector(
               onTap: () {
                 controller.index.value = 1;
                 log('index ==> ${controller.index.value}');
               },
               child: Container(
                 width: 80,
-                decoration: controller.index.value == 1 ? BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)
-                ) : BoxDecoration(),
-                padding: EdgeInsets.only(top: 5),
+                decoration: controller.index.value == 1
+                    ? BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10))
+                    : const BoxDecoration(),
+                padding: const EdgeInsets.only(top: 5),
                 child: Column(
                   children: [
-                    ImageIcon(
-                        AppIcons().HBookNow,
+                    ImageIcon(AppIcons().HBookNow,
                         size: 25,
                         color: controller.index.value == 1
                             ? Colors.black
                             : Colors.white),
-                    Text('Book Now',style: TextStyle(color: controller.index.value == 1
-                        ? hsOne
-                        : Colors.white),)
+                    Text(
+                      'Book Now',
+                      style: TextStyle(
+                          color: controller.index.value == 1
+                              ? hsPrime
+                              : Colors.white),
+                    )
                   ],
                 ),
               )),
         ),
         Obx(
-              ()=> GestureDetector(
+          () => GestureDetector(
             onTap: () {
               controller.index.value = 2;
               log('index ==> ${controller.index.value}');
             },
             child: Container(
               width: 80,
-              decoration: controller.index.value == 2 ? BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-              ) : BoxDecoration(),
-              padding: EdgeInsets.only(top: 5),
+              decoration: controller.index.value == 2
+                  ? BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10))
+                  : const BoxDecoration(),
+              padding: const EdgeInsets.only(top: 5),
               child: Column(
                 children: [
-                  ImageIcon(
-                      AppIcons().HRecord,
+                  ImageIcon(AppIcons().HRecord,
                       size: 25,
                       color: controller.index.value == 2
                           ? Colors.black
                           : Colors.white),
-                  Text('Record',style: TextStyle(color: controller.index.value == 2
-                      ? hsOne
-                      : Colors.white),)
+                  Text(
+                    'Record',
+                    style: TextStyle(
+                        color:
+                            controller.index.value == 2 ? hsPrime : Colors.white),
+                  )
                 ],
               ),
             ),
           ),
         ),
         Obx(
-              ()=> GestureDetector(
+          () => GestureDetector(
             onTap: () {
               controller.index.value = 3;
               log('index ==> ${controller.index.value}');
             },
             child: Container(
               width: 80,
-              decoration: controller.index.value == 3 ? BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10)
-              ) : BoxDecoration(),
-              padding: EdgeInsets.only(top: 5),
+              decoration: controller.index.value == 3
+                  ? BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10))
+                  : const BoxDecoration(),
+              padding: const EdgeInsets.only(top: 5),
               child: Column(
                 children: [
-                  ImageIcon(
-                      AppIcons().HProfile,
+                  ImageIcon(AppIcons().HProfile,
                       size: 25,
                       color: controller.index.value == 3
                           ? Colors.black
                           : Colors.white),
-                  Text('Profile',style: TextStyle(color: controller.index.value == 3
-                      ? hsOne
-                      : Colors.white),)
+                  Text(
+                    'Profile',
+                    style: TextStyle(
+                        color:
+                            controller.index.value == 3 ? hsPrime : Colors.white),
+                  )
                 ],
               ),
             ),

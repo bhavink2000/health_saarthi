@@ -81,13 +81,13 @@ class _CustomPaginationWidgetState extends State<CustomPaginationWidget> {
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(20)),
-                        color: currentPage == index ? hsOne : Colors.white,
+                        color: currentPage == index ? hsPrime : Colors.white,
                       ),
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       child: Text(
                         "${index + 1}",
                         style: TextStyle(
-                            color: currentPage == index ? Colors.white : hsOne),
+                            color: currentPage == index ? Colors.white : hsPrime),
                       ),
                     ),
                   ),

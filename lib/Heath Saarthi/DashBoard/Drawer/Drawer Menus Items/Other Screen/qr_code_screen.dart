@@ -71,7 +71,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: hsOne,
+      backgroundColor: hsPrime,
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
@@ -267,7 +267,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
-                                              color: hsOne),
+                                              color: hsPrime),
                                           child: const Text(
                                             'Download',
                                             style: TextStyle(
@@ -298,7 +298,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(15),
-                                              color: hsOne),
+                                              color: hsPrime),
                                           child: const Text(
                                             'Share',
                                             style: TextStyle(
@@ -336,7 +336,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
         children: [
           Image(image: imgIcon,width: 30),
           const SizedBox(width: 5),
-          Text('$textOne\n$textTwo',style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 11,fontWeight: FontWeight.bold),)
+          Text('$textOne\n$textTwo',style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10,fontWeight: FontWeight.bold),)
         ],
       ),
     );

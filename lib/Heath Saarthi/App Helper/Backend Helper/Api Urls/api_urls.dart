@@ -1,8 +1,8 @@
 
 class ApiUrls{
 
-  //static String mainUrls = 'http://hssawpl.com/api/v1/'; // live url
-  static String mainUrls = 'https://hs.windzoon.in/api/v1/'; //demo url
+  //static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
+  static String mainUrls = 'https://hs.windzoon.in/api/v1/';                    // demo url
 
 
   static String loginUrl = '${mainUrls}pharmacy/login';
@@ -68,20 +68,14 @@ class ApiUrls{
   static String qrCodeUrl = '${mainUrls}pharmacy/download-qr-code';
 }
 
-// Live app changes
+// ----->>>>> Live app changes <<<<< -----
 
 /*
+
 (2.0 live on 11-10-2023)
 (2.01 live on 30-10-2023) -> add multiple prescription / show cart price in bottom
 (2.02 live on 02-11-2023) -> QR code design change/ add prescription in cart booking
+(2.03 live on 29-11-2023) -> Notification (foreground,background,terminate), / Make UI attractive / Img/PDF name show in signup / put (*) with red color for mandatory field /Exit and back functionality
 
- -> Notification update / Make UI attractive / Img show in signup
-
-  */
-
-
-
-//var url = 'http://3.6.102.7/mobile-app/healthsaarthi.apk';
-//var url = 'https://healthsaarthi.windzoon.in/app-release.apk';
-//var url = 'https://drive.google.com/uc?id=1RG3CAPiwiFlFATUlIIwhk0RrbEU4PgVP&export=download';
-//var url = 'http://hssawpl.com/mobile-app/healthsaarthi.apk';
+ - gender selection make proper(30/11)
+*/

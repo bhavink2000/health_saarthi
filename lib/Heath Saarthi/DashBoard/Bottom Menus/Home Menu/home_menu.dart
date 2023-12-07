@@ -79,60 +79,62 @@ class _HomeMenuState extends State<HomeMenu> {
       print("get User Status Error->$e");
     }
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Expanded(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          //height: MediaQuery.of(context).size.height,
-          color: Colors.white,
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              children: [
-                SizedBox(height: 10.h),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
-                  child: Card(
-                    elevation: 0,
-                    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-                    child: Container(
-                      height: MediaQuery.of(context).size.height / 20.h,
-                      decoration: BoxDecoration(
-                          color: hsPrime.withOpacity(0.1),
-                          border: Border.all(color: hsPrime,width: 0.2),
-                          borderRadius: const BorderRadius.all(Radius.circular(4))
+      backgroundColor: Colors.white,
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        color: Colors.white,
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(height: 10.h),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
+                child: Card(
+                  elevation: 0,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height / 18.h,
+                    decoration: BoxDecoration(
+                        color: hsPrime.withOpacity(0.1),
+                        border: Border.all(color: hsPrime,width: 0.2),
+                        borderRadius: const BorderRadius.all(Radius.circular(4))
+                    ),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: TextFormField(
+                      autofocus: false,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                          border: InputBorder.none,
+                          hintText: 'Search for Tests, Package',
+                          hintStyle: const TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),
+                          prefixIcon: const Icon(Icons.search_rounded,size: 20),
+                          focusColor: hsPrime
                       ),
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: TextFormField(
-                        autofocus: false,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                            border: InputBorder.none,
-                            hintText: 'Search for Tests, Package',
-                            hintStyle: const TextStyle(fontSize: 12,fontFamily: FontType.MontserratRegular),
-                            prefixIcon: const Icon(Icons.search_rounded,size: 20),
-                            focusColor: hsPrime
-                        ),
-                        onChanged: (value) {},
-                        onTap: (){
-                          showSearch(
-                              context: context,
-                              delegate: GlobalSearch(context: context,accessToken: getAccessToken.access_token)
-                          );
-                        },
-                      ),
+                      onChanged: (value) {},
+                      onTap: (){
+                        showSearch(
+                            context: context,
+                            delegate: GlobalSearch(context: context,accessToken: getAccessToken.access_token)
+                        );
+                      },
                     ),
                   ),
                 ),
-                const SizedBox(height: 10),
-                const HomeImageSlider(),
-                HomeTestPackage(uStatus: userStatus),
-                const HomeOffers(),
-                const HomeBodyCheckups(),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+              const HomeImageSlider(),
+              HomeTestPackage(uStatus: userStatus),
+              const HomeOffers(),
+              const HomeBodyCheckups(),
+            ],
           ),
         ),
       ),

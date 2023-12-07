@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -8,8 +9,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:provider/provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
@@ -25,6 +26,7 @@ Future<void> main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   DependencyInjection.init();
   HttpOverrides.global = MyHttpOverrides();
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -61,52 +63,119 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
+
+
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+
     WidgetsBinding.instance!.addObserver(this);
     notificationService.requestNotificationPermission();
     notificationCall();
   }
+
   @override
   void dispose() {
     WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
+
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
+    getAccessToken.checkAuthentication(context, setState);
     if (state == AppLifecycleState.resumed) {
-
-      //getUserStatus();
-
-      setState(() {
+      log('----- >>>>> come to foreground from background <<<<< -----');
+      Future.delayed(Duration(seconds: 2), () {
+        callingForeground();
       });
-      log('---->>>>> come to foreground');
+      setState(() {});
     }
     else if(state == AppLifecycleState.paused){
-
-      setState(() {
+      log('----- >>>>> go to background from foreground <<<<< -----');
+      Future.delayed(Duration(seconds: 2), () {
+        callingBackground();
       });
-      log('---->>>>>  go to background');
+      setState(() {});
     }
   }
 
+  final box = GetStorage();
+  void callingForeground()async{
+    try{
+      notificationCall();
+      log('Calling fetchProfile in foreground');
+      var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      setState(() {
+        box.write('userStatus', userStatus.data!.status);
+      });
+      log('Called fetchProfile in foreground');
+      log('calling fetchTodayDeal in foreground');
+      await homeMenusProvider.fetchTodayDeal(1, getAccessToken.access_token);
+      log('Called fetchTodayDeal in foreground');
+    }
+    catch(e){
+      log("----- >>>>> foreground catch e -> $e");
+    }
+  }
+
+  void callingBackground()async{
+    try{
+      notificationCall();
+      var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      setState(() {
+        box.write('userStatus', userStatus.data!.status);
+      });
+      log('calling fetchTest in background');
+      await homeMenusProvider.fetchTest(1, getAccessToken.access_token, '');
+      log('Called fetchTest in background');
+      log('calling fetchPackage in background');
+      await homeMenusProvider.fetchPackage(1, getAccessToken.access_token, '');
+      log('Called fetchPackage in background');
+    }
+    catch(e){
+      log("----- >>>>> background catch e -> $e");
+    }
+  }
+
+
+
   void notificationCall()async{
    await Firebase.initializeApp();
-    FirebaseMessaging.instance.getToken().then((value) async {
-      setState(() {
-        fcmToken = value;
-      });
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-      await setupFlutterNotifications();
-    });
+   await Future.delayed(Duration(seconds: 1));
+   if (Platform.isAndroid) {
+     log('platform is android');
+     FirebaseMessaging.instance.getToken().then((value) async {
+       setState(() {
+         fcmToken = value;
+       });
+       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+       await setupFlutterNotifications();
+     });
+   } else if (Platform.isIOS) {
+     log('platform is ios');
+     FirebaseMessaging.instance.getAPNSToken().then((value) async {
+       setState(() {
+         fcmToken = value;
+       });
+       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+       await setupFlutterNotifications();
+     });
+   }
+
+    // FirebaseMessaging.instance.getToken().then((value) async {
+    //   setState(() {
+    //     fcmToken = value;
+    //   });
+    //   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    //   await setupFlutterNotifications();
+    // });
+
    FirebaseMessaging.instance
        .getInitialMessage()
        .then((value) => value != null ? firebaseMessagingBackgroundHandler : false);
   }
-
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     await setupFlutterNotifications();
@@ -127,7 +196,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     });
       print('Handling a background message ${jsonEncode(message.data)}');
   }
-
   Future<void> setupFlutterNotifications() async {
     if (isFlutterLocalNotificationsInitialized) {
       return;
@@ -178,17 +246,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
       //onNotificationTap(event);// onClick Events
     });
   }
-
   handelAndroidNotification(String payload) {
     Future.delayed(const Duration(seconds: 1), () {
 
     });
   }
-
   void onNotificationTap(event) {
     // onClick handel Events
   }
-
   void showFlutterNotification(RemoteMessage message) {
     if (Platform.isAndroid) {
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -208,7 +273,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
           print('Handling a background message ${jsonEncode(message.data)}');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -232,9 +296,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
             //navigatorKey: GlobalKey<NavigatorState>(),
             home: const SplashScreen(),
             theme: ThemeData(
-              scrollbarTheme: ScrollbarThemeData(
-                thumbVisibility: MaterialStateProperty.all<bool>(true),
-              )
+              scrollbarTheme: ScrollbarThemeData(thumbVisibility: MaterialStateProperty.all<bool>(true),),
             ),
           );
         },

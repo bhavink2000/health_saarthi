@@ -34,7 +34,7 @@ class UpdateAppDialog{
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 150,)),
+                        const Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo_transparent_bg.png'),width: 150,)),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         const Text(
                           "About update?",
@@ -59,7 +59,7 @@ class UpdateAppDialog{
                                 fontWeight: FontWeight.bold
                             )),
                         const SizedBox(height: 5),
-                        const Text("QR Code Pdf Download, \nAdd Prescription in cart",
+                        const Text("- Make UI attractive, \n- Exit and back functionality, \n- (*) with red color for mandatory field, \n- Notification",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         Row(

@@ -80,9 +80,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${salesPersonNM == '' ? 'N/A' : salesPersonNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${salesPersonNM == '' ? 'N/A' : salesPersonNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${salesPersonNo == '' ? 'N/A' : salesPersonNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${salesPersonNo == '' ? 'N/A' : salesPersonNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -115,9 +115,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${superiorNM == null ? 'N/A' : superiorNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${superiorNM == null ? 'N/A' : superiorNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${superiorNo == null ? 'N/A' : superiorNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${superiorNo == null ? 'N/A' : superiorNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -150,9 +150,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${customerCareNm == null ? 'N/A' : customerCareNm}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${customerCareNm == null ? 'N/A' : customerCareNm}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${customerCareNo == null ? 'N/A' : customerCareNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsOne,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${customerCareNo == null ? 'N/A' : customerCareNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),

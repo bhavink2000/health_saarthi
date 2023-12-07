@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, void_checks
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/services.dart';
@@ -17,6 +18,7 @@ import '../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dar
 import '../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
+import '../../App Helper/Widget Helper/gender_selection.dart';
 import '../Bottom Menus/Test Menu/thank_you_msg.dart';
 
 class TestBookingScreen extends StatefulWidget {
@@ -86,6 +88,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
     super.dispose();
   }
 
+  bool isTyping = false;
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
@@ -127,8 +130,20 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                               child: TypeAheadFormField<MobileData>(
                                 textFieldConfiguration: TextFieldConfiguration(
-                                  decoration: const InputDecoration(
-                                    labelText: 'Select mobile number',
+                                  decoration: InputDecoration(
+                                    //labelText: 'Select mobile number',
+                                    label: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Select mobile number"),
+                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                      ],
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
+                                    ),
                                     border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
                                   ),
                                   keyboardType: TextInputType.number,
@@ -144,18 +159,29 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   controller: pMobile, // Assign the controller
                                 ),
                                 suggestionsCallback: (pattern) async {
-                                  return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                                  if(isTyping){
+                                    return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                                  }
+                                  else{
+                                    if(pMobile.text.isNotEmpty){
+                                      return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                                    }
+                                    else{
+                                      return [];
+                                    }
+                                  }
                                 },
                                 itemBuilder: (context, MobileData suggestion) {
                                   return ListTile(
-                                    title: Text(suggestion.mobileNo!),
+                                    title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: TextStyle(fontFamily: FontType.MontserratRegular),),
                                   );
                                 },
                                 onSuggestionSelected: (MobileData suggestion) {
                                   setState(() {
-                                    selectedMobileNo = suggestion.encPharmacyPatientId!;
+                                    selectedMobileNo = suggestion.encPharmacyPatientId;
                                     getPatient(selectedMobileNo);
                                     pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
+                                    isTyping = true;
                                   });
                                 },
                                 validator: (value) {
@@ -164,12 +190,12 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   }
                                   return null;
                                 },
-                                onSaved: (value) => this.selectedMobileNo = value!,
+                                onSaved: (value) => this.selectedMobileNo = value,
                               )
                           ),
                         ),
                         showTextField(
-                            'Patient name *', pName,Icons.person,
+                            'Patient name', pName,Icons.person,
                                 (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Enter patient name';
@@ -198,8 +224,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Age',
-                              hintStyle: const TextStyle(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Age"),
+                                  //Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -277,8 +309,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Email id',
-                              hintStyle: const TextStyle(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Email id"),
+                                  //Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -314,8 +352,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Address',
-                              hintStyle: const TextStyle(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Address"),
+                                  //Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -326,51 +370,63 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                           child: Row(
                             children: [
                               Flexible(
-                                child: RadioListTile(
-                                  dense: true,
-                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                  title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                  value: 'Female',
-                                  groupValue: selectedGender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedGender = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Flexible(
-                                child: RadioListTile(
-                                  dense: true,
-                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                  title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                                  value: 'Male',
-                                  groupValue: selectedGender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      selectedGender = value;
-                                    });
-                                  },
-                                ),
-                              ),
-                              Flexible(
-                                child: RadioListTile(
-                                  dense: true,
-                                  contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                  title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                                  value: 'Other',
-                                  groupValue: selectedGender,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      setState((){
+                                fit: FlexFit.loose,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  child: RadioListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                    value: 'Female',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
                                         selectedGender = value;
                                       });
-                                    });
-                                  },
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  child: RadioListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                                    value: 'Male',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selectedGender = value;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                fit: FlexFit.loose,
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  child: RadioListTile(
+                                    dense: true,
+                                    contentPadding: EdgeInsets.zero,
+                                    title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                                    value: 'Other',
+                                    groupValue: selectedGender,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        setState((){
+                                          selectedGender = value;
+                                        });
+                                      });
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
@@ -399,8 +455,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              hintText: 'Collection date',
-                              hintStyle: const TextStyle(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Collection date"),
+                                  //Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -544,8 +606,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              hintText: 'Remark',
-                              hintStyle: const TextStyle(
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Remark"),
+                                  //Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -692,8 +760,12 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
           )
         },
         );
+      }else{
+        log('---- >>> prescription[] not select');
       }
       var response = await request.send();
+
+      log('----->>>>${response.statusCode} <<<<-----');
       var responsData = await response.stream.bytesToString();
       var responseData = json.decode(responsData);
       print("response -> $responseData");
@@ -777,8 +849,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
           ),
-          hintText: '$label',
-          hintStyle: const TextStyle(
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("$label"),
+              Text(" *", style: const TextStyle(color: Colors.red)),
+            ],
+          ),
+          labelStyle: const TextStyle(
             color: Colors.black54,
             fontFamily: FontType.MontserratRegular,
             fontSize: 14,
@@ -812,6 +890,18 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
               fontFamily: FontType.MontserratRegular,
               fontSize: 14,
             ),
+            // label: Row(
+            //   mainAxisSize: MainAxisSize.min,
+            //   children: [
+            //     Text("$lName"),
+            //     Text(" *", style: const TextStyle(color: Colors.red)),
+            //   ],
+            // ),
+            // labelStyle: const TextStyle(
+            //   color: Colors.black54,
+            //   fontFamily: FontType.MontserratRegular,
+            //   fontSize: 14,
+            // ),
             //prefixIcon: Icon(iconData, color: hsBlack, size: 20),
           ),
         )

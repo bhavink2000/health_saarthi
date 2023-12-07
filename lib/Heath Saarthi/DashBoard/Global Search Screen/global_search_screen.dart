@@ -99,7 +99,7 @@ class GlobalSearch extends SearchDelegate{
                           borderRadius: const BorderRadius.only(
                               topLeft: Radius.circular(10),topRight: Radius.circular(10)
                           ),
-                          color: item['is_package'] == 1 ? hsPackageColor.withOpacity(0.5) : hsTestColor.withOpacity(0.5),
+                          color: item['is_package'] == 1 ? hsPrime.withOpacity(0.5) : hsPrime.withOpacity(0.5),
                         ),
                         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         child: Text(
@@ -173,7 +173,7 @@ class GlobalSearch extends SearchDelegate{
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),
-                                        color: item['is_package'] == 1 ? hsPackageColor : hsTestColor
+                                        color: item['is_package'] == 1 ? hsPrime : hsPrime
                                     ),
                                     padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                                     child: Text("+ Know More",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white)),

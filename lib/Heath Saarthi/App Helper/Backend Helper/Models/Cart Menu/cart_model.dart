@@ -94,7 +94,7 @@ class CartItems {
   String? encCartId;
   String? createAt;
   List<Item>? testItems;
-  List<dynamic>? packageItems;
+  List<Item>? packageItems;
   List<Item>? profileItems;
 
   CartItems({
@@ -161,7 +161,7 @@ class CartItems {
     encCartId: json["enc_cart_id"],
     createAt: json["create_at"],
     testItems: json["test_items"] == null ? [] : List<Item>.from(json["test_items"]!.map((x) => Item.fromJson(x))),
-    packageItems: json["package_items"] == null ? [] : List<dynamic>.from(json["package_items"]!.map((x) => x)),
+    packageItems: json["package_items"] == null ? [] : List<Item>.from(json["package_items"]!.map((x) => Item.fromJson(x))),
     profileItems: json["profile_items"] == null ? [] : List<Item>.from(json["profile_items"]!.map((x) => Item.fromJson(x))),
   );
 
@@ -195,7 +195,7 @@ class CartItems {
     "enc_cart_id": encCartId,
     "create_at": createAt,
     "test_items": testItems == null ? [] : List<dynamic>.from(testItems!.map((x) => x.toJson())),
-    "package_items": packageItems == null ? [] : List<dynamic>.from(packageItems!.map((x) => x)),
+    "package_items": packageItems == null ? [] : List<dynamic>.from(packageItems!.map((x) => x.toJson())),
     "profile_items": profileItems == null ? [] : List<dynamic>.from(profileItems!.map((x) => x.toJson())),
   };
 }
@@ -211,6 +211,7 @@ class Item {
   String? createAt;
   ItemInfo? profileItemInfo;
   ItemInfo? testItemInfo;
+  ItemInfo? packageItemInfo;
 
   Item({
     this.id,
@@ -223,6 +224,7 @@ class Item {
     this.createAt,
     this.profileItemInfo,
     this.testItemInfo,
+    this.packageItemInfo,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
@@ -236,6 +238,7 @@ class Item {
     createAt: json["create_at"],
     profileItemInfo: json["profile_item_info"] == null ? null : ItemInfo.fromJson(json["profile_item_info"]),
     testItemInfo: json["test_item_info"] == null ? null : ItemInfo.fromJson(json["test_item_info"]),
+    packageItemInfo: json["package_item_info"] == null ? null : ItemInfo.fromJson(json["package_item_info"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -249,6 +252,7 @@ class Item {
     "create_at": createAt,
     "profile_item_info": profileItemInfo?.toJson(),
     "test_item_info": testItemInfo?.toJson(),
+    "package_item_info": packageItemInfo?.toJson(),
   };
 }
 

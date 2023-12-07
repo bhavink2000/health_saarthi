@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/location_getx.dart';
 import 'package:http/http.dart' as http;
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,6 @@ import 'Add To Cart/test_cart.dart';
 import 'Bottom Menus/Profile Menu/profile_menu.dart';
 import 'Bottom Menus/Test Menu/test_menu_book_now.dart';
 
-
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -39,6 +39,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with TickerProviderStateMixin{
   final controller = Get.put(BottomBarController());
+  final locationController = Get.put(LocationCall());
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GetAccessToken getAccessToken = GetAccessToken();
@@ -62,16 +63,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     getAccessToken = GetAccessToken();
     getAccessToken.checkAuthentication(context, setState);
     userDataSession = Provider.of<UserDataSession>(context, listen: false);
+    controller.index.value = 0;
     Future.delayed(Duration(seconds: 1), () {
       deviceTokenType();
     });
 
-    _widgetList = [
-      const HomeMenu(),
-      const TestMenu(),
-      const ReportMenu(),
-      const ProfileMenu(),
-    ];
+    // _widgetList = [
+    //   const HomeMenu(),
+    //   const TestMenu(),
+    //   const ReportMenu(),
+    //   const ProfileMenu(),
+    // ];
   }
 
   void deviceTokenType()async{
@@ -115,20 +117,22 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo.png'),width: 150,)),
+                              Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo_transparent_bg.png'),width: 150,)),
                               Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                               const Text(
                                 "About update?",
                                 style: TextStyle(
                                     fontFamily: FontType.MontserratMedium,
                                     fontSize: 18,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold
+                                ),
                               ),
                               SizedBox(height: 5,),
                               Text(
                                 "You must be logout your account from health saarthi",
                                 style: const TextStyle(
-                                    fontFamily: FontType.MontserratLight),
+                                    fontFamily: FontType.MontserratLight
+                                ),
                               ),
                               const SizedBox(height: 10,),
                               const Text("if you not logout then you are not use new futures",
@@ -211,134 +215,80 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      bottomNavigationBar: bottomNavBar(),
-      // bottomNavigationBar: FloatingNavbar(
-      //   backgroundColor: hsPrimeOne,
-      //   selectedItemColor: hsOne,
-      //   iconSize: 20,
-      //   fontSize: 12,
-      //   unselectedItemColor: Colors.white60,
-      //   onTap: onTapScreen,
-      //   currentIndex: _currentIndex,
-      //   items: [
-      //     FloatingNavbarItem(
-      //       title: 'Home',
-      //       customWidget: Image(image: AppIcons().HHome,width: _currentIndex == 0 ? 25 : 20,color: _currentIndex == 0 ? Colors.black87 : Colors.white60)
-      //     ),
-      //     FloatingNavbarItem(
-      //       title: 'Book Now',
-      //       customWidget: Image(image: AppIcons().HBookNow,width: _currentIndex == 1 ? 25 : 20,color: _currentIndex == 1 ? Colors.black87 : Colors.white60)
-      //     ),
-      //     FloatingNavbarItem(
-      //       title: 'Record',
-      //       customWidget: Image(image: AppIcons().HRecord,width: _currentIndex == 2 ? 25 : 20,color: _currentIndex == 2 ? Colors.black87 : Colors.white60)
-      //     ),
-      //     FloatingNavbarItem(
-      //       title: 'Profile',
-      //       customWidget: Image(image: AppIcons().HProfile,width: _currentIndex == 3 ? 25 : 20,color: _currentIndex == 3 ? Colors.black87 : Colors.white60)
-      //     ),
-      //   ],
-      // ),
-
-      // bottomNavigationBar: BottomNavyBar(
-      //   backgroundColor: hsPrimeOne,
-      //   selectedIndex: _currentIndex,
-      //   showElevation: true,
-      //   onItemSelected: onTapScreen,
-      //   items: [
-      //     BottomNavyBarItem(
-      //       icon: Image(image: AppIcons().HHome,width: _currentIndex == 0 ? 25 : 20,color: _currentIndex == 0 ? Colors.black87 : Colors.white60),
-      //       title: Text('Home'),
-      //       activeColor: Colors.white,
-      //       inactiveColor: Colors.white60
-      //     ),
-      //     BottomNavyBarItem(
-      //         icon: Image(image: AppIcons().HBookNow,width: _currentIndex == 1 ? 25 : 20,color: _currentIndex == 1 ? Colors.black87 : Colors.white60),
-      //         title: Text('Book Now'),
-      //         activeColor: Colors.white,
-      //       inactiveColor: Colors.white60
-      //     ),
-      //     BottomNavyBarItem(
-      //         icon: Image(image: AppIcons().HRecord,width: _currentIndex == 2 ? 25 : 20,color: _currentIndex == 2 ? Colors.black87 : Colors.white60),
-      //         title: Text('Record'),
-      //         activeColor: Colors.white,
-      //       inactiveColor: Colors.white60
-      //     ),
-      //     BottomNavyBarItem(
-      //         icon: Image(image: AppIcons().HProfile,width: _currentIndex == 3 ? 25 : 20,color: _currentIndex == 3 ? Colors.black87 : Colors.white60),
-      //         title: Text('Profile'),
-      //         activeColor: Colors.white,
-      //       inactiveColor: Colors.white60
-      //     ),
-      //   ],
-      // ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(0, 1),
-                    blurRadius: 5,
-                    color: Colors.black.withOpacity(0.3),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: IconButton(
-                        icon: Icon(Icons.menu_rounded,color: hsPrime,),
-                        onPressed: () => _scaffoldKey.currentState?.openDrawer()
-                      ),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (val){
+        return openExitBox();
+      },
+      child: Scaffold(
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
+        bottomNavigationBar: bottomNavBar(),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      offset: const Offset(0, 1),
+                      blurRadius: 5,
+                      color: Colors.black.withOpacity(0.3),
                     ),
-                    const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 150),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 5.35,
-                      child: Row(
-                        children: [
-                          InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                              },child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 25),
-                              )
-                          ),
-                          SizedBox(width: 5.w,),
-                          InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 25),
-                              )
-                          ),
-                        ],
-                      ),
-                    )
                   ],
                 ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: IconButton(
+                          icon: Icon(Icons.menu_rounded,color: hsPrime,),
+                          onPressed: () => _scaffoldKey.currentState?.openDrawer()
+                        ),
+                      ),
+                      const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 150),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 5.35,
+                        child: Row(
+                          children: [
+                            InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
+                                },child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 25),
+                                )
+                            ),
+                            SizedBox(width: 5.w,),
+                            InkWell(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(4),
+                                  child: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 25),
+                                )
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
               ),
-            ),
-            Expanded(
-              //child: _widgetList[_currentIndex]
-              child: Obx(() => controller.screens[controller.index.value]),
-            ),
-          ],
+              Expanded(
+                //child: _widgetList[_currentIndex]
+                child: Obx(() => controller.screens[controller.index.value]),
+              ),
+            ],
+          ),
         ),
+        drawer: DrawerScreen(),
       ),
-      drawer: DrawerScreen(),
     );
   }
 
@@ -381,5 +331,59 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       return deviceType;
     }
     print('retrieve Device Type: $deviceType');
+  }
+
+  openExitBox() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+            child: AlertDialog(
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              contentPadding: const EdgeInsets.only(top: 10.0),
+              content: Container(
+                decoration: BoxDecoration(
+                  //color: Colors.white,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150,),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: Text("Health Saarthi", style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,fontSize: 18),),
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(5),
+                      child: Text(
+                        "Are you sure you want to exit.?",
+                        style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        TextButton(
+                          child: Text("Stay",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        TextButton(
+                          child: Text("Exit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
+                          onPressed: (){
+                            exit(0);
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
+    );
   }
 }

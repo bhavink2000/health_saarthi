@@ -67,7 +67,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
         child: Column(
           children: [
             Container(
-              color: hsTestColor,
+              color: hsPrime,
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(5, 0, 10, 0),
                 child: Row(
@@ -111,7 +111,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
                       padding: const EdgeInsets.fromLTRB(20, 5, 10, 10),
                       child: Row(
                         children: [
-                          Text("\u{20B9}${packageDetailsData[0]['mrp']}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18,color: hsTestColor)),
+                          Text("\u{20B9}${packageDetailsData[0]['mrp']}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18,color: hsPrime)),
                           const Spacer(),
                           InkWell(
                             onTap: (){
@@ -123,7 +123,7 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
                               });
                             },
                             child: Container(
-                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsTestColor),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrime),
                               padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                               child: Text(packageDetailsData[0]['booked_status'] == 1 ? "Booked": "+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13,color: Colors.white),),
                             ),

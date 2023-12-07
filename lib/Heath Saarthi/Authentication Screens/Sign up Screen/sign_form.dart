@@ -46,9 +46,9 @@ class _SignUpFormState extends State<SignUpForm> {
   bool areaLoading = false;
   bool branchLoading = false;
 
-  final fullName = TextEditingController();
+  final vendorName	 = TextEditingController();
   final emailId = TextEditingController();
-  final shopeName = TextEditingController();
+  final pharmacyName	 = TextEditingController();
   final mobile = TextEditingController();
   final address = TextEditingController();
   final seMobile = TextEditingController();
@@ -158,7 +158,7 @@ class _SignUpFormState extends State<SignUpForm> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
-                controller: fullName,
+                controller: vendorName,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -169,8 +169,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Full name *',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Vendor name"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -179,7 +185,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter full name';
+                    return 'Enter Vendor name';
                   }
                   return null;
                 }, // Set the validator function
@@ -200,12 +206,18 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Email id *',
-                  hintStyle: const TextStyle(
-                    color: Colors.black54,
-                    fontFamily: FontType.MontserratRegular,
-                    fontSize: 14,
-                  ),
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Email id"),
+                        Text(" *", style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontFamily: FontType.MontserratRegular,
+                      fontSize: 14,
+                    ),
                   prefixIcon: const Icon(Icons.email_rounded, color: hsBlack, size: 20),
                 ),
                 validator: (value) {
@@ -222,7 +234,7 @@ class _SignUpFormState extends State<SignUpForm> {
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
-                controller: shopeName,
+                controller: pharmacyName,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -233,8 +245,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Shop name',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Pharmacy name	"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -243,7 +261,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Enter shop name';
+                    return 'Enter Pharmacy name';
                   }
                   return null;
                 }, // Set the validator function
@@ -269,8 +287,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Mobile no *',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Mobile no"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -309,7 +333,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
-                          labelText: "Select state *",
+                          //labelText: "Select state *",
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Select state"),
+                              Text(" *", style: const TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                            fontFamily: FontType.MontserratRegular,
+                            fontSize: 14,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -371,7 +407,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
-                          labelText: "Select city *",
+                          //labelText: "Select city *",
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Select city"),
+                              Text(" *", style: const TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                            fontFamily: FontType.MontserratRegular,
+                            fontSize: 14,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -434,7 +482,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
-                          labelText: "Select branch *",
+                          //labelText: "Select branch *",
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Select branch"),
+                              Text(" *", style: const TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                            fontFamily: FontType.MontserratRegular,
+                            fontSize: 14,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -489,7 +549,19 @@ class _SignUpFormState extends State<SignUpForm> {
                       items: areaList.map((area) => area!.areaName!).toList() ?? [],
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
-                          labelText: "Select area *",
+                          //labelText: "Select area *",
+                          label: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Select area"),
+                              Text(" *", style: const TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                          labelStyle: const TextStyle(
+                            color: Colors.black54,
+                            fontFamily: FontType.MontserratRegular,
+                            fontSize: 14,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -536,11 +608,17 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Sales executive *',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Sales executive"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
-                    fontSize: 12,
+                    fontSize: 14,
                   ),
                 ),
                 validator: (value) {
@@ -592,8 +670,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'Executive mobile no',
-                    hintStyle: const TextStyle(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Executive mobile no"),
+                        //Text(" *", style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                    labelStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
                       fontSize: 14,
@@ -618,8 +702,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Pincode',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Pincode"),
+                      //Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -747,8 +837,15 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Address *',
-                  hintStyle: const TextStyle(
+
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Address"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -829,8 +926,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'Pan Card number *',
-                    hintStyle: const TextStyle(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Pan Card number"),
+                        Text(" *", style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                    labelStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
                       fontSize: 14,
@@ -905,8 +1008,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'GST Number',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("GST number"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -978,8 +1087,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Bank name',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Bank name"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -1012,8 +1127,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'IFSC code *',
-                    hintStyle: const TextStyle(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("IFSC code"),
+                        Text(" *", style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                    labelStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
                       fontSize: 14,
@@ -1086,8 +1207,14 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Beneficiary name as par cheque',
-                  hintStyle: const TextStyle(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Beneficiary name as par cheque"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
                     color: Colors.black54,
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
@@ -1119,8 +1246,14 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    hintText: 'Account number *',
-                    hintStyle: const TextStyle(
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("Account number"),
+                        Text(" *", style: const TextStyle(color: Colors.red)),
+                      ],
+                    ),
+                    labelStyle: const TextStyle(
                       color: Colors.black54,
                       fontFamily: FontType.MontserratRegular,
                       fontSize: 14,
@@ -1145,11 +1278,17 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Password *',
-                  hintStyle: const TextStyle(
-                      color: Colors.black54,
-                      fontFamily: FontType.MontserratRegular,
-                      fontSize: 14
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Password"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
                   ),
                   prefixIcon: const Icon(Icons.lock_open_rounded, color: hsBlack,size: 20),
                   suffixIcon: InkWell(
@@ -1204,11 +1343,17 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  hintText: 'Confirm password *',
-                  hintStyle: const TextStyle(
-                      color: Colors.black54,
-                      fontFamily: FontType.MontserratRegular,
-                      fontSize: 14
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text("Confirm password"),
+                      Text(" *", style: const TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                  labelStyle: const TextStyle(
+                    color: Colors.black54,
+                    fontFamily: FontType.MontserratRegular,
+                    fontSize: 14,
                   ),
                   prefixIcon: const Icon(Icons.lock_outline_rounded, color: hsBlack,size: 20),
                   suffixIcon: InkWell(
@@ -1466,11 +1611,11 @@ class _SignUpFormState extends State<SignUpForm> {
     try {
       var formData = FormData();
       formData.fields.addAll([
-        MapEntry("name", fullName.text ?? ''),
+        MapEntry("vendor_name", vendorName.text ?? ''),
         MapEntry("email_id", emailId.text ?? ''),
         MapEntry("password", password.text ?? ''),
         MapEntry("mobile", mobile.text ?? ''),
-        MapEntry("vendor_name", shopeName.text ?? ''),
+        MapEntry("name", pharmacyName.text ?? ''),                                // name = pharmacy name
         MapEntry("state_id", selectedStateId! ?? ''),
         MapEntry("city_id", selectedCityId! ?? ''),
         MapEntry("area_id", selectedAreaId! ?? ''),
@@ -1540,6 +1685,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         ));
       }
+
       dio.interceptors.add(InterceptorsWrapper(
        onError: (DioError err, ErrorInterceptorHandler handler) async {
          print("in dio interceptor->${err.response}");
@@ -1555,13 +1701,29 @@ class _SignUpFormState extends State<SignUpForm> {
                });
                GetXSnackBarMsg.getWarningMsg('$errorMessage');
              }
+             else if (errorData['name'] != null) {
+               var errorMessage = errorData['name'][0];
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               GetXSnackBarMsg.getWarningMsg('$errorMessage');
+             }
+             else if (errorData['vendor_name'] != null) {
+               var errorMessage = errorData['vendor_name'][0];
+               setState(() {
+                 loadingProgress = 0.0;
+                 isSigningUp = false;
+               });
+               GetXSnackBarMsg.getWarningMsg('$errorMessage');
+             }
              else if (errorData['mobile'] != null) {
                var errorMessage = errorData['mobile'][0];
                setState(() {
                  loadingProgress = 0.0;
                  isSigningUp = false;
                });
-               GetXSnackBarMsg.getWarningMsg('${errorMessage}');
+               GetXSnackBarMsg.getWarningMsg('$errorMessage');
              }
              else if (errorData['pincode'] != null) {
                var errorMessage = errorData['pincode'][0];
@@ -1643,12 +1805,12 @@ class _SignUpFormState extends State<SignUpForm> {
           var errorMessage = errorData['error']['password'][0];
           GetXSnackBarMsg.getWarningMsg('$errorMessage');
         } else {
-          GetXSnackBarMsg.getWarningMsg('Create account problem');
+          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
           Navigator.pop(context);
         }
         Navigator.pop(context);
       } else {
-        GetXSnackBarMsg.getWarningMsg('Sign up problem');
+        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
         Navigator.pop(context);
       }
     }

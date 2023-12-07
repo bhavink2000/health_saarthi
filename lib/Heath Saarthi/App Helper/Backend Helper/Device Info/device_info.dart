@@ -26,7 +26,7 @@ class DeviceInfo{
         body: {
           'device_token': deviceToken ?? '',
           'device_type': dType.toString() ?? '',
-          'app_version': '2.02' ?? '',
+          'app_version': '2.03' ?? '',
         },
       );
       print("Device Token Response -> ${response.body}");

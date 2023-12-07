@@ -26,7 +26,7 @@ class AuthProvider with ChangeNotifier{
     _loading = value;
     notifyListeners();
   }
-
+  
   Future<void> loginApi(dynamic data, BuildContext context, var deviceToken,var deviceType) async {
     print("login Data->$data");
     LoadingIndicater().onLoad(true, context);
@@ -39,6 +39,7 @@ class AuthProvider with ChangeNotifier{
         accessToken: value['access_token'].toString(),
       ));
       accessToken.write('accessToken', value['access_token'].toString());
+
       if(value['access_token'] == null || value['access_token'] == ''){
         GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
         LoadingIndicater().onLoadExit(false, context);

@@ -1,9 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/notification_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/today_deal_details_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Drawer%20Menu/booking_history_model.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import '../../Api Service/api_service_post_get.dart';
 import '../../Api Service/api_service_type_post_get.dart';
 import '../../Models/Cart Menu/cart_model.dart';
@@ -20,6 +23,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.testListUrls}?page=$index", access_token, testData);
     print("Response Test->$response");
     if (response['status'] == '402') {
+      GetXSnackBarMsg.getWarningMsg('${response['message']}');
       throw response['status'];
     } else {
       try {
@@ -35,6 +39,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", access_token, packageData);
     print("Response Package->$response");
     if (response['status'] == '402') {
+      GetXSnackBarMsg.getWarningMsg('${response['message']}');
       throw response['status'];
     } else {
       try {

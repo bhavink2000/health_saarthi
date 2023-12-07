@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
@@ -419,13 +420,11 @@ class _TestCartState extends State<TestCart> {
                         value: 'cLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
-                          print("sbranchId---->>$sBranchId");
                           homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId).then((value){
                             Future.delayed(const Duration(seconds: 1),(){
                               cartCalculation();
                             });
                           });
-                          print("sbranchId<<------$sBranchId");
                           setState(() {
                             selectLocation = value;
                             showDLocation = false;
@@ -471,15 +470,14 @@ class _TestCartState extends State<TestCart> {
                     title: const Text('Choose location',style: TextStyle(fontFamily: FontType.MontserratMedium)),
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: stateLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -491,9 +489,22 @@ class _TestCartState extends State<TestCart> {
                                   showSearchBox: true,
                                 ),
                                 items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select state *",
+                                    //labelText: "Select state *",
+                                    label: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Select state"),
+                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                      ],
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -531,17 +542,16 @@ class _TestCartState extends State<TestCart> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.h,),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: cityLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -553,9 +563,22 @@ class _TestCartState extends State<TestCart> {
                                   showSearchBox: true,
                                 ),
                                 items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select city *",
+                                    //labelText: "Select city *",
+                                    label: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Select city"),
+                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                      ],
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -576,7 +599,6 @@ class _TestCartState extends State<TestCart> {
                                       selectedBranch = '';
                                       selectedCity = newValue;
                                       selectedCityId = selectedCityObject.id.toString();
-                                      //fetchBranchList(selectedStateId, selectedCityId, '');
                                     });
                                     fetchAreaList(selectedStateId, selectedCityId);
                                   }
@@ -589,21 +611,21 @@ class _TestCartState extends State<TestCart> {
                                   return null;
                                 },
                               )
+
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.h,),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: areaLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -615,9 +637,22 @@ class _TestCartState extends State<TestCart> {
                                   showSearchBox: true,
                                 ),
                                 items: areaList.map((area) => area!.areaName!).toList() ?? [],
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select area *",
+                                    //labelText: "Select area *",
+                                    label: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Select area"),
+                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                      ],
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -651,17 +686,16 @@ class _TestCartState extends State<TestCart> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                         child: Container(
                           width: MediaQuery.of(context).size.width / 1.w,
-                          //height: MediaQuery.of(context).size.height / 14.h,
                           child: Stack(
                             children: [
                               Visibility(
                                 visible: branchLoading,
-                                child: Positioned(
+                                child: const Positioned(
                                   top: 10,
                                   right: 5,
                                   child: CircularProgressIndicator(),
@@ -673,9 +707,22 @@ class _TestCartState extends State<TestCart> {
                                   showSearchBox: true,
                                 ),
                                 items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
+                                autoValidateMode: AutovalidateMode.onUserInteraction,
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
-                                    labelText: "Select branch *",
+                                    //labelText: "Select branch *",
+                                    label: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text("Select branch"),
+                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                      ],
+                                    ),
+                                    labelStyle: const TextStyle(
+                                      color: Colors.black54,
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 14,
+                                    ),
                                     border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -706,6 +753,7 @@ class _TestCartState extends State<TestCart> {
                           ),
                         ),
                       ),
+
                       Align(
                         alignment: Alignment.center,
                         child: Padding(
@@ -806,7 +854,7 @@ class _TestCartState extends State<TestCart> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(10),
-                                              color: hsTestColor.withOpacity(0.1)
+                                              color: hsPrime.withOpacity(0.1)
                                           ),
                                           child: Column(
                                             children: [
@@ -822,7 +870,7 @@ class _TestCartState extends State<TestCart> {
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsTestColor.withOpacity(0.8)),
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime.withOpacity(0.8)),
                                                         child: const Text("+ Add",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratMedium,fontSize: 14),),
                                                       ),
                                                     )
@@ -878,7 +926,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo.png",width: 150),
+                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
@@ -914,7 +962,7 @@ class _TestCartState extends State<TestCart> {
                                                                     },
                                                                     child: SizedBox(
                                                                       width: MediaQuery.of(context).size.width / 6.w,
-                                                                      child: Icon(Icons.delete_forever_rounded,color: hsOne,size: 20),
+                                                                      child: Icon(Icons.delete_forever_rounded,color: hsPrime,size: 20),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -936,7 +984,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: hsTestColor.withOpacity(0.8),
+                                                  color: hsPrime.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -1016,12 +1064,13 @@ class _TestCartState extends State<TestCart> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
+
                                       value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(10),
-                                              color: hsPackageColor.withOpacity(0.1)
+                                              color: hsPrime.withOpacity(0.1)
                                           ),
                                           child: Column(
                                             children: [
@@ -1039,7 +1088,7 @@ class _TestCartState extends State<TestCart> {
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPackageColor.withOpacity(0.8)),
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime.withOpacity(0.8)),
                                                         child: const Text("+ Add",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratMedium,fontSize: 14),),
                                                       ),
                                                     )
@@ -1057,9 +1106,10 @@ class _TestCartState extends State<TestCart> {
                                                     radius: const Radius.circular(50),
                                                     child: ListView.builder(
                                                   physics: const BouncingScrollPhysics(),
-                                                  itemCount: value.cartList.data!.data!.cartItems!.packageItems!.length,
+                                                  itemCount: value.cartList.data?.data?.cartItems?.packageItems?.length,
                                                   itemBuilder: (context, pIndex){
-                                                      var cartI = value.cartList.data!.data!.cartItems!.packageItems![pIndex];
+
+                                                    var cartP = value.cartList.data?.data?.cartItems?.packageItems?[pIndex];
                                                       return Padding(
                                                         padding: const EdgeInsets.fromLTRB(15, 0, 10, 0),
                                                         child: Column(
@@ -1070,9 +1120,9 @@ class _TestCartState extends State<TestCart> {
                                                                 children: [
                                                                   SizedBox(
                                                                     width: MediaQuery.of(context).size.width / 1.9.w,
-                                                                    child: Text(cartI.packageItemInfo!.serviceName,style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
+                                                                    child: Text("${cartP?.packageItemInfo?.serviceName}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 13)),
                                                                   ),
-                                                                  Text("\u{20B9}${cartI.packageItemInfo!.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
+                                                                  Text("\u{20B9}${cartP?.packageItemInfo!.mrpAmount}",style: const TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14,fontWeight: FontWeight.bold)),
                                                                   InkWell(
                                                                     onTap: (){
                                                                       showDialog(
@@ -1091,7 +1141,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo.png",width: 150),
+                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                                                         child: Text(
@@ -1110,7 +1160,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.packageItemInfo!.id, context).then((value){}).then((value){
+                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartP?.packageItemInfo!.id, context).then((value){}).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1127,7 +1177,7 @@ class _TestCartState extends State<TestCart> {
                                                                     },
                                                                     child: SizedBox(
                                                                       width: MediaQuery.of(context).size.width / 6.w,
-                                                                      child: Icon(Icons.delete_forever_rounded,color: hsPackageColor,size: 20),
+                                                                      child: Icon(Icons.delete_forever_rounded,color: hsPrime,size: 20),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1149,7 +1199,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: hsPackageColor.withOpacity(0.8),
+                                                  color: hsPrime.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -1231,7 +1281,7 @@ class _TestCartState extends State<TestCart> {
                                         child: Container(
                                           decoration: BoxDecoration(
                                               borderRadius: BorderRadius.circular(10),
-                                              color: hsInstantBookingColor.withOpacity(0.1)
+                                              color: hsPrime.withOpacity(0.1)
                                           ),
                                           child: Column(
                                             children: [
@@ -1247,7 +1297,7 @@ class _TestCartState extends State<TestCart> {
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPackageColor.withOpacity(0.8)),
+                                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),color: hsPrime.withOpacity(0.8)),
                                                         child: const Text("+ Add",style: TextStyle(color: Colors.white,fontFamily: FontType.MontserratMedium,fontSize: 14),),
                                                       ),
                                                     )
@@ -1299,7 +1349,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo.png",width: 150),
+                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
@@ -1357,7 +1407,7 @@ class _TestCartState extends State<TestCart> {
                                                   borderRadius: const BorderRadius.only(
                                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)
                                                   ),
-                                                  color: hsPackageColor.withOpacity(0.8),
+                                                  color: hsPrime.withOpacity(0.8),
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 child: Row(
@@ -1458,7 +1508,6 @@ class _TestCartState extends State<TestCart> {
   var bodyMsg;
   Future<CartCalculationModel?> cartCalculation() async {
     print("testDisId ->$testD / packageDisId ->$packageD / profileDisId ->$profileD / promo ->${promoApply.text}");
-    print("cart calu accestie->${getAccessToken.access_token}");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',

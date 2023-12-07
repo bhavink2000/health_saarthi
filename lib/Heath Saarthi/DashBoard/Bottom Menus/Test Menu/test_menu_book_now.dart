@@ -137,6 +137,8 @@ class _TestMenuState extends State<TestMenu> {
     selectedBranch = '';
     super.dispose();
   }
+
+  bool isTyping = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,8 +161,20 @@ class _TestMenuState extends State<TestMenu> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                         child: TypeAheadFormField<MobileData>(
                           textFieldConfiguration: TextFieldConfiguration(
-                            decoration: const InputDecoration(
-                              labelText: 'Select mobile number',
+                            decoration: InputDecoration(
+                              //labelText: 'Select mobile number',
+                              label: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text("Select mobile number"),
+                                  Text(" *", style: const TextStyle(color: Colors.red)),
+                                ],
+                              ),
+                              labelStyle: const TextStyle(
+                                color: Colors.black54,
+                                fontFamily: FontType.MontserratRegular,
+                                fontSize: 14,
+                              ),
                               border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
                             ),
                             keyboardType: TextInputType.number,
@@ -176,18 +190,29 @@ class _TestMenuState extends State<TestMenu> {
                             controller: pMobile, // Assign the controller
                           ),
                           suggestionsCallback: (pattern) async {
-                            return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                            if(isTyping){
+                              return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                            }
+                            else{
+                              if(pMobile.text.isNotEmpty){
+                                return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                              }
+                              else{
+                                return [];
+                              }
+                            }
                           },
                           itemBuilder: (context, MobileData suggestion) {
                             return ListTile(
-                              title: Text(suggestion.mobileNo!),
+                              title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: TextStyle(fontFamily: FontType.MontserratRegular),),
                             );
                           },
                           onSuggestionSelected: (MobileData suggestion) {
                             setState(() {
-                              selectedMobileNo = suggestion.encPharmacyPatientId!;
+                              selectedMobileNo = suggestion.encPharmacyPatientId;
                               getPatient(selectedMobileNo);
                               pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
+                              isTyping = true;
                             });
                           },
                           validator: (value) {
@@ -196,12 +221,12 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                          onSaved: (value) => this.selectedMobileNo = value!,
+                          onSaved: (value) => this.selectedMobileNo = value,
                         )
                     ),
                   ),
                   showTextField(
-                      'Patient name *', pName,Icons.person,
+                      'Patient name', pName,Icons.person,
                           (value) {
                         if (value == null || value.isEmpty) {
                           return 'Enter patient name';
@@ -230,8 +255,14 @@ class _TestMenuState extends State<TestMenu> {
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                             borderRadius: BorderRadius.circular(15)
                         ),
-                        hintText: 'Age',
-                        hintStyle: const TextStyle(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Age"),
+                            //Text(" *", style: const TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                        labelStyle: const TextStyle(
                           color: Colors.black54,
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
@@ -256,8 +287,15 @@ class _TestMenuState extends State<TestMenu> {
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                             borderRadius: BorderRadius.circular(15)
                         ),
-                        hintText: 'Email id',
-                        hintStyle: const TextStyle(
+
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Email id"),
+                            //Text(" *", style: const TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                        labelStyle: const TextStyle(
                           color: Colors.black54,
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
@@ -293,8 +331,14 @@ class _TestMenuState extends State<TestMenu> {
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                             borderRadius: BorderRadius.circular(15)
                         ),
-                        hintText: 'Address',
-                        hintStyle: const TextStyle(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Address"),
+                            //Text(" *", style: const TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                        labelStyle: const TextStyle(
                           color: Colors.black54,
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
@@ -305,51 +349,63 @@ class _TestMenuState extends State<TestMenu> {
                   ),
 
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                     child: Row(
                       children: [
                         Flexible(
-                          child: RadioListTile(
-                            dense: true,
-                            contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                            value: 'Female',
-                            groupValue: selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedGender = value;
-                              });
-                            },
-                          ),
-                        ),
-                        Flexible(
-                          child: RadioListTile(
-                            dense: true,
-                            contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                            value: 'Male',
-                            groupValue: selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedGender = value;
-                              });
-                            },
-                          ),
-                        ),
-                        Flexible(
-                          child: RadioListTile(
-                            dense: true,
-                            contentPadding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                            title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                            value: 'Other',
-                            groupValue: selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                setState((){
+                          fit: FlexFit.loose,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                            child: RadioListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                              value: 'Female',
+                              groupValue: selectedGender,
+                              onChanged: (value) {
+                                setState(() {
                                   selectedGender = value;
                                 });
-                              });
-                            },
+                              },
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                            child: RadioListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                              value: 'Male',
+                              groupValue: selectedGender,
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedGender = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                            child: RadioListTile(
+                              dense: true,
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                              value: 'Other',
+                              groupValue: selectedGender,
+                              onChanged: (value) {
+                                setState(() {
+                                  setState((){
+                                    selectedGender = value;
+                                  });
+                                });
+                              },
+                            ),
                           ),
                         ),
                       ],
@@ -379,7 +435,19 @@ class _TestMenuState extends State<TestMenu> {
                             autoValidateMode: AutovalidateMode.onUserInteraction,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                                labelText: "Select state *",
+                                //labelText: "Select state *",
+                                label: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Select state"),
+                                    Text(" *", style: const TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -441,7 +509,19 @@ class _TestMenuState extends State<TestMenu> {
                             autoValidateMode: AutovalidateMode.onUserInteraction,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                                labelText: "Select city *",
+                                //labelText: "Select city *",
+                                label: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Select city"),
+                                    Text(" *", style: const TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -503,7 +583,19 @@ class _TestMenuState extends State<TestMenu> {
                             autoValidateMode: AutovalidateMode.onUserInteraction,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                                labelText: "Select area *",
+                                //labelText: "Select area *",
+                                label: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Select area"),
+                                    Text(" *", style: const TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -561,7 +653,19 @@ class _TestMenuState extends State<TestMenu> {
                             autoValidateMode: AutovalidateMode.onUserInteraction,
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
-                                labelText: "Select branch *",
+                                //labelText: "Select branch *",
+                                label: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text("Select branch"),
+                                    Text(" *", style: const TextStyle(color: Colors.red)),
+                                  ],
+                                ),
+                                labelStyle: const TextStyle(
+                                  color: Colors.black54,
+                                  fontFamily: FontType.MontserratRegular,
+                                  fontSize: 14,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
@@ -612,8 +716,14 @@ class _TestMenuState extends State<TestMenu> {
                           borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                           borderRadius: BorderRadius.circular(15),
                         ),
-                        hintText: 'Collection date',
-                        hintStyle: const TextStyle(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Collection date"),
+                            //Text(" *", style: const TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                        labelStyle: const TextStyle(
                           color: Colors.black54,
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
@@ -655,8 +765,14 @@ class _TestMenuState extends State<TestMenu> {
                             borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                             borderRadius: BorderRadius.circular(15)
                         ),
-                        hintText: 'Remark',
-                        hintStyle: const TextStyle(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text("Remark"),
+                            //Text(" *", style: const TextStyle(color: Colors.red)),
+                          ],
+                        ),
+                        labelStyle: const TextStyle(
                           color: Colors.black54,
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
@@ -865,7 +981,7 @@ class _TestMenuState extends State<TestMenu> {
 
   Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
       child: TextFormField(
         controller: controller,
         autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -880,8 +996,14 @@ class _TestMenuState extends State<TestMenu> {
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
           ),
-          hintText: '$label',
-          hintStyle: const TextStyle(
+          label: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("$label"),
+              Text(" *", style: const TextStyle(color: Colors.red)),
+            ],
+          ),
+          labelStyle: const TextStyle(
             color: Colors.black54,
             fontFamily: FontType.MontserratRegular,
             fontSize: 14,

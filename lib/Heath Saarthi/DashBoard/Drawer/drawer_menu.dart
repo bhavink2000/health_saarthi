@@ -1,6 +1,8 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
@@ -18,6 +20,7 @@ import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
+import '../../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import 'Drawer Menus Items/Other Screen/qr_code_screen.dart';
@@ -34,6 +37,9 @@ class DrawerScreen extends StatefulWidget {
 }
 
 class _DrawerScreenState extends State<DrawerScreen> {
+
+  final controller = Get.put(BottomBarController());
+  final box = GetStorage();
 
   GetAccessToken getAccessToken = GetAccessToken();
   String? deviceToken;
@@ -75,6 +81,9 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           padding: const EdgeInsets.fromLTRB(15, 5, 10, 10),
                           child: InkWell(
                             onTap: (){
+                              setState(() {
+                                controller.index.value = 0;
+                              });
                               Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
                             },
                             child: Row(
@@ -252,7 +261,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              Image.asset("assets/health_saarthi_logo.png",width: 150),
+                                              Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
                                               const Padding(
                                                 padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
                                                 child: Text(
@@ -287,6 +296,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
                                                         if(logoutUserStatus == '200'){
                                                           userDataSession.removeUserData().then((values) {
+                                                            box.remove('accessToken');
                                                             DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
                                                               if (value == 'success') {
                                                                 print("token is deleted $value");

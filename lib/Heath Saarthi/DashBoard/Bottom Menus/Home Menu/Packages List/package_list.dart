@@ -14,6 +14,7 @@ import '../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
+import '../../../../App Helper/Widget Helper/appbar_helper.dart';
 import '../../../Add To Cart/test_cart.dart';
 import '../../../Notification Menu/notification_menu.dart';
 
@@ -56,39 +57,7 @@ class _PackageListItemsState extends State<PackageListItems> {
           children: [
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        child: Row(
-                          children: [
-                            InkWell(onTap: (){Navigator.pop(context);}, child: const Icon(Icons.arrow_back,color: Colors.black,size: 24)),
-                            SizedBox(width: 10.w),
-                            const Text("Package Items",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.black,fontSize: 14),)
-                          ],
-                        )
-                      ),
-                      Row(
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              //Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestBookingDetails()));
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                            },child: Icon(Icons.shopping_cart_outlined,color: hsPackageColor,size: 24)
-                          ),
-                          SizedBox(width: 10.w),
-                          InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                            },child: Icon(Icons.circle_notifications_rounded,color: hsPackageColor,size: 24)
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                const AppBarHelper(appBarLabel: 'Package Items'),
                 Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -96,10 +65,10 @@ class _PackageListItemsState extends State<PackageListItems> {
                     elevation: 0,
                     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
                     child: Container(
-                      height: MediaQuery.of(context).size.height / 19.h,
+                      height: MediaQuery.of(context).size.height / 18.h,
                       decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          border: Border.all(color: Colors.grey.withOpacity(1),width: 1),
+                          color: hsPrime.withOpacity(0.1),
+                          border: Border.all(color: hsPrime,width: 0.2),
                           borderRadius: const BorderRadius.all(Radius.circular(4))
                       ),
                       padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -203,7 +172,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                               borderRadius: const BorderRadius.only(
                                                                   topLeft: Radius.circular(10),topRight: Radius.circular(10)
                                                               ),
-                                                              color: hsPackageColor.withOpacity(0.5),
+                                                              color: hsPrime.withOpacity(0.8),
                                                             ),
                                                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                             child: Text(
@@ -221,7 +190,8 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                               children: [
                                                                 Container(
                                                                     width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                    child: Text("${packageI.specimenVolume == null ? 'N/A' : packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
+                                                                    child: Text("${packageI.specimenVolume == null ? 'N/A' : packageI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)
+                                                                ),
                                                                 Row(
                                                                   children: [
                                                                     Text("\u{20B9}${packageI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
@@ -241,7 +211,9 @@ class _PackageListItemsState extends State<PackageListItems> {
                                                                         decoration: BoxDecoration(borderRadius: const BorderRadius.only(
                                                                             bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
                                                                         ),
-                                                                        color: packageI.bookedStatus == 1 ? hsPackageColor.withOpacity(0.2):hsPackageColor
+                                                                        color: packageI.bookedStatus == 1
+                                                                            ? hsPrime.withOpacity(0.2)
+                                                                            : hsPrime
                                                                         ),
                                                                         padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
                                                                         child: Text(packageI.bookedStatus == 1 ? "Booked" :"+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
@@ -285,7 +257,7 @@ class _PackageListItemsState extends State<PackageListItems> {
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height / 12.h,
-                                color: hsPackageColor,
+                                color: hsPrime,
                                 child: InkWell(
                                   onTap: (){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
@@ -310,10 +282,10 @@ class _PackageListItemsState extends State<PackageListItems> {
                                               children: [
                                                 Text(
                                                   "\u{20B9}${value.packageList.data!.cartData!.amount}",
-                                                  style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPackageColor,fontWeight: FontWeight.bold),
+                                                  style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold),
                                                 ),
                                                 SizedBox(width: 5.w),
-                                                Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPackageColor,)
+                                                Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPrime,)
                                               ],
                                             ),
                                           ),

@@ -96,9 +96,9 @@ class _ReportMenuState extends State<ReportMenu> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(height: 20,width: 2,color: hsTwo),
+                  Container(height: 20,width: 2,color: hsPrime),
                   const SizedBox(width: 5,),
-                  Text("Daily Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,letterSpacing: 1,fontSize: 18)),
+                  Text("Daily Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,letterSpacing: 1,fontSize: 18)),
                   const Spacer(),
                   InkWell(
                     onTap: (){
@@ -249,9 +249,9 @@ class _ReportMenuState extends State<ReportMenu> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(height: 20,width: 2,color: hsTwo),
+                  Container(height: 20,width: 2,color: hsPrime),
                   const SizedBox(width: 5,),
-                  Text("Monthly Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,letterSpacing: 1,fontSize: 18)),
+                  Text("Monthly Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,letterSpacing: 1,fontSize: 18)),
                   const Spacer(),
                   InkWell(
                     onTap: (){
@@ -403,9 +403,9 @@ class _ReportMenuState extends State<ReportMenu> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(height: 20,width: 2,color: hsTwo),
+                  Container(height: 20,width: 2,color: hsPrime),
                   const SizedBox(width: 5,),
-                  Text("Yearly Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsOne,letterSpacing: 1,fontSize: 18)),
+                  Text("Yearly Report",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,letterSpacing: 1,fontSize: 18)),
                   const Spacer(),
                   InkWell(
                     onTap: (){

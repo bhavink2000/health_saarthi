@@ -26,15 +26,22 @@ class MobileNumberModel {
 
 class MobileData {
   int? id;
-  String? mobileNo;
-  String? encPharmacyPatientId;
-  String? createAt;
+  dynamic mobileNo;
+  String? name;
+  dynamic encPharmacyPatientId;
+  dynamic createAt;
 
-  MobileData({this.id, this.mobileNo, this.encPharmacyPatientId, this.createAt});
+  MobileData(
+      {this.id,
+        this.mobileNo,
+        this.name,
+        this.encPharmacyPatientId,
+        this.createAt});
 
   MobileData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     mobileNo = json['mobile_no'];
+    name = json['name'];
     encPharmacyPatientId = json['enc_pharmacy_patient_id'];
     createAt = json['create_at'];
   }
@@ -43,6 +50,7 @@ class MobileData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['mobile_no'] = this.mobileNo;
+    data['name'] = this.name;
     data['enc_pharmacy_patient_id'] = this.encPharmacyPatientId;
     data['create_at'] = this.createAt;
     return data;

@@ -50,7 +50,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: hsTestColor.withOpacity(0.3),
+                    shadowColor: hsPrime.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -86,7 +86,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: hsTestColor.withOpacity(0.1)
+                                  color: hsPrime.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
@@ -111,7 +111,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: hsPackageColor.withOpacity(0.3),
+                    shadowColor: hsPrime.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -147,7 +147,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: hsPackageColor.withOpacity(0.1)
+                                  color: hsPrime.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
@@ -186,7 +186,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: hsPrescriptionColor.withOpacity(0.3),
+                    shadowColor: hsPrime.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -222,7 +222,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: hsPrescriptionColor.withOpacity(0.1)
+                                  color: hsPrime.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [
@@ -256,7 +256,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                   },
                   child: Card(
                     elevation: 5,
-                    shadowColor: hsInstantBookingColor.withOpacity(0.3),
+                    shadowColor: hsPrime.withOpacity(0.3),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     child: Container(
                       width: MediaQuery.of(context).size.width / 2.1.w,
@@ -292,7 +292,7 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(4),
-                                  color: hsInstantBookingColor.withOpacity(0.1)
+                                  color: hsPrime.withOpacity(0.1)
                               ),
                               child: Row(
                                 children: [

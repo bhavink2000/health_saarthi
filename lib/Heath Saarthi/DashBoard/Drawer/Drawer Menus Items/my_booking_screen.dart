@@ -78,9 +78,9 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                     child: TextField(
                       controller: fromDate,
                       readOnly: true,
-                      style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black),
+                      style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 14),
                       decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+                        contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                           border: InputBorder.none,
                           labelText: "Start Date",
                         labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
@@ -112,9 +112,9 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                     child: TextField(
                       controller: toDate,
                       readOnly: true,
-                      style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black),
+                      style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 14),
                       decoration: const InputDecoration(
-                          contentPadding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+                          contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                           border: InputBorder.none,
                           labelText: "To Date",
                           labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
@@ -192,47 +192,50 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                                   elevation: 5,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                   shadowColor: hsGrey.withOpacity(0.5),
-                                  child: ExpansionTile(
-                                    title: Text(bookingH!.pharmacyPatient!.name!,style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 16)),
-                                    subtitle: Text("Booking No :- ${bookingH.bookingCode!}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
-                                    childrenPadding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                                    children: [
-                                      showRowContent('Mobile Number', '${bookingH!.pharmacyPatient!.mobileNo}'),
-                                      const SizedBox(height: 5),
-                                      showRowContent('Gross Amount', '\u{20B9}${bookingH!.grossAmount == null ? 0 : bookingH!.grossAmount}'),
-                                      const SizedBox(height: 5),
-                                      showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}'),
-                                      const SizedBox(height: 5),
-                                      showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
-                                      const SizedBox(height: 5),
-                                      showRowContent('Date', '${bookingH.createAt}'),
-                                      const SizedBox(height: 5),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text("Booking Status ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(15),
-                                              color: hsPrime
+                                  child: Theme(
+                                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                                    child: ExpansionTile(
+                                      title: Text(bookingH!.pharmacyPatient!.name!,style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 16)),
+                                      subtitle: Text("Booking No :- ${bookingH.bookingCode!}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
+                                      childrenPadding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                                      children: [
+                                        showRowContent('Mobile Number', '${bookingH!.pharmacyPatient!.mobileNo}'),
+                                        const SizedBox(height: 5),
+                                        showRowContent('Gross Amount', '\u{20B9}${bookingH!.grossAmount == null ? 0 : bookingH!.grossAmount}'),
+                                        const SizedBox(height: 5),
+                                        showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}'),
+                                        const SizedBox(height: 5),
+                                        showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
+                                        const SizedBox(height: 5),
+                                        showRowContent('Date', '${bookingH.createAt}'),
+                                        const SizedBox(height: 5),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text("Booking Status ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(15),
+                                                color: hsPrime
+                                              ),
+                                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                              child: Text(
+                                                  bookingH.status == 0
+                                                      ? '${bookingH.bookingStatus!.s0}'
+                                                      : bookingH.status == 1
+                                                        ? '${bookingH.bookingStatus!.s1}'
+                                                        : bookingH.status == 2
+                                                          ? '${bookingH.bookingStatus!.s2}'
+                                                          : bookingH.status == 3
+                                                            ? '${bookingH.bookingStatus!.s3}'
+                                                            : '${bookingH.bookingStatus!.s4}',
+                                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)
+                                              ),
                                             ),
-                                            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                            child: Text(
-                                                bookingH.status == 0
-                                                    ? '${bookingH.bookingStatus!.s0}'
-                                                    : bookingH.status == 1
-                                                      ? '${bookingH.bookingStatus!.s1}'
-                                                      : bookingH.status == 2
-                                                        ? '${bookingH.bookingStatus!.s2}'
-                                                        : bookingH.status == 3
-                                                          ? '${bookingH.bookingStatus!.s3}'
-                                                          : '${bookingH.bookingStatus!.s4}',
-                                                style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               );

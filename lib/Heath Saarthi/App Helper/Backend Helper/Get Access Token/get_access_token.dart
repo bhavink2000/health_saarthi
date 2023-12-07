@@ -12,7 +12,7 @@ class GetAccessToken{
   void checkAuthentication(BuildContext context, StateSetter setState)async{
     getUserData().then((value)async{
       if(value.accessToken == "null" || value.accessToken == ""){
-        GetXSnackBarMsg.getWarningMsg('Authentication invalid');
+        //GetXSnackBarMsg.getWarningMsg('Authentication invalid');
       }
       else{
         setState((){
