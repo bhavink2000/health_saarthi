@@ -119,8 +119,8 @@ class _PackageListItemsState extends State<PackageListItems> {
                         case Status.error:
                           print("status.error package msg-->>${value.packageList.message}-----------------");
                           print("status.error package status-->>${value.packageList.status}-----------------");
-                          return value.packageList.status == '402'
-                              ? TokenExpiredHelper(tokenMsg: "${value.packageList.message}")
+                          return value.packageList.message == '402'
+                              ? TokenExpiredHelper()
                               : value.packageList.message == 'Internet connection problem' ?  const CenterLoading() : value.packageList.data == []
                               ? Container()
                               : const Center(

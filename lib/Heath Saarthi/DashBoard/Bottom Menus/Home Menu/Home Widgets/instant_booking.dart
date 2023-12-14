@@ -542,8 +542,14 @@ class _InstantBookingState extends State<InstantBooking> {
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
         Navigator.pop(context);
       }
+      else if (bodyStatus == '402') {
+        var msg = responseData['message'];
+        GetXSnackBarMsg.getWarningMsg('$msg');
+        Navigator.pop(context);
+      }
       else {
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
+        Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");

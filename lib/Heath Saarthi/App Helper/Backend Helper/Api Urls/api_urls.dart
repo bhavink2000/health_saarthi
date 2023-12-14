@@ -77,5 +77,5 @@ class ApiUrls{
 (2.02 live on 02-11-2023) -> QR code design change/ add prescription in cart booking
 (2.03 live on 29-11-2023) -> Notification (foreground,background,terminate), / Make UI attractive / Img/PDF name show in signup / put (*) with red color for mandatory field /Exit and back functionality
 
- - gender selection make proper(30/11)
+ - gender selection make proper(30/11) / package problem / null error
 */

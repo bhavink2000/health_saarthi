@@ -794,51 +794,27 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
     } catch (e) {
       print('Error: $e');
       if (e.toString().contains('402')) {
-        logoutUser().then((value) {
-          userDataSession.removeUserData().then((value) {
-            DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
-              if (value == 'success') {
-                print("token is deleted $value");
-              } else {
-                print("Token is not deleted");
-              }
-            });
-          });
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const SplashScreen()),
-                (Route<dynamic> route) => false,
-          );
-        });
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+        // logoutUser().then((value) {
+        //   userDataSession.removeUserData().then((value) {
+        //     DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+        //       if (value == 'success') {
+        //         print("token is deleted $value");
+        //       } else {
+        //         print("Token is not deleted");
+        //       }
+        //     });
+        //   });
+        //   Navigator.of(context).pushAndRemoveUntil(
+        //     MaterialPageRoute(builder: (context) => const SplashScreen()),
+        //         (Route<dynamic> route) => false,
+        //   );
+        // });
       } else {
         print('Error: else $e');
         Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
       }
       Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-    }
-  }
-
-  var bodyMsg;
-  Future<void> logoutUser() async {
-    Map<String, String> headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
-    };
-    try {
-      final response = await http.post(
-        Uri.parse(ApiUrls.logoutUrl),
-        headers: headers,
-      );
-      final responseData = json.decode(response.body);
-      var bodyStatus = responseData['status'];
-      bodyMsg = responseData['message'];
-
-      if (bodyStatus == 200) {
-        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-      } else {
-      }
-    } catch (error) {
-      print(error.toString());
-      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 }

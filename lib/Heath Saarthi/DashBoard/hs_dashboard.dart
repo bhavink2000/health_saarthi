@@ -43,9 +43,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GetAccessToken getAccessToken = GetAccessToken();
-  int _currentIndex = 0;
-  List<Widget> _widgetList = [];
-
 
   var appVersion, updateMsg;
   String? appName;
@@ -67,13 +64,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     Future.delayed(Duration(seconds: 1), () {
       deviceTokenType();
     });
-
-    // _widgetList = [
-    //   const HomeMenu(),
-    //   const TestMenu(),
-    //   const ReportMenu(),
-    //   const ProfileMenu(),
-    // ];
   }
 
   void deviceTokenType()async{
@@ -179,7 +169,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
               );
             },
           );
-          print("----->>>>>");
         } else {
           var errorMsg = data['error']['device_token'];
           print("Error->$errorMsg");
@@ -281,7 +270,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                 ),
               ),
               Expanded(
-                //child: _widgetList[_currentIndex]
                 child: Obx(() => controller.screens[controller.index.value]),
               ),
             ],
@@ -290,12 +278,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
         drawer: DrawerScreen(),
       ),
     );
-  }
-
-  void onTapScreen(int index){
-    setState(() {
-      _currentIndex = index;
-    });
   }
 
   Future<void> retrieveDeviceToken() async {

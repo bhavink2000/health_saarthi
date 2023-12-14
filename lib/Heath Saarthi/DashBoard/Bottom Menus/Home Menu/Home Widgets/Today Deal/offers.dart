@@ -42,8 +42,9 @@ class _HomeOffersState extends State<HomeOffers> {
             case Status.loading:
               return const CenterLoading();
             case Status.error:
-              print("offers status.error ->${value.todayDealList.message}----------");
-              return value.todayDealList.message == 'Internet connection problem' ? CenterLoading() :Center(child: Text("${value.todayDealList.message}"));
+              return value.todayDealList.message == 'Internet connection problem'
+                  ? CenterLoading()
+                  : Container();
             case Status.completed:
               return value.todayDealList.data!.todayData!.isEmpty ? Container() : Container(
                 width: MediaQuery.of(context).size.width.w,

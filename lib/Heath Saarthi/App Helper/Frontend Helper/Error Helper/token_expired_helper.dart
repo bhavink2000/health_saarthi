@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:ui';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -19,8 +20,7 @@ import '../Snack Bar Msg/getx_snackbar_msg.dart';
 import '../Snack Bar Msg/snackbar_msg_show.dart';
 
 class TokenExpiredHelper extends StatefulWidget {
-  var tokenMsg;
-  TokenExpiredHelper({Key? key,this.tokenMsg}) : super(key: key);
+  const TokenExpiredHelper({Key? key}) : super(key: key);
 
   @override
   State<TokenExpiredHelper> createState() => _TokenExpiredHelperState();
@@ -29,27 +29,14 @@ class TokenExpiredHelper extends StatefulWidget {
 class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
   GetAccessToken getAccessToken = GetAccessToken();
   String? deviceToken;
+
   @override
   void initState() {
     super.initState();
     retrieveDeviceToken();
     getAccessToken.checkAuthentication(context, setState);
-    final userDataSession = Provider.of<UserDataSession>(context, listen: false);
     Future.delayed(const Duration(seconds: 1),(){
-      logoutUser().then((value){
-        userDataSession.removeUserData().then((value){
-          DeviceInfo().deleteDeviceToken(context, deviceToken,getAccessToken.access_token).then((value){
-            if(value == 'success'){
-              print("token is deleted $value");
-            }
-            else{
-              print("Token is not deleted");
-            }
-          });
-        });
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const SplashScreen()), (Route<dynamic> route) => false);
-      });
-      //openLogoutBox(context);
+      DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
     });
   }
   Future<void> retrieveDeviceToken() async {
@@ -61,43 +48,6 @@ class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
   }
   @override
   Widget build(BuildContext context) {
-    final userDataSession = Provider.of<UserDataSession>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Center(
-            child: Text("${widget.tokenMsg}",
-              style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16,fontWeight: FontWeight.bold),
-            )
-        ),
-        SizedBox(height: 10.h,),
-      ],
-    );
-  }
-
-  var bodyMsg;
-  Future<void> logoutUser() async {
-    Map<String, String> headers = {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
-    };
-    try {
-      final response = await http.post(
-        Uri.parse(ApiUrls.logoutUrl),
-        headers: headers,
-      );
-      final responseData = json.decode(response.body);
-      print("token logout->$responseData");
-      var bodyStatus = responseData['status'];
-      bodyMsg = responseData['message'];
-
-      if (bodyStatus == 200) {
-        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
-      } else {
-      }
-    } catch (error) {
-      print("logoutUser catch->$error");
-    }
+    return Container();
   }
 }

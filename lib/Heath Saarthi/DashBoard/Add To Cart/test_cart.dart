@@ -13,9 +13,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/cart_calculation.dart';
@@ -75,6 +77,7 @@ class _TestCartState extends State<TestCart> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    retrieveDeviceToken();
     Future.delayed(const Duration(seconds: 1),(){
       cartScreenCall();
     });
@@ -87,6 +90,7 @@ class _TestCartState extends State<TestCart> {
   }
   bool pageLoad = false;
   var userStatus;
+  var deviceToken;
   getUserStatus()async{
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
@@ -102,16 +106,24 @@ class _TestCartState extends State<TestCart> {
         sBranchName = userData.data.costCenter.branchName.toString();
         pageLoad = true;
       });
-      print("userStatus ==>>$userStatus");
-      print("branchId ==>>$sBranchId");
     }
-    // on SocketException catch (e) {
-    //   log('${e.message}');
-    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
-    // }
     catch(e){
       print("get User Status Error->$e");
+      if (e.toString().contains('402')) {
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      }
+      setState(() {
+        pageLoad = true;
+      });
     }
+  }
+
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    log("SharedPreferences DeviceToken->$deviceToken");
   }
 
   String? selectLocation;
@@ -798,6 +810,8 @@ class _TestCartState extends State<TestCart> {
                           ],
                         );
                       case Status.error:
+                        log('cart error-->${value.cartList.status}');
+                        log('cart error-->${value.cartList.message}');
                         return value.cartList.message == 'Cart is Empty'
                           ? Column(
                             children: [
@@ -814,8 +828,8 @@ class _TestCartState extends State<TestCart> {
                           : Column(
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
-                              value.cartList.status == 402
-                                  ? TokenExpiredHelper(tokenMsg: value.cartList.message)
+                              value.cartList.message == '402'
+                                  ? TokenExpiredHelper()
                                   : value.cartList.message == 'Internet connection problem'
                                   ? CenterLoading()
                                   : const Center(child: Text('Please check internet connection')),

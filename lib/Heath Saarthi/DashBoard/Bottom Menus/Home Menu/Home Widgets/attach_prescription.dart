@@ -707,6 +707,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       var parsedResponse = json.decode(responseData);
       var bodyStatus = parsedResponse['status'];
       var bodyMsg = parsedResponse['message'];
+
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         patientController.selectedMobileNo?.value = '';
@@ -737,6 +738,11 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       }
       else if(response.statusCode == 500){
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        Navigator.pop(context);
+      }
+      else if (bodyStatus == '402') {
+        var msg = parsedResponse['message'];
+        GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
       }
       else{

@@ -12,6 +12,7 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20M
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/Today%20Deal/offers.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/test_package.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
@@ -34,10 +35,12 @@ class _HomeMenuState extends State<HomeMenu> {
     super.initState();
     getAccessToken = GetAccessToken();
     getAccessToken.checkAuthentication(context, setState);
+    retrieveDeviceToken();
     Future.delayed(const Duration(seconds: 1),(){
       getUserStatus();
     });
   }
+  var deviceToken;
   void getUserStatus()async{
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
@@ -71,15 +74,21 @@ class _HomeMenuState extends State<HomeMenu> {
       }
       print("userStatus ==>>$userStatus");
     }
-    // on SocketException catch (e) {
-    //   log('${e.message}');
-    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
-    // }
     catch(e){
       print("get User Status Error->$e");
+      if (e.toString().contains('402')) {
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      }
     }
   }
 
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    log("SharedPreferences DeviceToken->$deviceToken");
+  }
 
   @override
   Widget build(BuildContext context) {

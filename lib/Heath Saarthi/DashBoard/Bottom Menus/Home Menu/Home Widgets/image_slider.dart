@@ -1,5 +1,7 @@
 // ignore_for_file: missing_return
 
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,10 +46,9 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
             case Status.loading:
               return const CenterLoading();
             case Status.error:
-              print("image slider status.error->${value.bannerList.message}--------------");
-              return value.bannerList.message == 'Internet connection problem' ? CenterLoading() : TokenExpiredHelper();
+              return value.bannerList.message == 'Internet connection problem' ? CenterLoading() : value.bannerList.message == '402' ? TokenExpiredHelper() : CenterLoading();
             case Status.completed:
-              return value.bannerList.data!.data!.isEmpty ? Container() :Container(
+              return value.bannerList.data!.data!.isEmpty ? Container() : Container(
                 width: MediaQuery.of(context).size.width.w,
                 height: MediaQuery.of(context).size.height / 6.h,
                 child: value.bannerList.data!.data!.isEmpty

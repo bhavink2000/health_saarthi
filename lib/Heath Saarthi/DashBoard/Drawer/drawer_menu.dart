@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/multiple_camera.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -357,6 +358,22 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           ),
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>MultipleCameraPic()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.camera,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Camera",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
                       ],
                     ),
                   ),

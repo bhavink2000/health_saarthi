@@ -115,8 +115,8 @@ class _TestListItemsState extends State<TestListItems> {
                         case Status.error:
                           print("status.error test msg-->>${value.testList.message}-------------");
                           print("status.error test status-->>${value.testList.status}-------------");
-                          return value.testList.status == '402'
-                              ? TokenExpiredHelper(tokenMsg: value.testList.message)
+                          return value.testList.message == '402'
+                              ? TokenExpiredHelper()
                               : value.testList.message == 'Internet connection problem' ? CenterLoading() : value.testList.data == []
                               ? Container()
                               : const Center(

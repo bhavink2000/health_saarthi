@@ -39,6 +39,10 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
             qrCodeModel = value;
             isLoading = false;
           });
+        }).onError((error, stackTrace){
+          setState(() {
+            isLoading = false;
+          });
         });
       });
     });
@@ -111,7 +115,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                     color: Colors.white),
                 child: isLoading == false
                     ? SingleChildScrollView(
-                        child: qrCodeModel!.status == '402'
+                        child: qrCodeModel?.massage == '402'
                             ? TokenExpiredHelper()
                             : Column(
                                 children: [
@@ -142,9 +146,9 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                                 const Divider(color: Colors.grey,thickness: 1,endIndent: 80,indent: 80),
                                                 Text('CHECKUP AT HOME',style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold)),
                                                 const SizedBox(height: 10),
-                                                Text('${qrCodeModel!.data!.name}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                                Text('${qrCodeModel?.data?.name ?? 'N/A'}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
                                                 const SizedBox(height: 3),
-                                                Text('${qrCodeModel!.data!.mobile}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
+                                                Text('${qrCodeModel?.data?.mobile ?? 'N/A'}',style: const TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
                                                 const SizedBox(height: 5),
                                                 Padding(
                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -156,13 +160,13 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                                       ),
                                                       Padding(
                                                         padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
-                                                        child: Container(
+                                                        child: qrCodeModel?.data?.qrcodeImagePath == null ? Container() :Container(
                                                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                             decoration: BoxDecoration(
                                                                 color: Colors.white,
                                                                 borderRadius: BorderRadius.circular(10)
                                                             ),
-                                                            child: Image(image: NetworkImage('${qrCodeModel!.data!.qrcodeImagePath}'))
+                                                            child: Image(image: NetworkImage('${qrCodeModel?.data?.qrcodeImagePath}'))
                                                         ),
                                                       ),
                                                     ],
@@ -243,14 +247,14 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                         onTap: () async {
                                           var status = await Permission.storage.request();
                                           if (status.isGranted) {
-                                            downloadFile(qrCodeModel!.pdf).catchError((onError) {
+                                            downloadFile(qrCodeModel?.pdf).catchError((onError) {
                                               debugPrint('Error downloading: $onError');
                                             }).then((imagePath) {
                                               debugPrint('Download successful, path: $imagePath');
                                               GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
                                             });
                                           } else {
-                                            downloadFile(qrCodeModel!.pdf).catchError((onError) {
+                                            downloadFile(qrCodeModel?.pdf).catchError((onError) {
                                               debugPrint('Error downloading: $onError');
                                             }).then((imagePath) {
                                               debugPrint('Download successful, path: $imagePath');

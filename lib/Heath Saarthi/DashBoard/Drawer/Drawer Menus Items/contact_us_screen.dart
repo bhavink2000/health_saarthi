@@ -80,9 +80,9 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text("${salesPersonNM == '' ? 'N/A' : salesPersonNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontSize: 16,letterSpacing: 0.5),),
+                                        Text("${salesPersonNM == null ? 'N/A' : salesPersonNM}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontSize: 16,letterSpacing: 0.5),),
                                         const SizedBox(height: 5,),
-                                        Text("${salesPersonNo == '' ? 'N/A' : salesPersonNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontSize: 14,letterSpacing: 0.5)),
+                                        Text("${salesPersonNo == null ? 'N/A' : salesPersonNo}",style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontSize: 14,letterSpacing: 0.5)),
                                       ],
                                     ),
                                   ),
@@ -193,20 +193,27 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body)['data'];
       print("data->$data");
-      setState(() {
-        salesPersonNM = data['name'];
-        salesPersonNo = data['mobile_no'];
-        superiorNM = data['name_two'];
-        superiorNo = data['mobile_no_two'];
-        customerCareNm = data['name_three'];
-        customerCareNo = data['mobile_no_three'];
-        otherNM = data['name_other'];
-        otherNo = data['mobile_no_other'];
-        isLoading = true;
-      });
-      final id = data['id'];
-      final status = data['status'];
-      final encId = data['enc_id'];
+      if(data != null){
+        setState(() {
+          salesPersonNM = data['name'];
+          salesPersonNo = data['mobile_no'];
+          superiorNM = data['name_two'];
+          superiorNo = data['mobile_no_two'];
+          customerCareNm = data['name_three'];
+          customerCareNo = data['mobile_no_three'];
+          otherNM = data['name_other'];
+          otherNo = data['mobile_no_other'];
+          isLoading = true;
+        });
+        final id = data['id'];
+        final status = data['status'];
+        final encId = data['enc_id'];
+      }
+      else{
+        setState(() {
+          isLoading = true;
+        });
+      }
     } else {
       print('Request failed with status: ${response.statusCode}');
     }

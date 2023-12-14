@@ -34,30 +34,22 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
     setState(() {
       isLoading = false;
     });
-
     try {
       Map<String, dynamic> popularP = await HomeMenuRepo().popularPackageData(0, getAccessToken.access_token, '');
-
       if (popularP != null && popularP.containsKey('data')) {
         List<dynamic> dataList = popularP['data'];
-
         if (dataList.isNotEmpty) {
-          // Ensure dataList contains maps before assigning to popularPackage
           List<Map<String, dynamic>> packageList = dataList.cast<Map<String, dynamic>>();
-
           setState(() {
             popularPackage = packageList;
             isLoading = true;
           });
-          print('popularPackage----------->$popularPackage');
         } else {
-          print("No service data available.");
           setState(() {
             isLoading = true;
           });
         }
       } else {
-        print("Service data is not in the expected format.");
         setState(() {
           isLoading = true;
         });

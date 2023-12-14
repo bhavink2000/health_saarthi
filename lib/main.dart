@@ -117,6 +117,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     }
     catch(e){
       log("----- >>>>> foreground catch e -> $e");
+
     }
   }
 

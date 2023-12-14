@@ -9,6 +9,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Te
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
+import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
@@ -35,11 +36,13 @@ class _BookTestScreenState extends State<BookTestScreen> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
+    retrieveDeviceToken();
     Future.delayed(const Duration(seconds: 1),(){
       getUserStatus();
     });
   }
   var userStatus;
+  var deviceToken;
   void getUserStatus()async{
     setState(() {
       isLoading = false;
@@ -52,13 +55,23 @@ class _BookTestScreenState extends State<BookTestScreen> {
       });
       print("userStatus ==>>$userStatus");
     }
-    // on SocketException catch (e) {
-    //   log('${e.message}');
-    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
-    // }
     catch(e){
       print("get User Status Error->$e");
+      setState(() {
+        isLoading = true;
+      });
+      if (e.toString().contains('402')) {
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      }
     }
+  }
+
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    log("SharedPreferences DeviceToken->$deviceToken");
   }
   @override
   Widget build(BuildContext context) {

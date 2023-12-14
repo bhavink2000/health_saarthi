@@ -88,6 +88,9 @@ dependencies:
   share_plus: ^7.1.0
   flutter_cached_pdfview:
 
+  multiple_image_camera: ^0.0.1
+  images_picker: ^1.2.11
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

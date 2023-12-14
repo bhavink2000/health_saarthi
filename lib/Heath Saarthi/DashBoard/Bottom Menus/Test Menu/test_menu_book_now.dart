@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
@@ -15,10 +16,12 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:search_choices/search_choices.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
 import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
@@ -28,6 +31,11 @@ import '../../../App Helper/Backend Helper/Models/Location Model/state_model.dar
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
+import '../../../App Helper/Getx Helper/location_getx.dart';
+import '../../../App Helper/Getx Helper/patient_details_getx.dart';
+import '../../../App Helper/Widget Helper/form_fields.dart';
+import '../../../App Helper/Widget Helper/gender_selection.dart';
+import '../../../App Helper/Widget Helper/location_selection.dart';
 import 'thank_you_msg.dart';
 
 class TestMenu extends StatefulWidget {
@@ -39,10 +47,13 @@ class TestMenu extends StatefulWidget {
 
 class _TestMenuState extends State<TestMenu> {
 
+  final locationController = Get.put(LocationCall());
+  final patientController = Get.put(PatientDetailsGetX());
+
   final emailId = TextEditingController();
   final address = TextEditingController();
   final pinCode = TextEditingController();
-  final colletionDate = TextEditingController();
+  final collectionDate = TextEditingController();
   final remark = TextEditingController();
 
   String? selectedGender;
@@ -61,7 +72,8 @@ class _TestMenuState extends State<TestMenu> {
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
-    colletionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    retrieveDeviceToken();
+    collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
@@ -69,34 +81,20 @@ class _TestMenuState extends State<TestMenu> {
       });
     });
     functionCalling();
-    // Future.delayed(const Duration(seconds: 1),(){
-    //   setState(() {
-    //     fetchMobileList();
-    //   });
-    // });
-    // Future.delayed(const Duration(seconds: 2),(){
-    //   setState(() {
-    //     fetchStateList();
-    //   });
-    // });
   }
 
   void functionCalling()async{
-    await fetchStateList();
-    await fetchMobileList();
+    await patientController.fetchMobileList();
   }
 
   final _formKey = GlobalKey<FormState>();
 
   var userStatus;
+  var deviceToken;
   void getUserStatus()async{
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-
-      log('--->>${userData.hashCode}');
-      log('--->>.${userData.toString()}');
       if (userData != null && userData.data != null) {
-        print("user Status -->> ${userData.data.status}");
         setState(() {
           userStatus = userData.data.status;
         });
@@ -108,20 +106,24 @@ class _TestMenuState extends State<TestMenu> {
       }
       print("userStatus ==>>$userStatus");
     }
-    // on SocketException catch (e) {
-    //   log('${e.message}');
-    //   GetXSnackBarMsg.getWarningMsg('${e.message}');
-    // }
     catch(e){
       print("get User Status Error->$e");
-      //GetXSnackBarMsg.getWarningMsg('Authorization Token not found');
-      //Navigator.pop(context);
+      if (e.toString().contains('402')) {
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      }
     }
+  }
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    log("SharedPreferences DeviceToken->$deviceToken");
   }
 
   @override
   void dispose() {
-    selectedMobileNo = '';
+    patientController.selectedMobileNo?.value = '';
     selectedGender = '';
     remark.text = '';
     pName.text = '';
@@ -131,10 +133,11 @@ class _TestMenuState extends State<TestMenu> {
     pAge.text = '';
     pinCode.text = '';
     address.text = '';
-    selectedState = '';
-    selectedCity = '';
-    selectedArea = '';
-    selectedBranch = '';
+    locationController.selectedState?.value = '';
+    locationController.selectedCity?.value = '';
+    locationController.selectedStateId?.value = '';
+    locationController.selectedArea?.value = '';
+    locationController.selectedBranch?.value = '';
     super.dispose();
   }
 
@@ -153,6 +156,7 @@ class _TestMenuState extends State<TestMenu> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
                     child: Container(
@@ -161,16 +165,16 @@ class _TestMenuState extends State<TestMenu> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                         child: TypeAheadFormField<MobileData>(
                           textFieldConfiguration: TextFieldConfiguration(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               //labelText: 'Select mobile number',
                               label: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Select mobile number"),
-                                  Text(" *", style: const TextStyle(color: Colors.red)),
+                                  Text(" *", style: TextStyle(color: Colors.red)),
                                 ],
                               ),
-                              labelStyle: const TextStyle(
+                              labelStyle: TextStyle(
                                 color: Colors.black54,
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
@@ -191,11 +195,11 @@ class _TestMenuState extends State<TestMenu> {
                           ),
                           suggestionsCallback: (pattern) async {
                             if(isTyping){
-                              return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                              return patientController.mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
                             }
                             else{
                               if(pMobile.text.isNotEmpty){
-                                return mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
+                                return patientController.mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
                               }
                               else{
                                 return [];
@@ -209,8 +213,8 @@ class _TestMenuState extends State<TestMenu> {
                           },
                           onSuggestionSelected: (MobileData suggestion) {
                             setState(() {
-                              selectedMobileNo = suggestion.encPharmacyPatientId;
-                              getPatient(selectedMobileNo);
+                              patientController.selectedMobileNo?.value = suggestion.encPharmacyPatientId;
+                              getPatient(patientController.selectedMobileNo?.value);
                               pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
                               isTyping = true;
                             });
@@ -221,565 +225,201 @@ class _TestMenuState extends State<TestMenu> {
                             }
                             return null;
                           },
-                          onSaved: (value) => this.selectedMobileNo = value,
+                          onSaved: (value) => patientController.selectedMobileNo?.value = value!,
                         )
                     ),
                   ),
-                  showTextField(
-                      'Patient name', pName,Icons.person,
-                          (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Enter patient name';
-                        }
-                        return null;
+                  FormTextField(
+                    controller: pName,
+                    label: ' Patient name',
+                    mandatoryIcon: ' *',
+                    readOnly: false,
+                    prefixIcon: Icons.person,
+                    validator: (value){
+                      if (value == null || value.isEmpty) {
+                        return 'Enter patient name';
                       }
+                      return null;
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: TextFormField(
-                      controller: pAge,
-                      maxLength: 3,
-                      keyboardType: TextInputType.number,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                      ],
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(hsPaddingM),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Age"),
-                            //Text(" *", style: const TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
-                      ),
-                    ),
+                  FormTextField(
+                    controller: pAge,
+                    label: " Age",
+                    mandatoryIcon: '',
+                    maxLength: 3,
+                    readOnly: false,
+                    prefixIcon: Icons.view_agenda_rounded,
+                    keyboardType: TextInputType.number,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: TextFormField(
-                      controller: emailId,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(hsPaddingM),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Email id"),
-                            //Text(" *", style: const TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(Icons.email, color: hsBlack, size: 20),
-                      ),
-                      onChanged: (value) {
-                        _formKey.currentState?.validate(); // Trigger validation manually
-                      },
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty) {
-                          if (!value.contains('@')) {
-                            return 'Email id must contain "@" symbol';
-                          }
+                  FormTextField(
+                    controller: emailId,
+                    label: " Email id",
+                    mandatoryIcon: '',
+                    readOnly: false,
+                    prefixIcon: Icons.email,
+                    onChanged: (value) {
+                      _formKey.currentState?.validate();
+                    },
+                    validator: (value) {
+                      if (value != null && value.isNotEmpty) {
+                        if (!value.contains('@')) {
+                          return 'Email id must contain "@" symbol';
                         }
-                        return null; // Return null if no validation error
-                      },
-                    ),
+                      }
+                      return null;
+                    },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: TextFormField(
-                      controller: address,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(hsPaddingM),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Address"),
-                            //Text(" *", style: const TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
-                      ),
-                    ),
-                  ),
+                  FormTextField(
+                    controller: address,
+                    label: " Address",
+                    mandatoryIcon: '',
+                    readOnly: false,
+                    prefixIcon: Icons.location_city_rounded,
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          fit: FlexFit.loose,
-                          child: Theme(
-                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
-                            child: RadioListTile(
-                              dense: true,
-                              contentPadding: EdgeInsets.zero,
-                              title: const Text('Female',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                              value: 'Female',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGender = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.loose,
-                          child: Theme(
-                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
-                            child: RadioListTile(
-                              dense: true,
-                              contentPadding: EdgeInsets.zero,
-                              title: const Text('Male',style: TextStyle(fontFamily: FontType.MontserratRegular)),
-                              value: 'Male',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedGender = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.loose,
-                          child: Theme(
-                            data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
-                            child: RadioListTile(
-                              dense: true,
-                              contentPadding: EdgeInsets.zero,
-                              title: const Text('Other',style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                              value: 'Other',
-                              groupValue: selectedGender,
-                              onChanged: (value) {
-                                setState(() {
-                                  setState((){
-                                    selectedGender = value;
-                                  });
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      child: Stack(
-                        children: [
-                          Visibility(
-                            visible: stateLoading,
-                            child: const Positioned(
-                              top: 10,
-                              right: 5,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          DropdownSearch<String>(
-                            popupProps: const PopupProps.dialog(
-                              showSelectedItems: true,
-                              showSearchBox: true,
-                            ),
-                            items: stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                //labelText: "Select state *",
-                                label: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("Select state"),
-                                    Text(" *", style: const TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                                labelStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                              ),
-                            ),
-                            onChanged: (newValue) {
-                              final selectedStateObject = stateList.firstWhere(
-                                    (state) => state!.stateName == newValue,
-                                orElse: () => StateData(),
-                              );
-                              if (selectedStateObject != null) {
-                                setState(() {
-                                  cityList.clear();
-                                  selectedCity = '';
-                                  areaList.clear();
-                                  selectedArea = '';
-                                  branchList.clear();
-                                  selectedBranch = '';
-                                  selectedState = newValue;
-                                  selectedStateId = selectedStateObject.id.toString();
-                                });
-                                fetchCityList(selectedStateId);
-                              }
-                            },
-                            selectedItem: selectedState,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a state';
-                              }
-                              return null;
-                            },
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15,),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      child: Stack(
-                        children: [
-                          Visibility(
-                            visible: cityLoading,
-                            child: const Positioned(
-                              top: 10,
-                              right: 5,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          DropdownSearch<String>(
-                            popupProps: const PopupProps.dialog(
-                              showSelectedItems: true,
-                              showSearchBox: true,
-                            ),
-                            items: cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                //labelText: "Select city *",
-                                label: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("Select city"),
-                                    Text(" *", style: const TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                                labelStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                              ),
-                            ),
-                            onChanged: (newValue) {
-                              final selectedCityObject = cityList.firstWhere(
-                                    (city) => city!.cityName == newValue,
-                                orElse: () => CityData(), // Return an empty instance of StateData
-                              );
-                              if (selectedCityObject != null) {
-                                setState(() {
-                                  selectedCity = '';
-                                  areaList.clear();
-                                  selectedArea = '';
-                                  branchList.clear();
-                                  selectedBranch = '';
-                                  selectedCity = newValue;
-                                  selectedCityId = selectedCityObject.id.toString();
-                                });
-                                fetchAreaList(selectedStateId, selectedCityId);
-                              }
-                            },
-                            selectedItem: selectedCity,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a city';
-                              }
-                              return null;
-                            },
-                          )
-
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 15,),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      child: Stack(
-                        children: [
-                          Visibility(
-                            visible: areaLoading,
-                            child: const Positioned(
-                              top: 10,
-                              right: 5,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          DropdownSearch<String>(
-                            popupProps: const PopupProps.dialog(
-                              showSelectedItems: true,
-                              showSearchBox: true,
-                            ),
-                            items: areaList.map((area) => area!.areaName!).toList() ?? [],
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                //labelText: "Select area *",
-                                label: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("Select area"),
-                                    Text(" *", style: const TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                                labelStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                              ),
-                            ),
-                            onChanged: (newValue) {
-                              final selectedAreaObject = areaList.firstWhere(
-                                    (area) => area!.areaName == newValue,
-                                orElse: () => AreaData(), // Return an empty instance of StateData
-                              );
-                              if (selectedAreaObject != null) {
-                                setState(() {
-                                  branchList.clear();
-                                  selectedBranch = '';
-                                  selectedArea = newValue;
-                                  selectedAreaId = selectedAreaObject.id.toString();
-                                  fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
-                                });
-                              }
-                            },
-                            selectedItem: selectedArea,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a area';
-                              }
-                              return null;
-                            },
-                          )
-                        ],
-                      ),
-                    ),
                   ),
                   SizedBox(height: 10.h),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width / 1.w,
-                      child: Stack(
-                        children: [
-                          Visibility(
-                            visible: branchLoading,
-                            child: const Positioned(
-                              top: 10,
-                              right: 5,
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                          DropdownSearch<String>(
-                            popupProps: const PopupProps.dialog(
-                              showSelectedItems: true,
-                              showSearchBox: true,
-                            ),
-                            items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
-                            autoValidateMode: AutovalidateMode.onUserInteraction,
-                            dropdownDecoratorProps: DropDownDecoratorProps(
-                              dropdownSearchDecoration: InputDecoration(
-                                //labelText: "Select branch *",
-                                label: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text("Select branch"),
-                                    Text(" *", style: const TextStyle(color: Colors.red)),
-                                  ],
-                                ),
-                                labelStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                ),
-                              ),
-                            ),
-                            onChanged: (newValue) {
-                              final selectedBranchObject = branchList.firstWhere(
-                                    (branch) => branch!.branchName == newValue,
-                                orElse: () => BranchData(), // Return an empty instance of StateData
-                              );
-                              if (selectedBranchObject != null) {
-                                setState(() {
-                                  selectedBranch = newValue;
-                                  selectedBranchId = selectedBranchObject.id.toString();
-                                });
-                              }
-                            },
-                            selectedItem: selectedBranch,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Select a branch';
-                              }
-                              return null;
-                            },
-                          )
-                        ],
-                      ),
-                    ),
+                  GenderSelectionWidget(
+                    onGenderSelected: (gender) {
+                      setState(() {
+                        selectedGender = gender;
+                      });
+                    },
                   ),
-
                   SizedBox(height: 10.h),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: TextFormField(
-                      controller: colletionDate,
-                      readOnly: true,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(hsPaddingM),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Collection date"),
-                            //Text(" *", style: const TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(Icons.date_range_rounded, color: hsBlack, size: 20),
-                      ),
-                      onTap: () async {
-                        DateTime? pickedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2101),
-                        );
-                        if (pickedDate != null) {
-                          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                          setState(() {
-                            colletionDate.text = formattedDate;
-                          });
-                        }
-                      },
-                    ),
+                  Obx(() => LocationDropdowns(
+                    items: locationController.stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
+                    loading: locationController.stateLoading.value,
+                    selectedItem: locationController.selectedState?.value,
+                    label: "Select state",
+                    onChanged: (newValue) {
+                      final selectedStateObject = locationController.stateList.firstWhere(
+                            (state) => state!.stateName == newValue,
+                        orElse: () => StateData(),
+                      );
+                      if (selectedStateObject != null) {
+                        setState(() {
+                          locationController.cityList.clear();
+                          locationController.selectedCity?.value = '';
+                          locationController.areaList.clear();
+                          locationController.selectedArea?.value = '';
+                          locationController.branchList.clear();
+                          locationController.selectedBranch?.value = '';
+                          locationController.selectedState?.value = newValue!;
+                          locationController.selectedStateId?.value = selectedStateObject.id.toString();
+                        });
+                        locationController.fetchCityList(locationController.selectedStateId?.value);
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Select a state';
+                      }
+                      return null;
+                    },
+                  ),),
+                  SizedBox(height: 10.h),
+                  Obx(() => LocationDropdowns(
+                    items: locationController.cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
+                    loading: locationController.cityLoading.value,
+                    selectedItem: locationController.selectedCity?.value,
+                    label: "Select city",
+                    onChanged: (newValue) {
+                      final selectedCityObject = locationController.cityList.firstWhere(
+                            (city) => city!.cityName == newValue,
+                        orElse: () => CityData(), // Return an empty instance of StateData
+                      );
+                      if (selectedCityObject != null) {
+                        setState(() {
+                          locationController.selectedCity?.value = '';
+                          locationController.areaList.clear();
+                          locationController.selectedArea?.value = '';
+                          locationController.branchList.clear();
+                          locationController.selectedBranch?.value = '';
+                          locationController.selectedCity?.value = newValue!;
+                          locationController.selectedCityId?.value = selectedCityObject.id.toString();
+                          //fetchBranchList(selectedStateId, selectedCityId, '');
+                        });
+                        locationController.fetchAreaList(locationController.selectedStateId?.value, locationController.selectedCityId?.value);
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Select a city';
+                      }
+                      return null;
+                    },
+                  ),),
+                  SizedBox(height: 10.h),
+                  Obx(() => LocationDropdowns(
+                    items: locationController.areaList.where((area) => area!.areaName != null).map((area) => area!.areaName!).toList(),
+                    loading: locationController.areaLoading.value,
+                    selectedItem: locationController.selectedArea?.value,
+                    label: "Select area",
+                    onChanged: (newValue) {
+                      final selectedAreaObject = locationController.areaList.firstWhere(
+                            (area) => area!.areaName == newValue,
+                        orElse: () => AreaData(), // Return an empty instance of StateData
+                      );
+                      if (selectedAreaObject != null) {
+                        setState(() {
+                          locationController.branchList.clear();
+                          locationController.selectedBranch?.value = '';
+                          locationController.selectedArea?.value = newValue!;
+                          locationController.selectedAreaId?.value = selectedAreaObject.id.toString();
+                          locationController.fetchBranchList(
+                              locationController.selectedStateId?.value,
+                              locationController.selectedCityId?.value,
+                              locationController.selectedAreaId?.value
+                          );
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Select a area';
+                      }
+                      return null;
+                    },
+                  ),),
+                  SizedBox(height: 10.h),
+                  Obx(() => LocationDropdowns(
+                    items: locationController.branchList.where((branch) => branch!.branchName != null).map((branch) => branch!.branchName!).toList(),
+                    loading: locationController.branchLoading.value,
+                    selectedItem: locationController.selectedBranch?.value,
+                    label: "Select branch",
+                    onChanged: (newValue) {
+                      final selectedBranchObject = locationController.branchList.firstWhere(
+                            (branch) => branch!.branchName == newValue,
+                        orElse: () => BranchData(), // Return an empty instance of StateData
+                      );
+                      if (selectedBranchObject != null) {
+                        setState(() {
+                          locationController.selectedBranch?.value = newValue!;
+                          locationController.selectedBranchId?.value = selectedBranchObject.id.toString();
+                        });
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Select a branch';
+                      }
+                      return null;
+                    },
+                  ),),
+                  SizedBox(height: 10.h),
+                  FormTextField(
+                    controller: collectionDate,
+                    label: " Collection date",
+                    mandatoryIcon: '',
+                    readOnly: true,
+                    prefixIcon: Icons.date_range_rounded,
                   ),
-
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                    child: TextFormField(
-                      controller: remark,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      maxLines: 5,
-                      minLines: 1,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(hsPaddingM),
-                        border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                            borderRadius: BorderRadius.circular(15)
-                        ),
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text("Remark"),
-                            //Text(" *", style: const TextStyle(color: Colors.red)),
-                          ],
-                        ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
-                      ),
-                    ),
+                  FormTextField(
+                    controller: remark,
+                    label: " Remark",
+                    mandatoryIcon: '',
+                    readOnly: false,
+                    prefixIcon: Icons.note_add_rounded,
                   ),
 
                   Padding(
@@ -796,16 +436,16 @@ class _TestMenuState extends State<TestMenu> {
                           else if(pMobile.text.isEmpty){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
                           }
-                          else if(selectedState == null || selectedState == ''){
+                          else if(locationController.selectedState?.value == null || locationController.selectedState?.value == ''){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
                           }
-                          else if(selectedCity == null || selectedCity == ''){
+                          else if(locationController.selectedCity?.value == null || locationController.selectedCity?.value == ''){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
                           }
-                          else if(selectedArea == null || selectedArea == ''){
+                          else if(locationController.selectedArea?.value == null || locationController.selectedArea?.value == ''){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
                           }
-                          else if(selectedBranch == null || selectedBranch == ''){
+                          else if(locationController.selectedBranch?.value == null || locationController.selectedBranch?.value == ''){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
                           }
                           else{
@@ -851,19 +491,7 @@ class _TestMenuState extends State<TestMenu> {
       ),
     );
   }
-  List<MobileData> mobileList = [];
-  String? selectedMobileNo;
-  Future<void> fetchMobileList() async {
-    try {
-      CartFuture cartFuture = CartFuture();
-      List<MobileData> list = await cartFuture.getMobileNumber(getAccessToken.access_token, selectedMobileNo);
-      setState(() {
-        mobileList = list;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
+
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
@@ -883,136 +511,24 @@ class _TestMenuState extends State<TestMenu> {
           : '';
       pinCode.text = pModel.patientData!.pincode.toString();
 
-      selectedState = pModel.patientData!.state!.stateName.toString();
-      selectedCity = pModel.patientData!.city!.cityName.toString();
-      selectedArea = pModel.patientData!.area!.areaName.toString();
+      locationController.selectedState?.value = pModel.patientData!.state!.stateName.toString();
+      locationController.selectedCity?.value = pModel.patientData!.city!.cityName.toString();
+      locationController.selectedArea?.value = pModel.patientData!.area!.areaName.toString();
 
-      selectedStateId = pModel.patientData!.state!.id.toString();
-      selectedCityId = pModel.patientData!.city!.id.toString();
-      selectedAreaId = pModel.patientData!.area!.id.toString();
+      locationController.selectedStateId?.value = pModel.patientData!.state!.id.toString();
+      locationController.selectedCityId?.value = pModel.patientData!.city!.id.toString();
+      locationController.selectedAreaId?.value = pModel.patientData!.area!.id.toString();
 
-      if(selectedStateId != null){
-        fetchCityList(selectedStateId).then((value){
-          fetchAreaList(selectedStateId, selectedCityId).then((value){
-            fetchBranchList(selectedStateId, selectedCityId, selectedAreaId);
+      if(locationController.selectedStateId?.value != null){
+        locationController.fetchCityList(locationController.selectedStateId?.value).then((value){
+          locationController.fetchAreaList(locationController.selectedStateId?.value, locationController.selectedCityId?.value).then((value){
+            locationController.fetchBranchList(locationController.selectedStateId?.value, locationController.selectedCityId?.value, locationController.selectedAreaId?.value);
           });
         });
       }
     } catch (e) {
       print('Error: $e');
     }
-  }
-
-  List<StateData?> stateList = [];
-  String? selectedState;
-  String? selectedStateId;
-  Future<void> fetchStateList() async {
-    setState(() {
-      stateLoading = true;
-    });
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<StateData> list = await locationFuture.getState();
-      setState(() {
-        stateList = list;
-        stateLoading = false;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
-  List<CityData?> cityList = [];
-  String? selectedCity;
-  String? selectedCityId;
-  Future<void> fetchCityList(var sState) async {
-    setState(() {
-      cityLoading = true;
-    });
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<CityData> list = await locationFuture.getCity(sState);
-      setState(() {
-        cityList = list;
-        cityLoading = false;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
-  List<AreaData?> areaList = [];
-  String? selectedArea;
-  String? selectedAreaId;
-  Future<void> fetchAreaList(var sState, var sCity) async {
-    setState(() {
-      areaLoading = true;
-    });
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<AreaData> list = await locationFuture.getArea(sState,sCity);
-      setState(() {
-        areaList = list;
-        areaLoading = false;
-      });
-    } catch (e) {
-      print("Error -> $e");
-    }
-  }
-
-  List<BranchData?> branchList = [];
-  String? selectedBranch;
-  String? selectedBranchId;
-  Future<void> fetchBranchList(var sState, var sCity, var sArea) async {
-    setState(() {
-      branchLoading = true;
-    });
-    try {
-      LocationFuture locationFuture = LocationFuture();
-      List<BranchData> list = await locationFuture.getBranch(sState,sCity,sArea);
-      setState(() {
-        branchList = list;
-        branchLoading = false;
-      });
-    } catch (e) {
-      print("Branch Error -> $e");
-    }
-  }
-
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-      child: TextFormField(
-        controller: controller,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(hsPaddingM),
-          border: const OutlineInputBorder(),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              borderRadius: BorderRadius.circular(15)
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              borderRadius: BorderRadius.circular(15)
-          ),
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("$label"),
-              Text(" *", style: const TextStyle(color: Colors.red)),
-            ],
-          ),
-          labelStyle: const TextStyle(
-            color: Colors.black54,
-            fontFamily: FontType.MontserratRegular,
-            fontSize: 14,
-          ),
-          prefixIcon: Icon(iconData, color: hsBlack, size: 20),
-        ),
-        validator: validator, // Set the validator function
-      ),
-    );
   }
 
   Future<void> instantBooking() async {
@@ -1025,18 +541,18 @@ class _TestMenuState extends State<TestMenu> {
     };
 
     final Map<String, dynamic> requestBody = {
-      "pharmacy_patient_id": selectedMobileNo ?? '',
-      "collection_date": colletionDate.text ?? '',
+      "pharmacy_patient_id": patientController.selectedMobileNo?.value ?? '',
+      "collection_date": collectionDate.text ?? '',
       "remark": remark.text ?? '',
       "name": pName.text ?? '',
       "email_id": emailId.text ?? '',
       "mobile_no": pMobile.text ?? '',
       "gender": '$pGender',
       "age": pAge.text ?? '',
-      "state_id": selectedStateId ?? '',
-      'city_id': selectedCityId ?? '',
-      'area_id': selectedAreaId ?? '',
-      'cost_center_id': selectedBranchId ?? '',
+      "state_id": locationController.selectedStateId?.value ?? '',
+      'city_id': locationController.selectedCityId?.value ?? '',
+      'area_id': locationController.selectedAreaId?.value ?? '',
+      'cost_center_id': locationController.selectedBranchId?.value ?? '',
       'address': address.text ?? '',
     };
 
@@ -1057,7 +573,7 @@ class _TestMenuState extends State<TestMenu> {
 
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        selectedMobileNo = '';
+        patientController.selectedMobileNo?.value = '';
         selectedGender = '';
         remark.text = '';
         pName.text = '';
@@ -1067,10 +583,10 @@ class _TestMenuState extends State<TestMenu> {
         pAge.text = '';
         pinCode.text = '';
         address.text = '';
-        selectedState = '';
-        selectedCity = '';
-        selectedArea = '';
-        selectedBranch = '';
+        locationController.selectedState?.value = '';
+        locationController.selectedCity?.value = '';
+        locationController.selectedArea?.value = '';
+        locationController.selectedBranch?.value = '';
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       } else if (bodyStatus == 400) {
         var msg = parsedResponse['error']['mobile_no'][0];
@@ -1079,9 +595,16 @@ class _TestMenuState extends State<TestMenu> {
       }
       else if(response.statusCode == 500){
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        Navigator.pop(context);
+      }
+      else if (bodyStatus == '402') {
+        var msg = parsedResponse['message'];
+        GetXSnackBarMsg.getWarningMsg('$msg');
+        Navigator.pop(context);
       }
       else {
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
+        Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");

@@ -176,8 +176,8 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return value.bookingList.status == '402'
-                              ? TokenExpiredHelper(tokenMsg: value.testList.message)
+                          return value.bookingList.message == '402'
+                              ? TokenExpiredHelper()
                               : Center(
                             child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
                           );
