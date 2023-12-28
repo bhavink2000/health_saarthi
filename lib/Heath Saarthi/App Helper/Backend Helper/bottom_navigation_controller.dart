@@ -113,8 +113,9 @@ bottomNavBar() {
                   Text(
                     'Record',
                     style: TextStyle(
-                        color:
-                            controller.index.value == 2 ? hsPrime : Colors.white),
+                        color: controller.index.value == 2
+                            ? hsPrime
+                            : Colors.white),
                   )
                 ],
               ),
@@ -145,8 +146,9 @@ bottomNavBar() {
                   Text(
                     'Profile',
                     style: TextStyle(
-                        color:
-                            controller.index.value == 3 ? hsPrime : Colors.white),
+                        color: controller.index.value == 3
+                            ? hsPrime
+                            : Colors.white),
                   )
                 ],
               ),

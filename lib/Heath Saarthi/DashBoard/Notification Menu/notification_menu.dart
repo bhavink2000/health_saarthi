@@ -67,9 +67,9 @@ class _NotificationMenuState extends State<NotificationMenu> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return const Center(child: Text("Error"));
+                          return const CenterLoading();
                         case Status.completed:
-                          return value.notificationist.data!.data!.isEmpty ? Center(child: Text("Notification is not available"),) : AnimationLimiter(
+                          return value.notificationist.data!.data!.isEmpty ? const Center(child: Text("Notification is not available"),) : AnimationLimiter(
                             child: ListView.builder(
                               itemCount: value.notificationist.data!.data!.length,
                               itemBuilder: (context, index){
@@ -89,7 +89,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                                               Expanded(
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.only(
+                                                    borderRadius: const BorderRadius.only(
                                                       topLeft: Radius.circular(10),topRight: Radius.circular(10),
                                                     ),
                                                     color: hsPrime
@@ -118,7 +118,7 @@ class _NotificationMenuState extends State<NotificationMenu> {
                                           ),
                                           Row(
                                             children: [
-                                              Spacer(),
+                                              const Spacer(),
                                               Container(
                                                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                 decoration: BoxDecoration(borderRadius: const BorderRadius.only(

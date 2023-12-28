@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Add%20To%20Cart/cart_item_widget.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -273,7 +274,6 @@ class _TestCartState extends State<TestCart> {
                     onPressed: (){
                       if(promoApply.text.isEmpty){
                         GetXSnackBarMsg.getWarningMsg('${AppTextHelper().couponCode}');
-
                       }
                       else{
                         _showLoadingDialog();
@@ -396,7 +396,7 @@ class _TestCartState extends State<TestCart> {
             )
           ],
         ),
-      ) : CenterLoading(),
+      ) : const CenterLoading(),
       body: pageLoad == true ? SafeArea(
         child: SingleChildScrollView(
           primary: false,
@@ -505,11 +505,11 @@ class _TestCartState extends State<TestCart> {
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     //labelText: "Select state *",
-                                    label: Row(
+                                    label: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text("Select state"),
-                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                        Text(" *", style: TextStyle(color: Colors.red)),
                                       ],
                                     ),
                                     labelStyle: const TextStyle(
@@ -579,11 +579,11 @@ class _TestCartState extends State<TestCart> {
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     //labelText: "Select city *",
-                                    label: Row(
+                                    label: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text("Select city"),
-                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                        Text(" *", style: TextStyle(color: Colors.red)),
                                       ],
                                     ),
                                     labelStyle: const TextStyle(
@@ -653,11 +653,11 @@ class _TestCartState extends State<TestCart> {
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     //labelText: "Select area *",
-                                    label: Row(
+                                    label: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text("Select area"),
-                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                        Text(" *", style: TextStyle(color: Colors.red)),
                                       ],
                                     ),
                                     labelStyle: const TextStyle(
@@ -723,11 +723,11 @@ class _TestCartState extends State<TestCart> {
                                 dropdownDecoratorProps: DropDownDecoratorProps(
                                   dropdownSearchDecoration: InputDecoration(
                                     //labelText: "Select branch *",
-                                    label: Row(
+                                    label: const Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text("Select branch"),
-                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                        Text(" *", style: TextStyle(color: Colors.red)),
                                       ],
                                     ),
                                     labelStyle: const TextStyle(
@@ -829,9 +829,9 @@ class _TestCartState extends State<TestCart> {
                             children: [
                               SizedBox(height: MediaQuery.of(context).size.height / 3.5),
                               value.cartList.message == '402'
-                                  ? TokenExpiredHelper()
+                                  ? const TokenExpiredHelper()
                                   : value.cartList.message == 'Internet connection problem'
-                                  ? CenterLoading()
+                                  ? const CenterLoading()
                                   : const Center(child: Text('Please check internet connection')),
                             ],
                           );
@@ -1056,10 +1056,7 @@ class _TestCartState extends State<TestCart> {
                                             ],
                                           ),
                                         ),
-                                      ) : Container(),
-
-                                      const SizedBox(height: 10),
-                                      value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty ? Container() : Center(
+                                      ) : Center(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
@@ -1079,13 +1076,44 @@ class _TestCartState extends State<TestCart> {
                                       ),
                                       const SizedBox(height: 10),
 
-                                      value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty ? Padding(
+                                      // value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty ? CartItemWidget(
+                                      //   cartItem: value.cartList.data?.data?.cartItems?.testItems,
+                                      //   accessToken: getAccessToken.access_token,
+                                      //   cartItemLabel: 'Tests',
+                                      //   addOnPressed: (){
+                                      //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                      //   },
+                                      //   globalSettingItemSlot: value.cartList.data?.data?.globalSettingTestSlot,
+                                      //   itemDiscount: 'Test discount',
+                                      //   dropdownValue: testD,
+                                      //   dropdownOnChange: (newValue) {
+                                      //     testD = newValue;
+                                      //     cartCalculation();
+                                      //   },
+                                      // ) : value.cartList.data!.data!.cartItems!.profileItems!.isEmpty ? Center(
+                                      //   child: Column(
+                                      //     children: [
+                                      //       const SizedBox(height: 10),
+                                      //       const Text("Add package",style: TextStyle(fontFamily: FontType.MontserratMedium)),
+                                      //       ElevatedButton(
+                                      //           style: ElevatedButton.styleFrom(
+                                      //               backgroundColor: hsPrime,
+                                      //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
+                                      //           ),
+                                      //           onPressed: (){
+                                      //             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
+                                      //           },
+                                      //           child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
+                                      //       )
+                                      //     ],
+                                      //   ),
+                                      // ) : Container(),
+
+                                      value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty
+                                          ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              color: hsPrime.withOpacity(0.1)
-                                          ),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: hsPrime.withOpacity(0.1)),
                                           child: Column(
                                             children: [
                                               Padding(
@@ -1271,7 +1299,8 @@ class _TestCartState extends State<TestCart> {
                                             ],
                                           ),
                                         ),
-                                      ) : value.cartList.data!.data!.cartItems!.profileItems!.isEmpty ? Center(
+                                      ) : value.cartList.data!.data!.cartItems!.profileItems!.isEmpty
+                                          ? Center(
                                         child: Column(
                                           children: [
                                             const SizedBox(height: 10),
@@ -1293,10 +1322,7 @@ class _TestCartState extends State<TestCart> {
                                       value.cartList.data!.data!.cartItems!.profileItems!.isNotEmpty ? Padding(
                                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(10),
-                                              color: hsPrime.withOpacity(0.1)
-                                          ),
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: hsPrime.withOpacity(0.1)),
                                           child: Column(
                                             children: [
                                               Padding(
@@ -1494,7 +1520,7 @@ class _TestCartState extends State<TestCart> {
             ],
           ),
         ),
-      ) : CenterLoading(),
+      ) : const CenterLoading(),
     );
   }
 
@@ -1503,12 +1529,12 @@ class _TestCartState extends State<TestCart> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return Dialog(
+        return const Dialog(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children: [
                 CircularProgressIndicator(),
                 SizedBox(height: 16.0),
                 Text('Loading...'),
@@ -1519,9 +1545,9 @@ class _TestCartState extends State<TestCart> {
       },
     );
   }
+
   var bodyMsg;
   Future<CartCalculationModel?> cartCalculation() async {
-    print("testDisId ->$testD / packageDisId ->$packageD / profileDisId ->$profileD / promo ->${promoApply.text}");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -1534,7 +1560,7 @@ class _TestCartState extends State<TestCart> {
             'test_discount_id': testD?.toString() ?? '',
             'package_discount_id': packageD?.toString() ?? '',
             'profile_discount_id': profileD?.toString() ?? '',
-            'promo_offer_code': promoApply?.text ?? ''
+            'promo_offer_code': promoApply.text ?? ''
           }
       );
       final responseData = json.decode(response.body);
@@ -1549,7 +1575,6 @@ class _TestCartState extends State<TestCart> {
           grossAmount = responseData['data']['grossAmount'].toString();
           totalAmount = responseData['data']['discountAmount'].toString();
         });
-        print("netA ->$netAmount / grossA ->$grossAmount / totalA ->$totalAmount / promo ->$applyPromo");
       }
       else if(bodyStatus == 400){
         setState(() {
@@ -1560,7 +1585,6 @@ class _TestCartState extends State<TestCart> {
           totalAmount = responseData['data']['discountAmount'].toString();
           promoApply.text = '';
         });
-        print("netA ->$netAmount / grossA ->$grossAmount / totalA ->$totalAmount / promo ->$applyPromo");
       }
     } catch (error) {
       print("cart Calculation Error->$error");

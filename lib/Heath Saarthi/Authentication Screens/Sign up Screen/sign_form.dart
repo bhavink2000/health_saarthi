@@ -8,6 +8,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Sign%20up%20Screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ import '../Splash Screen/splash_screen.dart';
 
 
 class SignUpForm extends StatefulWidget {
-  SignUpForm({Key? key}) : super(key: key);
+  const SignUpForm({Key? key}) : super(key: key);
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
@@ -36,8 +37,8 @@ class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File? panCardFile;
   File? addressFile;
-  File? aadharCardFFile;
-  File? aadharCardBFile;
+  File? aadhaarCardFFile;
+  File? aadhaarCardBFile;
   File? checkFile;
   File? gstFile;
 
@@ -67,6 +68,7 @@ class _SignUpFormState extends State<SignUpForm> {
   String? selectedSales;
   String? selectedB2b;
   var selectedSalesMobileNo;
+
   @override
   void initState() {
     super.initState();
@@ -105,6 +107,7 @@ class _SignUpFormState extends State<SignUpForm> {
     await prefs.setString('signupAreaName', selectedArea!);
     await prefs.setString('signupBranchName', selectedBranch!);
   }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top;
@@ -169,11 +172,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Vendor name"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -191,6 +194,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 }, // Set the validator function
               ),
             ),
+
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -206,11 +211,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                    label: Row(
+                    label: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Email id"),
-                        Text(" *", style: const TextStyle(color: Colors.red)),
+                        Text(" *", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                     labelStyle: const TextStyle(
@@ -231,6 +236,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 },// Set the validator function
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -245,11 +251,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Pharmacy name	"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -287,11 +293,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Mobile no"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -309,6 +315,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 }, // Set the validator function
               ),
             ),
+
             SizedBox(height: space),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -334,11 +341,11 @@ class _SignUpFormState extends State<SignUpForm> {
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           //labelText: "Select state *",
-                          label: Row(
+                          label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text("Select state"),
-                              Text(" *", style: const TextStyle(color: Colors.red)),
+                              Text(" *", style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           labelStyle: const TextStyle(
@@ -408,11 +415,11 @@ class _SignUpFormState extends State<SignUpForm> {
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           //labelText: "Select city *",
-                          label: Row(
+                          label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text("Select city"),
-                              Text(" *", style: const TextStyle(color: Colors.red)),
+                              Text(" *", style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           labelStyle: const TextStyle(
@@ -483,11 +490,11 @@ class _SignUpFormState extends State<SignUpForm> {
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           //labelText: "Select branch *",
-                          label: Row(
+                          label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text("Select branch"),
-                              Text(" *", style: const TextStyle(color: Colors.red)),
+                              Text(" *", style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           labelStyle: const TextStyle(
@@ -550,11 +557,11 @@ class _SignUpFormState extends State<SignUpForm> {
                       dropdownDecoratorProps: DropDownDecoratorProps(
                         dropdownSearchDecoration: InputDecoration(
                           //labelText: "Select area *",
-                          label: Row(
+                          label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text("Select area"),
-                              Text(" *", style: const TextStyle(color: Colors.red)),
+                              Text(" *", style: TextStyle(color: Colors.red)),
                             ],
                           ),
                           labelStyle: const TextStyle(
@@ -608,11 +615,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Sales executive"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -670,7 +677,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    label: Row(
+                    label: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Executive mobile no"),
@@ -687,6 +694,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
+
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -702,7 +711,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Pincode"),
@@ -735,21 +744,21 @@ class _SignUpFormState extends State<SignUpForm> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Row(
                           children: [
-                            aadharCardFFile == null
+                            aadhaarCardFFile == null
                               ? const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                               : Container(
                                 alignment: Alignment.centerLeft,
-                                width: aadharCardFFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
-                                child: aadharCardFFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                                    ? Text(aadharCardFFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
-                                    : buildImageDialog(aadharCardFFile!, 'Aadhaar card front')
+                                width: aadhaarCardFFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
+                                child: aadhaarCardFFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                    ? Text(aadhaarCardFFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                    : buildImageDialog(aadhaarCardFFile!, 'Aadhaar card front')
                             ),
                             const Spacer(),
                             IconButton(
                               onPressed: () async {
                                 var aadhaarCardFrontFile = await FileImagePicker().pickFileManager(context);
                                 setState(() {
-                                  aadharCardFFile = aadhaarCardFrontFile;
+                                  aadhaarCardFFile = aadhaarCardFrontFile;
                                 });
                               },
                               icon: const Icon(
@@ -760,7 +769,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               onPressed: () async{
                                 var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
                                 setState(() {
-                                  aadharCardFFile = aadhaarCardFrontCamera;
+                                  aadhaarCardFFile = aadhaarCardFrontCamera;
                                 });
                               },
                               icon: const Icon(
@@ -781,21 +790,21 @@ class _SignUpFormState extends State<SignUpForm> {
                         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         child: Row(
                           children: [
-                            aadharCardBFile == null
+                            aadhaarCardBFile == null
                               ? const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                               : Container(
                                 alignment: Alignment.centerLeft,
-                                width: aadharCardBFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
-                                child: aadharCardBFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                                    ? Text(aadharCardBFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
-                                    : buildImageDialog(aadharCardBFile!, 'Aadhaar card back')
+                                width: aadhaarCardBFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200: 100,height: 50,
+                                child: aadhaarCardBFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                    ? Text(aadhaarCardBFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                    : buildImageDialog(aadhaarCardBFile!, 'Aadhaar card back')
                             ),
                             const Spacer(),
                             IconButton(
                               onPressed: ()async {
                                 var aadhaarCardBack = await FileImagePicker().pickFileManager(context);
                                 setState(() {
-                                  aadharCardBFile = aadhaarCardBack;
+                                  aadhaarCardBFile = aadhaarCardBack;
                                 });
                               },
                               icon: const Icon(
@@ -806,7 +815,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               onPressed: ()async{
                                 var aadhaarCardBackCamera = await FileImagePicker().pickCamera(context);
                                 setState(() {
-                                  aadharCardBFile = aadhaarCardBackCamera;
+                                  aadhaarCardBFile = aadhaarCardBackCamera;
                                 });
                               },
                               icon: const Icon(
@@ -821,6 +830,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ],
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -838,11 +848,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
 
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Address"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -877,7 +887,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             alignment: Alignment.centerLeft,
                             width: addressFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
                              child: addressFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                                 ? Text(addressFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                                 ? Text(addressFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
                                  : buildImageDialog(addressFile!, 'Address proof')
                         ),
                         const Spacer(),
@@ -909,6 +919,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -926,11 +937,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    label: Row(
+                    label: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Pan Card number"),
-                        Text(" *", style: const TextStyle(color: Colors.red)),
+                        Text(" *", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                     labelStyle: const TextStyle(
@@ -960,7 +971,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           alignment: Alignment.centerLeft,
                           width: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
                           child: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                              ? Text(panCardFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              ? Text(panCardFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
                               : buildImageDialog(panCardFile!, 'PAN card')
                         ),
                         const Spacer(),
@@ -992,6 +1003,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -1008,11 +1020,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("GST number"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -1041,7 +1053,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           alignment: Alignment.centerLeft,
                           width: gstFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 :100,height: 50,
                           child: gstFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                              ? Text(gstFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              ? Text(gstFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
                               : buildImageDialog(gstFile!, 'GST file')
                         ),
                         const Spacer(),
@@ -1087,11 +1099,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Bank name"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -1127,11 +1139,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    label: Row(
+                    label: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("IFSC code"),
-                        Text(" *", style: const TextStyle(color: Colors.red)),
+                        Text(" *", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                     labelStyle: const TextStyle(
@@ -1144,6 +1156,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   validator: validateIFSC// Set the validator function
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Card(
@@ -1159,9 +1172,10 @@ class _SignUpFormState extends State<SignUpForm> {
                           ? const Text("Cheque img",style: TextStyle(fontFamily: FontType.MontserratMedium),)
                           : Container(
                           alignment: Alignment.centerLeft,
-                          width: checkFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,height: 50,
+                          width: checkFile!.path.split('/').last.toString().split('.').last == 'pdf' ? 200 : 100,
+                            height: 50,
                           child: checkFile!.path.split('/').last.toString().split('.').last == 'pdf'
-                              ? Text(checkFile!.path.split('/').last.toString(),style: TextStyle(fontFamily: FontType.MontserratRegular),)
+                              ? Text(checkFile!.path.split('/').last.toString(),style: const TextStyle(fontFamily: FontType.MontserratRegular),)
                               : buildImageDialog(checkFile!, 'Cheque img')
                         ),
                         const Spacer(),
@@ -1193,6 +1207,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -1207,11 +1222,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Beneficiary name as par cheque"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -1246,11 +1261,11 @@ class _SignUpFormState extends State<SignUpForm> {
                     enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                     ),
-                    label: Row(
+                    label: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text("Account number"),
-                        Text(" *", style: const TextStyle(color: Colors.red)),
+                        Text(" *", style: TextStyle(color: Colors.red)),
                       ],
                     ),
                     labelStyle: const TextStyle(
@@ -1263,6 +1278,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   validator: validateAccountNumber // Set the validator function
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
               child: TextFormField(
@@ -1278,11 +1294,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Password"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -1343,11 +1359,11 @@ class _SignUpFormState extends State<SignUpForm> {
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                   ),
-                  label: Row(
+                  label: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text("Confirm password"),
-                      Text(" *", style: const TextStyle(color: Colors.red)),
+                      Text(" *", style: TextStyle(color: Colors.red)),
                     ],
                   ),
                   labelStyle: const TextStyle(
@@ -1396,6 +1412,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Row(
@@ -1428,10 +1445,10 @@ class _SignUpFormState extends State<SignUpForm> {
                     else if(addressFile == null){
                       GetXSnackBarMsg.getWarningMsg(AppTextHelper().addressSelect);
                     }
-                    else if(aadharCardFFile == null){
+                    else if(aadhaarCardFFile == null){
                       GetXSnackBarMsg.getWarningMsg(AppTextHelper().aadhaarCardFSelect);
                     }
-                    else if(aadharCardBFile == null){
+                    else if(aadhaarCardBFile == null){
                       GetXSnackBarMsg.getWarningMsg(AppTextHelper().aadhaarCardBSelect);
                     }
                     else if(checkFile == null){
@@ -1493,6 +1510,7 @@ class _SignUpFormState extends State<SignUpForm> {
       ],
     );
   }
+
   GestureDetector buildImageDialog(File selectedFilePhoto, var label) {
     return GestureDetector(
       onTap: () {
@@ -1525,32 +1543,25 @@ class _SignUpFormState extends State<SignUpForm> {
     if (value == null || value.isEmpty) {
       return 'IFSC code is required';
     }
-
     // Remove any whitespace and convert to uppercase
     value = value.replaceAll(RegExp(r'\s+'), '').toUpperCase();
-
     // Check if the length of the IFSC code is exactly 11 characters
     if (value.length != 11) {
       return 'IFSC code must be 11 characters long';
     }
-
     // Check if the first four characters are letters
     if (!RegExp(r'^[A-Z]{4}').hasMatch(value)) {
       return 'Invalid IFSC code format';
     }
-
     // Check if the fifth character is '0'
     if (value[4] != '0') {
       return 'Invalid IFSC code format';
     }
-
     // Check if the remaining characters are alphanumeric
     if (!RegExp(r'^[A-Z0-9]{6}$').hasMatch(value.substring(5, 11))) {
       return 'Invalid IFSC code format';
     }
-
     // You can add additional checks here if needed, such as checking against a list of valid IFSC codes
-
     // If all checks pass, the IFSC code is valid
     return null; // Return null if the IFSC code is valid
   }
@@ -1558,49 +1569,47 @@ class _SignUpFormState extends State<SignUpForm> {
     if (value == null || value.isEmpty) {
       return 'Account number is required';
     }
-
     // Check if the value contains only numeric characters
     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
       return 'Account number must contain only digits';
     }
-
     // You can add additional checks here based on your specific validation requirements
-
     // If all checks pass, the account number is considered valid
     return null; // Return null if the account number is valid
   }
+
   void _setAgreedToTOS(bool? newValue) {
     setState(() {
       _agreedToTOS = newValue!;
     });
   }
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String?) validator) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-      child: TextFormField(
-        controller: controller,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(hsPaddingM),
-          border: const OutlineInputBorder(),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-          ),
-          hintText: '$label',
-          hintStyle: const TextStyle(
-            color: Colors.black54,
-            fontFamily: FontType.MontserratRegular,
-            fontSize: 14,
-          ),
-          prefixIcon: Icon(iconData, color: hsBlack, size: 20),
-        ),
-        validator: validator, // Set the validator function
-      ),
-    );
-  }
+  // Widget showTextField(var label, TextEditingController controller, IconData iconData, String Function(String?) validator) {
+  //   return Padding(
+  //     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+  //     child: TextFormField(
+  //       controller: controller,
+  //       autovalidateMode: AutovalidateMode.onUserInteraction,
+  //       decoration: InputDecoration(
+  //         contentPadding: const EdgeInsets.all(hsPaddingM),
+  //         border: const OutlineInputBorder(),
+  //         focusedBorder: OutlineInputBorder(
+  //           borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+  //         ),
+  //         enabledBorder: OutlineInputBorder(
+  //           borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+  //         ),
+  //         hintText: '$label',
+  //         hintStyle: const TextStyle(
+  //           color: Colors.black54,
+  //           fontFamily: FontType.MontserratRegular,
+  //           fontSize: 14,
+  //         ),
+  //         prefixIcon: Icon(iconData, color: hsBlack, size: 20),
+  //       ),
+  //       validator: validator, // Set the validator function
+  //     ),
+  //   );
+  // }
 
   double loadingProgress = 0.0;
   bool isSigningUp = false;
@@ -1649,21 +1658,21 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
         ));
       }
-      if (aadharCardFFile != null) {
+      if (aadhaarCardFFile != null) {
         formData.files.add(MapEntry(
           "aadhar_front",
           await MultipartFile.fromFile(
-            aadharCardFFile!.path,
-            filename: '${aadharCardFFile!.path.split('/').last.toString()}',
+            aadhaarCardFFile!.path,
+            filename: '${aadhaarCardFFile!.path.split('/').last.toString()}',
           ),
         ));
       }
-      if (aadharCardBFile != null) {
+      if (aadhaarCardBFile != null) {
         formData.files.add(MapEntry(
           "aadhar_back",
           await MultipartFile.fromFile(
-            aadharCardBFile!.path,
-            filename: '${aadharCardBFile!.path.split('/').last.toString()}',
+            aadhaarCardBFile!.path,
+            filename: '${aadhaarCardBFile!.path.split('/').last.toString()}',
           ),
         ));
       }
@@ -1810,13 +1819,13 @@ class _SignUpFormState extends State<SignUpForm> {
         }
         Navigator.pop(context);
       } else {
-        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
+        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internalServerError}');
         Navigator.pop(context);
       }
     }
     catch (e) {
       print('Error -> ${e.toString()}');
-      GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
+      GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
       Navigator.pop(context);
     }
   }

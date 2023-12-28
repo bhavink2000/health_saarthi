@@ -61,7 +61,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     getAccessToken.checkAuthentication(context, setState);
     userDataSession = Provider.of<UserDataSession>(context, listen: false);
     controller.index.value = 0;
-    Future.delayed(Duration(seconds: 1), () {
+    Future.delayed(const Duration(seconds: 1), () {
       deviceTokenType();
     });
   }
@@ -107,7 +107,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo_transparent_bg.png'),width: 150,)),
+                              const Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo_transparent_bg.png'),width: 150,)),
                               Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                               const Text(
                                 "About update?",
@@ -117,15 +117,15 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                                     fontWeight: FontWeight.bold
                                 ),
                               ),
-                              SizedBox(height: 5,),
-                              Text(
+                              const SizedBox(height: 5,),
+                              const Text(
                                 "You must be logout your account from health saarthi",
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontFamily: FontType.MontserratLight
                                 ),
                               ),
                               const SizedBox(height: 10,),
-                              const Text("if you not logout then you are not use new futures",
+                              const Text("if you are not logout then you are not use new futures",
                                   style: TextStyle(fontFamily: FontType.MontserratLight)),
                               const SizedBox(height: 10),
                               const Text("so please logout your account",
@@ -337,8 +337,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                     //   padding: const EdgeInsets.all(8.0),
                     //   child: Text("Health Saarthi", style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,fontSize: 18),),
                     // ),
-                    Padding(
-                      padding: const EdgeInsets.all(5),
+                    const Padding(
+                      padding: EdgeInsets.all(5),
                       child: Text(
                         "Are you sure you want to exit.?",
                         style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12),
@@ -349,11 +349,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         TextButton(
-                          child: Text("Stay",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
+                          child: const Text("Stay",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         TextButton(
-                          child: Text("Exit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
+                          child: const Text("Exit",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 2),),
                           onPressed: (){
                             exit(0);
                           },

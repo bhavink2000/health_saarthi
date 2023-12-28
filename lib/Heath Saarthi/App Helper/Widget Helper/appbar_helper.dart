@@ -30,7 +30,7 @@ class AppBarHelper extends StatelessWidget {
             children: [
               IconButton(onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-              }, icon: Icon(Icons.shopping_cart_outlined,color: hsPrime,size: 24)),
+              }, icon: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 24)),
               IconButton(onPressed: (){
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
               }, icon: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 24)),

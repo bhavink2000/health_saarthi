@@ -1,4 +1,5 @@
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
@@ -35,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     notificationService.getDeviceToken().then((value) {
       if (value == '' || value == null) {
-        print("Do Not Get Device Token");
+        log("Do Not Get Device Token");
       } else {
         setState(() {
           deviceToken = value;
@@ -44,13 +45,13 @@ class _SplashScreenState extends State<SplashScreen> {
           retrieveDeviceDetails().then((value) async{
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('deviceType', value);
-            print("Device type value->>>>$value");
+            log("Device type value->>>>$value");
 
             if (deviceToken == '' || value == '' || deviceToken == null || value == null) {
-              print("Do not get device token\nplease restart the app");
+              log("Do not get device token\nplease restart the app");
             } else {
-              print("check Device Token->$deviceToken");
-              print("check Device type->$deviceType");
+              log("check Device Token->$deviceToken");
+              log("check Device type->$deviceType");
               checkAuthentication(context);
             }
           });
@@ -65,16 +66,13 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
-      print("checkAuth Access Token => ${value.accessToken}");
+      log("Authentication Check Access Token => ${value.accessToken}");
 
       access_token.write('accessToken', value.accessToken);
 
       if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => LoginScreen(deviceToken: deviceToken,deviceType: deviceType)),
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(deviceToken: deviceToken,deviceType: deviceType)),);
       } else {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Home()));

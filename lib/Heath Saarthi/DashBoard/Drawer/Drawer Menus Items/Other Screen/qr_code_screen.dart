@@ -351,15 +351,13 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   var downloadProgress = 0.0, imgCount = 0;
   bool showDownload = false;
   Future downloadFile(var imgUrl) async {
-    print("imgUrl --> $imgUrl");
     setState(() {
       imgCount++;
       downloadProgress = 0.0;
       showDownload = true;
     });
     Dio dio = Dio();
-    var imageDownloadPath =
-        '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
+    var imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
     await dio.download(imgUrl, imageDownloadPath,
         onReceiveProgress: (received, total) {
       var progress = (received / total) * 100;

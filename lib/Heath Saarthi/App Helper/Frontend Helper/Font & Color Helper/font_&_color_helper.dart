@@ -9,15 +9,6 @@ Color hsPrimeOne = const Color(0xff593c76);
 Color hsPrimeTwo = const Color(0xff734e98);
 Color hsPrimeThree = const Color(0xff8c67b1);
 
-// Color hsTestColor = const Color(0xff7c54a4);
-// Color hsPackageColor = const Color(0xff7c54a4);
-// Color hsPrescriptionColor = const Color(0xff7c54a4);
-// Color hsInstantBookingColor = const Color(0xff7c54a4);
-//
-// Color hsOne = const Color(0xff7c54a4);
-// Color hsTwo = const Color(0xff7c54a4);
-// Color hsThree = const Color(0xff7c54a4);
-
 Color qrCodeColor = Color(0xffd5ecfa);
 
 

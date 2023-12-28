@@ -17,7 +17,6 @@ class CartFuture{
 
   final box = GetStorage();
   Future<CartResponseModel> addToCartTest(accessToken, testId, BuildContext context) async {
-    print("add to cart ->$testId /${box.read('accessToken')}");
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${box.read('accessToken')}',

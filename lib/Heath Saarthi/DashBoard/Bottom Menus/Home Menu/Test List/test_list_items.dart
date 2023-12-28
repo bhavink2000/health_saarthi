@@ -206,8 +206,7 @@ class _TestListItemsState extends State<TestListItems> {
                                                                         },
                                                                         child: Container(
                                                                           decoration: BoxDecoration(borderRadius: const BorderRadius.only(
-                                                                              bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
-                                                                          ),
+                                                                            bottomRight: Radius.circular(10),topLeft: Radius.circular(10)),
                                                                               color: testI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
                                                                           ),
                                                                           padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),

@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class FileImagePicker{
+
   Future<File?> pickFileManager(BuildContext context) async {
     try {
       final pickedFile = await FilePicker.platform.pickFiles(
@@ -26,6 +26,28 @@ class FileImagePicker{
       }
       final originalFile = File(pickedFile.files.single.path!);
       return originalFile;
+    } on PlatformException catch (e) {
+      print("PlatformException -> $e");
+      return null;
+    } catch (e) {
+      print("Error -> $e");
+      return null;
+    }
+  }
+
+  Future<List<File>?> pickPrescription() async {
+    try {
+      final pickedFiles = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowMultiple: true,
+        allowedExtensions: ['jpg', 'jpeg', 'png','pdf'],
+      );
+      if (pickedFiles == null || pickedFiles.files.isEmpty) {
+        //GetXSnackBarMsg.getWarningMsg('No file chosen');
+        return null;
+      }
+      final originalFiles = pickedFiles.files.map((file) => File(file.path!)).toList();
+      return originalFiles;
     } on PlatformException catch (e) {
       print("PlatformException -> $e");
       return null;

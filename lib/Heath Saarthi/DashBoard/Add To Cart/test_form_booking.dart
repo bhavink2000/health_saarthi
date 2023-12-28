@@ -103,7 +103,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
               child: Row(
-                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(onPressed: (){Navigator.pop(context);}, icon: const Icon(Icons.arrow_back_rounded,color: Colors.black,size: 24)),
                   Text("Booking Form",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16.sp,letterSpacing: 0.5),)
@@ -130,16 +129,16 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                               child: TypeAheadFormField<MobileData>(
                                 textFieldConfiguration: TextFieldConfiguration(
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     //labelText: 'Select mobile number',
                                     label: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text("Select mobile number"),
-                                        Text(" *", style: const TextStyle(color: Colors.red)),
+                                        Text(" *", style: TextStyle(color: Colors.red)),
                                       ],
                                     ),
-                                    labelStyle: const TextStyle(
+                                    labelStyle: TextStyle(
                                       color: Colors.black54,
                                       fontFamily: FontType.MontserratRegular,
                                       fontSize: 14,
@@ -173,7 +172,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 },
                                 itemBuilder: (context, MobileData suggestion) {
                                   return ListTile(
-                                    title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                                    title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: const TextStyle(fontFamily: FontType.MontserratRegular),),
                                   );
                                 },
                                 onSuggestionSelected: (MobileData suggestion) {
@@ -215,7 +214,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             ],
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
@@ -224,7 +223,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              label: Row(
+                              label: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Age"),
@@ -238,61 +237,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               ),
                               prefixIcon: const Icon(Icons.view_agenda_rounded, color: hsBlack, size: 20),
                             ),
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Enter age';
-                            //   }
-                            //   return null;
-                            // }, // Set the validator function
                           ),
                         ),
-                       /* Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                          child: TextFormField(
-                            controller: pDob,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            readOnly: true,
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-                                  borderRadius: BorderRadius.circular(15)
-                              ),
-                              hintText: 'DOB',
-                              hintStyle: const TextStyle(
-                                  color: Colors.black54,
-                                  fontFamily: FontType.MontserratRegular,
-                                  fontSize: 14
-                              ),
-                              prefixIcon: const Icon(Icons.calendar_month_rounded, color: hsBlack,size: 20),
-                            ),
-                            // validator: (value) {
-                            //   if (value == null || value.isEmpty) {
-                            //     return 'Enter DOB';
-                            //   }
-                            //   return null;
-                            // },
-                            onTap: () async {
-                              DateTime pickedDate = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime.now(),
-                              );
-                              if(pickedDate != null ){
-                                String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
-                                setState(() {
-                                  pDob.text = formattedDate;
-                                });
-                              }else{}
-                            },
-                          ),
-                        ),*/
                         Padding(
                           padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
@@ -300,7 +246,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
@@ -309,7 +255,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              label: Row(
+                              label: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Email id"),
@@ -321,7 +267,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
                               ),
-                              prefixIcon: Icon(Icons.email, color: hsBlack, size: 20),
+                              prefixIcon: const Icon(Icons.email, color: hsBlack, size: 20),
                             ),
                             onChanged: (value) {
                               _formKey.currentState?.validate(); // Trigger validation manually
@@ -343,7 +289,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
@@ -352,7 +298,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              label: Row(
+                              label: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Address"),
@@ -364,7 +310,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
                               ),
-                              prefixIcon: Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
+                              prefixIcon: const Icon(Icons.location_city_rounded, color: hsBlack, size: 20),
                             ),
                             // Set the validator function
                           ),
@@ -376,7 +322,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               Flexible(
                                 fit: FlexFit.loose,
                                 child: Theme(
-                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  data: Theme.of(context).copyWith(listTileTheme: const ListTileThemeData(horizontalTitleGap: 4)),
                                   child: RadioListTile(
                                     dense: true,
                                     contentPadding: EdgeInsets.zero,
@@ -394,7 +340,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               Flexible(
                                 fit: FlexFit.loose,
                                 child: Theme(
-                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  data: Theme.of(context).copyWith(listTileTheme: const ListTileThemeData(horizontalTitleGap: 4)),
                                   child: RadioListTile(
                                     dense: true,
                                     contentPadding: EdgeInsets.zero,
@@ -412,7 +358,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                               Flexible(
                                 fit: FlexFit.loose,
                                 child: Theme(
-                                  data: Theme.of(context).copyWith(listTileTheme: ListTileThemeData(horizontalTitleGap: 4)),
+                                  data: Theme.of(context).copyWith(listTileTheme: const ListTileThemeData(horizontalTitleGap: 4)),
                                   child: RadioListTile(
                                     dense: true,
                                     contentPadding: EdgeInsets.zero,
@@ -439,14 +385,14 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                         locationField('${widget.dBranchNm == '' ? 'N/A': widget.dBranchNm}'),
 
                         Padding(
-                          padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+                          padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
                           child: TextFormField(
                             controller: collectionDate,
                             readOnly: true,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15),
@@ -455,7 +401,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              label: Row(
+                              label: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Collection date"),
@@ -499,16 +445,16 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text(
+                                        const Text(
                                           "Upload prescription",
                                           style: TextStyle(fontFamily: FontType.MontserratMedium),
                                         ),
                                         const Spacer(),
                                         IconButton(
                                           onPressed: () async {
-                                            var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                                            var prescriptionFileManager = await FileImagePicker().pickPrescription();
                                             setState(() {
-                                              prescriptionFiles.add(prescriptionFileManager!);
+                                              prescriptionFiles.addAll(prescriptionFileManager!);
                                             });
                                           },
                                           icon: const Icon(
@@ -546,7 +492,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                                   color: hsPrime,
                                                   borderRadius: BorderRadius.circular(10)
                                               ),
-                                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                              padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                               child: GestureDetector(
                                                 onTap: (){
                                                   showDialog(
@@ -564,9 +510,9 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                                   children: [
                                                     Text(
                                                         prescriptionFiles[index].path.split('/').last,
-                                                        style: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
+                                                        style: const TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
                                                     ),
-                                                    SizedBox(width: 10),
+                                                    const SizedBox(width: 10),
                                                     IconButton(
                                                         onPressed: (){
                                                           setState(() {
@@ -597,7 +543,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                             minLines: 1,
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(hsPaddingM),
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                               focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
@@ -606,7 +552,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                   borderRadius: BorderRadius.circular(15)
                               ),
-                              label: Row(
+                              label: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text("Remark"),
@@ -618,7 +564,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                 fontFamily: FontType.MontserratRegular,
                                 fontSize: 14,
                               ),
-                              prefixIcon: Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
+                              prefixIcon: const Icon(Icons.note_add_rounded, color: hsBlack, size: 20),
                             ),
                           ),
                         ),
@@ -638,12 +584,12 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   context: context,
                                   barrierDismissible: false,
                                   builder: (BuildContext context) {
-                                    return Dialog(
+                                    return const Dialog(
                                       child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
+                                        padding: EdgeInsets.all(16.0),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          children: const [
+                                          children: [
                                             CircularProgressIndicator(),
                                             SizedBox(height: 16.0),
                                             Text('Loading...'),
@@ -840,7 +786,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
               borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
               borderRadius: BorderRadius.circular(15)
@@ -853,7 +799,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text("$label"),
-              Text(" *", style: const TextStyle(color: Colors.red)),
+              const Text(" *", style: TextStyle(color: Colors.red)),
             ],
           ),
           labelStyle: const TextStyle(
@@ -875,7 +821,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
           readOnly: true,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(hsPaddingM),
-            border: OutlineInputBorder(),
+            border: const OutlineInputBorder(),
             focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                 borderRadius: BorderRadius.circular(15)

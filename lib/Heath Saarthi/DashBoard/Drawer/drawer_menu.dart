@@ -6,7 +6,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/multiple_camera.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -23,12 +22,12 @@ import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import 'Drawer Menus Items/Other Screen/qr_code_screen.dart';
 import 'Drawer Menus Items/Other Screen/refer_chemist_screen.dart';
 import 'Drawer Menus Items/Other Screen/support_screen.dart';
 import 'Drawer Menus Items/my_profile_screen.dart';
 import 'Drawer Menus Items/my_report_screen.dart';
+import 'multiple_camera.dart';
 
 class DrawerScreen extends StatefulWidget {
   DrawerScreen({Key? key}) : super(key: key);
@@ -85,7 +84,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                               setState(() {
                                 controller.index.value = 0;
                               });
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>Home()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const Home()));
                             },
                             child: Row(
                               children: [
@@ -97,148 +96,211 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           ),
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.book,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("Book a test",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.book,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Book a test",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'Book a test',
+                          iconData: Icons.book,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.shopping_bag_rounded,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("My booking history",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.shopping_bag_rounded,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("My booking history",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'My booking history',
+                          iconData: Icons.shopping_bag_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.event_repeat_outlined,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("My report",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.event_repeat_outlined,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("My report",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'My report',
+                          iconData: Icons.event_available_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.person_pin,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("My profile",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.person_pin,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("My profile",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'My profile',
+                          iconData: Icons.person_pin,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.phone_android_rounded,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("Contact us",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.phone_android_rounded,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Contact us",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'Contact us',
+                          iconData: Icons.phone_android_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>const FaqScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.question_answer_rounded,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("FAQ",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>const FaqScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.question_answer_rounded,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("FAQ",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'FAQ',
+                          iconData: Icons.question_answer_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const FaqScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>SupportScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.support_agent_rounded,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("Support",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>SupportScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.support_agent_rounded,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Support",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'Support',
+                          iconData: Icons.support_agent_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const SupportScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>ReferChemist()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.science_rounded,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("Refer a chemist",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>ReferChemist()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.science_rounded,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Refer a chemist",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'Refer a chemist',
+                          iconData: Icons.science_rounded,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const ReferChemist()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
-                          child: InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context)=>QRCodeScreen()));
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.qr_code,color: hsPrimeOne,size: 25),
-                                const SizedBox(width: 10,),
-                                const Text("Download QR code",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
-                              ],
-                            ),
-                          ),
+                        // Padding(
+                        //   padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+                        //   child: InkWell(
+                        //     onTap: (){
+                        //       Navigator.push(context, MaterialPageRoute(builder: (context)=>QRCodeScreen()));
+                        //     },
+                        //     child: Row(
+                        //       children: [
+                        //         Icon(Icons.qr_code,color: hsPrimeOne,size: 25),
+                        //         const SizedBox(width: 10,),
+                        //         const Text("Download QR code",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        DrawerMenuItemsWidget(
+                          itemName: 'Download QR code',
+                          iconData: Icons.qr_code,
+                          itemOnTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const QRCodeScreen()));
+                          },
                         ),
                         Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
                         Padding(
@@ -412,5 +474,29 @@ class _DrawerScreenState extends State<DrawerScreen> {
       print("logout catch -error-->>${error.toString()}");
       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
+  }
+}
+
+class DrawerMenuItemsWidget extends StatelessWidget {
+  String? itemName;
+  final VoidCallback? itemOnTap;
+  IconData? iconData;
+  DrawerMenuItemsWidget({super.key, this.itemOnTap,this.itemName,this.iconData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
+      child: InkWell(
+        onTap: itemOnTap,
+        child: Row(
+          children: [
+            Icon(iconData,color: hsPrimeOne,size: 25),
+            const SizedBox(width: 10,),
+            Text("$itemName",style: const TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+          ],
+        ),
+      ),
+    );
   }
 }

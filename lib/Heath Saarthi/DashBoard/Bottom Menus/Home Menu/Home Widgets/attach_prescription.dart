@@ -149,9 +149,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                           const Spacer(),
                                           IconButton(
                                             onPressed: () async {
-                                              var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                                              var prescriptionFileManager = await FileImagePicker().pickPrescription();
                                               setState(() {
-                                                prescriptionFiles.add(prescriptionFileManager!);
+                                                prescriptionFiles.addAll(prescriptionFileManager!);
                                               });
                                             },
                                             icon: const Icon(

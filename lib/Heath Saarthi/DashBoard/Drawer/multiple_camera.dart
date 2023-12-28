@@ -49,9 +49,9 @@ class _MultipleCameraPicState extends State<MultipleCameraPic> {
                           const Spacer(),
                           IconButton(
                             onPressed: () async {
-                              var prescriptionFileManager = await FileImagePicker().pickFileManager(context);
+                              var prescriptionFileManager = await FileImagePicker().pickPrescription();
                               setState(() {
-                                prescriptionFiles.add(prescriptionFileManager!);
+                                prescriptionFiles.addAll(prescriptionFileManager!);
                               });
                             },
                             icon: const Icon(
@@ -63,12 +63,14 @@ class _MultipleCameraPicState extends State<MultipleCameraPic> {
                             onPressed: () async {
                               MultipleImageCamera.capture(context: context).then((value) {
                                 setState(() {
-                                  //images = value;
                                   prescriptionFiles = value.map((media) {
                                     return media.file;
                                   }).toList();
+
+                                  //prescriptionFiles.addAll(value.map((media){return media.file;}).toList());
                                 });
                               });
+
                             },
                             icon: const Icon(
                               Icons.camera_alt_rounded,

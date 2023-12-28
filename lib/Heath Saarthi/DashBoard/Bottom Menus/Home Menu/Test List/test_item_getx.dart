@@ -4,16 +4,13 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Enums/enums_status.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/Dashboard%20Getx/BottomMenu%20Getx/bottom_menu_getx.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_item_details.dart';
 // import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
-// import 'package:provider/provider.dart';
 // import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-// import '../../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 // import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 // import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
 // import '../../../Add To Cart/test_cart.dart';
@@ -71,10 +68,10 @@
 //                         children: [
 //                           IconButton(onPressed: (){
 //                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-//                           }, icon: Icon(Icons.shopping_cart_outlined,color: hsTestColor,size: 24)),
+//                           }, icon: Icon(Icons.shopping_cart_outlined,color: hsPrime,size: 24)),
 //                           IconButton(onPressed: (){
 //                             Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-//                           }, icon: Icon(Icons.circle_notifications_rounded,color: hsTestColor,size: 24)),
+//                           }, icon: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 24)),
 //                         ],
 //                       )
 //                     ],
@@ -633,7 +630,7 @@
 //                                                             borderRadius: const BorderRadius.only(
 //                                                                 topLeft: Radius.circular(10),topRight: Radius.circular(10)
 //                                                             ),
-//                                                             color: hsTestColor.withOpacity(0.5),
+//                                                             color: hsPrime.withOpacity(0.5),
 //                                                           ),
 //                                                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
 //                                                           child: Text(
@@ -680,7 +677,7 @@
 //                                                                       decoration: BoxDecoration(borderRadius: const BorderRadius.only(
 //                                                                           bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
 //                                                                       ),
-//                                                                           color: testI.bookedStatus == 1 ? hsTestColor.withOpacity(0.2): hsTestColor
+//                                                                           color: testI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
 //                                                                       ),
 //                                                                       padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
 //                                                                       child: Text(
@@ -731,7 +728,7 @@
 //                           Container(
 //                             width: MediaQuery.of(context).size.width,
 //                             height: MediaQuery.of(context).size.height / 12.h,
-//                             color: hsTestColor,
+//                             color: hsPrime,
 //                             child: InkWell(
 //                               onTap: (){
 //                                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
@@ -758,10 +755,10 @@
 //                                             Text(
 //                                               //"\u{20B9}${value.testList.data!.cartData!.amount}",
 //                                               "\u{20B9}${bottomMenuGetX.testModel!.cartData!.amount}",
-//                                               style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsTestColor,fontWeight: FontWeight.bold),
+//                                               style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold),
 //                                             ),
 //                                             SizedBox(width: 5.w),
-//                                             Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsTestColor),
+//                                             Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPrime),
 //                                           ],
 //                                         ),
 //                                       ),

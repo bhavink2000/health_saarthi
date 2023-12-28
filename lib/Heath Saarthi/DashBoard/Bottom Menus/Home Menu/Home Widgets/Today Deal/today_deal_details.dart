@@ -99,7 +99,7 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return Center(child: Text("${value.todayDealDetailsList.message}"),);
+                          return CenterLoading();
                         case Status.completed:
                           return value.todayDealDetailsList.data!.todayDetailsData!.data!.isNotEmpty
                            ? AnimationLimiter(

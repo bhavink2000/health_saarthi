@@ -43,7 +43,6 @@ class BottomMenuGetX extends GetxController{
       else{
 
       }
-
     }
     catch(error){
       print("Test catch Error -> $error");

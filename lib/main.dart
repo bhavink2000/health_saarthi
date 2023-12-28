@@ -155,8 +155,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
        await setupFlutterNotifications();
      });
    } else if (Platform.isIOS) {
-     log('platform is ios');
-     FirebaseMessaging.instance.getAPNSToken().then((value) async {
+     log('----- >>>> platform is ios');
+      FirebaseMessaging.instance.getAPNSToken().then((value) async {
        setState(() {
          fcmToken = value;
        });
@@ -164,18 +164,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
        await setupFlutterNotifications();
      });
    }
-
-    // FirebaseMessaging.instance.getToken().then((value) async {
-    //   setState(() {
-    //     fcmToken = value;
-    //   });
-    //   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-    //   await setupFlutterNotifications();
-    // });
-
-   FirebaseMessaging.instance
-       .getInitialMessage()
-       .then((value) => value != null ? firebaseMessagingBackgroundHandler : false);
+   FirebaseMessaging.instance.getInitialMessage().then((value) => value != null ? firebaseMessagingBackgroundHandler : false);
   }
   Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
@@ -193,9 +182,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
                 largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
             ),
           ),
-          payload: jsonEncode(message.data).replaceAll("/", ""));
+          payload: jsonEncode(message.data).replaceAll("/", "")
+      );
     });
-      print('Handling a background message ${jsonEncode(message.data)}');
+      log('Handling a background message ${jsonEncode(message.data)}');
   }
   Future<void> setupFlutterNotifications() async {
     if (isFlutterLocalNotificationsInitialized) {
@@ -271,7 +261,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
             ),
             payload: jsonEncode(message.data).replaceAll("/", ""));
       });
-          print('Handling a background message ${jsonEncode(message.data)}');
+          log('Handling a background message ${jsonEncode(message.data)}');
     }
   }
 
