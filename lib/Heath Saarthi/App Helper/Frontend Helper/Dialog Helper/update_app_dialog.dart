@@ -59,7 +59,7 @@ class UpdateAppDialog{
                                 fontWeight: FontWeight.bold
                             )),
                         const SizedBox(height: 5),
-                        const Text("- Make UI attractive, \n- Exit and back functionality, \n- (*) with red color for mandatory field, \n- Notification",
+                        const Text("- Package problem solve, \n- Logout issue solve, \n- Sign up form update, \n- IFSC, PAN no, Account no",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         Row(

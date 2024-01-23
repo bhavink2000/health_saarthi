@@ -1,9 +1,7 @@
 
-
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/snackbar_msg_show.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
@@ -23,6 +21,7 @@ class HomeTestPackage extends StatefulWidget {
 
 class _HomeTestPackageState extends State<HomeTestPackage> {
   GetAccessToken getAccessToken = GetAccessToken();
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +44,8 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                 child: InkWell(
                   onTap: (){
                     //Get.to(TestListItems());
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestListItems()));
-                    //Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                    //Navigator.of(context).push(MaterialPageRoute(builder: (context) => TestListItemsGetX()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>TestListItems()));
                   },
                   child: Card(
                     elevation: 5,
@@ -173,7 +172,6 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                 padding: const EdgeInsets.fromLTRB(5, 5, 0, 10),
                 child: InkWell(
                   onTap: (){
-                    print("pre->${widget.uStatus}");
                     if(widget.uStatus == 0){
                       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccount}');
                     }
@@ -181,7 +179,8 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const AttachPrescription()));
                     }
                     else{
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
+                      log('widget status ----- >>>> ${widget.uStatus}');
+                      //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccountShow}');
                     }
                   },
                   child: Card(
@@ -250,9 +249,9 @@ class _HomeTestPackageState extends State<HomeTestPackage> {
                       Navigator.push(context, MaterialPageRoute(builder: (context)=>const InstantBooking()));
                     }
                     else{
-                      GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
+                      log('widget status ----- >>>> ${widget.uStatus}');
+                      //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().inAccountShow}');
                     }
-
                   },
                   child: Card(
                     elevation: 5,

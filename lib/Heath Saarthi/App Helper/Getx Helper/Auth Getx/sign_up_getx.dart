@@ -6,6 +6,7 @@ import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get/state_manager.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/location_getx.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -18,11 +19,14 @@ import '../../Frontend Helper/Text Helper/test_helper.dart';
 class SignUpGetX extends GetxController {
   final lController = Get.put(LocationCall());
 
+  final box = GetStorage();
+
   @override
   void onInit() {
     super.onInit();
     getB2bSalesList();
   }
+
 
   RxBool agreedToTOS = false.obs;
   RxBool showExecutive = false.obs;
@@ -87,7 +91,7 @@ class SignUpGetX extends GetxController {
     // PAN card pattern to validate: 5 uppercase letters followed by 4 digits and 1 uppercase letter
     RegExp panCardRegExp = RegExp(r'^[A-Z]{5}[0-9]{4}[A-Z]{1}$');
     if (!panCardRegExp.hasMatch(value!)) {
-      return 'Enter a valid PAN card number (e.g.,ABCDE1234F)';
+      return 'Enter a valid PAN card no(Ex-ABCDE1234F)';
     }
     return null;
   }
@@ -139,7 +143,7 @@ class SignUpGetX extends GetxController {
   Future<void> getB2bSalesList() async {
     try {
       final response = await http.get(
-        Uri.parse(ApiUrls.b2b_Saless_Url),
+        Uri.parse(ApiUrls.b2bSalesUrl),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -153,6 +157,17 @@ class SignUpGetX extends GetxController {
     } catch (e) {
       print("B2b & Sales Error -> $e");
     }
+  }
+
+  void storeLocation()async{
+    await box.write('signUpStateId', lController.selectedStateId);
+    await box.write('signUpCityId', lController.selectedCityId);
+    await box.write('signUpAreaId', lController.selectedAreaId);
+    await box.write('signUpBranchId', lController.selectedBranchId);
+    await box.write('signUpStateName', lController.selectedState);
+    await box.write('signUpCityName', lController.selectedCity);
+    await box.write('signUpAreaName', lController.selectedArea);
+    await box.write('signUpBranchName', lController.selectedBranch);
   }
 
   signUpData() async {
@@ -236,8 +251,7 @@ class SignUpGetX extends GetxController {
         ));
       }
 
-      dio.interceptors.add(InterceptorsWrapper(
-          onError: (DioError err, ErrorInterceptorHandler handler) async {
+      dio.interceptors.add(InterceptorsWrapper(onError: (DioError err, ErrorInterceptorHandler handler) async {
         print("in dio interceptor->${err.response}");
         if (err.response != null) {
           var responseData = err.response!.data;
@@ -300,8 +314,7 @@ class SignUpGetX extends GetxController {
       if (response.statusCode == 200) {
         var bodyMSG = jsonData['message'];
         GetXSnackBarMsg.getSuccessMsg('$bodyMSG');
-        storeStateCityAreaBranch();
-
+        storeLocation();
         Get.to(SplashScreen());
         loadingProgress = 0.0;
         isSigningUp(false);
@@ -332,4 +345,3 @@ class SignUpGetX extends GetxController {
     }
   }
 }
-//0111@9018

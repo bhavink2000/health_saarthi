@@ -255,7 +255,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async{
-                              var panCardCamera = await FileImagePicker().pickCamera(context);
+                              var panCardCamera = await FileImagePicker().pickCamera();
                               setState(() {
                                 panCardChange = panCardCamera;
                               });
@@ -317,7 +317,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async{
-                              var aadhaarCardFrontCamera = await FileImagePicker().pickCamera(context);
+                              var aadhaarCardFrontCamera = await FileImagePicker().pickCamera();
                               setState(() {
                                 aadhaarCardFChange = aadhaarCardFrontCamera;
                               });
@@ -379,7 +379,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async {
-                              var aadhaarCardBack = await FileImagePicker().pickCamera(context);
+                              var aadhaarCardBack = await FileImagePicker().pickCamera();
                               setState(() {
                                 aadhaarCardBChange = aadhaarCardBack;
                               });
@@ -441,7 +441,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async{
-                              var addressProofCamera = await FileImagePicker().pickCamera(context);
+                              var addressProofCamera = await FileImagePicker().pickCamera();
                               setState(() {
                                 addressChange = addressProofCamera;
                               });
@@ -503,7 +503,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async{
-                              var chequeFileCamera = await FileImagePicker().pickCamera(context);
+                              var chequeFileCamera = await FileImagePicker().pickCamera();
                               setState(() {
                                 chequeChange = chequeFileCamera;
                               });
@@ -565,7 +565,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                         const Text("View",style: TextStyle(fontFamily: FontType.MontserratRegular)),
                         userStatus == '0' ? TextButton(
                             onPressed: ()async{
-                              var gstImgCamera = await FileImagePicker().pickCamera(context);
+                              var gstImgCamera = await FileImagePicker().pickCamera();
                               setState(() {
                                 gstFileChange = gstImgCamera;
                               });

@@ -1,13 +1,11 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, use_build_context_synchronously
 
 import 'dart:developer';
-import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/body_checkups.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/category.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/image_slider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/Today%20Deal/offers.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/test_package.dart';
@@ -15,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../Global Search Screen/global_search_screen.dart';
 
 class HomeMenu extends StatefulWidget {
@@ -30,6 +27,7 @@ class _HomeMenuState extends State<HomeMenu> {
   GetAccessToken getAccessToken = GetAccessToken();
 
   var userStatus;
+
   @override
   void initState() {
     super.initState();
@@ -45,7 +43,6 @@ class _HomeMenuState extends State<HomeMenu> {
     try{
       dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       if (userData != null && userData.data != null) {
-        print("user Status -->> ${userData.data.status}");
         setState(() {
           userStatus = userData.data.status;
         });
@@ -72,7 +69,6 @@ class _HomeMenuState extends State<HomeMenu> {
       } else {
         print('Failed to fetch user: User data is null');
       }
-      print("userStatus ==>>$userStatus");
     }
     catch(e){
       print("get User Status Error->$e");

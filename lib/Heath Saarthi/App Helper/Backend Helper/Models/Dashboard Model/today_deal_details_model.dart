@@ -155,6 +155,7 @@ class Data {
   dynamic deletedAt;
   String? encTestManagementId;
   String? createAt;
+  int? bookedStatus;
   String? mrp;
 
   Data(
@@ -211,6 +212,7 @@ class Data {
         this.deletedAt,
         this.encTestManagementId,
         this.createAt,
+        this.bookedStatus,
         this.mrp});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -269,6 +271,7 @@ class Data {
     deletedAt = json['deleted_at'];
     encTestManagementId = json['enc_test_management_id'];
     createAt = json['create_at'];
+    bookedStatus = json['booked_status'];
     mrp = json['mrp'];
   }
 
@@ -329,6 +332,7 @@ class Data {
     data['deleted_at'] = this.deletedAt;
     data['enc_test_management_id'] = this.encTestManagementId;
     data['create_at'] = this.createAt;
+    data['booked_status'] = this.bookedStatus;
     data['mrp'] = this.mrp;
     return data;
   }

@@ -46,7 +46,9 @@ class _HomeOffersState extends State<HomeOffers> {
                   ? CenterLoading()
                   : Container();
             case Status.completed:
-              return value.todayDealList.data!.todayData!.isEmpty ? Container() : Container(
+              return value.todayDealList.data!.todayData!.isEmpty
+                  ? Container()
+                  : Container(
                 width: MediaQuery.of(context).size.width.w,
                 height: MediaQuery.of(context).size.height / 7.4.h,
                 color: Colors.grey.withOpacity(0.3),
@@ -54,7 +56,7 @@ class _HomeOffersState extends State<HomeOffers> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 10, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(15, 5, 0, 0),
                       child: Text("Today's Deal",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 14.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold),),
                     ),
                     Container(

@@ -57,18 +57,14 @@ class FileImagePicker{
     }
   }
 
-  Future<File?> pickCamera(BuildContext context)async{
+  Future<File?> pickCamera()async{
     try {
       final pickedFile = await ImagePicker().pickImage(
           source: ImageSource.camera,
           imageQuality: 25
       );
       if (pickedFile == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No image choose'),
-          ),
-        );
+
         return null;
       }
       final file = File(pickedFile.path);

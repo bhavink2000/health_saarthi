@@ -204,7 +204,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                                 const SizedBox(height: 5),
                                                 const Text('With Health Sarthi',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16,fontWeight: FontWeight.bold)),
                                                 Container(
-                                                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                   child: Column(
                                                     children: [
                                                       Row(
@@ -335,7 +335,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
 
   Widget bottomIconText(var imgIcon, var textOne, var textTwo){
     return Container(
-      width: MediaQuery.of(context).size.width / 2.8,
+      width: MediaQuery.of(context).size.width / 2.7,
       child: Row(
         children: [
           Image(image: imgIcon,width: 30),

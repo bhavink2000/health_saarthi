@@ -1,8 +1,10 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe, library_private_types_in_public_api
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
@@ -381,9 +383,27 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                           });
                                                         }
                                                         else if(logoutUserStatus == '402'){
-                                                          GetXSnackBarMsg.getWarningMsg('Token is Invalid');
-                                                          print("user proper not logout,");
-                                                          Navigator.pop(context);
+                                                          userDataSession.removeUserData().then((values) {
+                                                            box.remove('accessToken');
+                                                            DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+                                                              if (value == 'success') {
+                                                                print("token is deleted $value");
+                                                              } else {
+                                                                print("Token is not deleted");
+                                                              }
+                                                            });
+                                                            var removeUser = values;
+                                                            if(removeUser == true){
+                                                              Navigator.of(context).pushAndRemoveUntil(
+                                                                MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                                                    (Route<dynamic> route) => false,
+                                                              );
+                                                            }
+                                                            else{
+                                                              print("removeUser not proper remove");
+                                                              Navigator.pop(context);
+                                                            }
+                                                          });
                                                         }
                                                       });
                                                     },
@@ -468,6 +488,8 @@ class _DrawerScreenState extends State<DrawerScreen> {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         return bodyStatus;
       } else if(bodyStatus == '402'){
+        log('in else if -->>$bodyMsg');
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         return bodyStatus;
       }
     } catch (error) {

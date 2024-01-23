@@ -33,7 +33,7 @@ class Data {
   int? status;
   String? createdAt;
   String? updatedAt;
-  Null? deletedAt;
+  dynamic deletedAt;
   String? encBannerId;
   String? createAt;
 

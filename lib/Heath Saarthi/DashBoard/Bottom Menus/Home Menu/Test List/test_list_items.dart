@@ -113,8 +113,6 @@ class _TestListItemsState extends State<TestListItems> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          print("status.error test msg-->>${value.testList.message}-------------");
-                          print("status.error test status-->>${value.testList.status}-------------");
                           return value.testList.message == '402'
                               ? TokenExpiredHelper()
                               : value.testList.message == 'Internet connection problem' ? CenterLoading() : value.testList.data == []
@@ -186,7 +184,8 @@ class _TestListItemsState extends State<TestListItems> {
                                                                   //Divider(color: hsOne,thickness: 1),
                                                                   Container(
                                                                       width: MediaQuery.of(context).size.width / 1.5.w,
-                                                                      child: Text("${testI.specimenVolume == null ? 'N/A': testI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)),
+                                                                      child: Text("${testI.specimenVolume == null ? 'N/A': testI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)
+                                                                  ),
                                                                   Row(
                                                                     children: [
                                                                       Text("\u{20B9}${testI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),

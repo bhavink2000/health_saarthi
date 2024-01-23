@@ -1,17 +1,22 @@
 // ignore_for_file: missing_return
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Widget%20Helper/appbar_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../../App Helper/Backend Helper/Enums/enums_status.dart';
 import '../../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
+import '../../../../../App Helper/Frontend Helper/Error Helper/token_expired_helper.dart';
 import '../../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
+import '../../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../../Add To Cart/test_cart.dart';
 import '../../../../Notification Menu/notification_menu.dart';
 
@@ -53,39 +58,7 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 10, 20, 5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                      child: Row(
-                        children: [
-                          InkWell(onTap: (){Navigator.pop(context);}, child: const Icon(Icons.arrow_back,color: Colors.black,size: 24)),
-                          SizedBox(width: 10.w),
-                          const Text("Today's Deal",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.black,fontSize: 14),)
-                        ],
-                      )
-                  ),
-                  Row(
-                    children: [
-                      InkWell(
-                          onTap: (){
-                            //Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestBookingDetails()));
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                          },child: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 24)
-                      ),
-                      SizedBox(width: 10.w),
-                      InkWell(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-                          },child: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 30)
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
+            AppBarHelper(appBarLabel: "Today's Deal"),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
             Expanded(
               child: Container(
@@ -99,7 +72,17 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                         case Status.loading:
                           return const CenterLoading();
                         case Status.error:
-                          return CenterLoading();
+                          return value.todayDealDetailsList.message == '402'
+                              ? TokenExpiredHelper()
+                              : value.todayDealDetailsList.message == 'Internet connection problem' ? CenterLoading() : value.todayDealDetailsList.data == []
+                              ? Container()
+                              : const Center(
+                              child: Text(
+                                  "Test Not found your branch",
+                                  style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16
+                                  ),textAlign: TextAlign.center
+                              )
+                          );
                         case Status.completed:
                           return value.todayDealDetailsList.data!.todayDetailsData!.data!.isNotEmpty
                            ? AnimationLimiter(
@@ -128,9 +111,9 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                                   child: Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
-                                                      Text(todayDealI.serviceName!,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,letterSpacing: 0.5,fontWeight: FontWeight.bold)),
+                                                      Text(todayDealI.serviceName!,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15.sp)),
                                                       SizedBox(height: 5.h,),
-                                                      Text(todayDealI.specimenVolume!,style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black54,fontSize: 12.sp),)
+                                                      Text(todayDealI.specimenVolume!,style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)
                                                     ],
                                                   ),
                                                 ),
@@ -138,18 +121,30 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                                                   child: Row(
                                                     children: [
-                                                      Text("\u{20B9}${todayDealI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: Colors.black,fontWeight: FontWeight.bold)),
+                                                      Text("\u{20B9}${todayDealI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
                                                       const Spacer(),
                                                       InkWell(
                                                         onTap: (){
-                                                          CartFuture().addToCartTest(getAccessToken.access_token, todayDealI.id, context).then((value) {
-                                                            homeMenusProvider.fetchPackage(1, getAccessToken.access_token,'');
-                                                          });
+
+                                                          if(todayDealI.bookedStatus == 1){
+                                                            GetXSnackBarMsg.getWarningMsg('Already booked this item');
+                                                          }
+                                                          else{
+                                                            CartFuture().addToCartTest(getAccessToken.access_token, todayDealI.id, context).then((value) {
+                                                              setState(() {
+                                                                homeMenusProvider.fetchTodayDealDetails(curentindex + 1, getAccessToken.access_token,dealData);
+                                                              });
+                                                            });
+                                                          }
                                                         },
                                                         child: Container(
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: hsPrime),
+                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
+                                                              color: todayDealI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
+                                                          ),
                                                           padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                                                          child: Text("+ Book Now",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
+                                                          child: Text(
+                                                            todayDealI.bookedStatus == 1 ? "Booked" :"+ Book Now",
+                                                            style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
                                                         ),
                                                       )
                                                     ],

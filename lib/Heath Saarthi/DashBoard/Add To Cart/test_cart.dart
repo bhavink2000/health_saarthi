@@ -29,6 +29,7 @@ import '../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
 import '../../App Helper/Backend Helper/Providers/Home Menu Provider/home_menu_provider.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
+import '../../App Helper/Getx Helper/Dashboard Getx/BottomMenu Getx/bottom_menu_getx.dart';
 import '../Bottom Menus/Home Menu/Packages List/package_list.dart';
 import '../Bottom Menus/Home Menu/Test List/test_list_items.dart';
 import 'test_form_booking.dart';
@@ -41,6 +42,8 @@ class TestCart extends StatefulWidget {
 }
 
 class _TestCartState extends State<TestCart> {
+
+  BottomMenuGetX bottomMenuGetX = Get.put(BottomMenuGetX());
 
   String? sStateName;
   String? sCityName;
@@ -201,7 +204,11 @@ class _TestCartState extends State<TestCart> {
                       elevation: 5,
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                        child: Row(
+                        child: isApplyPromo == 0 ? Text(
+                            "Invalid promo code",
+                            style: TextStyle(
+                                fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold,color: Colors.orange)
+                        ): Row(
                           children: [
                             const Text(
                                 "Promo offer applied",
@@ -261,12 +268,6 @@ class _TestCartState extends State<TestCart> {
                         ),
                         //prefixIcon: Icon(iconData, color: hsBlack,size: 20),
                       ),
-                      onEditingComplete: (){
-                        setState(() {
-                          callPromo = true;
-                        });
-                        cartCalculation();
-                      },
                     ),
                   ),
                   const Spacer(),
@@ -282,7 +283,6 @@ class _TestCartState extends State<TestCart> {
                             callPromo = true;
                           });
                           Navigator.of(context).pop();
-                          promoApply.clear();
                         });
                       }
                     },
@@ -317,7 +317,8 @@ class _TestCartState extends State<TestCart> {
                           Text(
                             "\u{20B9}${netAmount.isEmpty ? 0.00 : netAmount}",
                             style: TextStyle(fontFamily: FontType.MontserratMedium,
-                                color: Colors.orange,fontSize: 20.sp,fontWeight: FontWeight.bold),),
+                                color: Colors.orange,fontSize: 20.sp,fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ),
@@ -382,7 +383,7 @@ class _TestCartState extends State<TestCart> {
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(width: 3.w,),
+                                SizedBox(width: 2.w,),
                                 const Icon(Icons.arrow_forward_ios_rounded,color: Colors.white,size: 12,)
                               ],
                             )
@@ -425,10 +426,11 @@ class _TestCartState extends State<TestCart> {
                 child: Row(
                   children: [
                     Flexible(
+                      fit: FlexFit.loose,
                       child: RadioListTile(
-                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         dense: true,
-                        title: const Text('Current location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Current location',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12,color: Colors.black)),
                         value: 'cLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
@@ -454,10 +456,11 @@ class _TestCartState extends State<TestCart> {
                       ),
                     ),
                     Flexible(
+                      fit: FlexFit.loose,
                       child: RadioListTile(
-                        contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                         dense: true,
-                        title: const Text('Different location',style: TextStyle(fontFamily: FontType.MontserratRegular)),
+                        contentPadding: EdgeInsets.zero,
+                        title: const Text('Different location',style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12,color: Colors.black)),
                         value: 'dLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
@@ -1548,6 +1551,7 @@ class _TestCartState extends State<TestCart> {
 
   var bodyMsg;
   Future<CartCalculationModel?> cartCalculation() async {
+    log('cart cal promo--->>${promoApply.text}');
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -1564,7 +1568,7 @@ class _TestCartState extends State<TestCart> {
           }
       );
       final responseData = json.decode(response.body);
-      print("responsedata->$responseData");
+      log("--------->>>>responsedata->$responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
       if (bodyStatus == 200) {

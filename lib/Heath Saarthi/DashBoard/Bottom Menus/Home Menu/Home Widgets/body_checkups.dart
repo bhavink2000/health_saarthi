@@ -100,7 +100,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                           image: DecorationImage(
                             image: AssetImage("assets/Home/box-bg.png"),
                             fit: BoxFit.fill
-                          )
+                          ),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,11 +118,11 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(25, 5, 10, 10),
+                              padding: const EdgeInsets.fromLTRB(25, 5, 10, 5),
                               child: Text("${popularPackage[index]['test_management']['service_classification']}", style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 12.sp),),
                             ),
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(25, 5, 10, 5),
+                              padding: const EdgeInsets.fromLTRB(25, 0, 10, 5),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -136,8 +136,6 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                   ),
                                   InkWell(
                                       onTap: (){
-                                        print('id ->${popularPackage[index]['test_management']['id']}');
-                                        print('access ->${getAccessToken.access_token}');
                                         Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
                                           packageId: popularPackage[index]['test_management']['id'],
                                           accessToken: getAccessToken.access_token,
@@ -166,7 +164,7 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                 });
                               },
                               child: Container(
-                                padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.only(
                                       bottomRight: Radius.circular(10),bottomLeft: Radius.circular(10)

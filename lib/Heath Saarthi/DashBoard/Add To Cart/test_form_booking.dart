@@ -464,7 +464,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                         ),
                                         IconButton(
                                           onPressed: () async {
-                                            var prescriptionCamera = await FileImagePicker().pickCamera(context);
+                                            var prescriptionCamera = await FileImagePicker().pickCamera();
                                             setState(() {
                                               prescriptionFiles.add(prescriptionCamera!);
                                             });

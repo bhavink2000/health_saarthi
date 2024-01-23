@@ -82,7 +82,8 @@ class _MultipleCameraPicState extends State<MultipleCameraPic> {
                       Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height / 20,
-                        child: prescriptionFiles.isNotEmpty ? ListView.builder(
+                        child: prescriptionFiles.isNotEmpty
+                          ? ListView.builder(
                           itemCount: prescriptionFiles.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index){
@@ -129,7 +130,8 @@ class _MultipleCameraPicState extends State<MultipleCameraPic> {
                               ),
                             ) ;
                           },
-                        ) : const Center(child: Text('No file chosen'),),
+                        )
+                          : const Center(child: Text('No file chosen'),),
                       ),
                     ],
                   ),

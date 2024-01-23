@@ -18,6 +18,7 @@ class AppTextHelper{
 
 //----->>>>> user status check
   var inAccount = 'Account is under review\nPlease connect with support team';
+  var inAccountShow = 'Account is under review';
   var userNotFound = 'User not found';
 
   var serverError = 'Server error\nPlease try again';

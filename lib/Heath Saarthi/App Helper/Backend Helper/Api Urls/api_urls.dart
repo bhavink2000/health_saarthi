@@ -1,8 +1,8 @@
 
 class ApiUrls{
 
-  //static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
-  static String mainUrls = 'https://hs.windzoon.in/api/v1/';                    // demo url
+  static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
+  //static String mainUrls = 'https://hs.windzoon.in/api/v1/';                    // demo url
 
 
   static String loginUrl = '${mainUrls}pharmacy/login';
@@ -24,7 +24,7 @@ class ApiUrls{
   static String reSendOtpUrl = '${mainUrls}pharmacy/send-forgot-password-otp';
   static String verifyOtpUrl = '${mainUrls}pharmacy/verify-forgot-password-otp';
 
-  static String b2b_Saless_Url = '${mainUrls}pharmacy/get-b2b-subadmin-list';
+  static String b2bSalesUrl = '${mainUrls}pharmacy/get-b2b-subadmin-list';
   static String stateUrl = '${mainUrls}pharmacy/get-state-list';
   static String cityUrl = '${mainUrls}pharmacy/get-cities-from-state/';
   static String areaUrl = '${mainUrls}pharmacy/get-areas-from-state-and-city/';
@@ -76,6 +76,7 @@ class ApiUrls{
 (2.01 live on 30-10-2023) -> add multiple prescription / show cart price in bottom
 (2.02 live on 02-11-2023) -> QR code design change/ add prescription in cart booking
 (2.03 live on 29-11-2023) -> Notification (foreground,background,terminate), / Make UI attractive / Img/PDF name show in signup / put (*) with red color for mandatory field /Exit and back functionality
+(2.04 live on 18-01-2024) - gender selection make proper(30/11) / package problem / null error / multiple pic take / logout issue (02/01) / IFSC,GST,PAN
 
- - gender selection make proper(30/11) / package problem / null error / multiple pic take
+
 */

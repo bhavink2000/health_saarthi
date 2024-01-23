@@ -83,7 +83,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                           border: InputBorder.none,
                           labelText: "Start Date",
-                        labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
+                        labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold,fontSize: 12)
                       ),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
@@ -117,7 +117,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                           contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                           border: InputBorder.none,
                           labelText: "To Date",
-                          labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold)
+                          labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold,fontSize: 12)
                       ),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
@@ -157,7 +157,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         color: Colors.white
                       ),
-                      child: Text("Apply",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontWeight: FontWeight.bold),),
+                      child: Text("Apply",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontWeight: FontWeight.bold,fontSize: 12  ),),
                     ),
                   )
                 ],

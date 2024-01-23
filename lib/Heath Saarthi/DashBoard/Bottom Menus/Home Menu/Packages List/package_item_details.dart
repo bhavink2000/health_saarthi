@@ -104,6 +104,8 @@ class _PackageItemDetailsState extends State<PackageItemDetails> {
                           Text("${packageDetailsData[0]['service_name']}",style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,fontSize: 16,fontWeight: FontWeight.bold)),
                           const SizedBox(height: 10),
                           Text("${packageDetailsData[0]['specimen_volume'] == null ? 'N/A': packageDetailsData[0]['specimen_volume']}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
+                          const SizedBox(height: 10),
+                          Text("${packageDetailsData[0]['testList'] == null ? 'N/A': packageDetailsData[0]['testList']}",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,color: Colors.black,fontSize: 14),),
                         ],
                       ),
                     ),

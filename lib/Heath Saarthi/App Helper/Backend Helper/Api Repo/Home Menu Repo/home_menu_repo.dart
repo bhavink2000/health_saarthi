@@ -94,7 +94,7 @@ class HomeMenuRepo{
   }
 
   Future<TodayDealDetailsModel> todayDealDetailsData(var index,var access_token, var data)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealDetailsUrls}", access_token, data);
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealDetailsUrls}?page=$index", access_token, data);
     print("Response Today Deal Details->$response");
     if (response['status'] == '402') {
       throw response['status'];

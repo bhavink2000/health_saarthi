@@ -161,7 +161,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                           ),
                                           IconButton(
                                             onPressed: () async {
-                                              var prescriptionCamera = await FileImagePicker().pickCamera(context);
+                                              var prescriptionCamera = await FileImagePicker().pickCamera();
                                               setState(() {
                                                 prescriptionFiles.add(prescriptionCamera!);
                                               });

@@ -99,6 +99,8 @@ class _TestItemDetailsState extends State<TestItemDetails> {
                           Text("${testDetailsData[0]['service_name']}",style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,fontSize: 16,fontWeight: FontWeight.bold)),
                           const SizedBox(height: 10),
                           Text("${testDetailsData[0]['specimen_volume'] == null ? 'N/A': testDetailsData[0]['specimen_volume']}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12),),
+                          const SizedBox(height: 10),
+                          Text("${testDetailsData[0]['testList'] == null ? 'N/A': testDetailsData[0]['testList']}",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 0.5,color: Colors.black,fontSize: 14),),
                         ],
                       ),
                     ),
