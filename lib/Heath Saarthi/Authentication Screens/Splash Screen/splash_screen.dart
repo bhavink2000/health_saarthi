@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import '../../../HealthSaarthi/HS_Dashboard/health_saarthi_dashboard.dart';
@@ -21,8 +22,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
-  bool internetCheck = false;
 
   Future<LoginModel> getUserData() => UserDataSession().getUserData();
   NotificationService notificationService = NotificationService();
@@ -45,13 +44,9 @@ class _SplashScreenState extends State<SplashScreen> {
           retrieveDeviceDetails().then((value) async{
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('deviceType', value);
-            log("Device type value->>>>$value");
-
             if (deviceToken == '' || value == '' || deviceToken == null || value == null) {
               log("Do not get device token\nplease restart the app");
             } else {
-              log("check Device Token->$deviceToken");
-              log("check Device type->$deviceType");
               checkAuthentication(context);
             }
           });
@@ -67,16 +62,13 @@ class _SplashScreenState extends State<SplashScreen> {
   void checkAuthentication(BuildContext context) async {
     getUserData().then((value) async {
       log("Authentication Check Access Token => ${value.accessToken}");
-
       access_token.write('accessToken', value.accessToken);
-
       if (value.accessToken == '' || value.accessToken == null || value.accessToken == 'null') {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen(deviceToken: deviceToken,deviceType: deviceType)),);
       } else {
         await Future.delayed(const Duration(seconds: 3));
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Home()));
-        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HSDashboard()));
       }
     }).onError((error, stackTrace) {
       print(error);
@@ -86,30 +78,20 @@ class _SplashScreenState extends State<SplashScreen> {
   Future retrieveDeviceDetails() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     if (Platform.isAndroid) {
-      String appName = packageInfo.appName;
-      String packageName = packageInfo.packageName;
       String version = packageInfo.version;
-      String buildNumber = packageInfo.buildNumber;
-      print('Android Release Version appName->$appName \npackageName->$packageName, \nversion->$version \nbuildNumber->$buildNumber');
       setState(() {
         deviceType = 'Android';
         deviceVersion = version;
       });
       return deviceType;
     } else if (Platform.isIOS) {
-      String appName = packageInfo.appName;
-      String packageName = packageInfo.packageName;
       String version = packageInfo.version;
-      String buildNumber = packageInfo.buildNumber;
-      print('IOS Release Version appName->$appName \npackageName->$packageName, \nversion->$version \nbuildNumber->$buildNumber');
       setState(() {
         deviceType = 'iOS';
         deviceVersion = version;
       });
       return deviceType;
     }
-    print('retrieve Device Type: $deviceType');
-    print('retrieve Device Version: $deviceVersion');
   }
 
 
@@ -139,7 +121,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 width: 150,
               ),
             ),
-            const Text("Version 2.0",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
+            Text("Version ${AppTextHelper().appVersion}",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.grey))
           ],
         ),
       )

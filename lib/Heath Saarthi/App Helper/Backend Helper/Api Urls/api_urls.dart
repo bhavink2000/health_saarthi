@@ -1,9 +1,8 @@
-
+//1101@9018
 class ApiUrls{
 
-  static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
-  //static String mainUrls = 'https://hs.windzoon.in/api/v1/';                    // demo url
-
+  //static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
+  static String mainUrls = 'https://hs.windzoon.in/api/v1/';                    // demo url
 
   static String loginUrl = '${mainUrls}pharmacy/login';
   static String logoutUrl = '${mainUrls}pharmacy/logout';
@@ -78,5 +77,5 @@ class ApiUrls{
 (2.03 live on 29-11-2023) -> Notification (foreground,background,terminate), / Make UI attractive / Img/PDF name show in signup / put (*) with red color for mandatory field /Exit and back functionality
 (2.04 live on 18-01-2024) - gender selection make proper(30/11) / package problem / null error / multiple pic take / logout issue (02/01) / IFSC,GST,PAN
 
-
+          - change userStatus flow in pre/booking/cart(24-01)/ change snack bar msg (24-01)
 */

@@ -1,7 +1,10 @@
 
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/profile_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -67,23 +70,40 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   File? addressChange;
   File? chequeChange;
   File? gstFileChange;
+
+
+  GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
+  bool mounted = false;
+  var userStatus;
+
   @override
   void initState(){
     super.initState();
+    mounted = true;
     getAccessToken.checkAuthentication(context, setState);
     retrieveDeviceToken();
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        getProfile();
-      });
+    functionCall();
+
+  }
+
+  functionCall()async{
+    Future.delayed(const Duration(seconds: 1), () async{
+      if (mounted) {
+        await getProfile();
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    mounted = false;
+    super.dispose();
   }
   Future<void> retrieveDeviceToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       deviceToken = prefs.getString('deviceToken');
     });
-    log("SharedPreferences DeviceToken->$deviceToken");
   }
 
   @override
@@ -188,7 +208,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
             ),
           ),
         ),
-        //showTextField('PinCode', pincode,Icons.code),
         showTextField('Bank name', bankNm,Icons.account_balance_rounded),
         showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
         showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
@@ -614,9 +633,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
               else if(userStatus == '1'){
                 GetXSnackBarMsg.getWarningMsg('${AppTextHelper().notUpdateUser}');
               }
-              else{
-                GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
-              }
             },
             child: const Text("Update profile",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white))
         ) : Container()
@@ -733,7 +749,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
     }
   }
 
-  final GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
   void _showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -749,72 +764,142 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
       },
     );
   }
-  var userStatus;
-  void getProfile() async {
-    final userDataSession = Provider.of<UserDataSession>(context, listen: false);
+
+  // void getProfile() async {
+  //   try {
+  //     _showLoadingDialog(context);
+  //     var pModel;
+  //     pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+  //     if (mounted && pModel != null) {
+  //       setState(() {
+  //         userStatus = pModel.data.status.toString();
+  //         firstNm.text = pModel.data.name.toString();
+  //         mobile.text = pModel.data.mobile.toString();
+  //         email.text = pModel.data.emailId.toString();
+  //         address.text = pModel.data.address ?? '';
+  //         state.text = pModel.data.state.stateName.toString();
+  //         city.text = pModel.data.city.cityName.toString();
+  //         area.text = pModel.data.area.areaName.toString();
+  //         branch.text = pModel.data.costCenter.branchName.toString();
+  //         pincode = pModel.data.pincode;
+  //
+  //         bankNm.text = pModel.data.bankName.toString();
+  //         ifscCode.text = pModel.data.ifsc.toString();
+  //         accountNo.text = pModel.data.accountNumber.toString();
+  //         gstNo = pModel.data.gstNumber.toString();
+  //
+  //         panCard = pModel.data.pancard.toString();
+  //         addressProfe = pModel.data.addressProof.toString();
+  //         aadharCardF = pModel.data.aadharFront.toString();
+  //         aadharCardB = pModel.data.aadharBack.toString();
+  //         chequeFile = pModel.data.chequeImage.toString();
+  //
+  //         gstFile = pModel.data.gstImage.toString();
+  //
+  //         panCardImg = pModel.data.pancardImg.toString();
+  //         addressProfeImg = pModel.data.addressProofImg.toString();
+  //         aadharCardFImg = pModel.data.aadharFrontImg.toString();
+  //         aadharCardBImg = pModel.data.aadharBackImg.toString();
+  //         chequeImg = pModel.data.chequeImg.toString();
+  //         gstImg = pModel.data.gstImg.toString();
+  //       });
+  //     }
+  //     if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
+  //       Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+  //     }
+  //   }
+  //   catch (e) {
+  //     log('catch Error: $e');
+  //     if (e is Exception && e.toString().contains('402')) {
+  //       var errorMessage = e.toString();
+  //       var messageIndex = errorMessage.indexOf('message: ');
+  //       if (messageIndex != -1) {
+  //         errorMessage = errorMessage.substring(messageIndex + 'message: '.length);
+  //         errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
+  //         GetXSnackBarMsg.getWarningMsg(errorMessage);
+  //         DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+  //         if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
+  //           Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+  //         }
+  //       }
+  //       else {
+  //         log('catch Error: else $e');
+  //         DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+  //         if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
+  //           Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+
+  ProfileModel? profileModel;
+  Future<void> getProfile() async {
     try {
       _showLoadingDialog(context);
-      var pModel;
-      pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      if (pModel != null) {
+      //var pModel;
+      profileModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      if (mounted && profileModel != null && profileModel?.data != null) {
         setState(() {
-          userStatus = pModel.data.status.toString();
-          firstNm.text = pModel.data.name.toString();
-          mobile.text = pModel.data.mobile.toString();
-          email.text = pModel.data.emailId.toString();
-          address.text = pModel.data.address ?? '';
-          state.text = pModel.data.state.stateName.toString();
-          city.text = pModel.data.city.cityName.toString();
-          area.text = pModel.data.area.areaName.toString();
-          branch.text = pModel.data.costCenter.branchName.toString();
-          pincode = pModel.data.pincode;
+          // Check for null before accessing properties
+          userStatus = profileModel?.data?.status?.toString() ?? '';
+          firstNm.text = profileModel?.data?.name?.toString() ?? '';
+          mobile.text = profileModel?.data?.mobile?.toString() ?? '';
+          email.text = profileModel?.data?.emailId?.toString() ?? '';
+          address.text = profileModel?.data?.address ?? '';
+          state.text = profileModel?.data?.state?.stateName?.toString() ?? '';
+          city.text = profileModel?.data?.city?.cityName?.toString() ?? '';
+          area.text = profileModel?.data?.area?.areaName?.toString() ?? '';
+          branch.text = profileModel?.data?.costCenter?.branchName?.toString() ?? '';
+          pincode = profileModel?.data?.pincode ?? '';
 
-          bankNm.text = pModel.data.bankName.toString();
-          ifscCode.text = pModel.data.ifsc.toString();
-          accountNo.text = pModel.data.accountNumber.toString();
-          gstNo = pModel.data.gstNumber.toString();
+          bankNm.text = profileModel?.data?.bankName?.toString() ?? '';
+          ifscCode.text = profileModel?.data?.ifsc?.toString() ?? '';
+          accountNo.text = profileModel?.data?.accountNumber?.toString() ?? '';
+          gstNo = profileModel?.data?.gstNumber?.toString() ?? '';
 
-          panCard = pModel.data.pancard.toString();
-          addressProfe = pModel.data.addressProof.toString();
-          aadharCardF = pModel.data.aadharFront.toString();
-          aadharCardB = pModel.data.aadharBack.toString();
-          chequeFile = pModel.data.chequeImage.toString();
+          panCard = profileModel?.data?.pancard?.toString() ?? '';
+          addressProfe = profileModel?.data?.addressProof?.toString() ?? '';
+          aadharCardF = profileModel?.data?.aadharFront?.toString() ?? '';
+          aadharCardB = profileModel?.data?.aadharBack?.toString() ?? '';
+          chequeFile = profileModel?.data?.chequeImage?.toString() ?? '';
 
-          gstFile = pModel.data.gstImage.toString();
+          gstFile = profileModel?.data?.gstImage?.toString() ?? '';
 
-          panCardImg = pModel.data.pancardImg.toString();
-          addressProfeImg = pModel.data.addressProofImg.toString();
-          aadharCardFImg = pModel.data.aadharFrontImg.toString();
-          aadharCardBImg = pModel.data.aadharBackImg.toString();
-          chequeImg = pModel.data.chequeImg.toString();
-          gstImg = pModel.data.gstImg.toString();
+          panCardImg = profileModel?.data?.pancardImg?.toString() ?? '';
+          addressProfeImg = profileModel?.data?.addressProofImg?.toString() ?? '';
+          aadharCardFImg = profileModel?.data?.aadharFrontImg?.toString() ?? '';
+          aadharCardBImg = profileModel?.data?.aadharBackImg?.toString() ?? '';
+          chequeImg = profileModel?.data?.chequeImg?.toString() ?? '';
+          gstImg = profileModel?.data?.gstImg?.toString() ?? '';
+          mounted = false;
         });
       }
-      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop(); // Dismiss the loading dialog
-    } catch (e) {
-      print('Error: $e');
-      if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-        // logoutUser().then((value) {
-        //   userDataSession.removeUserData().then((value) {
-        //     DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
-        //       if (value == 'success') {
-        //         print("token is deleted $value");
-        //       } else {
-        //         print("Token is not deleted");
-        //       }
-        //     });
-        //   });
-        //   Navigator.of(context).pushAndRemoveUntil(
-        //     MaterialPageRoute(builder: (context) => const SplashScreen()),
-        //         (Route<dynamic> route) => false,
-        //   );
-        // });
-      } else {
-        print('Error: else $e');
+      if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
         Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
       }
-      Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+    } catch (e) {
+      log('catch Error: $e');
+      if (e is Exception && e.toString().contains('402')) {
+        var errorMessage = e.toString();
+        var messageIndex = errorMessage.indexOf('message: ');
+        if (messageIndex != -1) {
+          errorMessage = errorMessage.substring(messageIndex + 'message: '.length);
+          errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
+          GetXSnackBarMsg.getWarningMsg(errorMessage);
+          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+          if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
+            Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+          }
+        } else {
+          log('catch Error: else $e');
+          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+          if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
+            Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
+          }
+        }
+      }
     }
   }
+
 }

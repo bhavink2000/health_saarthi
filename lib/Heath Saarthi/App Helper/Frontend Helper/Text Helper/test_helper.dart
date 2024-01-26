@@ -1,28 +1,29 @@
 class AppTextHelper{
 
+  var appVersion = '2.04';
 
   var patientName = 'The name field is required.';
   var patientMobile = 'The mobile no field is required.';
   //var bookingProblem = 'Booking problem';
 
-  var logoutProblem = 'Logout problem';
+  //var logoutProblem = 'Logout problem';
 
   var selectDocuments = 'Select at least one document update';
   var notUpdateUser = 'Not updatable for this user';
 
 //------>>>>> cart screen
   var couponCode = 'Enter coupon code';
-  var cartEmpty = 'Cart is empty';
+  var cartEmpty = 'There is no item in cart.';
   var selectLocation = 'Please select location';
   var setLocation = 'Please set location';
 
 //----->>>>> user status check
-  var inAccount = 'Account is under review\nPlease connect with support team';
-  var inAccountShow = 'Account is under review';
-  var userNotFound = 'User not found';
+  var inAccount = 'Your account is currently inactive. \nPlease contact support for assistance.';
 
-  var serverError = 'Server error\nPlease try again';
-  var internalServerError = 'Internal server error\nPlease try again';
+
+  var internetProblem = "Unable to connect. \nPlease verify your internet connection and try again";
+  var serverError = "Server Issue:\nWe're on it! Please bear with us";
+  var internalServerError = 'Our server is temporarily unavailable.\nPlease check back shortly';
 
 //----->>>>> forgot password
   var enterMobileNo = 'Enter mobile number';

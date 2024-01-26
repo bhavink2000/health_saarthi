@@ -130,45 +130,12 @@ class GlobalSearch extends SearchDelegate{
                                         packageId: item['id'],
                                         accessToken: accessToken,
                                       )));
-
-                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemsDetails(
-                                      //   title: item['service_name'],
-                                      //   mrp: item['mrp_amount'],
-                                      //   serviceCode: item['service_code'],
-                                      //   collect: item['collect'],
-                                      //   serviceClassification: item['service_classification'],
-                                      //   serviceVolume: item['specimen_volume'],
-                                      //   orderingInfo: item['ordering_info'],
-                                      //   reported: item['ordering_info'],
-                                      //   state: item['state_id'],
-                                      //   city: item['city_id'],
-                                      //   area: item['area_id'],
-                                      //   accessToken: accessToken,
-                                      //   packageId: item['id'],
-                                      //   bookedStatus: item['booked_status'],
-                                      // )));
                                     }
                                     else{
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
                                         testId: item['id'],
                                         accessToken: accessToken,
                                       )));
-                                      // Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-                                      //   title: item['service_name'],
-                                      //   mrp: item['mrp_amount'],
-                                      //   serviceCode: item['service_code'],
-                                      //   collect: item['collect'],
-                                      //   serviceClassification: item['service_classification'],
-                                      //   serviceVolume: item['specimen_volume'],
-                                      //   orderingInfo: item['ordering_info'],
-                                      //   reported: item['ordering_info'],
-                                      //   state: item['state_id'],
-                                      //   city: item['city_id'],
-                                      //   area: item['area_id'],
-                                      //   accessToken: accessToken,
-                                      //   testId: item['id'],
-                                      //   bookedStatus: item['booked_status'],
-                                      // )));
                                     }
                                   },
                                   child: Container(

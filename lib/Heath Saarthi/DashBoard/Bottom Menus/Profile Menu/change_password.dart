@@ -6,7 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   var accessToken;

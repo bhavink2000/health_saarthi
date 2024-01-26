@@ -61,10 +61,9 @@ dependencies:
 
   # app backend helper & session
   connectivity_plus:
-  dio:
-  form_data:
+  dio: ^5.4.0
   shared_preferences:
-  http:
+  http: ^1.2.0
   provider:
 
   # state management

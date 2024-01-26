@@ -21,6 +21,12 @@ class LocationCall extends GetxController{
     fetchStateList();
   }
 
+  void clearFunction(){
+    stateList.clear();
+    cityList.clear();
+    areaList.clear();
+    branchList.clear();
+  }
   Future<void> fetchStateList() async {
     stateLoading(true);
     try {

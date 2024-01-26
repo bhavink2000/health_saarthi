@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../App Helper/Check Internet Helper/Bindings/dependency_injection.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import 'Login Widgets/custom_clippers/blue_top_clipper.dart';
 import 'Login Widgets/custom_clippers/grey_top_clipper.dart';
@@ -26,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
+    CheckNetworkDependencyInjection.init();
     _animationController = AnimationController(
       vsync: this,
       duration: hsLoginAnimationD,

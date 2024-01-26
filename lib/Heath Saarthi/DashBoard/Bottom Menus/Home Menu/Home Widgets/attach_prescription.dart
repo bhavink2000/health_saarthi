@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/patient_details_getx.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/user_status_check.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Widget%20Helper/appbar_helper.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -19,15 +20,20 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
+import '../../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
+import '../../../../App Helper/Backend Helper/Models/Dashboard Model/profile_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
+import '../../../../App Helper/Check Internet Helper/Controller/network_controller.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
@@ -50,6 +56,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
   final locationController = Get.put(LocationCall());
   final patientController = Get.put(PatientDetailsGetX());
+  final userController = Get.put(UserStatusCheckController());
+  final netController = Get.put(NetworkController());
 
   GetAccessToken getAccessToken = GetAccessToken();
 
@@ -70,43 +78,29 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
     locationController.cityList.clear();
     locationController.areaList.clear();
     locationController.branchList.clear();
-
-    Future.delayed(Duration(seconds: 1), () {
-      functionCalling();
-    });
+    if(netController.isConnected == true){
+      locationController.fetchStateList();
+    }
+    functionCalling();
   }
 
   void functionCalling()async{
     await patientController.fetchMobileList();
   }
-  final _formKey = GlobalKey<FormState>();
+  final _attachFormKey = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
-    patientController.selectedMobileNo?.value = '';
-    selectedGender = '';
-    remark.text = '';
-    pName.text = '';
-    emailId.text = '';
-    pMobile.text = '';
-    pDob.text = '';
-    pAge.text = '';
-    pinCode.text = '';
-    address.text = '';
-    locationController.selectedState?.value = '';
-    locationController.selectedCity?.value = '';
-    locationController.selectedStateId?.value = '';
-    locationController.selectedArea?.value = '';
-    locationController.selectedBranch?.value = '';
+    clearData();
+    Get.delete<UserStatusCheckController>();
     super.dispose();
   }
 
   List<File> prescriptionFiles = [];
-
   bool isTyping = false;
   @override
   Widget build(BuildContext context) {
@@ -119,13 +113,13 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
           children: [
             const AppBarHelper(appBarLabel: 'Attach Prescription'),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
-            Expanded(
+            Obx(() => Expanded(
               child: locationController.stateLoading.value == false ? SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Column(
                   children: [
                     Form(
-                      key: _formKey,
+                      key: _attachFormKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -184,21 +178,21 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                             return Padding(
                                               padding: const EdgeInsets.fromLTRB(5, 0, 5, 5),
                                               child: Container(
-                                               // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                                // margin: const EdgeInsets.fromLTRB(5, 5, 5, 5),
                                                 decoration: BoxDecoration(
-                                                  color: hsPrime,
-                                                  borderRadius: BorderRadius.circular(10)
+                                                    color: hsPrime,
+                                                    borderRadius: BorderRadius.circular(10)
                                                 ),
                                                 padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                                                 child: GestureDetector(
                                                   onTap: (){
                                                     showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context){
-                                                        return Dialog(
-                                                          child: Image.file(prescriptionFiles[index]),
-                                                        );
-                                                      }
+                                                        context: context,
+                                                        builder: (BuildContext context){
+                                                          return Dialog(
+                                                            child: Image.file(prescriptionFiles[index]),
+                                                          );
+                                                        }
                                                     );
                                                   },
                                                   child: Row(
@@ -206,8 +200,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                                     crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: [
                                                       Text(
-                                                        prescriptionFiles[index].path.split('/').last,
-                                                        style: const TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
+                                                          prescriptionFiles[index].path.split('/').last,
+                                                          style: const TextStyle(fontFamily: FontType.MontserratLight,color: Colors.white)
                                                       ),
                                                       const SizedBox(width: 10),
                                                       IconButton(
@@ -395,7 +389,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             readOnly: false,
                             prefixIcon: Icons.email,
                             onChanged: (value) {
-                              _formKey.currentState?.validate();
+                              _attachFormKey.currentState?.validate();
                             },
                             validator: (value) {
                               if (value != null && value.isNotEmpty) {
@@ -433,14 +427,14 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 orElse: () => StateData(),
                               );
                               if (selectedStateObject != null) {
-                                  locationController.cityList.clear();
-                                  locationController.selectedCity?.value = '';
-                                  locationController.areaList.clear();
-                                  locationController.selectedArea?.value = '';
-                                  locationController.branchList.clear();
-                                  locationController.selectedBranch?.value = '';
-                                  locationController.selectedState?.value = newValue!;
-                                  locationController.selectedStateId?.value = selectedStateObject.id.toString();
+                                locationController.cityList.clear();
+                                locationController.selectedCity?.value = '';
+                                locationController.areaList.clear();
+                                locationController.selectedArea?.value = '';
+                                locationController.branchList.clear();
+                                locationController.selectedBranch?.value = '';
+                                locationController.selectedState?.value = newValue!;
+                                locationController.selectedStateId?.value = selectedStateObject.id.toString();
                                 locationController.fetchCityList(locationController.selectedStateId?.value);
                               }
                             },
@@ -463,13 +457,13 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 orElse: () => CityData(), // Return an empty instance of StateData
                               );
                               if (selectedCityObject != null) {
-                                  locationController.selectedCity?.value = '';
-                                  locationController.areaList.clear();
-                                  locationController.selectedArea?.value = '';
-                                  locationController.branchList.clear();
-                                  locationController.selectedBranch?.value = '';
-                                  locationController.selectedCity?.value = newValue!;
-                                  locationController.selectedCityId?.value = selectedCityObject.id.toString();
+                                locationController.selectedCity?.value = '';
+                                locationController.areaList.clear();
+                                locationController.selectedArea?.value = '';
+                                locationController.branchList.clear();
+                                locationController.selectedBranch?.value = '';
+                                locationController.selectedCity?.value = newValue!;
+                                locationController.selectedCityId?.value = selectedCityObject.id.toString();
                                 locationController.fetchAreaList(locationController.selectedStateId?.value, locationController.selectedCityId?.value);
                               }
                             },
@@ -492,15 +486,15 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 orElse: () => AreaData(), // Return an empty instance of StateData
                               );
                               if (selectedAreaObject != null) {
-                                  locationController.branchList.clear();
-                                  locationController.selectedBranch?.value = '';
-                                  locationController.selectedArea?.value = newValue!;
-                                  locationController.selectedAreaId?.value = selectedAreaObject.id.toString();
-                                  locationController.fetchBranchList(
-                                      locationController.selectedStateId?.value,
-                                      locationController.selectedCityId?.value,
-                                      locationController.selectedAreaId?.value
-                                  );
+                                locationController.branchList.clear();
+                                locationController.selectedBranch?.value = '';
+                                locationController.selectedArea?.value = newValue!;
+                                locationController.selectedAreaId?.value = selectedAreaObject.id.toString();
+                                locationController.fetchBranchList(
+                                    locationController.selectedStateId?.value,
+                                    locationController.selectedCityId?.value,
+                                    locationController.selectedAreaId?.value
+                                );
                               }
                             },
                             validator: (value) {
@@ -522,8 +516,8 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 orElse: () => BranchData(), // Return an empty instance of StateData
                               );
                               if (selectedBranchObject != null) {
-                                  locationController.selectedBranch?.value = newValue!;
-                                  locationController.selectedBranchId?.value = selectedBranchObject.id.toString();
+                                locationController.selectedBranch?.value = newValue!;
+                                locationController.selectedBranchId?.value = selectedBranchObject.id.toString();
                               }
                             },
                             validator: (value) {
@@ -553,48 +547,53 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                             child: InkWell(
                               onTap: ()async{
-                                if(pName.text.isEmpty){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
+                                if(userController.userStatus == 0){
+                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().inAccount);
                                 }
-                                else if(pMobile.text.isEmpty){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
-                                }
-                                else if(locationController.selectedState?.value == null || locationController.selectedState?.value == ''){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
-                                }
-                                else if(locationController.selectedCity?.value == null || locationController.selectedCity?.value == ''){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
-                                }
-                                else if(locationController.selectedArea?.value == null || locationController.selectedArea?.value == ''){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
-                                }
-                                else if(locationController.selectedBranch?.value == null || locationController.selectedBranch?.value == ''){
-                                  GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
-                                }
-                                else if(prescriptionFiles.isEmpty){
-                                  GetXSnackBarMsg.getWarningMsg('Please select prescription');
-                                }
-                                else{
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return const Dialog(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CircularProgressIndicator(),
-                                              SizedBox(height: 16.0),
-                                              Text('Loading...'),
-                                            ],
+                                else if(userController.userStatus == 1){
+                                  if(pName.text.isEmpty){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
+                                  }
+                                  else if(pMobile.text.isEmpty){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
+                                  }
+                                  else if(locationController.selectedState?.value == null || locationController.selectedState?.value == ''){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
+                                  }
+                                  else if(locationController.selectedCity?.value == null || locationController.selectedCity?.value == ''){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
+                                  }
+                                  else if(locationController.selectedArea?.value == null || locationController.selectedArea?.value == ''){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
+                                  }
+                                  else if(locationController.selectedBranch?.value == null || locationController.selectedBranch?.value == ''){
+                                    GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
+                                  }
+                                  else if(prescriptionFiles.isEmpty){
+                                    GetXSnackBarMsg.getWarningMsg('Please select prescription');
+                                  }
+                                  else{
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return const Dialog(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(16.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                CircularProgressIndicator(),
+                                                SizedBox(height: 16.0),
+                                                Text('Loading...'),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                  await attachPrescription();
+                                        );
+                                      },
+                                    );
+                                    await attachPrescription();
+                                  }
                                 }
                               },
                               child: Container(
@@ -611,7 +610,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                   ],
                 ),
               ) : const CenterLoading(),
-            )
+            ))
           ],
         ),
       ),
@@ -701,7 +700,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       );
 
       var response = await request.send();
-      log('----->>>>${response.statusCode} <<<<-----');
       var responseData = await response.stream.bytesToString();
 
       var parsedResponse = json.decode(responseData);
@@ -710,49 +708,60 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        patientController.selectedMobileNo?.value = '';
-        selectedGender = '';
-        remark.text = '';
-        pName.text = '';
-        emailId.text = '';
-        pMobile.text = '';
-        pDob.text = '';
-        pAge.text = '';
-        pinCode.text = '';
-        address.text = '';
-        locationController.selectedState?.value = '';
-        locationController.selectedCity?.value = '';
-        locationController.selectedArea?.value = '';
-        locationController.selectedBranch?.value = '';
+        clearData();
+        Get.delete<UserStatusCheckController>();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       }
       else if (bodyStatus == 400) {
         var errorMessage = parsedResponse['error']['mobile_no'][0];
         GetXSnackBarMsg.getWarningMsg('$errorMessage');
+        clearData();
         Navigator.pop(context);
       }
       else if(bodyStatus == 400){
         var errorMessage = parsedResponse['data']['prescription[]'][0];
         GetXSnackBarMsg.getWarningMsg('$errorMessage');
+        clearData();
         Navigator.pop(context);
       }
       else if(response.statusCode == 500){
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
+        clearData();
         Navigator.pop(context);
       }
       else if (bodyStatus == '402') {
         var msg = parsedResponse['message'];
         GetXSnackBarMsg.getWarningMsg('$msg');
+        clearData();
         Navigator.pop(context);
       }
       else{
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
+        clearData();
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
       GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
+      clearData();
       Navigator.pop(context);
     }
+  }
+
+  void clearData(){
+      patientController.selectedMobileNo?.value = '';
+      selectedGender = '';
+      remark.text = '';
+      pName.text = '';
+      emailId.text = '';
+      pMobile.text = '';
+      pDob.text = '';
+      pAge.text = '';
+      pinCode.text = '';
+      address.text = '';
+      locationController.selectedState?.value = '';
+      locationController.selectedCity?.value = '';
+      locationController.selectedArea?.value = '';
+      locationController.selectedBranch?.value = '';
   }
 }

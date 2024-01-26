@@ -26,10 +26,16 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
     dynamic responseJson;
     try {
       http.Response response = await http.post(Uri.parse(url), body: data);
+
+      log('response->>><><><>$response');
       responseJson = returnResponse(response);
     } on SocketException {
       print("in socketException");
       throw FetchDataException(message: "");
+    }
+    catch(e){
+      log('post Api catch->$e');
+      throw e;
     }
     return responseJson;
   }
@@ -50,6 +56,10 @@ class ApiServicePostGet extends ApiServicesTypePostGet{
     }
     on SocketException{
       throw FetchDataException(message: "");
+    }
+    catch(e){
+      log('after get Api catch->$e');
+      throw e;
     }
     // on SocketException catch (e) {
     //   log('${e.message}');

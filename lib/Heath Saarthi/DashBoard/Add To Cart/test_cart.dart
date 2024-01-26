@@ -342,7 +342,6 @@ class _TestCartState extends State<TestCart> {
                                 GetXSnackBarMsg.getWarningMsg('${AppTextHelper().setLocation}');
                               }
                               else{
-                                print("branch->>${selectedBranch}/$sBranchName/$selectedBranch");
                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestBookingScreen(
                                   testDis: testD,
                                   packageDis: packageD,
@@ -360,9 +359,6 @@ class _TestCartState extends State<TestCart> {
                               }
                             }
                           }
-                        }
-                        else{
-                          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().userNotFound}');
                         }
                       },
                       child: Card(
@@ -835,7 +831,7 @@ class _TestCartState extends State<TestCart> {
                                   ? const TokenExpiredHelper()
                                   : value.cartList.message == 'Internet connection problem'
                                   ? const CenterLoading()
-                                  : const Center(child: Text('Please check internet connection')),
+                                  : Container(),
                             ],
                           );
                       case Status.completed:

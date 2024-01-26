@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import 'otp_verify_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {

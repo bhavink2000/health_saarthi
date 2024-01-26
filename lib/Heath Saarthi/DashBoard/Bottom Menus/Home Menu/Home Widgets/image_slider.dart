@@ -46,7 +46,8 @@ class _HomeImageSliderState extends State<HomeImageSlider> {
             case Status.loading:
               return const CenterLoading();
             case Status.error:
-              return value.bannerList.message == 'Internet connection problem' ? CenterLoading() : value.bannerList.message == '402' ? TokenExpiredHelper() : CenterLoading();
+              log('image banner --->>>${value.bannerList.message}');
+              return value.bannerList.message == 'Internet connection problem' ? Container() : value.bannerList.message == '402' ? TokenExpiredHelper() : Container();
             case Status.completed:
               return value.bannerList.data!.data!.isEmpty ? Container() : Container(
                 width: MediaQuery.of(context).size.width.w,

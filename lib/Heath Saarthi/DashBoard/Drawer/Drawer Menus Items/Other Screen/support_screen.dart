@@ -81,7 +81,7 @@ class _SupportScreenState extends State<SupportScreen> {
                               controller: fName,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'First Name',
+                                labelText: 'First name',
                                 prefixIcon: Icon(Icons.person,color: Colors.black,size: 24)
                               ),
                                 validator: (value) {
@@ -103,7 +103,7 @@ class _SupportScreenState extends State<SupportScreen> {
                               keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Mobile Number',
+                                labelText: 'Mobile number',
                                 prefixIcon: Icon(Icons.phone_android_rounded,color: Colors.black,size: 24)
                               ),
                                 validator: (value) {
@@ -125,21 +125,9 @@ class _SupportScreenState extends State<SupportScreen> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Email Id',
+                                labelText: 'Email id',
                                 prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
                               ),
-                              // onChanged: (value) {
-                              //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                              //     // Password meets all the requirements
-                              //   } else if (value.contains('gmail.com')) {
-                              //     // If the email does not contain 'gmail.com', show an error message
-                              //     setState(() {
-                              //       return 'Email id must contain "gmail.com"';
-                              //     });
-                              //   }else {
-                              //     print('Please enter valid email id');
-                              //   }
-                              // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Enter email id';
@@ -169,7 +157,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                 enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 ),
-                                hintText: 'Select Option',
+                                hintText: 'Select option',
                                 hintStyle: const TextStyle(
                                   color: Colors.black54,
                                   fontFamily: FontType.MontserratRegular,
@@ -231,7 +219,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                   maxLines: 3,
                                   decoration: const InputDecoration(
                                       border: OutlineInputBorder(),
-                                      labelText: 'Write Message',
+                                      labelText: 'Write message',
                                   ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -260,12 +248,6 @@ class _SupportScreenState extends State<SupportScreen> {
                                         if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
-                                        // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
-                                        //   SnackBarMessageShow.warningMSG('Please Fill All Field', context);
-                                        // }
-                                        // else{
-                                        //   sendSupport();
-                                        // }
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -320,12 +302,6 @@ class _SupportScreenState extends State<SupportScreen> {
                                         if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
-                                        // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
-                                        //   SnackBarMessageShow.warningMSG('Please Fill All Field', context);
-                                        // }
-                                        // else{
-                                        //   sendSupport();
-                                        // }
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -351,7 +327,7 @@ class _SupportScreenState extends State<SupportScreen> {
                                   maxLines: 3,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Write Message',
+                                    labelText: 'Write message',
                                   ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
@@ -386,12 +362,6 @@ class _SupportScreenState extends State<SupportScreen> {
                                         if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
-                                        // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty || message.text.isEmpty || dropdownValue == ''){
-                                        //   SnackBarMessageShow.warningMSG('Please Fill All Field', context);
-                                        // }
-                                        // else{
-                                        //   sendSupport();
-                                        // }
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
@@ -457,11 +427,11 @@ class _SupportScreenState extends State<SupportScreen> {
                                   maxLines: 3,
                                   decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    labelText: 'Write Description',
+                                    labelText: 'Write description',
                                   ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
-                                        return 'Enter descrption';
+                                        return 'Enter description';
                                       }
                                       return null;
                                     }
@@ -486,12 +456,6 @@ class _SupportScreenState extends State<SupportScreen> {
                                         if(_supportFormKey.currentState!.validate()){
                                           sendSupport();
                                         }
-                                        // if(description.text.isEmpty || reasonValue == ''){
-                                        //   SnackBarMessageShow.warningMSG('Please All Field', context);
-                                        // }
-                                        // else{
-                                        //   sendRequestManagement();
-                                        // }
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),

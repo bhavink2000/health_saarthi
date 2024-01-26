@@ -1,24 +1,31 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/user_status_check.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
 import '../../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
+import '../../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
+import '../../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
+import '../../../../App Helper/Backend Helper/Models/Dashboard Model/profile_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
+import '../../../../App Helper/Check Internet Helper/Controller/network_controller.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
@@ -38,9 +45,12 @@ class InstantBooking extends StatefulWidget {
 }
 
 class _InstantBookingState extends State<InstantBooking> {
+
   GetAccessToken getAccessToken = GetAccessToken();
   final locationController = Get.put(LocationCall());
   final patientController = Get.put(PatientDetailsGetX());
+  final userController = Get.put(UserStatusCheckController());
+  final netController = Get.put(NetworkController());
 
   final emailId = TextEditingController();
   final address = TextEditingController();
@@ -60,33 +70,24 @@ class _InstantBookingState extends State<InstantBooking> {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    Future.delayed(Duration(seconds: 1), () {
-      functionCalling();
-    });
+    locationController.cityList.clear();
+    locationController.areaList.clear();
+    locationController.branchList.clear();
+    if(netController.isConnected == true){
+      locationController.fetchStateList();
+    }
+    functionCalling();
   }
 
   void functionCalling()async{
     await patientController.fetchMobileList();
   }
-  final _formKey = GlobalKey<FormState>();
+  final _instantFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
-    patientController.selectedMobileNo?.value = '';
-    selectedGender = '';
-    remark.text = '';
-    pName.text = '';
-    emailId.text = '';
-    pMobile.text = '';
-    pDob.text = '';
-    pAge.text = '';
-    pinCode.text = '';
-    address.text = '';
-    locationController.selectedState?.value = '';
-    locationController.selectedCity?.value = '';
-    locationController.selectedStateId?.value = '';
-    locationController.selectedArea?.value = '';
-    locationController.selectedBranch?.value = '';
+    clearData();
+    Get.delete<UserStatusCheckController>();
     super.dispose();
   }
 
@@ -101,12 +102,12 @@ class _InstantBookingState extends State<InstantBooking> {
           children: [
             const AppBarHelper(appBarLabel: 'Instant Booking'),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
-            Expanded(
+            Obx(() => Expanded(
               child: locationController.stateLoading.value == false ? SingleChildScrollView(
                 primary: false,
                 physics: const BouncingScrollPhysics(),
                 child: Form(
-                  key: _formKey,
+                  key: _instantFormKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -212,7 +213,7 @@ class _InstantBookingState extends State<InstantBooking> {
                         readOnly: false,
                         prefixIcon: Icons.email,
                         onChanged: (value) {
-                          _formKey.currentState?.validate();
+                          _instantFormKey.currentState?.validate();
                         },
                         validator: (value) {
                           if (value != null && value.isNotEmpty) {
@@ -380,45 +381,50 @@ class _InstantBookingState extends State<InstantBooking> {
                         padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
                         child: InkWell(
                           onTap: ()async{
-                            if(pName.text.isEmpty){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
+                            if(userController.userStatus == 0){
+                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().inAccount);
                             }
-                            else if(pMobile.text.isEmpty){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
-                            }
-                            else if(locationController.selectedState?.value == null || locationController.selectedState?.value == ''){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
-                            }
-                            else if(locationController.selectedCity?.value == null || locationController.selectedCity?.value == ''){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
-                            }
-                            else if(locationController.selectedArea?.value == null || locationController.selectedArea?.value == ''){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
-                            }
-                            else if(locationController.selectedBranch?.value == null || locationController.selectedBranch?.value == ''){
-                              GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
-                            }
-                            else{
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (BuildContext context) {
-                                  return const Dialog(
-                                    child: Padding(
-                                      padding: EdgeInsets.all(16.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CircularProgressIndicator(),
-                                          SizedBox(height: 16.0),
-                                          Text('Loading...'),
-                                        ],
+                            else if(userController.userStatus == 1){
+                              if(pName.text.isEmpty){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
+                              }
+                              else if(pMobile.text.isEmpty){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientMobile);
+                              }
+                              else if(locationController.selectedState?.value == null || locationController.selectedState?.value == ''){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectState);
+                              }
+                              else if(locationController.selectedCity?.value == null || locationController.selectedCity?.value == ''){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectCity);
+                              }
+                              else if(locationController.selectedArea?.value == null || locationController.selectedArea?.value == ''){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectArea);
+                              }
+                              else if(locationController.selectedBranch?.value == null || locationController.selectedBranch?.value == ''){
+                                GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
+                              }
+                              else{
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (BuildContext context) {
+                                    return const Dialog(
+                                      child: Padding(
+                                        padding: EdgeInsets.all(16.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircularProgressIndicator(),
+                                            SizedBox(height: 16.0),
+                                            Text('Loading...'),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              );
-                              await instantBooking();
+                                    );
+                                  },
+                                );
+                                await instantBooking();
+                              }
                             }
                           },
                           child: Container(
@@ -433,7 +439,7 @@ class _InstantBookingState extends State<InstantBooking> {
                   ),
                 ),
               ) : const CenterLoading(),
-            )
+            ))
           ],
         ),
       ),
@@ -518,20 +524,8 @@ class _InstantBookingState extends State<InstantBooking> {
 
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        patientController.selectedMobileNo?.value = '';
-        selectedGender = '';
-        remark.text = '';
-        pName.text = '';
-        emailId.text = '';
-        pMobile.text = '';
-        pDob.text = '';
-        pAge.text = '';
-        pinCode.text = '';
-        address.text = '';
-        locationController.selectedState?.value = '';
-        locationController.selectedCity?.value = '';
-        locationController.selectedArea?.value = '';
-        locationController.selectedBranch?.value = '';
+        clearData();
+        Get.delete<UserStatusCheckController>();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       } else if (bodyStatus == 400) {
         final msg = responseData['error']['mobile_no'][0];
@@ -539,22 +533,43 @@ class _InstantBookingState extends State<InstantBooking> {
         Navigator.pop(context);
       }
       else if(response.statusCode == 500){
+        clearData();
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
         Navigator.pop(context);
       }
       else if (bodyStatus == '402') {
         var msg = responseData['message'];
+        clearData();
         GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
       }
       else {
+        clearData();
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
         Navigator.pop(context);
       }
     } catch (error) {
       print("Error: $error");
+      clearData();
       GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
       Navigator.pop(context);
     }
+  }
+
+  void clearData(){
+      patientController.selectedMobileNo?.value = '';
+      selectedGender = '';
+      remark.text = '';
+      pName.text = '';
+      emailId.text = '';
+      pMobile.text = '';
+      pDob.text = '';
+      pAge.text = '';
+      pinCode.text = '';
+      address.text = '';
+      locationController.selectedState?.value = '';
+      locationController.selectedCity?.value = '';
+      locationController.selectedArea?.value = '';
+      locationController.selectedBranch?.value = '';
   }
 }

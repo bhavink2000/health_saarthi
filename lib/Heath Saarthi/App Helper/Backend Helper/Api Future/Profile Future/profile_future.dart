@@ -8,6 +8,9 @@ import '../../Models/Dashboard Model/profile_model.dart';
 
 class ProfileFuture{
   Future<ProfileModel> fetchProfile(var accessToken) async {
+
+    log('profile url --->>${ApiUrls.profileUrls}');
+
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer $accessToken',

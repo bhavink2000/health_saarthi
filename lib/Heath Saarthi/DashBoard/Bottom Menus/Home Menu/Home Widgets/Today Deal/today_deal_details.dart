@@ -159,7 +159,7 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                       if (value.todayDealDetailsList.data!.todayDetailsData!.data!.length == 10 || index + 1 != value.todayDealDetailsList.data!.todayDetailsData!.data!.length)
                                         Container()
                                       else
-                                        SizedBox(height: MediaQuery.of(context).size.height / 4),
+                                        SizedBox(height: MediaQuery.of(context).size.height / 1.55),
 
                                       index + 1 == value.todayDealDetailsList.data!.todayDetailsData!.data!.length ? CustomPaginationWidget(
                                         currentPage: curentindex,

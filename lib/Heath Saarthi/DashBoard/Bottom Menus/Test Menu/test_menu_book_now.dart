@@ -1,36 +1,26 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:developer';
-import 'dart:io';
-
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/user_status_check.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:search_choices/search_choices.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
-import '../../../App Helper/Backend Helper/Api Future/Location Future/location_future.dart';
-import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
-import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/area_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/branch_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/city_model.dart';
 import '../../../App Helper/Backend Helper/Models/Location Model/state_model.dart';
+import '../../../App Helper/Check Internet Helper/Controller/network_controller.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../App Helper/Getx Helper/location_getx.dart';
 import '../../../App Helper/Getx Helper/patient_details_getx.dart';
 import '../../../App Helper/Widget Helper/form_fields.dart';
@@ -47,8 +37,12 @@ class TestMenu extends StatefulWidget {
 
 class _TestMenuState extends State<TestMenu> {
 
+  GetAccessToken getAccessToken = GetAccessToken();
+  final _cartFormKey = GlobalKey<FormState>();
   final locationController = Get.put(LocationCall());
   final patientController = Get.put(PatientDetailsGetX());
+  final userController = Get.put(UserStatusCheckController());
+  final netController = Get.put(NetworkController());
 
   final emailId = TextEditingController();
   final address = TextEditingController();
@@ -62,24 +56,18 @@ class _TestMenuState extends State<TestMenu> {
   final pName = TextEditingController();
   final pMobile = TextEditingController();
 
-  bool stateLoading = false;
-  bool cityLoading = false;
-  bool areaLoading = false;
-  bool branchLoading = false;
 
-  GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
     getAccessToken.checkAuthentication(context, setState);
-    retrieveDeviceToken();
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        getUserStatus();
-      });
-    });
+    locationController.cityList.clear();
+    locationController.areaList.clear();
+    locationController.branchList.clear();
+    if(netController.isConnected == true){
+      locationController.fetchStateList();
+    }
     functionCalling();
   }
 
@@ -87,57 +75,10 @@ class _TestMenuState extends State<TestMenu> {
     await patientController.fetchMobileList();
   }
 
-  final _formKey = GlobalKey<FormState>();
-
-  var userStatus;
-  var deviceToken;
-  void getUserStatus()async{
-    try{
-      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      if (userData != null && userData.data != null) {
-        setState(() {
-          userStatus = userData.data.status;
-        });
-        if (userStatus == 0) {
-          print("in if userStatus->$userStatus");
-        }
-      } else {
-        print('Failed to fetch user: User data is null');
-      }
-      print("userStatus ==>>$userStatus");
-    }
-    catch(e){
-      print("get User Status Error->$e");
-      if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-      }
-    }
-  }
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    log("SharedPreferences DeviceToken->$deviceToken");
-  }
-
   @override
   void dispose() {
-    patientController.selectedMobileNo?.value = '';
-    selectedGender = '';
-    remark.text = '';
-    pName.text = '';
-    emailId.text = '';
-    pMobile.text = '';
-    pDob.text = '';
-    pAge.text = '';
-    pinCode.text = '';
-    address.text = '';
-    locationController.selectedState?.value = '';
-    locationController.selectedCity?.value = '';
-    locationController.selectedStateId?.value = '';
-    locationController.selectedArea?.value = '';
-    locationController.selectedBranch?.value = '';
+    clearData();
+    Get.delete<UserStatusCheckController>();
     super.dispose();
   }
 
@@ -149,10 +90,10 @@ class _TestMenuState extends State<TestMenu> {
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: SafeArea(
-          child: stateLoading == false ? SingleChildScrollView(
+          child: Obx(() => locationController.stateLoading.value == false ? SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Form(
-              key: _formKey,
+              key: _cartFormKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -258,7 +199,7 @@ class _TestMenuState extends State<TestMenu> {
                     readOnly: false,
                     prefixIcon: Icons.email,
                     onChanged: (value) {
-                      _formKey.currentState?.validate();
+                      _cartFormKey.currentState?.validate();
                     },
                     validator: (value) {
                       if (value != null && value.isNotEmpty) {
@@ -426,10 +367,10 @@ class _TestMenuState extends State<TestMenu> {
                     padding: const EdgeInsets.fromLTRB(40, 10, 40, 20),
                     child: InkWell(
                       onTap: ()async{
-                        if(userStatus == 0){
+                        if(userController.userStatus == 0){
                           GetXSnackBarMsg.getWarningMsg(AppTextHelper().inAccount);
                         }
-                        else if (userStatus == 1){
+                        else if (userController.userStatus == 1){
                           if(pName.text.isEmpty){
                             GetXSnackBarMsg.getWarningMsg(AppTextHelper().patientName);
                           }
@@ -471,9 +412,6 @@ class _TestMenuState extends State<TestMenu> {
                             await instantBooking();
                           }
                         }
-                        else{
-                          GetXSnackBarMsg.getWarningMsg(AppTextHelper().userNotFound);
-                        }
                       },
                       child: Container(
                         alignment: Alignment.center,
@@ -486,7 +424,7 @@ class _TestMenuState extends State<TestMenu> {
                 ],
               ),
             ),
-          ) : const CenterLoading(),
+          ) : const CenterLoading()),
         ),
       ),
     );
@@ -573,20 +511,8 @@ class _TestMenuState extends State<TestMenu> {
 
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        patientController.selectedMobileNo?.value = '';
-        selectedGender = '';
-        remark.text = '';
-        pName.text = '';
-        emailId.text = '';
-        pMobile.text = '';
-        pDob.text = '';
-        pAge.text = '';
-        pinCode.text = '';
-        address.text = '';
-        locationController.selectedState?.value = '';
-        locationController.selectedCity?.value = '';
-        locationController.selectedArea?.value = '';
-        locationController.selectedBranch?.value = '';
+        clearData();
+        Get.delete<UserStatusCheckController>();
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ThankYouPage()));
       } else if (bodyStatus == 400) {
         var msg = parsedResponse['error']['mobile_no'][0];
@@ -594,21 +520,42 @@ class _TestMenuState extends State<TestMenu> {
         Navigator.pop(context);
       }
       else if(response.statusCode == 500){
+        clearData();
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
         Navigator.pop(context);
       }
       else if (bodyStatus == '402') {
         var msg = parsedResponse['message'];
+        clearData();
         GetXSnackBarMsg.getWarningMsg('$msg');
         Navigator.pop(context);
       }
       else {
+        clearData();
         GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
         Navigator.pop(context);
       }
     } catch (error) {
+      clearData();
       print("Error: $error");
       GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
     }
+  }
+
+  void clearData(){
+      patientController.selectedMobileNo?.value = '';
+      selectedGender = '';
+      remark.text = '';
+      pName.text = '';
+      emailId.text = '';
+      pMobile.text = '';
+      pDob.text = '';
+      pAge.text = '';
+      pinCode.text = '';
+      address.text = '';
+      locationController.selectedState?.value = '';
+      locationController.selectedCity?.value = '';
+      locationController.selectedArea?.value = '';
+      locationController.selectedBranch?.value = '';
   }
 }

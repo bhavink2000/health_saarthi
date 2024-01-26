@@ -4,7 +4,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Login%20Screen/Forgot%20Password/forgot_password_update.dart';
-import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Splash%20Screen/splash_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
-import '../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 
 class OTPVerifyScreen extends StatefulWidget {
   var mobileNumber;

@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Authentication%20Models/login_model.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:provider/provider.dart';
 //import '../../../../../HealthSaarthi/HS_Dashboard/health_saarthi_dashboard.dart';
 import '../../../../DashBoard/hs_dashboard.dart';
@@ -41,7 +42,7 @@ class AuthProvider with ChangeNotifier{
       accessToken.write('accessToken', value['access_token'].toString());
 
       if(value['access_token'] == null || value['access_token'] == ''){
-        GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
+        //GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
         LoadingIndicater().onLoadExit(false, context);
         Navigator.pop(context);
       }
@@ -63,7 +64,7 @@ class AuthProvider with ChangeNotifier{
 
         var errorObject = errorData['error'];
         if(errorString == 'Internet connection problem'){
-          GetXSnackBarMsg.getWarningMsg('Internet connection problem');
+          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
         }
         if (errorObject != null) {
           var errorMessage = errorObject['message'] != null ? errorObject['message'][0] : null;
@@ -89,7 +90,7 @@ class AuthProvider with ChangeNotifier{
         Navigator.pop(context);
       } catch (e) {
         print('Error decoding response: $e');
-        GetXSnackBarMsg.getWarningMsg('Internal server error 500');
+        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internalServerError}');
         Navigator.pop(context);
       }
     });

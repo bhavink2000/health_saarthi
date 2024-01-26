@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/account_status.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/body_checkups.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/image_slider.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/Today%20Deal/offers.dart';
@@ -27,6 +28,7 @@ class _HomeMenuState extends State<HomeMenu> {
   GetAccessToken getAccessToken = GetAccessToken();
 
   var userStatus;
+  var deviceToken;
 
   @override
   void initState() {
@@ -37,53 +39,6 @@ class _HomeMenuState extends State<HomeMenu> {
     Future.delayed(const Duration(seconds: 1),(){
       getUserStatus();
     });
-  }
-  var deviceToken;
-  void getUserStatus()async{
-    try{
-      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      if (userData != null && userData.data != null) {
-        setState(() {
-          userStatus = userData.data.status;
-        });
-        if (userStatus == 0) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text("Account Status"),
-                content: const Text("Account is under review\nPlease connect with the support team."),
-                backgroundColor: Colors.white,
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Close the dialog box
-                    },
-                    child: const Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
-        }
-      } else {
-        print('Failed to fetch user: User data is null');
-      }
-    }
-    catch(e){
-      print("get User Status Error->$e");
-      if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-      }
-    }
-  }
-
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    log("SharedPreferences DeviceToken->$deviceToken");
   }
 
   @override
@@ -136,7 +91,7 @@ class _HomeMenuState extends State<HomeMenu> {
               ),
               const SizedBox(height: 10),
               const HomeImageSlider(),
-              HomeTestPackage(uStatus: userStatus),
+              HomeTestPackage(),
               const HomeOffers(),
               const HomeBodyCheckups(),
             ],
@@ -144,5 +99,33 @@ class _HomeMenuState extends State<HomeMenu> {
         ),
       ),
     );
+  }
+
+  void getUserStatus()async{
+    try{
+      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      if (userData != null && userData.data != null) {
+        setState(() {
+          userStatus = userData.data.status;
+        });
+        if (userStatus == 0) {
+          AccountStatus().accountStatus(context);
+        }
+      }
+    }
+    catch(e){
+      print("get User Status Error->$e");
+      if (e.toString().contains('402')) {
+        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      }
+    }
+  }
+
+  Future<void> retrieveDeviceToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      deviceToken = prefs.getString('deviceToken');
+    });
+    log("SharedPreferences DeviceToken->$deviceToken");
   }
 }

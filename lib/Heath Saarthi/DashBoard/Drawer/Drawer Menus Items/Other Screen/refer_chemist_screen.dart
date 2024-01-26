@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import '../../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../../../../App Helper/Frontend Helper/Snack Bar Msg/snackbar_msg_show.dart';
 import '../../../hs_dashboard.dart';
 
 class ReferChemist extends StatefulWidget {
@@ -71,7 +70,7 @@ class _ReferChemistState extends State<ReferChemist> {
                               autovalidateMode: AutovalidateMode.onUserInteraction,
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'First Name',
+                                  labelText: 'First name',
                                   prefixIcon: Icon(Icons.person,color: Colors.black,size: 24)
                               ),
                                 validator: (value) {
@@ -93,7 +92,7 @@ class _ReferChemistState extends State<ReferChemist> {
                               keyboardType: TextInputType.phone,
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Mobile Number',
+                                  labelText: 'Mobile number',
                                   prefixIcon: Icon(Icons.phone_android_rounded,color: Colors.black,size: 24)
                               ),
                                 validator: (value) {
@@ -115,21 +114,9 @@ class _ReferChemistState extends State<ReferChemist> {
                               keyboardType: TextInputType.emailAddress,
                               decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  labelText: 'Email Id',
+                                  labelText: 'Email id',
                                   prefixIcon: Icon(Icons.email_rounded,color: Colors.black,size: 24)
                               ),
-                              // onChanged: (value) {
-                              //   if (value.contains(RegExp(r'[A-Z]')) && value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                              //     // Password meets all the requirements
-                              //   } else if (!value.contains('gmail.com')) {
-                              //     // If the email does not contain 'gmail.com', show an error message
-                              //     setState(() {
-                              //       return 'Email id must contain "gmail.com"';
-                              //     });
-                              //   }else {
-                              //     print('Please enter valid email id');
-                              //   }
-                              // },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Enter email id';
@@ -163,12 +150,6 @@ class _ReferChemistState extends State<ReferChemist> {
                                 if(_referFormKey.currentState!.validate()){
                                   sendReferralPharmacy();
                                 }
-                                // if(fName.text.isEmpty || mobile.text.isEmpty || email.text.isEmpty){
-                                //   SnackBarMessageShow.warningMSG('Please Fill All Field', context);
-                                // }
-                                // else{
-                                //
-                                // }
                               },
                               child: Container(
                                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),

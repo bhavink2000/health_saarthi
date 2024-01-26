@@ -197,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "417e2a6f9d83ab396ec38ff4ea5da6c254da71e4db765ad737a42af6930140b7"
+      sha256: "797e1e341c3dd2f69f2dad42564a6feff3bfb87187d05abb93b9609e6f1645c3"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.3"
+    version: "5.4.0"
   dropdown_search:
     dependency: "direct main"
     description:
@@ -549,14 +549,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  form_data:
-    dependency: "direct main"
-    description:
-      name: form_data
-      sha256: "33fcc5b356ec75f4698653479c4e3880ba88fe2b39b235ccdaacdc2d9a54d758"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0-nullsafety.1"
   get:
     dependency: "direct main"
     description:
@@ -577,10 +569,10 @@ packages:
     dependency: "direct main"
     description:
       name: http
-      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
+      sha256: a2bbf9d017fcced29139daa8ed2bba4ece450ab222871df93ca9eec6f80c34ba
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   http_parser:
     dependency: transitive
     description:
@@ -1283,5 +1275,5 @@ packages:
     source: hosted
     version: "6.3.0"
 sdks:
-  dart: ">=3.2.0-194.0.dev <4.0.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.13.0"

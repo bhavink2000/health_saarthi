@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Network Check/network_binding.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/authentication_provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import 'Heath Saarthi/Authentication Screens/Splash Screen/splash_screen.dart';
@@ -24,17 +23,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  DependencyInjection.init();
   HttpOverrides.global = MyHttpOverrides();
   await GetStorage.init();
   runApp(const MyApp());
 }
 
-class MyHttpOverrides extends HttpOverrides{
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -68,7 +67,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance!.addObserver(this);
     notificationService.requestNotificationPermission();
     notificationCall();
@@ -117,7 +115,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     }
     catch(e){
       log("----- >>>>> foreground catch e -> $e");
-
     }
   }
 

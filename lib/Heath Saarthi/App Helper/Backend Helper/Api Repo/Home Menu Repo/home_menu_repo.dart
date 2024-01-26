@@ -23,7 +23,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.testListUrls}?page=$index", access_token, testData);
     print("Response Test->$response");
     if (response['status'] == '402') {
-      GetXSnackBarMsg.getWarningMsg('${response['message']}');
+      //GetXSnackBarMsg.getWarningMsg('${response['message']}');
       throw response['status'];
     } else {
       try {
@@ -39,7 +39,7 @@ class HomeMenuRepo{
     dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", access_token, packageData);
     print("Response Package->$response");
     if (response['status'] == '402') {
-      GetXSnackBarMsg.getWarningMsg('${response['message']}');
+      //GetXSnackBarMsg.getWarningMsg('${response['message']}');
       throw response['status'];
     } else {
       try {

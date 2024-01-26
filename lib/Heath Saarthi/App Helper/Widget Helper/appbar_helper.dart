@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 import '../../DashBoard/Add To Cart/test_cart.dart';
 import '../../DashBoard/Notification Menu/notification_menu.dart';
 import '../Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../Getx Helper/user_status_check.dart';
 
 class AppBarHelper extends StatelessWidget {
 
@@ -29,9 +31,11 @@ class AppBarHelper extends StatelessWidget {
           Row(
             children: [
               IconButton(onPressed: (){
+                Get.delete<UserStatusCheckController>();
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
               }, icon: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 24)),
               IconButton(onPressed: (){
+                Get.delete<UserStatusCheckController>();
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
               }, icon: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 24)),
             ],

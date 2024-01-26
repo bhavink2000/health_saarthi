@@ -64,9 +64,9 @@ class Data {
   String? chequeImg;
   dynamic gstImg;
   String? createAt;
-  State? state;
-  City? city;
-  Area? area;
+  StateDataa? state;
+  CityDataa? city;
+  AreaDataa? area;
   CostCenter? costCenter;
 
   Data(
@@ -164,9 +164,9 @@ class Data {
     chequeImg = json['cheque_img'];
     gstImg = json['gst_img'];
     createAt = json['create_at'];
-    state = json['state'] != null ? new State.fromJson(json['state']) : null;
-    city = json['city'] != null ? new City.fromJson(json['city']) : null;
-    area = json['area'] != null ? new Area.fromJson(json['area']) : null;
+    state = json['state'] != null ? new StateDataa.fromJson(json['state']) : null;
+    city = json['city'] != null ? new CityDataa.fromJson(json['city']) : null;
+    area = json['area'] != null ? new AreaDataa.fromJson(json['area']) : null;
     costCenter = json['cost_center'] != null
         ? new CostCenter.fromJson(json['cost_center'])
         : null;
@@ -234,15 +234,15 @@ class Data {
   }
 }
 
-class State {
+class StateDataa {
   int? id;
   String? stateName;
   String? encStateId;
   String? createAt;
 
-  State({this.id, this.stateName, this.encStateId, this.createAt});
+  StateDataa({this.id, this.stateName, this.encStateId, this.createAt});
 
-  State.fromJson(Map<String, dynamic> json) {
+  StateDataa.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     stateName = json['state_name'];
     encStateId = json['enc_state_id'];
@@ -259,15 +259,15 @@ class State {
   }
 }
 
-class City {
+class CityDataa {
   int? id;
   String? cityName;
   String? encCityId;
   String? createAt;
 
-  City({this.id, this.cityName, this.encCityId, this.createAt});
+  CityDataa({this.id, this.cityName, this.encCityId, this.createAt});
 
-  City.fromJson(Map<String, dynamic> json) {
+  CityDataa.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     cityName = json['city_name'];
     encCityId = json['enc_city_id'];
@@ -284,15 +284,15 @@ class City {
   }
 }
 
-class Area {
+class AreaDataa {
   int? id;
   String? areaName;
   String? encAreaId;
   String? createAt;
 
-  Area({this.id, this.areaName, this.encAreaId, this.createAt});
+  AreaDataa({this.id, this.areaName, this.encAreaId, this.createAt});
 
-  Area.fromJson(Map<String, dynamic> json) {
+  AreaDataa.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     areaName = json['area_name'];
     encAreaId = json['enc_area_id'];
