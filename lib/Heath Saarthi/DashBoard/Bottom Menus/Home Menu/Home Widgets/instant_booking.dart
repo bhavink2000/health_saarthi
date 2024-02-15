@@ -73,7 +73,7 @@ class _InstantBookingState extends State<InstantBooking> {
     locationController.cityList.clear();
     locationController.areaList.clear();
     locationController.branchList.clear();
-    if(netController.isConnected == true){
+    if(netController.isConnected?.value == true){
       locationController.fetchStateList();
     }
     functionCalling();
@@ -113,40 +113,18 @@ class _InstantBookingState extends State<InstantBooking> {
                     children: [
 
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                         child: Container(
-                            height: MediaQuery.of(context).size.height / 12.h,
                             decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
                             padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                             child: TypeAheadFormField<MobileData>(
                               textFieldConfiguration: TextFieldConfiguration(
-                                decoration: const InputDecoration(
-                                  //labelText: 'Select mobile number',
-                                  label: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text("Select mobile number"),
-                                      Text(" *", style: TextStyle(color: Colors.red)),
-                                    ],
-                                  ),
-                                  labelStyle: TextStyle(
-                                    color: Colors.black54,
-                                    fontFamily: FontType.MontserratRegular,
-                                    fontSize: 14,
-                                  ),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
-                                ),
+                                controller: pMobile, // Assign the controller
+                                decoration: mobileNumberDecoration,
                                 keyboardType: TextInputType.number,
                                 inputFormatters: [
                                   FilteringTextInputFormatter.digitsOnly,
                                 ],
-                                style: const TextStyle(
-                                  fontFamily: FontType.MontserratMedium,
-                                  fontSize: 15,
-                                  letterSpacing: 1,
-                                  color: Colors.black87,
-                                ),
-                                controller: pMobile, // Assign the controller
                               ),
                               suggestionsCallback: (pattern) async {
                                 if(isTyping){
@@ -404,24 +382,10 @@ class _InstantBookingState extends State<InstantBooking> {
                                 GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectBranch);
                               }
                               else{
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return const Dialog(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(16.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            CircularProgressIndicator(),
-                                            SizedBox(height: 16.0),
-                                            Text('Loading...'),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                                Get.dialog(
+                                    BookingLoading(),
+                                    barrierDismissible: false,
+                                    useSafeArea: true
                                 );
                                 await instantBooking();
                               }

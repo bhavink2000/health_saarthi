@@ -81,7 +81,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
     locationController.cityList.clear();
     locationController.areaList.clear();
     locationController.branchList.clear();
-    if(netController.isConnected == true){
+    if(netController.isConnected.value == true){
       locationController.fetchStateList();
     }
     functionCalling();
@@ -229,40 +229,18 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
 
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                            padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                             child: Container(
-                                height: MediaQuery.of(context).size.height / 12.h,
                                 decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
                                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                                 child: TypeAheadFormField<MobileData>(
                                   textFieldConfiguration: TextFieldConfiguration(
-                                    decoration: const InputDecoration(
-                                      //labelText: 'Select mobile number',
-                                      label: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Text("Select mobile number"),
-                                          Text(" *", style: TextStyle(color: Colors.red)),
-                                        ],
-                                      ),
-                                      labelStyle: TextStyle(
-                                        color: Colors.black54,
-                                        fontFamily: FontType.MontserratRegular,
-                                        fontSize: 14,
-                                      ),
-                                      border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
-                                    ),
+                                    controller: pMobile, // Assign the controller
+                                    decoration: mobileNumberDecoration,
                                     keyboardType: TextInputType.number,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly,
                                     ],
-                                    style: const TextStyle(
-                                      fontFamily: FontType.MontserratMedium,
-                                      fontSize: 15,
-                                      letterSpacing: 1,
-                                      color: Colors.black87,
-                                    ),
-                                    controller: pMobile, // Assign the controller
                                   ),
                                   suggestionsCallback: (pattern) async {
                                     if(isTyping){
@@ -279,7 +257,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                   },
                                   itemBuilder: (context, MobileData suggestion) {
                                     return ListTile(
-                                      title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: TextStyle(fontFamily: FontType.MontserratRegular),),
+                                      title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: const TextStyle(fontFamily: FontType.MontserratRegular),),
                                     );
                                   },
                                   onSuggestionSelected: (MobileData suggestion) {
@@ -300,66 +278,6 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                 )
                             ),
                           ),
-                          // Padding(
-                          //   padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                          //   child: Container(
-                          //       height: MediaQuery.of(context).size.height / 12.h,
-                          //       decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
-                          //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          //       child: TypeAheadFormField<MobileData>(
-                          //         suggestionsBoxDecoration: SuggestionsBoxDecoration(
-                          //           elevation: 0,
-                          //         ),
-                          //         textFieldConfiguration: TextFieldConfiguration(
-                          //           decoration: const InputDecoration(
-                          //             hintStyle: TextStyle(
-                          //               color: Colors.black54,
-                          //               fontFamily: FontType.MontserratRegular,
-                          //               fontSize: 14,
-                          //             ),
-                          //             hintText: ' Select mobile number',
-                          //             border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                          //             contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-                          //             suffixIcon: Icon(Icons.keyboard_arrow_down_rounded)
-                          //           ),
-                          //           keyboardType: TextInputType.number,
-                          //           inputFormatters: [
-                          //             FilteringTextInputFormatter.digitsOnly,
-                          //           ],
-                          //           style: const TextStyle(
-                          //             fontFamily: FontType.MontserratMedium,
-                          //             fontSize: 15,
-                          //             letterSpacing: 1,
-                          //             color: Colors.black87,
-                          //           ),
-                          //           controller: pMobile, // Assign the controller
-                          //         ),
-                          //         suggestionsCallback: (pattern) async {
-                          //           return patientController.mobileList.where((item) => item.mobileNo!.toLowerCase().contains(pattern.toLowerCase()));
-                          //         },
-                          //         itemBuilder: (context, MobileData suggestion) {
-                          //           return ListTile(
-                          //             title: Text("${suggestion.mobileNo!}  - ${suggestion.name}",style: TextStyle(fontFamily: FontType.MontserratRegular),),
-                          //           );
-                          //         },
-                          //         onSuggestionSelected: (MobileData suggestion) {
-                          //           setState(() {
-                          //             patientController.selectedMobileNo?.value = suggestion.encPharmacyPatientId;
-                          //             getPatient(patientController.selectedMobileNo?.value);
-                          //             pMobile.text = suggestion.mobileNo!; // Assign the selected mobile number to the controller's text property
-                          //             isTyping = true;
-                          //           });
-                          //         },
-                          //         validator: (value) {
-                          //           if (value == null) {
-                          //             return 'Select a mobile number';
-                          //           }
-                          //           return null;
-                          //         },
-                          //         onSaved: (value) => patientController.selectedMobileNo?.value = value!,
-                          //       )
-                          //   ),
-                          // ),
                           FormTextField(
                             controller: pName,
                             label: ' Patient name',
@@ -573,24 +491,10 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                                     GetXSnackBarMsg.getWarningMsg('Please select prescription');
                                   }
                                   else{
-                                    showDialog(
-                                      context: context,
+                                    Get.dialog(
+                                      BookingLoading(),
                                       barrierDismissible: false,
-                                      builder: (BuildContext context) {
-                                        return const Dialog(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(16.0),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CircularProgressIndicator(),
-                                                SizedBox(height: 16.0),
-                                                Text('Loading...'),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                      useSafeArea: true
                                     );
                                     await attachPrescription();
                                   }
@@ -715,7 +619,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
       else if (bodyStatus == 400) {
         var errorMessage = parsedResponse['error']['mobile_no'][0];
         GetXSnackBarMsg.getWarningMsg('$errorMessage');
-        clearData();
+        //clearData();
         Navigator.pop(context);
       }
       else if(bodyStatus == 400){

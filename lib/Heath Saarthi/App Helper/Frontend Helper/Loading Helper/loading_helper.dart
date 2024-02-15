@@ -30,3 +30,32 @@ class CenterLoading extends StatelessWidget {
     return Center(child: Image.asset("assets/Gif/loader.gif",width: 70,color: hsPrime));
   }
 }
+
+
+class BookingLoading extends StatelessWidget {
+  const BookingLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          color: Colors.white
+        ),
+        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(strokeWidth: 2,),
+            SizedBox(height: 10),
+            DefaultTextStyle(
+                style: TextStyle(fontFamily: FontType.MontserratLight,fontWeight: FontWeight.bold,fontSize: 12,color: Colors.black),
+                child: Text('Loading....')
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

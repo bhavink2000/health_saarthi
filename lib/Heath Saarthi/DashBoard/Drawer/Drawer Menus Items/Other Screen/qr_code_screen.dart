@@ -9,6 +9,7 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:share_plus/share_plus.dart';
@@ -249,19 +250,23 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                           if (status.isGranted) {
                                             downloadFile(qrCodeModel?.pdf).catchError((onError) {
                                               debugPrint('Error downloading: $onError');
+                                              return Future.error(onError); // Ensure to return a Future.error
                                             }).then((imagePath) {
+                                              if(Platform.isIOS){
+                                                OpenFile.open(imagePath);
+                                              }
                                               debugPrint('Download successful, path: $imagePath');
                                               GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
                                             });
                                           } else {
                                             downloadFile(qrCodeModel?.pdf).catchError((onError) {
                                               debugPrint('Error downloading: $onError');
+                                              return Future.error(onError); // Ensure to return a Future.error
                                             }).then((imagePath) {
                                               debugPrint('Download successful, path: $imagePath');
                                               GetXSnackBarMsg.getSuccessMsg('Download path: $imagePath');
                                             });
-                                            //GetXSnackBarMsg.getWarningMsg('$status');
-                                            print("status-$status");
+                                            print("permission status-$status");
                                           }
                                         },
                                         child: Container(
@@ -350,26 +355,59 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   //final imageSrc = 'https://picsum.photos/250?image=9';
   var downloadProgress = 0.0, imgCount = 0;
   bool showDownload = false;
-  Future downloadFile(var imgUrl) async {
+
+  // Future downloadFile(var imgUrl) async {
+  //   setState(() {
+  //     imgCount++;
+  //     downloadProgress = 0.0;
+  //     showDownload = true;
+  //   });
+  //   Dio dio = Dio();
+  //   var imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
+  //   await dio.download(imgUrl, imageDownloadPath,
+  //       onReceiveProgress: (received, total) {
+  //     var progress = (received / total) * 100;
+  //     setState(() {
+  //       downloadProgress = progress;
+  //     });
+  //     print("IMG Download Progress -> $downloadProgress");
+  //   });
+  //   setState(() {
+  //     showDownload = false;
+  //     downloadProgress = 0.0;
+  //   });
+  //   return imageDownloadPath;
+  // }
+
+  Future<String> downloadFile(var imgUrl) async {
     setState(() {
       imgCount++;
       downloadProgress = 0.0;
       showDownload = true;
     });
+
     Dio dio = Dio();
-    var imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
+    late String imageDownloadPath;
+    if (Platform.isAndroid) {
+      imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
+    } else if (Platform.isIOS) {
+      var temp = await getTemporaryDirectory();
+      imageDownloadPath = '${temp.path}/hsQRCode_$imgCount.pdf';
+    }
     await dio.download(imgUrl, imageDownloadPath,
         onReceiveProgress: (received, total) {
-      var progress = (received / total) * 100;
-      setState(() {
-        downloadProgress = progress;
-      });
-      print("IMG Download Progress -> $downloadProgress");
-    });
+          var progress = (received / total) * 100;
+          setState(() {
+            downloadProgress = progress;
+          });
+          print("IMG Download Progress -> $downloadProgress");
+        });
+
     setState(() {
       showDownload = false;
       downloadProgress = 0.0;
     });
+
     return imageDownloadPath;
   }
 }

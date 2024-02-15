@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     notificationService.getDeviceToken().then((value) {
       if (value == '' || value == null) {
-        log("Do Not Get Device Token");
+        print("Do Not Get Device Token");
       } else {
         setState(() {
           deviceToken = value;
@@ -45,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('deviceType', value);
             if (deviceToken == '' || value == '' || deviceToken == null || value == null) {
-              log("Do not get device token\nplease restart the app");
+              print("Do not get device token\nplease restart the app");
             } else {
               checkAuthentication(context);
             }

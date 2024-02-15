@@ -31,16 +31,21 @@ class LocationDropdowns extends StatelessWidget {
           children: [
             Visibility(
               visible: loading,
-              child: const Positioned(
-                top: 10,
-                right: 5,
-                child: CircularProgressIndicator(),
+              child: Positioned(
+                top: 14,
+                right: 14,
+                child: Container(width: 20,height: 20,child: CircularProgressIndicator(strokeWidth: 2,)),
               ),
             ),
             DropdownSearch<String>(
-              popupProps: const PopupProps.dialog(
-                showSelectedItems: true,
-                showSearchBox: true,
+              popupProps: PopupProps.dialog(
+                  showSelectedItems: true,
+                  showSearchBox: true,
+                  fit: FlexFit.loose,
+                  dialogProps: DialogProps(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))
+                  )
               ),
               autoValidateMode: AutovalidateMode.onUserInteraction,
               items: items,
@@ -58,9 +63,15 @@ class LocationDropdowns extends StatelessWidget {
                     fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                  contentPadding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
               ),

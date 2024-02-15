@@ -1,6 +1,6 @@
 class AppTextHelper{
 
-  var appVersion = '2.04';
+  var appVersion = '2.05';
 
   var patientName = 'The name field is required.';
   var patientMobile = 'The mobile no field is required.';
@@ -55,4 +55,24 @@ class AppTextHelper{
   var aadhaarCardBSelect = 'Please select aadhaar card back';
   var chequeImgSelect = 'Please select cheque img';
   var gstImgSelect = 'Please select GST img';
+}
+
+class ValidationText{
+  static String vendorName = 'Enter vendor name';
+  static String emailId = 'Enter a email';
+  static String emailValidation = 'email id must contain at least one special character';
+  static String pharmacyName = 'Enter pharmacy name';
+  static String mobileNumber = 'Enter mobile number';
+
+  static String stateSelect = 'Select a state';
+  static String citySelect = 'Select a city';
+  static String branchSelect = 'Select a branch';
+  static String areaSelect = 'Select a area';
+
+  static String salesExecutive = 'Select a sales executive';
+  static String address = 'Enter address';
+
+  static String gstLength = 'Enter must be 15 characters long';
+  static String bankName = 'Enter bank name';
+  static String beneficiaryNm = 'Enter beneficiary name';
 }

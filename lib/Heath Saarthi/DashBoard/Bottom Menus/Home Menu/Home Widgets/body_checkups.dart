@@ -152,7 +152,8 @@ class _HomeBodyCheckupsState extends State<HomeBodyCheckups> {
                                           )
                                         ],
                                       )
-                                  ),                                ],
+                                  ),
+                                ],
                               ),
                             ),
                             const Spacer(),

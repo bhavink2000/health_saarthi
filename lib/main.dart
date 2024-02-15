@@ -1,16 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Providers/Home%20Menu%20Provider/home_menu_provider.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/push_notification_helper.dart';
 import 'package:provider/provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
@@ -32,8 +31,7 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
   }
 }
 
@@ -53,13 +51,9 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
-  String? fcmToken;
-  late AndroidNotificationChannel channel;
-  bool isFlutterLocalNotificationsInitialized = false;
-  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  final box = GetStorage();
 
   NotificationService notificationService = NotificationService();
-
   GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
 
@@ -69,7 +63,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     super.initState();
     WidgetsBinding.instance!.addObserver(this);
     notificationService.requestNotificationPermission();
-    notificationCall();
+    NotificationHandler().notificationCall();
   }
 
   @override
@@ -84,14 +78,14 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     super.didChangeAppLifecycleState(state);
     getAccessToken.checkAuthentication(context, setState);
     if (state == AppLifecycleState.resumed) {
-      log('----- >>>>> come to foreground from background <<<<< -----');
+      log('----- >>>>> come to foreground <<<<< -----');
       Future.delayed(Duration(seconds: 2), () {
         callingForeground();
       });
       setState(() {});
     }
     else if(state == AppLifecycleState.paused){
-      log('----- >>>>> go to background from foreground <<<<< -----');
+      log('----- >>>>> go to background <<<<< -----');
       Future.delayed(Duration(seconds: 2), () {
         callingBackground();
       });
@@ -99,19 +93,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
     }
   }
 
-  final box = GetStorage();
+
   void callingForeground()async{
     try{
-      notificationCall();
-      log('Calling fetchProfile in foreground');
+      //notificationCall();
       var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       setState(() {
         box.write('userStatus', userStatus.data!.status);
       });
-      log('Called fetchProfile in foreground');
-      log('calling fetchTodayDeal in foreground');
       await homeMenusProvider.fetchTodayDeal(1, getAccessToken.access_token);
-      log('Called fetchTodayDeal in foreground');
     }
     catch(e){
       log("----- >>>>> foreground catch e -> $e");
@@ -120,145 +110,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
 
   void callingBackground()async{
     try{
-      notificationCall();
+      //notificationCall();
       var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       setState(() {
         box.write('userStatus', userStatus.data!.status);
       });
-      log('calling fetchTest in background');
       await homeMenusProvider.fetchTest(1, getAccessToken.access_token, '');
-      log('Called fetchTest in background');
-      log('calling fetchPackage in background');
       await homeMenusProvider.fetchPackage(1, getAccessToken.access_token, '');
-      log('Called fetchPackage in background');
     }
     catch(e){
       log("----- >>>>> background catch e -> $e");
-    }
-  }
-
-
-
-  void notificationCall()async{
-   await Firebase.initializeApp();
-   await Future.delayed(Duration(seconds: 1));
-   if (Platform.isAndroid) {
-     log('platform is android');
-     FirebaseMessaging.instance.getToken().then((value) async {
-       setState(() {
-         fcmToken = value;
-       });
-       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-       await setupFlutterNotifications();
-     });
-   } else if (Platform.isIOS) {
-     log('----- >>>> platform is ios');
-      FirebaseMessaging.instance.getAPNSToken().then((value) async {
-       setState(() {
-         fcmToken = value;
-       });
-       FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-       await setupFlutterNotifications();
-     });
-   }
-   FirebaseMessaging.instance.getInitialMessage().then((value) => value != null ? firebaseMessagingBackgroundHandler : false);
-  }
-  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-    await Firebase.initializeApp();
-    await setupFlutterNotifications();
-    Future.delayed(const Duration(milliseconds: 300), () {
-      flutterLocalNotificationsPlugin.cancelAll();
-      flutterLocalNotificationsPlugin.show(
-          message.hashCode,
-          message.data['title'],
-          message.data['message'],
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-                channel.id, channel.name,
-                channelDescription: channel.description,
-                largeIcon: const DrawableResourceAndroidBitmap("ic_launcher")
-            ),
-          ),
-          payload: jsonEncode(message.data).replaceAll("/", "")
-      );
-    });
-      log('Handling a background message ${jsonEncode(message.data)}');
-  }
-  Future<void> setupFlutterNotifications() async {
-    if (isFlutterLocalNotificationsInitialized) {
-      return;
-    }
-
-    channel = const AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      description: 'This channel is used for important notifications.', // description
-      importance: Importance.high,
-    );
-
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(channel);
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(onDidReceiveLocalNotification: (i, a, b, c) {});
-    const LinuxInitializationSettings initializationSettingsLinux = LinuxInitializationSettings(defaultActionName: 'Open notification');
-    final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid, iOS: initializationSettingsDarwin, linux: initializationSettingsLinux);
-    await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse payload) async {
-        handelAndroidNotification(payload.payload!);
-      },
-    );
-    flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails().then((value) {
-      if (value!.didNotificationLaunchApp) {
-        if (value.notificationResponse != null) {
-          handelAndroidNotification(value.notificationResponse!.payload!);
-          flutterLocalNotificationsPlugin.cancel(value.notificationResponse!.id!);
-        }
-      }
-    });
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    isFlutterLocalNotificationsInitialized = true;
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      showFlutterNotification(message);
-    });
-
-    FirebaseMessaging.onMessageOpenedApp.listen((event) {
-      LocalNotificationService.displayNotification(event);
-      //onNotificationTap(event);// onClick Events
-    });
-  }
-  handelAndroidNotification(String payload) {
-    Future.delayed(const Duration(seconds: 1), () {
-
-    });
-  }
-  void onNotificationTap(event) {
-    // onClick handel Events
-  }
-  void showFlutterNotification(RemoteMessage message) {
-    if (Platform.isAndroid) {
-      Future.delayed(const Duration(milliseconds: 300), () {
-        flutterLocalNotificationsPlugin.show(
-            message.hashCode,
-            message.data['title'],
-            message.data['message'],
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel.id, channel.name,
-                channelDescription: channel.description,
-                largeIcon: const DrawableResourceAndroidBitmap("@mipmap/ic_launcher"),
-              ),
-            ),
-            payload: jsonEncode(message.data).replaceAll("/", ""));
-      });
-          log('Handling a background message ${jsonEncode(message.data)}');
     }
   }
 

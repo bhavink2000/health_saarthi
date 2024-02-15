@@ -62,7 +62,7 @@ PODS:
   - firebase_core (2.24.2):
     - Firebase/CoreOnly (= 10.18.0)
     - Flutter
-  - firebase_messaging (14.7.9):
+  - firebase_messaging (14.7.10):
     - Firebase/Messaging (= 10.18.0)
     - firebase_core
     - Flutter
@@ -216,8 +216,6 @@ PODS:
   - SDWebImageWebPCoder (0.13.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
-  - search_choices (0.0.1):
-    - Flutter
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -255,7 +253,6 @@ DEPENDENCIES:
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
-  - search_choices (from `.symlinks/plugins/search_choices/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -328,8 +325,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
-  search_choices:
-    :path: ".symlinks/plugins/search_choices/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_foundation:
@@ -348,10 +343,10 @@ SPEC CHECKSUMS:
   FBSDKCoreKit: 24f8bc8d3b5b2a8c5c656a1329492a12e8efa792
   FBSDKCoreKit_Basics: 6e578c9bdc7aa1365dbbbde633c9ebb536bcaa98
   FBSDKLoginKit: 787de205d524c3a4b17d527916f1d066e4361660
-  file_picker: ce3938a0df3cc1ef404671531facef740d03f920
+  file_picker: 15fd9539e4eb735dc54bae8c0534a7a9511a03de
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
-  firebase_messaging: 875385354f623750aa03204a028d640108bc3412
+  firebase_messaging: 90e8a6db84b6e1e876cebce4f30f01dc495e7014
   FirebaseAnalytics: 4d310b35c48eaa4a058ddc04bdca6bdb5dc0fe80
   FirebaseAppCheckInterop: 37884781f3e16a1ba47e7ec80a1e805f987788e3
   FirebaseAuth: 12314b438fa76048540c8fb86d6cfc9e08595176
@@ -362,7 +357,7 @@ SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
+  flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_pdfview: 25f53dd6097661e6395b17de506e6060585946bd
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: 70ce9aa438cff1cfb31ea3e660bcc67734cb716e
@@ -384,7 +379,6 @@ SPEC CHECKSUMS:
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   SDWebImage: 750adf017a315a280c60fde706ab1e552a3ae4e9
   SDWebImageWebPCoder: af09429398d99d524cae2fe00f6f0f6e491ed102
-  search_choices: b50731e8c425078048f681f39c34375c58d6ce8d
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
@@ -392,6 +386,6 @@ SPEC CHECKSUMS:
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   ZLPhotoBrowser: 4bfab86b851042e18d7f413284472aa68759626a
 
-PODFILE CHECKSUM: cc28ad6929528900768f93e6366d3e393cdb9dcc
+PODFILE CHECKSUM: f624adc59b952ac7b049e87da2750c570673113c
 
 COCOAPODS: 1.14.3

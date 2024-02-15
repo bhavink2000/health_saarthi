@@ -18,6 +18,7 @@ import '../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../App Helper/Backend Helper/Models/Cart Menu/mobile_number_model.dart';
 import '../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../App Helper/Getx Helper/patient_details_getx.dart';
 import '../../App Helper/Getx Helper/user_status_check.dart';
@@ -115,40 +116,18 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                       children: [
 
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                           child: Container(
-                              height: MediaQuery.of(context).size.height / 12.h,
                               decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(10))),
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
                               child: TypeAheadFormField<MobileData>(
                                 textFieldConfiguration: TextFieldConfiguration(
-                                  decoration: const InputDecoration(
-                                    //labelText: 'Select mobile number',
-                                    label: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text("Select mobile number"),
-                                        Text(" *", style: TextStyle(color: Colors.red)),
-                                      ],
-                                    ),
-                                    labelStyle: TextStyle(
-                                      color: Colors.black54,
-                                      fontFamily: FontType.MontserratRegular,
-                                      fontSize: 14,
-                                    ),
-                                    border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(15))),
-                                  ),
+                                  controller: pMobile, // Assign the controller
+                                  decoration: mobileNumberDecoration,
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.digitsOnly,
                                   ],
-                                  style: const TextStyle(
-                                    fontFamily: FontType.MontserratMedium,
-                                    fontSize: 15,
-                                    letterSpacing: 1,
-                                    color: Colors.black87,
-                                  ),
-                                  controller: pMobile, // Assign the controller
                                 ),
                                 suggestionsCallback: (pattern) async {
                                   if(isTyping){
@@ -383,24 +362,10 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
                                   GetXSnackBarMsg.getWarningMsg('${AppTextHelper().patientMobile}');
                                 }
                                 else{
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return const Dialog(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(16.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CircularProgressIndicator(),
-                                              SizedBox(height: 16.0),
-                                              Text('Loading...'),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                  Get.dialog(
+                                      BookingLoading(),
+                                      barrierDismissible: false,
+                                      useSafeArea: true
                                   );
                                   await bookOrder();
                                 }
@@ -450,6 +415,8 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       print('Error: $e');
     }
   }
+
+
   Future<void> bookOrder() async {
     final pGender = selectedGender == 'Male' ? 1 : selectedGender == 'Female' ? 2 : selectedGender == 'Other' ? 3 : 0;
 

@@ -37,3 +37,30 @@ const Duration hsButtonAnimationD = Duration(milliseconds: 600);
 const Duration hsCardAnimationD = Duration(milliseconds: 400);
 const Duration hsRippleAnimationD = Duration(milliseconds: 400);
 const Duration hsLoginAnimationD = Duration(milliseconds: 1500);
+
+
+final InputDecoration mobileNumberDecoration = InputDecoration(
+  contentPadding: const EdgeInsets.all(8.0),
+  border: const OutlineInputBorder(),
+  focusedBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  enabledBorder: OutlineInputBorder(
+    borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
+    borderRadius: BorderRadius.circular(15),
+  ),
+  label: const Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text("Select mobile number"),
+      Text(" *", style: TextStyle(color: Colors.red)),
+    ],
+  ),
+  labelStyle: const TextStyle(
+    color: Colors.black54,
+    fontFamily: FontType.MontserratRegular,
+    fontSize: 14,
+  ),
+  prefixIcon: const Icon(Icons.mobile_friendly_rounded, color: Colors.black, size: 20),
+);

@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Authentication%20Models/login_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
@@ -13,6 +14,7 @@ import '../../../../DashBoard/hs_dashboard.dart';
 import '../../../Frontend Helper/Loading Helper/loading_indicator.dart';
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../Api Repo/User Authentication/user_authentication.dart';
+import '../../bottom_navigation_controller.dart';
 import 'user_data_auth_session.dart';
 
 class AuthProvider with ChangeNotifier{
@@ -20,6 +22,8 @@ class AuthProvider with ChangeNotifier{
   var accessToken = GetStorage();
 
   final _myUser = UserAuthentication();
+
+  final controller = Get.put(BottomBarController());
 
   bool _loading = false;
   bool get loading => _loading;
@@ -48,6 +52,7 @@ class AuthProvider with ChangeNotifier{
       }
       else{
         GetXSnackBarMsg.getSuccessMsg('login Successfully');
+        controller.index.value = 0;
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
         //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HSDashboard()), (Route<dynamic> route) => false);
       }

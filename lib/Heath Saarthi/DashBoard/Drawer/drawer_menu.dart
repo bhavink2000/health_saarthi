@@ -40,7 +40,6 @@ class DrawerScreen extends StatefulWidget {
 }
 
 class _DrawerScreenState extends State<DrawerScreen> {
-
   final controller = Get.put(BottomBarController());
   final box = GetStorage();
 
@@ -70,16 +69,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
   Widget build(BuildContext context) {
     final userDataSession = Provider.of<UserDataSession>(context);
     return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2,),
+      filter: ImageFilter.blur(
+        sigmaX: 2,
+        sigmaY: 2,
+      ),
       child: Container(
         color: Colors.white,
         width: MediaQuery.of(context).size.width / 1.5,
         child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(height: 20,),
-              const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 175),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 20),
+              const Image(image: AssetImage("assets/health_saarthi_logo.png"), width: 175),
+              const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
@@ -87,7 +89,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 5, 10, 10),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             setState(() {
                               controller.index.value = 0;
                             });
@@ -96,99 +98,90 @@ class _DrawerScreenState extends State<DrawerScreen> {
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.dashboard,color: hsPrimeOne,size: 25),
+                              Icon(Icons.dashboard, color: hsPrimeOne, size: 25),
                               const SizedBox(width: 10,),
-                              const Text("Home",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                              const Text("Home", style: TextStyle(fontSize: 14, fontFamily: FontType.MontserratMedium))
                             ],
                           ),
                         ),
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'Book a test',
                         iconData: Icons.book,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const BookTestScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const BookTestScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'My booking history',
                         iconData: Icons.shopping_bag_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyBookingScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyBookingScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'My report',
                         iconData: Icons.event_available_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyReportScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyReportScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'My profile',
                         iconData: Icons.person_pin,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const MyProfileScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MyProfileScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'Contact us',
                         iconData: Icons.phone_android_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const ContactUsScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ContactUsScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'FAQ',
                         iconData: Icons.question_answer_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const FaqScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const FaqScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'Support',
                         iconData: Icons.support_agent_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const SupportScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const SupportScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'Refer a chemist',
                         iconData: Icons.science_rounded,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const ReferChemist()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const ReferChemist()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       DrawerMenuItemsWidget(
                         itemName: 'Download QR code',
                         iconData: Icons.qr_code,
-                        itemOnTap: (){
+                        itemOnTap: () {
                           Get.delete<UserStatusCheckController>();
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>const QRCodeScreen()));
-                        },
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const QRCodeScreen()));},
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(15, 10, 10, 10),
                         child: InkWell(
-                          onTap: (){
+                          onTap: () {
                             showDialog(
                                 context: context,
                                 barrierDismissible: false,
@@ -197,29 +190,24 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                     filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                                     child: AlertDialog(
                                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                                      //backgroundColor: Colors.white,
                                       content: Container(
-                                        decoration: BoxDecoration(
-                                          //color: Colors.white,
-                                          borderRadius: BorderRadius.circular(30),
-                                        ),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30),),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
+                                            Image.asset("assets/health_saarthi_logo_transparent_bg.png", width: 150),
                                             const Padding(
                                               padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
                                               child: Text(
                                                 "Are You Sure Would Like To Logout?",
-                                                style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16),
-                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 16), textAlign: TextAlign.center,
                                               ),
                                             ),
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                               children: <Widget>[
                                                 InkWell(
-                                                  onTap: ()=>Navigator.pop(context),
+                                                  onTap: () => Navigator.pop(context),
                                                   child: Container(
                                                     width: MediaQuery.of(context).size.width / 4.w,
                                                     alignment: Alignment.center,
@@ -229,20 +217,48 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                     ),
                                                     child: const Padding(
                                                       padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-                                                      child: Text("Stay",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                                                      child: Text(
+                                                        "Stay",
+                                                        style: TextStyle(fontFamily: FontType.MontserratMedium,
+                                                            color: Colors.white),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
                                                 InkWell(
-                                                  onTap: (){
+                                                  onTap: () {
                                                     logoutUser().then((value) {
                                                       var logoutUserStatus = value.toString();
                                                       print("Logout user status ->$logoutUserStatus");
-
-                                                      if(logoutUserStatus == '200'){
+                                                      if (logoutUserStatus == '200') {
                                                         log('in if code ->200');
                                                         userDataSession.removeUserData().then((values) {
                                                           box.remove('accessToken');
+                                                          box.remove('name',);
+                                                          box.remove('mobile',);
+                                                          box.remove('email',);
+                                                          box.remove('address',);
+                                                          box.remove('stateNm',);
+                                                          box.remove('cityNm',);
+                                                          box.remove('areaNm',);
+                                                          box.remove('branchNm',);
+                                                          box.remove('pincode',);
+                                                          box.remove('bankNm',);
+                                                          box.remove('ifsc',);
+                                                          box.remove('accountNo',);
+                                                          box.remove('gstNo',);
+                                                          box.remove('pancard',);
+                                                          box.remove('addressProof',);
+                                                          box.remove('aadhaarF',);
+                                                          box.remove('aadhaarB',);
+                                                          box.remove('chequeImage',);
+                                                          box.remove('gstImage',);
+                                                          box.remove('pancardImg',);
+                                                          box.remove('addressImg',);
+                                                          box.remove('aadhaarFImg',);
+                                                          box.remove('aadhaarBImg',);
+                                                          box.remove('chequeImg',);
+                                                          box.remove('gstImg',);
                                                           DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
                                                             if (value == 'success') {
                                                               print("token is deleted $value");
@@ -251,19 +267,17 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                             }
                                                           });
                                                           var removeUser = values;
-                                                          if(removeUser == true){
+                                                          if (removeUser == true) {
                                                             Navigator.of(context).pushAndRemoveUntil(
                                                               MaterialPageRoute(builder: (context) => const SplashScreen()),
-                                                                  (Route<dynamic> route) => false,
+                                                              (Route<dynamic>route) => false,
                                                             );
-                                                          }
-                                                          else{
+                                                          } else {
                                                             print("removeUser not proper remove");
                                                             Navigator.pop(context);
                                                           }
                                                         });
-                                                      }
-                                                      else if(logoutUserStatus == '402'){
+                                                      } else if (logoutUserStatus == '402') {
                                                         log('in else if code ->402');
                                                         userDataSession.removeUserData().then((values) {
                                                           box.remove('accessToken');
@@ -275,13 +289,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                             }
                                                           });
                                                           var removeUser = values;
-                                                          if(removeUser == true){
+                                                          if (removeUser == true) {
                                                             Navigator.of(context).pushAndRemoveUntil(
                                                               MaterialPageRoute(builder: (context) => const SplashScreen()),
-                                                                  (Route<dynamic> route) => false,
+                                                              (Route<dynamic>route) => false,
                                                             );
-                                                          }
-                                                          else{
+                                                          } else {
                                                             print("removeUser not proper remove");
                                                             Navigator.pop(context);
                                                           }
@@ -298,7 +311,10 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                     ),
                                                     child: const Padding(
                                                       padding: EdgeInsets.fromLTRB(10, 8, 10, 8),
-                                                      child: Text("Logout",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),),
+                                                      child: Text(
+                                                        "Logout",
+                                                        style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -309,19 +325,18 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                       ),
                                     ),
                                   );
-                                }
-                            );
+                                });
                           },
                           child: Row(
                             children: [
-                              Icon(Icons.logout_rounded,color: hsPrimeOne,size: 25),
+                              Icon(Icons.logout_rounded, color: hsPrimeOne, size: 25),
                               const SizedBox(width: 10,),
-                              const Text("Log out",style: TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+                              const Text("Log out", style: TextStyle(fontSize: 14, fontFamily: FontType.MontserratMedium))
                             ],
                           ),
                         ),
                       ),
-                      Divider(color: hsPrimeOne,thickness: 0.5,endIndent: 0,indent: 20),
+                      Divider(color: hsPrimeOne, thickness: 0.5, endIndent: 0, indent: 20),
                     ],
                   ),
                 ),
@@ -350,16 +365,15 @@ class _DrawerScreenState extends State<DrawerScreen> {
       bodyMsg = responseData['message'];
 
       if (bodyStatus == 200) {
-        GetXSnackBarMsg.getWarningMsg('$bodyMsg');
+        GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         return bodyStatus;
-      } else if(bodyStatus == '402'){
+      } else if (bodyStatus == '402') {
         log('in else if -->>$bodyMsg');
         GetXSnackBarMsg.getWarningMsg('$bodyMsg');
         return bodyStatus;
       }
     } catch (error) {
       print("logout catch -error-->>${error.toString()}");
-      //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 }
@@ -368,7 +382,8 @@ class DrawerMenuItemsWidget extends StatelessWidget {
   String? itemName;
   final VoidCallback? itemOnTap;
   IconData? iconData;
-  DrawerMenuItemsWidget({super.key, this.itemOnTap,this.itemName,this.iconData});
+  DrawerMenuItemsWidget(
+      {super.key, this.itemOnTap, this.itemName, this.iconData});
 
   @override
   Widget build(BuildContext context) {
@@ -378,9 +393,9 @@ class DrawerMenuItemsWidget extends StatelessWidget {
         onTap: itemOnTap,
         child: Row(
           children: [
-            Icon(iconData,color: hsPrimeOne,size: 25),
+            Icon(iconData, color: hsPrimeOne, size: 25),
             const SizedBox(width: 10,),
-            Text("$itemName",style: const TextStyle(fontSize: 14,fontFamily: FontType.MontserratMedium))
+            Text("$itemName", style: const TextStyle(fontSize: 14, fontFamily: FontType.MontserratMedium))
           ],
         ),
       ),

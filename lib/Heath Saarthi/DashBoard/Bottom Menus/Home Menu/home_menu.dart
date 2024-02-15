@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/profile_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/account_status.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/body_checkups.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/image_slider.dart';
@@ -36,9 +38,9 @@ class _HomeMenuState extends State<HomeMenu> {
     getAccessToken = GetAccessToken();
     getAccessToken.checkAuthentication(context, setState);
     retrieveDeviceToken();
-    Future.delayed(const Duration(seconds: 1),(){
-      getUserStatus();
-    });
+    // Future.delayed(const Duration(seconds: 1),(){
+    //   getUserStatus();
+    // });
   }
 
   @override
@@ -101,12 +103,39 @@ class _HomeMenuState extends State<HomeMenu> {
     );
   }
 
-  void getUserStatus()async{
+  final box = GetStorage();
+  Future<void> getUserStatus()async{
     try{
-      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      if (userData != null && userData.data != null) {
+      ProfileModel profileModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      if (profileModel != null && profileModel.data != null) {
         setState(() {
-          userStatus = userData.data.status;
+          userStatus = profileModel.data?.status;
+          box.write('vendorNm', profileModel.data?.vendorName?.toString() ?? 'N/A');
+          box.write('name', profileModel.data?.name?.toString() ?? 'N/A');
+          box.write('mobile', profileModel.data?.mobile?.toString() ?? 'N/A');
+          box.write('email', profileModel.data?.emailId?.toString() ?? 'N/A');
+          box.write('address', profileModel.data?.address?.toString() ?? 'N/A');
+          box.write('stateNm', profileModel.data?.state?.stateName?.toString() ?? 'N/A');
+          box.write('cityNm', profileModel.data?.city?.cityName?.toString() ?? 'N/A');
+          box.write('areaNm', profileModel.data?.area?.areaName?.toString() ?? 'N/A');
+          box.write('branchNm', profileModel.data?.costCenter?.branchName?.toString() ?? 'N/A');
+          box.write('pincode', profileModel.data?.pincode?.toString() ?? 'N/A');
+          box.write('bankNm', profileModel.data?.bankName?.toString() ?? 'N/A');
+          box.write('ifsc', profileModel.data?.ifsc?.toString() ?? 'N/A');
+          box.write('accountNo', profileModel.data?.accountNumber?.toString() ?? 'N/A');
+          box.write('gstNo', profileModel.data?.gstNumber?.toString() ?? 'N/A');
+          box.write('pancard', profileModel.data?.pancard?.toString() ?? 'N/A');
+          box.write('addressProof', profileModel.data?.addressProof?.toString() ?? 'N/A');
+          box.write('aadhaarF', profileModel.data?.aadharFront?.toString() ?? 'N/A');
+          box.write('aadhaarB', profileModel.data?.aadharBack?.toString() ?? 'N/A');
+          box.write('chequeImage', profileModel.data?.chequeImage?.toString() ?? 'N/A');
+          box.write('gstImage', profileModel.data?.gstImage?.toString() ?? 'N/A');
+          box.write('pancardImg', profileModel.data?.pancardImg?.toString() ?? 'N/A');
+          box.write('addressImg', profileModel.data?.addressProofImg?.toString() ?? 'N/A');
+          box.write('aadhaarFImg', profileModel.data?.aadharFrontImg?.toString() ?? 'N/A');
+          box.write('aadhaarBImg', profileModel.data?.aadharBackImg?.toString() ?? 'N/A');
+          box.write('chequeImg', profileModel.data?.chequeImg?.toString() ?? 'N/A');
+          box.write('gstImg', profileModel.data?.gstImg?.toString() ?? 'N/A');
         });
         if (userStatus == 0) {
           AccountStatus().accountStatus(context);
@@ -126,6 +155,7 @@ class _HomeMenuState extends State<HomeMenu> {
     setState(() {
       deviceToken = prefs.getString('deviceToken');
     });
+    await getUserStatus();
     log("SharedPreferences DeviceToken->$deviceToken");
   }
 }

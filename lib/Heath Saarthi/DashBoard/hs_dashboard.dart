@@ -1,38 +1,27 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/update_show_dialog.dart';
-import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/location_getx.dart';
-import 'package:http/http.dart' as http;
-import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/home_menu.dart';
-import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Report%20Menu/report_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/drawer_menu.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../App Helper/Check Internet Helper/Bindings/dependency_injection.dart';
 import '../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-import '../App Helper/Frontend Helper/UI Helper/app_icons_helper.dart';
 import '../App Helper/Getx Helper/user_status_check.dart';
-import '../Authentication Screens/Splash Screen/splash_screen.dart';
 import 'Add To Cart/test_cart.dart';
-import 'Bottom Menus/Profile Menu/profile_menu.dart';
-import 'Bottom Menus/Test Menu/test_menu_book_now.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -48,6 +37,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
 
   var appVersion, updateMsg;
   String? appName;
@@ -260,4 +250,5 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
         }
     );
   }
+
 }

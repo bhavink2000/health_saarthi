@@ -30,6 +30,9 @@ class SignUpForm extends StatefulWidget {
   State<SignUpForm> createState() => _SignUpFormState();
 }
 
+
+// last final update 30-01 as par discuss = vendor name = radhe medical and name = krishna
+
 class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File? panCardFile;
@@ -122,20 +125,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: DropdownButtonFormField<String>(
                       value: selectedB2b,
-                      style:
-                          const TextStyle(fontSize: 12, color: Colors.black87),
+                      style: const TextStyle(fontSize: 12, color: Colors.black87),
                       decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         hintText: 'B2B Sub Admin',
                         hintStyle: const TextStyle(
                           color: Colors.black54,
@@ -151,18 +146,12 @@ class _SignUpFormState extends State<SignUpForm> {
                           value: '',
                           child: Text('Select B2B subadmin'),
                         ),
-                        ...b2bSubAdminList
-                                ?.map((subAdmin) => DropdownMenuItem(
+                        ...b2bSubAdminList?.map((subAdmin) => DropdownMenuItem(
                                       value: subAdmin['id'].toString(),
                                       child: Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              1.5.w,
-                                          child: Text(subAdmin['name'])),
-                                    ))
-                                ?.toList() ??
-                            []
+                                          width: MediaQuery.of(context).size.width / 1.5.w,
+                                          child: Text(subAdmin['name'])
+                                      )))?.toList() ?? []
                       ],
                     ),
                   ),
@@ -174,14 +163,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -194,12 +177,11 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon:
-                            const Icon(Icons.person, color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.person, color: hsBlack, size: 20),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter Vendor name';
+                          return '${ValidationText.vendorName}';
                         }
                         return null;
                       }, // Set the validator function
@@ -214,14 +196,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -234,16 +210,14 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon: const Icon(Icons.email_rounded,
-                            color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.email_rounded, color: hsBlack, size: 20),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter a email';
+                          return '${ValidationText.emailId}';
                         }
-                        if (!value
-                            .contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                          return 'email id must contain at least one special character';
+                        if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                          return '${ValidationText.emailValidation}';
                         }
                         return null;
                       }, // Set the validator function
@@ -257,14 +231,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -277,12 +245,11 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon: const Icon(Icons.person_pin,
-                            color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.person_pin, color: hsBlack, size: 20),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter Pharmacy name';
+                          return '${ValidationText.pharmacyName}';
                         }
                         return null;
                       }, // Set the validator function
@@ -299,14 +266,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -319,12 +280,11 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon: const Icon(Icons.mobile_friendly,
-                            color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.mobile_friendly, color: hsBlack, size: 20),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter mobile number';
+                          return '${ValidationText.mobileNumber}';
                         }
                         return null;
                       }, // Set the validator function
@@ -362,8 +322,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("Select state"),
-                                    Text(" *",
-                                        style: TextStyle(color: Colors.red)),
+                                    Text(" *", style: TextStyle(color: Colors.red)),
                                   ],
                                 ),
                                 labelStyle: const TextStyle(
@@ -373,8 +332,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.black.withOpacity(0.12)),
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 ),
                               ),
                             ),
@@ -392,8 +350,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   branchList.clear();
                                   selectedBranch = '';
                                   selectedState = newValue;
-                                  selectedStateId =
-                                      selectedStateObject.id.toString();
+                                  selectedStateId = selectedStateObject.id.toString();
                                 });
                                 fetchCityList(selectedStateId);
                               }
@@ -401,7 +358,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedState,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Select a state';
+                                return '${ValidationText.stateSelect}';
                               }
                               return null;
                             },
@@ -442,8 +399,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("Select city"),
-                                    Text(" *",
-                                        style: TextStyle(color: Colors.red)),
+                                    Text(" *", style: TextStyle(color: Colors.red)),
                                   ],
                                 ),
                                 labelStyle: const TextStyle(
@@ -453,16 +409,14 @@ class _SignUpFormState extends State<SignUpForm> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.black.withOpacity(0.12)),
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 ),
                               ),
                             ),
                             onChanged: (newValue) {
                               final selectedCityObject = cityList.firstWhere(
                                 (city) => city!.cityName == newValue,
-                                orElse: () =>
-                                    CityData(), // Return an empty instance of StateData
+                                orElse: () => CityData(), // Return an empty instance of StateData
                               );
                               if (selectedCityObject != null) {
                                 setState(() {
@@ -472,10 +426,8 @@ class _SignUpFormState extends State<SignUpForm> {
                                   branchList.clear();
                                   selectedBranch = '';
                                   selectedCity = newValue;
-                                  selectedCityId =
-                                      selectedCityObject.id.toString();
-                                  fetchBranchList(
-                                      selectedStateId, selectedCityId, '');
+                                  selectedCityId = selectedCityObject.id.toString();
+                                  fetchBranchList(selectedStateId, selectedCityId, '');
                                 });
                                 fetchAreaList(selectedStateId, selectedCityId);
                               }
@@ -483,7 +435,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedCity,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Select a city';
+                                return '${ValidationText.citySelect}';
                               }
                               return null;
                             },
@@ -513,10 +465,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               showSelectedItems: true,
                               showSearchBox: true,
                             ),
-                            items: branchList
-                                    .map((branch) => branch!.branchName!)
-                                    .toList() ??
-                                [],
+                            items: branchList.map((branch) => branch!.branchName!).toList() ?? [],
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
                                 //labelText: "Select branch *",
@@ -524,8 +473,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("Select branch"),
-                                    Text(" *",
-                                        style: TextStyle(color: Colors.red)),
+                                    Text(" *", style: TextStyle(color: Colors.red)),
                                   ],
                                 ),
                                 labelStyle: const TextStyle(
@@ -535,30 +483,26 @@ class _SignUpFormState extends State<SignUpForm> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.black.withOpacity(0.12)),
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 ),
                               ),
                             ),
                             onChanged: (newValue) {
-                              final selectedBranchObject =
-                                  branchList.firstWhere(
+                              final selectedBranchObject = branchList.firstWhere(
                                 (branch) => branch!.branchName == newValue,
-                                orElse: () =>
-                                    BranchData(), // Return an empty instance of StateData
+                                orElse: () => BranchData(), // Return an empty instance of StateData
                               );
                               if (selectedBranchObject != null) {
                                 setState(() {
                                   selectedBranch = newValue;
-                                  selectedBranchId =
-                                      selectedBranchObject.id.toString();
+                                  selectedBranchId = selectedBranchObject.id.toString();
                                 });
                               }
                             },
                             selectedItem: selectedBranch,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Select a branch';
+                                return '${ValidationText.branchSelect}';
                               }
                               return null;
                             },
@@ -588,10 +532,7 @@ class _SignUpFormState extends State<SignUpForm> {
                               showSelectedItems: true,
                               showSearchBox: true,
                             ),
-                            items: areaList
-                                    .map((area) => area!.areaName!)
-                                    .toList() ??
-                                [],
+                            items: areaList.map((area) => area!.areaName!).toList() ?? [],
                             dropdownDecoratorProps: DropDownDecoratorProps(
                               dropdownSearchDecoration: InputDecoration(
                                 //labelText: "Select area *",
@@ -599,8 +540,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text("Select area"),
-                                    Text(" *",
-                                        style: TextStyle(color: Colors.red)),
+                                    Text(" *", style: TextStyle(color: Colors.red)),
                                   ],
                                 ),
                                 labelStyle: const TextStyle(
@@ -610,29 +550,26 @@ class _SignUpFormState extends State<SignUpForm> {
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide: BorderSide(
-                                      color: Colors.black.withOpacity(0.12)),
+                                  borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
                                 ),
                               ),
                             ),
                             onChanged: (newValue) {
                               final selectedAreaObject = areaList.firstWhere(
                                 (area) => area!.areaName == newValue,
-                                orElse: () =>
-                                    AreaData(), // Return an empty instance of StateData
+                                orElse: () => AreaData(), // Return an empty instance of StateData
                               );
                               if (selectedAreaObject != null) {
                                 setState(() {
                                   selectedArea = newValue;
-                                  selectedAreaId =
-                                      selectedAreaObject.id.toString();
+                                  selectedAreaId = selectedAreaObject.id.toString();
                                 });
                               }
                             },
                             selectedItem: selectedArea,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Select a area';
+                                return '${ValidationText.areaSelect}';
                               }
                               return null;
                             },
@@ -646,20 +583,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     child: DropdownButtonFormField<String>(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       value: selectedSales,
-                      style:
-                          const TextStyle(fontSize: 10, color: Colors.black87),
+                      style: const TextStyle(fontSize: 10, color: Colors.black87),
                       decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        contentPadding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -675,7 +604,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Select a sales executive';
+                          return '${ValidationText.salesExecutive}';
                         }
                         return null;
                       },
@@ -683,34 +612,21 @@ class _SignUpFormState extends State<SignUpForm> {
                         setState(() {
                           showExecutive = true;
                           selectedSales = newValue;
-                          // Retrieve the selected executive using the ID
-                          final selectedExecutive =
-                              salesExecutiveList.firstWhere(
-                            (executive) =>
-                                executive['id'].toString() == newValue,
-                            orElse: () => null,
-                          );
+                          final selectedExecutive = salesExecutiveList.firstWhere((executive) => executive['id'].toString() == newValue, orElse: () => null,);
                           if (selectedExecutive != null) {
-                            final selectedId =
-                                selectedExecutive['id'].toString();
-                            selectedSalesMobileNo =
-                                selectedExecutive['mobile_no'];
+                            final selectedId = selectedExecutive['id'].toString();
+                            selectedSalesMobileNo = selectedExecutive['mobile_no'];
                           }
                           seMobile.text = selectedSalesMobileNo;
                         });
                       },
-                      items: salesExecutiveList
-                              ?.map((sales) => DropdownMenuItem(
-                                    value: sales['id'].toString(),
-                                    child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                1.45.w,
-                                        child: Text(
-                                            "${sales['name']} - ${sales['mobile_no']}")),
-                                  ))
-                              ?.toList() ??
-                          [],
+                      items: salesExecutiveList?.map((sales) =>
+                          DropdownMenuItem(
+                             value: sales['id'].toString(),
+                             child: Container(
+                                 width: MediaQuery.of(context).size.width / 1.45.w,
+                                 child: Text("${sales['name']} - ${sales['mobile_no']}")),
+                           ))?.toList() ?? [],
                     ),
                   ),
                   SizedBox(height: space),
@@ -724,14 +640,8 @@ class _SignUpFormState extends State<SignUpForm> {
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(hsPaddingM),
                           border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.12)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.12)),
-                          ),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                           label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -744,8 +654,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             fontFamily: FontType.MontserratRegular,
                             fontSize: 14,
                           ),
-                          prefixIcon: const Icon(Icons.mobile_friendly,
-                              color: hsBlack, size: 20),
+                          prefixIcon: const Icon(Icons.mobile_friendly, color: hsBlack, size: 20),
                         ),
                       ),
                     ),
@@ -759,14 +668,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -779,8 +682,7 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon: const Icon(Icons.code_rounded,
-                            color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.code_rounded, color: hsBlack, size: 20),
                       ),
                     ),
                   ),
@@ -793,79 +695,43 @@ class _SignUpFormState extends State<SignUpForm> {
                       children: [
                         Card(
                           elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                               child: Row(
                                 children: [
                                   aadhaarCardFFile == null
-                                      ? const Text(
-                                          "Aadhaar card front",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontType.MontserratMedium),
-                                        )
+                                      ? const Text("Aadhaar card front", style: TextStyle(fontFamily: FontType.MontserratMedium),)
                                       : Container(
                                           alignment: Alignment.centerLeft,
-                                          width: aadhaarCardFFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString()
-                                                      .split('.')
-                                                      .last ==
-                                                  'pdf'
+                                          width: aadhaarCardFFile!.path.split('/').last.toString().split('.').last == 'pdf'
                                               ? 200
                                               : 100,
                                           height: 50,
-                                          child: aadhaarCardFFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString()
-                                                      .split('.')
-                                                      .last ==
-                                                  'pdf'
-                                              ? Text(
-                                                  aadhaarCardFFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString(),
-                                                  style: const TextStyle(
-                                                      fontFamily: FontType
-                                                          .MontserratRegular),
-                                                )
-                                              : buildImageDialog(
-                                                  aadhaarCardFFile!,
-                                                  'Aadhaar card front')),
+                                          child: aadhaarCardFFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                              ? Text(aadhaarCardFFile!.path.split('/').last.toString(), style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                              : buildImageDialog(aadhaarCardFFile!, 'Aadhaar card front')),
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () async {
-                                        var aadhaarCardFrontFile =
-                                            await FileImagePicker()
-                                                .pickFileManager(context);
+                                        var aadhaarCardFrontFile = await FileImagePicker().pickFileManager(context);
                                         setState(() {
-                                          aadhaarCardFFile =
-                                              aadhaarCardFrontFile;
+                                          aadhaarCardFFile = aadhaarCardFrontFile;
                                         });
                                       },
-                                      icon:
-                                          const Icon(Icons.file_copy_rounded)),
+                                      icon: const Icon(Icons.file_copy_rounded)
+                                  ),
                                   IconButton(
                                       onPressed: () async {
-                                        var aadhaarCardFrontCamera =
-                                            await FileImagePicker()
-                                                .pickCamera();
+                                        var aadhaarCardFrontCamera = await FileImagePicker().pickCamera();
                                         setState(() {
-                                          aadhaarCardFFile =
-                                              aadhaarCardFrontCamera;
+                                          aadhaarCardFFile = aadhaarCardFrontCamera;
                                         });
                                       },
-                                      icon:
-                                          const Icon(Icons.camera_alt_rounded)),
+                                      icon: const Icon(Icons.camera_alt_rounded)
+                                  ),
                                 ],
                               ),
                             ),
@@ -873,78 +739,43 @@ class _SignUpFormState extends State<SignUpForm> {
                         ),
                         Card(
                           elevation: 5,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                               child: Row(
                                 children: [
                                   aadhaarCardBFile == null
-                                      ? const Text(
-                                          "Aadhaar card back",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontType.MontserratMedium),
-                                        )
+                                      ? const Text("Aadhaar card back", style: TextStyle(fontFamily: FontType.MontserratMedium),)
                                       : Container(
                                           alignment: Alignment.centerLeft,
-                                          width: aadhaarCardBFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString()
-                                                      .split('.')
-                                                      .last ==
-                                                  'pdf'
+                                          width: aadhaarCardBFile!.path.split('/').last.toString().split('.').last == 'pdf'
                                               ? 200
                                               : 100,
                                           height: 50,
-                                          child: aadhaarCardBFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString()
-                                                      .split('.')
-                                                      .last ==
-                                                  'pdf'
-                                              ? Text(
-                                                  aadhaarCardBFile!.path
-                                                      .split('/')
-                                                      .last
-                                                      .toString(),
-                                                  style: const TextStyle(
-                                                      fontFamily: FontType
-                                                          .MontserratRegular),
-                                                )
-                                              : buildImageDialog(
-                                                  aadhaarCardBFile!,
-                                                  'Aadhaar card back')),
+                                          child: aadhaarCardBFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                              ? Text(aadhaarCardBFile!.path.split('/').last.toString(), style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                              : buildImageDialog(aadhaarCardBFile!, 'Aadhaar card back')
+                                  ),
                                   const Spacer(),
                                   IconButton(
                                       onPressed: () async {
-                                        var aadhaarCardBack =
-                                            await FileImagePicker()
-                                                .pickFileManager(context);
+                                        var aadhaarCardBack = await FileImagePicker().pickFileManager(context);
                                         setState(() {
                                           aadhaarCardBFile = aadhaarCardBack;
                                         });
                                       },
-                                      icon:
-                                          const Icon(Icons.file_copy_rounded)),
+                                      icon: const Icon(Icons.file_copy_rounded)),
                                   IconButton(
                                       onPressed: () async {
-                                        var aadhaarCardBackCamera =
-                                            await FileImagePicker()
-                                                .pickCamera();
+                                        var aadhaarCardBackCamera = await FileImagePicker().pickCamera();
                                         setState(() {
-                                          aadhaarCardBFile =
-                                              aadhaarCardBackCamera;
+                                          aadhaarCardBFile = aadhaarCardBackCamera;
                                         });
                                       },
-                                      icon:
-                                          const Icon(Icons.camera_alt_rounded)),
+                                      icon: const Icon(Icons.camera_alt_rounded)
+                                  ),
                                 ],
                               ),
                             ),
@@ -963,14 +794,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12))),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -983,12 +808,11 @@ class _SignUpFormState extends State<SignUpForm> {
                           fontFamily: FontType.MontserratRegular,
                           fontSize: 14,
                         ),
-                        prefixIcon: const Icon(Icons.location_city,
-                            color: hsBlack, size: 20),
+                        prefixIcon: const Icon(Icons.location_city, color: hsBlack, size: 20),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter address';
+                          return '${ValidationText.address}';
                         }
                         return null;
                       }, // Set the validator function
@@ -998,58 +822,28 @@ class _SignUpFormState extends State<SignUpForm> {
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Card(
                       elevation: 5,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Row(
                             children: [
                               addressFile == null
-                                  ? const Text(
-                                      "Address proof",
-                                      style: TextStyle(
-                                          fontFamily:
-                                              FontType.MontserratMedium),
-                                    )
+                                  ? const Text("Address proof", style: TextStyle(fontFamily: FontType.MontserratMedium),)
                                   : Container(
                                       alignment: Alignment.centerLeft,
-                                      width: addressFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
+                                      width: addressFile!.path.split('/').last.toString().split('.').last == 'pdf'
                                           ? 200
                                           : 100,
                                       height: 50,
-                                      child: addressFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
-                                          ? Text(
-                                              addressFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontFamily: FontType
-                                                      .MontserratRegular),
-                                            )
-                                          : buildImageDialog(
-                                              addressFile!, 'Address proof')),
+                                      child: addressFile!.path.split('/').last.toString().split('.').last =='pdf'
+                                          ? Text(addressFile!.path.split('/').last.toString(), style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                          : buildImageDialog(addressFile!, 'Address proof')),
                               const Spacer(),
                               IconButton(
                                   onPressed: () async {
-                                    var addressProof = await FileImagePicker()
-                                        .pickFileManager(context);
+                                    var addressProof = await FileImagePicker().pickFileManager(context);
                                     setState(() {
                                       addressFile = addressProof;
                                     });
@@ -1057,8 +851,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   icon: const Icon(Icons.file_copy_rounded)),
                               IconButton(
                                   onPressed: () async {
-                                    var addressProofCamera =
-                                        await FileImagePicker().pickCamera();
+                                    var addressProofCamera = await FileImagePicker().pickCamera();
                                     setState(() {
                                       addressFile = addressProofCamera;
                                     });
@@ -1081,14 +874,8 @@ class _SignUpFormState extends State<SignUpForm> {
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.all(hsPaddingM),
                           border: const OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.12)),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Colors.black.withOpacity(0.12)),
-                          ),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                           label: const Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -1111,59 +898,28 @@ class _SignUpFormState extends State<SignUpForm> {
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Card(
                       elevation: 5,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Row(
                             children: [
                               panCardFile == null
-                                  ? const Text(
-                                      "PAN card",
-                                      style: TextStyle(
-                                          fontFamily:
-                                              FontType.MontserratMedium),
-                                    )
+                                  ? const Text("PAN card", style: TextStyle(fontFamily: FontType.MontserratMedium),)
                                   : Container(
                                       alignment: Alignment.centerLeft,
-                                      width: panCardFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
+                                      width: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf'
                                           ? 200
                                           : 100,
                                       height: 50,
-                                      child: panCardFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
-                                          ? Text(
-                                              panCardFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontFamily: FontType
-                                                      .MontserratRegular),
-                                            )
-                                          : buildImageDialog(
-                                              panCardFile!, 'PAN card')),
+                                      child: panCardFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                          ? Text(panCardFile!.path.split('/').last.toString(), style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                          : buildImageDialog(panCardFile!, 'PAN card')),
                               const Spacer(),
                               IconButton(
                                   onPressed: () async {
-                                    var panCardFileManger =
-                                        await FileImagePicker()
-                                            .pickFileManager(context);
+                                    var panCardFileManger = await FileImagePicker().pickFileManager(context);
                                     setState(() {
                                       panCardFile = panCardFileManger;
                                     });
@@ -1171,8 +927,7 @@ class _SignUpFormState extends State<SignUpForm> {
                                   icon: const Icon(Icons.file_copy_rounded)),
                               IconButton(
                                   onPressed: () async {
-                                    var panCardCamera =
-                                        await FileImagePicker().pickCamera();
+                                    var panCardCamera = await FileImagePicker().pickCamera();
                                     setState(() {
                                       panCardFile = panCardCamera;
                                     });
@@ -1195,14 +950,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(hsPaddingM),
                         border: const OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.black.withOpacity(0.12)),
-                        ),
+                        focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),),
                         label: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -1210,21 +959,19 @@ class _SignUpFormState extends State<SignUpForm> {
                             //Text(" *", style: TextStyle(color: Colors.red)),
                           ],
                         ),
-                        labelStyle: const TextStyle(
-                          color: Colors.black54,
-                          fontFamily: FontType.MontserratRegular,
-                          fontSize: 14,
-                        ),
-                        prefixIcon: const Icon(
-                            Icons.confirmation_number_rounded,
-                            color: hsBlack,
-                            size: 20),
+                        labelStyle: const TextStyle(color: Colors.black54, fontFamily: FontType.MontserratRegular, fontSize: 14,),
+                        prefixIcon: const Icon(Icons.confirmation_number_rounded, color: hsBlack, size: 20),
                       ),
+                      onChanged: (value) {
+                        _formKey.currentState?.validate();
+                      },
                       validator: (value) {
-                        if (value?.length != 15) {
-                          return 'Enter must be 15 characters long';
+                        if(value != null && value.isNotEmpty){
+                          if (value?.length != 15) {
+                            return '${ValidationText.gstLength}';
+                          }
+                          return null;
                         }
-                        return null;
                       },
                     ),
                   ),
@@ -1232,53 +979,24 @@ class _SignUpFormState extends State<SignUpForm> {
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Card(
                       elevation: 5,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           child: Row(
                             children: [
                               gstFile == null
-                                  ? const Text(
-                                      "GST img",
-                                      style: TextStyle(
-                                          fontFamily:
-                                              FontType.MontserratMedium),
-                                    )
+                                  ? const Text("GST img", style: TextStyle(fontFamily: FontType.MontserratMedium),)
                                   : Container(
                                       alignment: Alignment.centerLeft,
-                                      width: gstFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
+                                      width: gstFile!.path.split('/').last.toString().split('.').last == 'pdf'
                                           ? 200
                                           : 100,
                                       height: 50,
-                                      child: gstFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString()
-                                                  .split('.')
-                                                  .last ==
-                                              'pdf'
-                                          ? Text(
-                                              gstFile!.path
-                                                  .split('/')
-                                                  .last
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontFamily: FontType
-                                                      .MontserratRegular),
-                                            )
-                                          : buildImageDialog(
-                                              gstFile!, 'GST file')),
+                                      child: gstFile!.path.split('/').last.toString().split('.').last == 'pdf'
+                                          ? Text(gstFile!.path.split('/').last.toString(), style: const TextStyle(fontFamily: FontType.MontserratRegular),)
+                                          : buildImageDialog(gstFile!, 'GST file')),
                               const Spacer(),
                               IconButton(
                                   onPressed: () async {
@@ -1330,7 +1048,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter bank name';
+                          return '${ValidationText.bankName}';
                         }
                         return null;
                       }, // Set the validator function
@@ -1442,7 +1160,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Enter beneficiary name';
+                          return '${ValidationText.beneficiaryNm}';
                         }
                         return null;
                       }, // Set the validator function
@@ -1815,7 +1533,7 @@ class _SignUpFormState extends State<SignUpForm> {
         MapEntry("email_id", emailId.text ?? ''),
         MapEntry("password", password.text ?? ''),
         MapEntry("mobile", mobile.text ?? ''),
-        MapEntry("name", pharmacyName.text ?? ''), // name = pharmacy name
+        MapEntry("name", pharmacyName.text ?? ''),                              // name = pharmacy name(old) // name = person name (new 30-01)
         MapEntry("state_id", selectedStateId! ?? ''),
         MapEntry("city_id", selectedCityId! ?? ''),
         MapEntry("area_id", selectedAreaId! ?? ''),

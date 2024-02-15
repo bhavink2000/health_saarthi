@@ -45,7 +45,7 @@ class UpdateAppDialog{
                         ),
                         const SizedBox(height: 5,),
                         Text(
-                          "$updateMsg Version $appVersion is now available - \nYour current app version 1.0",
+                          "$updateMsg Version $appVersion is now available - \nYour current app version 2.04",
                           style: const TextStyle(
                               fontFamily: FontType.MontserratLight),
                         ),
@@ -59,7 +59,7 @@ class UpdateAppDialog{
                                 fontWeight: FontWeight.bold
                             )),
                         const SizedBox(height: 5),
-                        const Text("- Package problem solve, \n- Logout issue solve, \n- Sign up form update, \n- IFSC, PAN no, Account no",
+                        const Text("- Alert message changes, \n- Profile screen, \n- make smooth, \n- Fix some bugs",
                           style: TextStyle(fontFamily: FontType.MontserratLight),),
                         Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
                         Row(
@@ -181,4 +181,3 @@ class UpdateAppDialog{
   }
 
 }
-

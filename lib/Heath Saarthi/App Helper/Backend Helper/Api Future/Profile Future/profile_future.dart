@@ -21,6 +21,7 @@ class ProfileFuture{
     );
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
+      //log("profile response->${response.body}");
       if(jsonResponse['status'] == '402'){
         throw Exception(jsonResponse);
       }

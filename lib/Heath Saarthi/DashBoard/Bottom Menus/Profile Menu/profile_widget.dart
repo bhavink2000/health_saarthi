@@ -1,26 +1,21 @@
-
-// ignore_for_file: use_build_context_synchronously
-
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'package:get/instance_manager.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/profile_model.dart';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/bottom_navigation_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import '../../../App Helper/Backend Helper/Api Urls/api_urls.dart';
 import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import '../../../App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import '../../../App Helper/Frontend Helper/File Picker/file_image_picker.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
 import '../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../App Helper/Frontend Helper/Text Helper/test_helper.dart';
-import '../../../Authentication Screens/Splash Screen/splash_screen.dart';
 import '../../hs_dashboard.dart';
 import 'change_password.dart';
 
@@ -33,35 +28,11 @@ class ProfileWidgets extends StatefulWidget {
 
 class _ProfileWidgetsState extends State<ProfileWidgets> {
 
-  final firstNm = TextEditingController();
-  final mobile = TextEditingController();
-  final email = TextEditingController();
-  final address = TextEditingController();
-  final state = TextEditingController();
-  final city = TextEditingController();
-  final area = TextEditingController();
-  final branch = TextEditingController();
-
-  final bankNm = TextEditingController();
-  final ifscCode = TextEditingController();
-  final accountNo = TextEditingController();
-  var gstNo;
-
-  var pincode;
-  var panCard;
-  var addressProfe;
-  var aadharCardF;
-  var aadharCardB;
-  var chequeFile;
-  var gstFile;
-  var panCardImg;
-  var addressProfeImg;
-  var aadharCardFImg;
-  var aadharCardBImg;
-  var chequeImg;
-  var gstImg;
 
   GetAccessToken getAccessToken = GetAccessToken();
+
+  final bottomController = Get.put(BottomBarController());
+  final box = GetStorage();
   String? deviceToken;
 
   File? panCardChange;
@@ -72,7 +43,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   File? gstFileChange;
 
 
-  GlobalKey<State> _loadingDialogKey = GlobalKey<State>();
   bool mounted = false;
   var userStatus;
 
@@ -83,7 +53,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
     getAccessToken.checkAuthentication(context, setState);
     retrieveDeviceToken();
     functionCall();
-
   }
 
   functionCall()async{
@@ -110,129 +79,23 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-          child: TextField(
-            controller: firstNm,
-            readOnly: true,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(hsPaddingM),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              hintText: 'First name',
-              hintStyle: const TextStyle(
-                  color: Colors.black54,
-                  fontFamily: FontType.MontserratRegular,
-                  fontSize: 14
-              ),
-              prefixIcon: const Icon(Icons.person, color: hsBlack,size: 20),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-          child: TextField(
-            controller: mobile,
-            readOnly: true,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(hsPaddingM),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              hintText: 'Mobile no',
-              hintStyle: const TextStyle(
-                  color: Colors.black54,
-                  fontFamily: FontType.MontserratRegular,
-                  fontSize: 14
-              ),
-              prefixIcon: const Icon(Icons.mobile_friendly, color: hsBlack,size: 20),
-            ),
-          ),
-        ),
 
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-          child: TextField(
-            controller: email,
-            readOnly: true,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(hsPaddingM),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              hintText: 'Email id',
-              hintStyle: const TextStyle(
-                  color: Colors.black54,
-                  fontFamily: FontType.MontserratRegular,
-                  fontSize: 14
-              ),
-              prefixIcon: const Icon(Icons.email, color: hsBlack,size: 20),
-            ),
-          ),
-        ),
+        showTextField('${box.read('vendorNm')}',Icons.person),
+        showTextField('${box.read('name')}',Icons.home_max_rounded),
+        showTextField('${box.read('mobile')}',Icons.mobile_friendly),
+        showTextField('${box.read('email')}',Icons.email_rounded),
 
-        showTextField('Address', address,Icons.location_city),
-        showTextField('State', state,Icons.query_stats),
-        showTextField('City', city,Icons.reduce_capacity),
-        showTextField('Area', area,Icons.area_chart),
-        showTextField('Branch', branch,Icons.location_city),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-          child: TextField(
-            readOnly: true,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(hsPaddingM),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              hintText: '${(pincode == null || pincode == '') ? 'N/A' : '$pincode'}',
-              hintStyle: const TextStyle(
-                  color: Colors.black,
-                  fontFamily: FontType.MontserratRegular,
-                  fontSize: 14
-              ),
-              prefixIcon: const Icon(Icons.code_rounded, color: hsBlack,size: 20),
-            ),
-          ),
-        ),
-        showTextField('Bank name', bankNm,Icons.account_balance_rounded),
-        showTextField('IFSC code', ifscCode,Icons.account_tree_rounded),
-        showTextField('Account number', accountNo,Icons.account_balance_wallet_rounded),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-          child: TextField(
-            readOnly: true,
-            decoration: InputDecoration(
-              contentPadding: const EdgeInsets.all(hsPaddingM),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              ),
-              hintText: '${(gstNo == 'null' || gstNo == '') ? 'N/A' : '$gstNo'}',
-              hintStyle: const TextStyle(
-                  color: Colors.black,
-                  fontFamily: FontType.MontserratRegular,
-                  fontSize: 14
-              ),
-              prefixIcon: const Icon(Icons.app_registration_rounded, color: hsBlack,size: 20),
-            ),
-          ),
-        ),
+        showTextField('${box.read('address')}',Icons.location_city),
+        showTextField('${box.read('stateNm')}',Icons.query_stats),
+        showTextField('${box.read('cityNm')}',Icons.reduce_capacity),
+        showTextField('${box.read('areaNm')}',Icons.area_chart),
+        showTextField('${box.read('branchNm')}', Icons.location_city),
+        showTextField('${box.read('pincode')}', Icons.code),
+
+        showTextField('${box.read('bankNm')}', Icons.account_balance_rounded),
+        showTextField('${box.read('ifsc')}', Icons.account_tree_rounded),
+        showTextField('${box.read('accountNo')}',Icons.account_balance_wallet_rounded),
+        showTextField('${box.read('gstNo')}',Icons.app_registration_rounded),
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: InkWell(
@@ -260,14 +123,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                 child: ExpansionTile(
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("Pan Card",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
-                  subtitle: Text(panCardChange == null ? '$panCard' : 'Pan Card is picked',
+                  subtitle: Text(panCardChange == null ? '${box.read('pancard')}' : 'Pan Card is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: panCardChange == null ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -285,11 +148,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    panCardImg == 'null' ? const Padding(
+                    box.read('pancardImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) : Image.network(
-                      '$panCardImg',
+                      '${box.read('pancardImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -322,14 +185,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("Aadhaar card front",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                   subtitle: Text(aadhaarCardFChange == null
-                      ? '$aadharCardF' : 'Aadhaar card front is picked',
+                      ? '${box.read('aadhaarF')}' : 'Aadhaar card front is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: aadhaarCardFChange == null  ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -347,11 +210,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    aadharCardFImg == 'null' ? const Padding(
+                    box.read('aadhaarFImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) :Image.network(
-                      '$aadharCardFImg',
+                      '${box.read('aadhaarFImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -384,14 +247,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("Aadhaar card back",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                   subtitle: Text(aadhaarCardBChange == null
-                      ? '$aadharCardB' : 'Aadhaar card back is picked',
+                      ? '${box.read('aadhaarB')}' : 'Aadhaar card back is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: aadhaarCardBChange == null ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -409,11 +272,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    aadharCardBImg == 'null' ? const Padding(
+                    box.read('aadhaarBImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) : Image.network(
-                      '$aadharCardBImg',
+                      '${box.read('aadhaarBImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -446,14 +309,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("Address proof",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                   subtitle: Text(addressChange == null
-                      ? '$addressProfe' : 'Address proof is picked',
+                      ? '${box.read('addressProof')}' : 'Address proof is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: addressChange == null ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -471,11 +334,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    addressProfeImg == 'null' ? const Padding(
+                    box.read('addressImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) : Image.network(
-                      '$addressProfeImg',
+                      '${box.read('addressImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -508,14 +371,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("Cheque image",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                   subtitle: Text(chequeChange == null
-                      ? '$chequeFile' : 'Cheque img is picked',
+                      ? '${box.read('chequeImage')}' : 'Cheque img is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: chequeChange == null ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -533,11 +396,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    chequeImg == 'null' ? const Padding(
+                    box.read('chequeImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) : Image.network(
-                      '$chequeImg',
+                      '${box.read('chequeImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -570,14 +433,14 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                   tilePadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   title: const Text("GST file image",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 12)),
                   subtitle: Text(gstFileChange == null
-                      ? '${gstFile == 'null' ? 'N/A' : gstFile}' : 'GST img is picked',
+                      ? '${box.read('gstImage') == 'null' ? 'N/A' : box.read('gstImage')}' : 'GST img is picked',
                     style: TextStyle(
                         fontFamily: FontType.MontserratRegular,
                         color: gstFileChange == null ? Colors.black87 : hsPrime,
                         fontSize: 10),
                   ),
                   trailing: Container(
-                    width: 110,
+                    width: 115,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -595,11 +458,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
                     ),
                   ),
                   children: [
-                    gstImg == 'null' ? const Padding(
+                    box.read('gstImg') == 'null' ? const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Image not found"),
                     ) : Image.network(
-                      '$gstImg',
+                      '${box.read('gstImg')}',
                       fit: BoxFit.fill,
                       loadingBuilder: (BuildContext? context, Widget? child, ImageChunkEvent? loadingProgress) {
                         if (loadingProgress == null) return child!;
@@ -640,11 +503,11 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
     );
   }
 
-  Widget showTextField(var label, TextEditingController controller, IconData iconData){
+  Widget showTextField(var label,IconData iconData){
     return Padding(
       padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
       child: TextField(
-        controller: controller,
+        //controller: controller,
         readOnly: true,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
@@ -731,152 +594,29 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
         var msg = data['message'];
         if (data['status'] == 200) {
           GetXSnackBarMsg.getSuccessMsg('$msg');
+          bottomController.index.value = 0;
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Home()));
-        }
-      } else if (response.statusCode == 400) {
-        var data = response.data;
-        var errorMsg = data['message'];
-        if (data['status'] == 400) {
-          GetXSnackBarMsg.getWarningMsg('$errorMsg');
-          Navigator.pop(context);
+        }else if(data['status'] == '402'){
+          GetXSnackBarMsg.getWarningMsg('$msg');
+          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
         }
       }
     } catch (e) {
-
       print("Error uploading documents: ${e}");
       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().selectDocuments}');
       Navigator.pop(context);
     }
   }
 
-  void _showLoadingDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: Center(
-            key: _loadingDialogKey,
-            child: const CenterLoading(),
-          ),
-        );
-      },
-    );
-  }
-
-  // void getProfile() async {
-  //   try {
-  //     _showLoadingDialog(context);
-  //     var pModel;
-  //     pModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-  //     if (mounted && pModel != null) {
-  //       setState(() {
-  //         userStatus = pModel.data.status.toString();
-  //         firstNm.text = pModel.data.name.toString();
-  //         mobile.text = pModel.data.mobile.toString();
-  //         email.text = pModel.data.emailId.toString();
-  //         address.text = pModel.data.address ?? '';
-  //         state.text = pModel.data.state.stateName.toString();
-  //         city.text = pModel.data.city.cityName.toString();
-  //         area.text = pModel.data.area.areaName.toString();
-  //         branch.text = pModel.data.costCenter.branchName.toString();
-  //         pincode = pModel.data.pincode;
-  //
-  //         bankNm.text = pModel.data.bankName.toString();
-  //         ifscCode.text = pModel.data.ifsc.toString();
-  //         accountNo.text = pModel.data.accountNumber.toString();
-  //         gstNo = pModel.data.gstNumber.toString();
-  //
-  //         panCard = pModel.data.pancard.toString();
-  //         addressProfe = pModel.data.addressProof.toString();
-  //         aadharCardF = pModel.data.aadharFront.toString();
-  //         aadharCardB = pModel.data.aadharBack.toString();
-  //         chequeFile = pModel.data.chequeImage.toString();
-  //
-  //         gstFile = pModel.data.gstImage.toString();
-  //
-  //         panCardImg = pModel.data.pancardImg.toString();
-  //         addressProfeImg = pModel.data.addressProofImg.toString();
-  //         aadharCardFImg = pModel.data.aadharFrontImg.toString();
-  //         aadharCardBImg = pModel.data.aadharBackImg.toString();
-  //         chequeImg = pModel.data.chequeImg.toString();
-  //         gstImg = pModel.data.gstImg.toString();
-  //       });
-  //     }
-  //     if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-  //       Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-  //     }
-  //   }
-  //   catch (e) {
-  //     log('catch Error: $e');
-  //     if (e is Exception && e.toString().contains('402')) {
-  //       var errorMessage = e.toString();
-  //       var messageIndex = errorMessage.indexOf('message: ');
-  //       if (messageIndex != -1) {
-  //         errorMessage = errorMessage.substring(messageIndex + 'message: '.length);
-  //         errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
-  //         GetXSnackBarMsg.getWarningMsg(errorMessage);
-  //         DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-  //         if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-  //           Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-  //         }
-  //       }
-  //       else {
-  //         log('catch Error: else $e');
-  //         DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-  //         if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-  //           Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-
   ProfileModel? profileModel;
   Future<void> getProfile() async {
     try {
-      _showLoadingDialog(context);
-      //var pModel;
       profileModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
       if (mounted && profileModel != null && profileModel?.data != null) {
         setState(() {
-          // Check for null before accessing properties
           userStatus = profileModel?.data?.status?.toString() ?? '';
-          firstNm.text = profileModel?.data?.name?.toString() ?? '';
-          mobile.text = profileModel?.data?.mobile?.toString() ?? '';
-          email.text = profileModel?.data?.emailId?.toString() ?? '';
-          address.text = profileModel?.data?.address ?? '';
-          state.text = profileModel?.data?.state?.stateName?.toString() ?? '';
-          city.text = profileModel?.data?.city?.cityName?.toString() ?? '';
-          area.text = profileModel?.data?.area?.areaName?.toString() ?? '';
-          branch.text = profileModel?.data?.costCenter?.branchName?.toString() ?? '';
-          pincode = profileModel?.data?.pincode ?? '';
-
-          bankNm.text = profileModel?.data?.bankName?.toString() ?? '';
-          ifscCode.text = profileModel?.data?.ifsc?.toString() ?? '';
-          accountNo.text = profileModel?.data?.accountNumber?.toString() ?? '';
-          gstNo = profileModel?.data?.gstNumber?.toString() ?? '';
-
-          panCard = profileModel?.data?.pancard?.toString() ?? '';
-          addressProfe = profileModel?.data?.addressProof?.toString() ?? '';
-          aadharCardF = profileModel?.data?.aadharFront?.toString() ?? '';
-          aadharCardB = profileModel?.data?.aadharBack?.toString() ?? '';
-          chequeFile = profileModel?.data?.chequeImage?.toString() ?? '';
-
-          gstFile = profileModel?.data?.gstImage?.toString() ?? '';
-
-          panCardImg = profileModel?.data?.pancardImg?.toString() ?? '';
-          addressProfeImg = profileModel?.data?.addressProofImg?.toString() ?? '';
-          aadharCardFImg = profileModel?.data?.aadharFrontImg?.toString() ?? '';
-          aadharCardBImg = profileModel?.data?.aadharBackImg?.toString() ?? '';
-          chequeImg = profileModel?.data?.chequeImg?.toString() ?? '';
-          gstImg = profileModel?.data?.gstImg?.toString() ?? '';
           mounted = false;
         });
-      }
-      if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-        Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
       }
     } catch (e) {
       log('catch Error: $e');
@@ -888,18 +628,13 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
           GetXSnackBarMsg.getWarningMsg(errorMessage);
           DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-          if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-            Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-          }
         } else {
           log('catch Error: else $e');
           DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
-          if (Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).canPop()) {
-            Navigator.of(_loadingDialogKey.currentContext!, rootNavigator: true).pop();
-          }
         }
       }
     }
   }
 
 }
+

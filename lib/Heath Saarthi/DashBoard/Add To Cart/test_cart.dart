@@ -62,6 +62,7 @@ class _TestCartState extends State<TestCart> {
   var grossAmount = '';
   var totalAmount = '';
   var netAmount = '';
+  var visitingCharge = '';
   bool callPromo = false;
   var isApplyPromo;
   var applyPromo;
@@ -90,7 +91,7 @@ class _TestCartState extends State<TestCart> {
   cartScreenCall()async{
     await getUserStatus();
     await homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId);
-    await cartCalculation();
+    await cartCalculation(sBranchId);
   }
   bool pageLoad = false;
   var userStatus;
@@ -139,7 +140,7 @@ class _TestCartState extends State<TestCart> {
       resizeToAvoidBottomInset: true,
       bottomSheet: pageLoad == true ? Container(
         width: MediaQuery.of(context).size.width.w,
-        height: MediaQuery.of(context).size.height / 3.8.h,
+        height: MediaQuery.of(context).size.height / 3.15.h,
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.only(
               topRight: Radius.circular(0),topLeft: Radius.circular(0)
@@ -182,7 +183,29 @@ class _TestCartState extends State<TestCart> {
                     width: MediaQuery.of(context).size.width / 3.w,
                     height: MediaQuery.of(context).size.height / 25.h,
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                    child: Text("$totalAmount",style: const TextStyle(
+                    child: Text("\u{20B9}${totalAmount.isEmpty ? 0 : totalAmount}",style: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: FontType.MontserratRegular,
+                        fontSize: 16,
+                      fontWeight: FontWeight.bold
+                    )),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.fromLTRB(15, 5, 15, 0),
+              child: Row(
+                children: [
+                  Text("Visiting charges",style: TextStyle(fontFamily: FontType.MontserratLight,fontSize: 14.sp,color: Colors.white),),
+                  const Spacer(),
+                  Container(
+                    alignment: Alignment.centerRight,
+                    width: MediaQuery.of(context).size.width / 3.w,
+                    height: MediaQuery.of(context).size.height / 25.h,
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                    child: Text("\u{20B9}${visitingCharge.isEmpty ? 0 : visitingCharge}",style: const TextStyle(
                         color: Colors.white,
                         fontFamily: FontType.MontserratRegular,
                         fontSize: 16,
@@ -227,7 +250,7 @@ class _TestCartState extends State<TestCart> {
                     onPressed: (){
                       promoApply.clear();
                       _showLoadingDialog();
-                      cartCalculation().then((_) {
+                      cartCalculation('${selectedBranchId == null ? sBranchId : selectedBranchId}').then((_) {
                         setState(() {
                           callPromo = false;
                         });
@@ -278,7 +301,7 @@ class _TestCartState extends State<TestCart> {
                       }
                       else{
                         _showLoadingDialog();
-                        cartCalculation().then((_) {
+                        cartCalculation('${selectedBranchId == null ? sBranchId : selectedBranchId}').then((_) {
                           setState(() {
                             callPromo = true;
                           });
@@ -298,9 +321,9 @@ class _TestCartState extends State<TestCart> {
             const Spacer(),
             Container(
               width: MediaQuery.of(context).size.width.w,
-              height: MediaQuery.of(context).size.height / 14.sp,
+              //height: MediaQuery.of(context).size.height / 14.sp,
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(0),color: Colors.white),
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -365,7 +388,7 @@ class _TestCartState extends State<TestCart> {
                         elevation: userStatus == 0 ? 0 : 5,
                         shadowColor: userStatus == 0 ? Colors.white : Colors.green.withOpacity(0.5),
                         child: Container(
-                            width: MediaQuery.of(context).size.width / 2.9.w,
+                            width: MediaQuery.of(context).size.width / 2.7.w,
                             padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(5),color:
                             userStatus == 0 ? Colors.orange.withOpacity(0.5) : Colors.orange
@@ -432,10 +455,11 @@ class _TestCartState extends State<TestCart> {
                         onChanged: (value) {
                           homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId).then((value){
                             Future.delayed(const Duration(seconds: 1),(){
-                              cartCalculation();
+                              cartCalculation(sBranchId);
                             });
                           });
                           setState(() {
+                            selectedBranchId = null;
                             selectLocation = value;
                             showDLocation = false;
                             stateList.clear();
@@ -782,7 +806,7 @@ class _TestCartState extends State<TestCart> {
                                 });
                                 homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,selectedBranchId).then((value){
                                   Future.delayed(const Duration(seconds: 1),(){
-                                    cartCalculation();
+                                    cartCalculation(selectedBranchId);
                                   });
                                 });
                               }
@@ -1035,7 +1059,9 @@ class _TestCartState extends State<TestCart> {
                                                           ),
                                                           onChanged: (newValue) {
                                                             testD = newValue;
-                                                            cartCalculation();
+                                                            log('sBranchId ->$sBranchId');
+                                                            log('selected BranchId ->$selectedBranchId');
+                                                            cartCalculation('${selectedBranchId == null ? sBranchId : selectedBranchId}');
                                                           },
                                                           items: [
                                                             const DropdownMenuItem(
@@ -1074,39 +1100,6 @@ class _TestCartState extends State<TestCart> {
                                         ),
                                       ),
                                       const SizedBox(height: 10),
-
-                                      // value.cartList.data!.data!.cartItems!.testItems!.isNotEmpty ? CartItemWidget(
-                                      //   cartItem: value.cartList.data?.data?.cartItems?.testItems,
-                                      //   accessToken: getAccessToken.access_token,
-                                      //   cartItemLabel: 'Tests',
-                                      //   addOnPressed: (){
-                                      //     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
-                                      //   },
-                                      //   globalSettingItemSlot: value.cartList.data?.data?.globalSettingTestSlot,
-                                      //   itemDiscount: 'Test discount',
-                                      //   dropdownValue: testD,
-                                      //   dropdownOnChange: (newValue) {
-                                      //     testD = newValue;
-                                      //     cartCalculation();
-                                      //   },
-                                      // ) : value.cartList.data!.data!.cartItems!.profileItems!.isEmpty ? Center(
-                                      //   child: Column(
-                                      //     children: [
-                                      //       const SizedBox(height: 10),
-                                      //       const Text("Add package",style: TextStyle(fontFamily: FontType.MontserratMedium)),
-                                      //       ElevatedButton(
-                                      //           style: ElevatedButton.styleFrom(
-                                      //               backgroundColor: hsPrime,
-                                      //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
-                                      //           ),
-                                      //           onPressed: (){
-                                      //             Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
-                                      //           },
-                                      //           child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
-                                      //       )
-                                      //     ],
-                                      //   ),
-                                      // ) : Container(),
 
                                       value.cartList.data!.data!.cartItems!.packageItems!.isNotEmpty
                                           ? Padding(
@@ -1278,7 +1271,10 @@ class _TestCartState extends State<TestCart> {
                                                           ),
                                                           onChanged: (newValue) {
                                                             packageD = newValue;
-                                                            cartCalculation();
+                                                            log('sBranchId ->$sBranchId');
+                                                            log('selected BranchId ->$selectedBranchId');
+                                                            cartCalculation('${selectedBranchId == null ? sBranchId : selectedBranchId}');
+                                                            //cartCalculation('null');
                                                           },
                                                           items: [
                                                             const DropdownMenuItem(
@@ -1484,7 +1480,10 @@ class _TestCartState extends State<TestCart> {
                                                           ),
                                                           onChanged: (newValue) {
                                                             profileD = newValue;
-                                                            cartCalculation();
+                                                            log('sBranchId ->$sBranchId');
+                                                            log('selected BranchId ->$selectedBranchId');
+                                                            cartCalculation('${selectedBranchId == null ? sBranchId : selectedBranchId}');
+                                                            //cartCalculation('null');
                                                           },
                                                           items: [
                                                             const DropdownMenuItem(
@@ -1546,8 +1545,7 @@ class _TestCartState extends State<TestCart> {
   }
 
   var bodyMsg;
-  Future<CartCalculationModel?> cartCalculation() async {
-    log('cart cal promo--->>${promoApply.text}');
+  Future<CartCalculationModel?> cartCalculation(var branchIdChange) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${getAccessToken.access_token}',
@@ -1560,11 +1558,12 @@ class _TestCartState extends State<TestCart> {
             'test_discount_id': testD?.toString() ?? '',
             'package_discount_id': packageD?.toString() ?? '',
             'profile_discount_id': profileD?.toString() ?? '',
-            'promo_offer_code': promoApply.text ?? ''
+            'promo_offer_code': promoApply.text ?? '',
+            'cost_center_id': branchIdChange.toString(),
           }
       );
       final responseData = json.decode(response.body);
-      log("--------->>>>responsedata->$responseData");
+      log("--------->>>>cart Calculation -> $responseData");
       var bodyStatus = responseData['status'];
       bodyMsg = responseData['message'];
       if (bodyStatus == 200) {
@@ -1572,6 +1571,7 @@ class _TestCartState extends State<TestCart> {
           isApplyPromo = responseData['data']['isApplyPromo'];
           applyPromo = responseData['data']['applyPromo'];
           netAmount = responseData['data']['netAmount'].toString();
+          visitingCharge = responseData['data']['home_collection_charge'].toString();
           grossAmount = responseData['data']['grossAmount'].toString();
           totalAmount = responseData['data']['discountAmount'].toString();
         });
@@ -1581,6 +1581,7 @@ class _TestCartState extends State<TestCart> {
           isApplyPromo = responseData['data']['isApplyPromo'];
           applyPromo = responseData['data']['applyPromo'];
           netAmount = responseData['data']['netAmount'].toString();
+          visitingCharge = responseData['data']['home_collection_charge'].toString();
           grossAmount = responseData['data']['grossAmount'].toString();
           totalAmount = responseData['data']['discountAmount'].toString();
           promoApply.text = '';
