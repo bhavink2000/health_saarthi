@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 
 import '../Font & Color Helper/font_&_color_helper.dart';
 
@@ -42,7 +43,7 @@ class ShowBoxHelper extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 10),
-                                  const Image(image: AssetImage("assets/Home/test.png"),width: 30),
+                                  Image(image: AppIcons.test,width: 30),
                                   const SizedBox(width: 10),
                                   Text("Lab Test",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
@@ -65,7 +66,7 @@ class ShowBoxHelper extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  const Image(image: AssetImage("assets/Home/test_sub.png"),width: 12),
+                                  Image(image: AppIcons.testSub,width: 12),
                                   SizedBox(width: 10.w,),
                                   const Text("View Test",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
@@ -101,7 +102,7 @@ class ShowBoxHelper extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 10),
-                                  const Image(image: AssetImage("assets/Home/package.png"),width: 30),
+                                  Image(image: AppIcons.package,width: 30),
                                   const SizedBox(width: 10),
                                   Text("Package",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
@@ -124,7 +125,7 @@ class ShowBoxHelper extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  const Image(image: AssetImage("assets/Home/package_sub.png"),width: 12),
+                                  Image(image: AppIcons.packageSub,width: 12),
                                   SizedBox(width: 10.w,),
                                   const Text("View Package",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
@@ -165,7 +166,7 @@ class ShowBoxHelper extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 10),
-                                  const Image(image: AssetImage("assets/Home/prescription.png"),width: 30),
+                                  Image(image: AppIcons.prescription,width: 30),
                                   const SizedBox(width: 10),
                                   Text("Prescription",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
@@ -188,7 +189,7 @@ class ShowBoxHelper extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  const Image(image: AssetImage("assets/Home/prescription_sub.png"),width: 12),
+                                  Image(image: AppIcons.prescriptionSub,width: 12),
                                   SizedBox(width: 10.w,),
                                   const Text("Attach File",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],
@@ -224,7 +225,7 @@ class ShowBoxHelper extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   const SizedBox(width: 10),
-                                  const Image(image: AssetImage("assets/Home/booking.png"),width: 30),
+                                  Image(image: AppIcons.instant,width: 30),
                                   SizedBox(width: 10.w),
                                   Text("Instant Book",style: TextStyle(fontSize: 12.sp,color: Colors.black,fontFamily: FontType.MontserratMedium,)),
                                   SizedBox(width: 1.w),
@@ -247,7 +248,7 @@ class ShowBoxHelper extends StatelessWidget {
                               ),
                               child: Row(
                                 children: [
-                                  const Image(image: AssetImage("assets/Home/booking_sub.png"),width: 12),
+                                  Image(image: AppIcons.instantSub,width: 12),
                                   SizedBox(width: 10.w,),
                                   const Text("Book Now!",style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 10),)
                                 ],

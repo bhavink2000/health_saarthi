@@ -24,12 +24,12 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
   final fromDate = TextEditingController();
   final toDate = TextEditingController();
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Map data = {
       'from_date': fromDate.text,
       'to_date': toDate.text,
@@ -37,7 +37,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
     print("data->$data");
     Future.delayed(const Duration(seconds: 1),(){
       setState(() {
-        homeMenusProvider.fetchBookingHistory(getAccessToken.access_token, data);
+        homeMenusProvider.fetchBookingHistory(data);
       });
     });
   }
@@ -147,7 +147,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                           'to_date': toDate.text,
                         };
                         print("Map ->$data");
-                        homeMenusProvider.fetchBookingHistory(getAccessToken.access_token, data);
+                        homeMenusProvider.fetchBookingHistory(data);
                       }
                     },
                     child: Container(
@@ -177,9 +177,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         case Status.error:
                           return value.bookingList.message == '402'
                               ? TokenExpiredHelper()
-                              : Center(
-                            child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
-                          );
+                              : Center(child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),);
                         case Status.completed:
                           return value.bookingList.data!.bookingData!.bookingItems!.isNotEmpty ? ListView.builder(
                             itemCount: value.bookingList.data!.bookingData?.bookingItems?.length,
@@ -253,6 +251,8 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
       ),
     );
   }
+
+
   Widget showRowContent(var lebal, var value){
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

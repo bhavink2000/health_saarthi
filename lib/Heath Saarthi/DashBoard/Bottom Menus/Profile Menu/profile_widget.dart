@@ -29,7 +29,7 @@ class ProfileWidgets extends StatefulWidget {
 class _ProfileWidgetsState extends State<ProfileWidgets> {
 
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
 
   final bottomController = Get.put(BottomBarController());
   final box = GetStorage();
@@ -50,8 +50,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   void initState(){
     super.initState();
     mounted = true;
-    getAccessToken.checkAuthentication(context, setState);
-    retrieveDeviceToken();
+    //getAccessToken.checkAuthentication(context, setState);
     functionCall();
   }
 
@@ -67,12 +66,6 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   void dispose() {
     mounted = false;
     super.dispose();
-  }
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
   }
 
   @override
@@ -100,7 +93,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
           child: InkWell(
             onTap: (){
-              Navigator.push(context, MaterialPageRoute(builder: (context)=>ChangePasswordScreen(accessToken: getAccessToken.access_token)));
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>ChangePasswordScreen(accessToken: box.read('accessToken'))));
             },
             child: Card(
               elevation: 5,
@@ -584,7 +577,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
         options: Options(
           headers: {
             'Accept': 'application/json',
-            'Authorization': 'Bearer ${getAccessToken.access_token}',
+            'Authorization': 'Bearer ${box.read('accessToken')}',
           },
         ),
       );
@@ -598,7 +591,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Home()));
         }else if(data['status'] == '402'){
           GetXSnackBarMsg.getWarningMsg('$msg');
-          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+          DeviceInfo().logoutUser(context);
         }
       }
     } catch (e) {
@@ -611,7 +604,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
   ProfileModel? profileModel;
   Future<void> getProfile() async {
     try {
-      profileModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      profileModel = await ProfileFuture().fetchProfile();
       if (mounted && profileModel != null && profileModel?.data != null) {
         setState(() {
           userStatus = profileModel?.data?.status?.toString() ?? '';
@@ -627,10 +620,10 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           errorMessage = errorMessage.substring(messageIndex + 'message: '.length);
           errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
           GetXSnackBarMsg.getWarningMsg(errorMessage);
-          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+          DeviceInfo().logoutUser(context);
         } else {
           log('catch Error: else $e');
-          DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+          DeviceInfo().logoutUser(context);
         }
       }
     }

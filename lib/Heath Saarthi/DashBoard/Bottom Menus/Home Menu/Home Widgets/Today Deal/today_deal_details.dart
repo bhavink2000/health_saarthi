@@ -30,19 +30,19 @@ class TodayDealDetails extends StatefulWidget {
 
 class _TodayDealDetailsState extends State<TodayDealDetails> {
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   int curentindex = 0;
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Map dealData = {
       'id': widget.dealId.toString(),
     };
     Future.delayed(const Duration(seconds: 2),(){
       setState(() {
-        homeMenusProvider.fetchTodayDealDetails(1, getAccessToken.access_token, dealData);
+        homeMenusProvider.fetchTodayDealDetails(1,dealData);
       });
     });
   }
@@ -130,9 +130,9 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                                             GetXSnackBarMsg.getWarningMsg('Already booked this item');
                                                           }
                                                           else{
-                                                            CartFuture().addToCartTest(getAccessToken.access_token, todayDealI.id, context).then((value) {
+                                                            CartFuture().addToCartTest(todayDealI.id).then((value) {
                                                               setState(() {
-                                                                homeMenusProvider.fetchTodayDealDetails(curentindex + 1, getAccessToken.access_token,dealData);
+                                                                homeMenusProvider.fetchTodayDealDetails(curentindex + 1, dealData);
                                                               });
                                                             });
                                                           }
@@ -168,7 +168,7 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
                                           setState(() {
                                             curentindex = page - 1;
                                           });
-                                          homeMenusProvider.fetchTodayDealDetails(curentindex + 1, getAccessToken.access_token,dealData);
+                                          homeMenusProvider.fetchTodayDealDetails(curentindex + 1, dealData);
                                         },
                                       ) : Container(),
                                     ],

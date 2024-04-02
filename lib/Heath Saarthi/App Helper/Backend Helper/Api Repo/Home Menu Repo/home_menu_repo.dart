@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,40 +21,43 @@ import '../../Models/Home Menu/test_model.dart';
 class HomeMenuRepo{
   ApiServicesTypePostGet apiServicesTypePostGet = ApiServicePostGet();
 
-  Future<TestModel> testData(var index,var access_token, var testData)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.testListUrls}?page=$index", access_token, testData);
-    print("Response Test->$response");
-    if (response['status'] == '402') {
-      //GetXSnackBarMsg.getWarningMsg('${response['message']}');
-      throw response['status'];
-    } else {
-      try {
-        return response = TestModel.fromJson(response);
-      } catch (e) {
-        print("test Data error->$e");
-        throw e;
-      }
-    }
-  }
+  final box = GetStorage();
 
-  Future<PackageModel> packageData(var index,var access_token, var packageData)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", access_token, packageData);
-    print("Response Package->$response");
-    if (response['status'] == '402') {
-      //GetXSnackBarMsg.getWarningMsg('${response['message']}');
-      throw response['status'];
-    } else {
-      try {
-        return response = PackageModel.fromJson(response);
-      } catch (e) {
-        print("package Data error->$e");
-        throw e;
-      }
-    }
-  }
-  Future<dynamic> popularPackageData(var index, var access_token, var packageData) async {
-    dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.popularPackage}", access_token);
-    print("Response Popular Package->$response");
+  // Future<TestModel> testData(var index,var access_token, var testData)async{
+  //   dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.testListUrls}?page=$index", access_token, testData);
+  //   print("Response Test->$response");
+  //   if (response['status'] == '402') {
+  //     //GetXSnackBarMsg.getWarningMsg('${response['message']}');
+  //     throw response['status'];
+  //   } else {
+  //     try {
+  //       return response = TestModel.fromJson(response);
+  //     } catch (e) {
+  //       print("test Data error->$e");
+  //       throw e;
+  //     }
+  //   }
+  // }
+  //
+  // Future<PackageModel> packageData(var index,var packageData)async{
+  //   dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.packageListUrls}?page=$index", box.read('accessToken'), packageData);
+  //   print("Response Package->$response");
+  //   if (response['status'] == '402') {
+  //     //GetXSnackBarMsg.getWarningMsg('${response['message']}');
+  //     throw response['status'];
+  //   } else {
+  //     try {
+  //       return response = PackageModel.fromJson(response);
+  //     } catch (e) {
+  //       print("package Data error->$e");
+  //       throw e;
+  //     }
+  //   }
+  // }
+
+  Future<dynamic> popularPackageData(var index,var packageData) async {
+    dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.popularPackage}", box.read('accessToken'));
+    log("Response Popular Package->$response");
 
     if (response['status'] == '402') {
       throw response['status'];
@@ -65,9 +70,10 @@ class HomeMenuRepo{
       }
     }
   }
-  Future<BannerModel> bannerData(var index, var access_token) async {
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bannerUrls}", access_token, '');
-    print("Response Banner->$response");
+
+  Future<BannerModel> bannerData(var index) async {
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bannerUrls}", box.read('accessToken'), '');
+    log("Response Banner->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {
@@ -79,9 +85,9 @@ class HomeMenuRepo{
     }
   }
 
-  Future<TodayDealModel> todayDealData(var index,var access_token)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealUrls}", access_token, '');
-    print("Response Today Deal->$response");
+  Future<TodayDealModel> todayDealData(var index)async{
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealUrls}", box.read('accessToken'), '');
+    log("Response Today Deal->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {
@@ -93,9 +99,9 @@ class HomeMenuRepo{
     }
   }
 
-  Future<TodayDealDetailsModel> todayDealDetailsData(var index,var access_token, var data)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealDetailsUrls}?page=$index", access_token, data);
-    print("Response Today Deal Details->$response");
+  Future<TodayDealDetailsModel> todayDealDetailsData(var index,var data)async{
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.todayDealDetailsUrls}?page=$index", box.read('accessToken'), data);
+    log("Response Today Deal Details->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {
@@ -107,9 +113,9 @@ class HomeMenuRepo{
     }
   }
 
-  Future<CartModel> cartData(var index, var access_token, BuildContext context, var data) async {
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.cartItemsUrls}", access_token, data);
-    print("Response cart -> $response");
+  Future<CartModel> cartData(var index, BuildContext context, var data) async {
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.cartItemsUrls}", box.read('accessToken'), data);
+    log("Response cart -> $response");
 
     if (response['status'] == '402') {
       throw response['status'];
@@ -127,9 +133,9 @@ class HomeMenuRepo{
     }
   }
 
-  Future<BookingHistoryModel> bookingData(var access_token, var data)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bookingHistoryUrls}", access_token, data);
-    print("Response Booking->$response");
+  Future<BookingHistoryModel> bookingData(var data)async{
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.bookingHistoryUrls}", box.read('accessToken'), data);
+    log("Response Booking->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {
@@ -141,9 +147,9 @@ class HomeMenuRepo{
     }
   }
 
-  Future<FaqsModel> faqsData(var access_token)async{
-    dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.faqsUrls}", access_token);
-    print("Response faq->$response");
+  Future<FaqsModel> faqsData()async{
+    dynamic response = await apiServicesTypePostGet.aftergetApiResponse("${ApiUrls.faqsUrls}", box.read('accessToken'));
+    log("Response faq->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {
@@ -155,9 +161,9 @@ class HomeMenuRepo{
       }
     }
   }
-  Future<NotificationModel> notificationData(var access_token)async{
-    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.notificationUrls}", access_token, '');
-    print("Response Notification->$response");
+  Future<NotificationModel> notificationData()async{
+    dynamic response = await apiServicesTypePostGet.afterpostApiResponse("${ApiUrls.notificationUrls}", box.read('accessToken'), '');
+    log("Response Notification->$response");
     if (response['status'] == '402') {
       throw response['status'];
     } else {

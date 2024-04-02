@@ -16,7 +16,7 @@ class CartFuture{
   var count, amount;
 
   final box = GetStorage();
-  Future<CartResponseModel> addToCartTest(accessToken, testId, BuildContext context) async {
+  Future<CartResponseModel> addToCartTest(testId) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${box.read('accessToken')}',
@@ -52,10 +52,10 @@ class CartFuture{
     }
   }
 
-  Future<CartResponseModel> removeToCartTest(accessToken, testId, BuildContext context) async {
+  Future<CartResponseModel> removeToCartTest(testId, BuildContext context) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(
@@ -84,10 +84,10 @@ class CartFuture{
     }
   }
 
-  Future<List<MobileData>> getMobileNumber(var accessToken, var mobileNumber) async {
+  Future<List<MobileData>> getMobileNumber(var mobileNumber) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(
@@ -112,10 +112,10 @@ class CartFuture{
     }
   }
 
-  Future<PatientModel> fetchPatientProfile(var accessToken, var patientId) async {
+  Future<PatientModel> fetchPatientProfile(var patientId) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     var response = await http.post(
         Uri.parse(ApiUrls.patientProfileUrls),

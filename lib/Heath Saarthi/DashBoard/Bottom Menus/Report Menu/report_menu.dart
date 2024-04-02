@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -32,11 +33,13 @@ class _ReportMenuState extends State<ReportMenu> {
   List<DayData>? dayData;
   List<MonthData>? monthData;
   List<YearData>? yearData;
-  GetAccessToken getAccessToken = GetAccessToken();
+
+  final box = GetStorage();
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
       fetchDay('');
     });
@@ -593,7 +596,7 @@ class _ReportMenuState extends State<ReportMenu> {
 
   Future<void> fetchDay(var monthYear) async {
     try {
-      final value = await ChartFuture().fetchDayData(getAccessToken.access_token,monthYear ?? '');
+      final value = await ChartFuture().fetchDayData(monthYear ?? '');
       setState(() {
         dayData = value.dayData;
       });
@@ -603,7 +606,7 @@ class _ReportMenuState extends State<ReportMenu> {
   }
   Future<void> fetchMonth(var yearDate) async {
     try {
-      final value = await ChartFuture().fetchMonthData(getAccessToken.access_token, yearDate ?? '');
+      final value = await ChartFuture().fetchMonthData(yearDate ?? '');
       setState(() {
         monthData = value.monthData;
       });
@@ -613,7 +616,7 @@ class _ReportMenuState extends State<ReportMenu> {
   }
   Future<void> fetchYear(fromD, toD) async {
     try {
-      final value = await ChartFuture().fetchYearData(getAccessToken.access_token, fromD ?? '' , toD ?? '');
+      final value = await ChartFuture().fetchYearData(fromD ?? '' , toD ?? '');
       setState(() {
         yearData = value.yearData;
       });

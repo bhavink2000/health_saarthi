@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../App Helper/Frontend Helper/UI Helper/app_icons_helper.dart';
 import '../../../App Helper/Getx Helper/user_status_check.dart';
 import '../../hs_dashboard.dart';
 
@@ -44,12 +45,12 @@ class _ThankYouPageState extends State<ThankYouPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               const SizedBox(height: 50,),
-              const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 200,),
+              Image(image: AppIcons.hsLogo,width: 200,),
               const SizedBox(height: 50,),
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height / 5,
-                child: const Image(image: AssetImage("assets/Gif/thank_you.gif"),width: 200,),
+                child: Image(image: AppIcons.thankYou,width: 200,),
               ),
               SizedBox(height: screenHeight * 0.1),
               Text(
@@ -123,7 +124,7 @@ class _ThankYouPageState extends State<ThankYouPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150,),
+                    Image(image: AppIcons.hsTransparent,width: 150),
                     const Padding(
                       padding: EdgeInsets.all(5),
                       child: Text(

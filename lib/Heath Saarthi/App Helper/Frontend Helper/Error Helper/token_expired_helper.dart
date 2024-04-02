@@ -14,25 +14,17 @@ class TokenExpiredHelper extends StatefulWidget {
 }
 
 class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
-  GetAccessToken getAccessToken = GetAccessToken();
-  String? deviceToken;
+  //GetAccessToken getAccessToken = GetAccessToken();
 
   @override
   void initState() {
     super.initState();
-    retrieveDeviceToken();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
-      DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+      DeviceInfo().logoutUser(context);
     });
   }
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    print("SharedPreferences DeviceToken->$deviceToken");
-  }
+
   @override
   Widget build(BuildContext context) {
     return Container();

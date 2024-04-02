@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,9 +14,10 @@ import '../Font & Color Helper/font_&_color_helper.dart';
 import '../Snack Bar Msg/getx_snackbar_msg.dart';
 
 class UpdateShowDialog {
-  var userDataSession;
 
-  void updateShow(BuildContext context, var deviceT, var accessT) {
+  final box = GetStorage();
+
+  void updateShow(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -36,11 +39,10 @@ class UpdateShowDialog {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Align(
+                        Align(
                           alignment: Alignment.center,
                           child: Image(
-                            image: AssetImage(
-                                'assets/health_saarthi_logo_transparent_bg.png'),
+                            image: AppIcons.hsTransparent,
                             width: 150,
                           ),
                         ),
@@ -90,7 +92,7 @@ class UpdateShowDialog {
                           children: [
                             TextButton(
                               onPressed: () async {
-                                await handleLogout(context, deviceT, accessT);
+                                await handleLogout(context);
                               },
                               child: Text(
                                 "Logout",
@@ -116,16 +118,12 @@ class UpdateShowDialog {
     );
   }
 
-  Future<void> handleLogout(BuildContext context, var deviceToken, var accessToken) async {
-    userDataSession = Provider.of<UserDataSession>(context, listen: false);
+  Future<void> handleLogout(BuildContext context) async {
+    //userDataSession = Provider.of<UserDataSession>(context, listen: false);
     try {
-      await logoutUser(accessToken);
-      await userDataSession.removeUserData();
-      await DeviceInfo().deleteDeviceToken(
-        context,
-        deviceToken,
-        accessToken,
-      );
+      await logoutUser();
+      await AuthenticationManager().removeToken();
+      await DeviceInfo().deleteDeviceToken(context);
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(builder: (context) => const SplashScreen()),
             (Route<dynamic> route) => false,
@@ -136,10 +134,10 @@ class UpdateShowDialog {
     }
   }
 
-  Future<void> logoutUser(var accessToken) async {
+  Future<void> logoutUser() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${accessToken}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(

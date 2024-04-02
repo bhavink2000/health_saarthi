@@ -6,6 +6,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/user_status_check.dart';
 import 'package:http/http.dart' as http;
@@ -46,7 +47,8 @@ class InstantBooking extends StatefulWidget {
 
 class _InstantBookingState extends State<InstantBooking> {
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+  //GetAccessToken getAccessToken = GetAccessToken();
   final locationController = Get.put(LocationCall());
   final patientController = Get.put(PatientDetailsGetX());
   final userController = Get.put(UserStatusCheckController());
@@ -68,7 +70,7 @@ class _InstantBookingState extends State<InstantBooking> {
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     locationController.cityList.clear();
     locationController.areaList.clear();
@@ -100,7 +102,7 @@ class _InstantBookingState extends State<InstantBooking> {
       body: SafeArea(
         child: Column(
           children: [
-            const AppBarHelper(appBarLabel: 'Instant Booking'),
+            AppBarHelper(appBarLabel: 'Instant Booking'),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
             Obx(() => Expanded(
               child: locationController.stateLoading.value == false ? SingleChildScrollView(
@@ -413,7 +415,7 @@ class _InstantBookingState extends State<InstantBooking> {
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
-      var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
+      var pModel = await CartFuture().fetchPatientProfile(patientId);
       pharmacyId = pModel.patientData!.pharmacyId.toString();
       pName.text = pModel.patientData!.name ?? '';
       pDob.text = pModel.patientData!.dateOfBirth ?? '';
@@ -454,7 +456,7 @@ class _InstantBookingState extends State<InstantBooking> {
 
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
 
     final Map<String, dynamic> requestBody = {

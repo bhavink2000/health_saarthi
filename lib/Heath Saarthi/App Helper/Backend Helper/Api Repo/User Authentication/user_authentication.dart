@@ -4,6 +4,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:dio/dio.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Authentication%20Models/login_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -15,25 +16,25 @@ import '../../Api Service/api_service_type_post_get.dart';
 class UserAuthentication {
   ApiServicesTypePostGet apiServicesTypePostGet = ApiServicePostGet();
 
-  Future<dynamic> loginApi(dynamic data) async {
-    try {
-      dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
-      log('response->$response');
-      return response;
-    } catch (e) {
-      log('in login catch ->$e');
-      if(e.toString() == 'Internet connection problem'){
-        //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
-      }
-      else{
-
-      }
-      //log("throw e->$e");
-      throw e;
-    }
-  }
-
   // Future<dynamic> loginApi(dynamic data) async {
+  //   try {
+  //     dynamic response = await apiServicesTypePostGet.postApiResponse(ApiUrls.loginUrl, data);
+  //     log('response->$response');
+  //     return response;
+  //   } catch (e) {
+  //     log('in login catch ->$e');
+  //     if(e.toString() == 'Internet connection problem'){
+  //       //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
+  //     }
+  //     else{
+  //
+  //     }
+  //     //log("throw e->$e");
+  //     throw e;
+  //   }
+  // }
+
+  // Future<LoginModel> loginAPI(dynamic data) async {
   //   try {
   //     final response = await http.post(
   //       Uri.parse(ApiUrls.loginUrl),
@@ -53,7 +54,7 @@ class UserAuthentication {
   //       return jsonDecode(response.body);
   //     } else {
   //       log('HTTP Error: ${response.statusCode}');
-  //       throw Exception('Failed to load data');
+  //       throw Exception('${response.statusCode}');
   //     }
   //   } catch (e) {
   //     log('in login catch -> $e');
@@ -61,29 +62,21 @@ class UserAuthentication {
   //   }
   // }
 
-  // Future<dynamic> loginApi(dynamic data) async {
-  //   try {
-  //     final response = await Dio().post(
-  //         ApiUrls.loginUrl,
-  //         data: data
-  //     );
-  //
-  //     log('response -> ${response.data}');
-  //
-  //     return response.data;
-  //   } catch (e) {
-  //     log('in login catch -> $e');
-  //     if (e is DioError) {
-  //       if (e.error.toString() == 'Internet connection problem') {
-  //         // Handle internet connection problem
-  //         // GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
-  //       } else {
-  //         // Handle other Dio errors
-  //       }
-  //     }
-  //     throw e;
-  //   }
-  // }
+  Future<dynamic> loginApi(dynamic data) async {
+    var url = Uri.parse('${ApiUrls.loginUrl}');
+    var response = await http.post(
+      url,
+      body: data,
+    );
+
+    if (response.statusCode == 200) {
+     log('in if');
+      return response;
+    } else {
+     log('in else');
+      print('Failed: ${response.reasonPhrase}');
+    }
+  }
 
   Future<dynamic> getForgotPass(var mobileNo,var pass, var cPass, BuildContext context) async {
     try {
@@ -99,7 +92,7 @@ class UserAuthentication {
       print("forgot data->$forgotData");
       if(forgotData['status'] == 200){
         var msg = forgotData['message'];
-        GetXSnackBarMsg.getWarningMsg('$msg');
+        GetXSnackBarMsg.getSuccessMsg('$msg');
         return forgotData['status'];
       }
       else if(forgotData['status'] == 400){

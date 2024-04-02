@@ -1,313 +1,164 @@
-//
-// import 'dart:developer';
-// import 'package:get/get.dart';
-// import 'package:get_storage/get_storage.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/Dashboard%20Getx/BottomMenu%20Getx/bottom_menu_getx.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_item_details.dart';
-// import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Notification%20Menu/notification_menu.dart';
-// import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
-// import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
-// import '../../../Add To Cart/test_cart.dart';
-//
-// class TestListItemsGetX extends GetWidget<BottomMenuGetX> {
-//   TestListItemsGetX({super.key});
-//   //GetAccessToken getAccessToken = GetAccessToken();
-//
-//   final box = GetStorage();
-//
-//   int currentIndex = 0;
-//
-//   BottomMenuGetX bottomMenuGetX = Get.put(BottomMenuGetX());
-//
-//   final testSearch = TextEditingController();
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return PopScope(
-//       canPop: true,
-//       onPopInvoked: (value){
-//         bottomMenuGetX.index = 1;
-//         bottomMenuGetX.fetchTest();
-//       },
-//       child: Scaffold(
-//         backgroundColor: Colors.white,
-//         resizeToAvoidBottomInset: false,
-//         body: SafeArea(
-//           child: Column(
-//             children: [
-//               Column(
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-//                     child: Row(
-//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                       children: [
-//                         Container(
-//                             child: Row(
-//                               children: [
-//                                 IconButton(onPressed: (){
-//                                   bottomMenuGetX.index = 1;
-//                                   bottomMenuGetX.fetchTest();
-//                                   Navigator.pop(context);
-//                                 }, icon: const Icon(Icons.arrow_back,color: Colors.black,size: 24)),
-//                                 SizedBox(width: 10.w),
-//                                 Text("Test Items",style: TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.black,fontSize: 14.sp,fontWeight: FontWeight.bold),)
-//                               ],
-//                             )
-//                         ),
-//                         Row(
-//                           children: [
-//                             IconButton(onPressed: (){
-//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-//                             }, icon: Icon(Icons.shopping_cart_outlined,color: hsPrime,size: 24)),
-//                             IconButton(onPressed: (){
-//                               Navigator.push(context, MaterialPageRoute(builder: (context)=>const NotificationMenu()));
-//                             }, icon: Icon(Icons.circle_notifications_rounded,color: hsPrime,size: 24)),
-//                           ],
-//                         )
-//                       ],
-//                     ),
-//                   ),
-//                   Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
-//                   Padding(
-//                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-//                     child: Card(
-//                       elevation: 0,
-//                       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(4))),
-//                       child: Container(
-//                         height: MediaQuery.of(context).size.height / 19.h,
-//                         decoration: BoxDecoration(
-//                             color: Colors.white.withOpacity(0.2),
-//                             border: Border.all(color: Colors.grey.withOpacity(1),width: 1),
-//                             borderRadius: const BorderRadius.all(Radius.circular(4))
-//                         ),
-//                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-//                         child: TextFormField(
-//                           controller: testSearch,
-//                           decoration: InputDecoration(
-//                             contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-//                             border: InputBorder.none,
-//                             hintText: 'Search for Tests, Package',
-//                             hintStyle: const TextStyle(fontSize: 12, fontFamily: FontType.MontserratRegular),
-//                             suffixIcon: InkWell(
-//                               onTap: () {
-//                                 testSearch.clear();
-//                                 bottomMenuGetX.data = {
-//                                   'search': '',
-//                                 };
-//                                 bottomMenuGetX.fetchTest();
-//                               },
-//                               child: const Icon(Icons.close),
-//                             ),
-//                             focusColor: hsPrime,
-//                           ),
-//                           onChanged: (value) {
-//                             if(testSearch.text.length == 3){
-//                               bottomMenuGetX.data = {
-//                                 'search': testSearch.text,
-//                               };
-//                               bottomMenuGetX.fetchTest();
-//                             }
-//                             else{
-//                               log('write 3 letter at list');
-//                             }
-//                           },
-//                         ),
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               Expanded(
-//                 child: Container(
-//                     width: MediaQuery.of(context).size.width.w,
-//                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-//                     child: Obx(()=>
-//                         Column(
-//                           children: [
-//                             Expanded(
-//                               child: Container(
-//                                 width: MediaQuery.of(context).size.width,
-//                                 child: AnimationLimiter(
-//                                   child: bottomMenuGetX.testLoading.value == true
-//                                       ? CenterLoading()
-//                                       : AnimationLimiter(
-//                                     child: ListView.builder(
-//                                       itemCount: bottomMenuGetX.testModel!.testData!.data!.length,
-//                                       itemBuilder: (context, index){
-//                                         var testI = bottomMenuGetX.testModel!.testData!.data![index];
-//                                         return AnimationConfiguration.staggeredList(
-//                                           position: index,
-//                                           duration: const Duration(milliseconds: 1000),
-//                                           child: Column(
-//                                             children: [
-//                                               FadeInAnimation(
-//                                                 child: Container(
-//                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-//                                                   child: InkWell(
-//                                                     onTap: (){
-//                                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
-//                                                         testId: testI.id,
-//                                                         accessToken: box.read('accessToken'),
-//                                                       )));
-//                                                     },
-//                                                     child: Card(
-//                                                       elevation: 5,
-//                                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//                                                       shadowColor: Colors.grey.withOpacity(0.5),
-//                                                       child: Column(
-//                                                         crossAxisAlignment: CrossAxisAlignment.start,
-//                                                         children: [
-//                                                           Container(
-//                                                             width: MediaQuery.of(context).size.width.w,
-//                                                             decoration: BoxDecoration(
-//                                                               borderRadius: const BorderRadius.only(
-//                                                                   topLeft: Radius.circular(10),topRight: Radius.circular(10)
-//                                                               ),
-//                                                               color: hsPrime.withOpacity(0.5),
-//                                                             ),
-//                                                             padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-//                                                             child: Text(
-//                                                                 testI.serviceName!,
-//                                                                 style: TextStyle(
-//                                                                     fontFamily: FontType.MontserratMedium,
-//                                                                     fontSize: 15.sp,color: Colors.white
-//                                                                 )
-//                                                             ),
-//                                                           ),
-//                                                           Padding(
-//                                                             padding: const EdgeInsets.fromLTRB(10, 5, 0, 0),
-//                                                             child: Column(
-//                                                               crossAxisAlignment: CrossAxisAlignment.start,
-//                                                               children: [
-//                                                                 //Divider(color: hsOne,thickness: 1),
-//                                                                 Container(
-//                                                                     width: MediaQuery.of(context).size.width / 1.5.w,
-//                                                                     child: Text("${testI.specimenVolume == null ? 'N/A': testI.specimenVolume}",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)
-//                                                                 ),
-//                                                                 Row(
-//                                                                   children: [
-//                                                                     Text("\u{20B9}${testI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
-//                                                                     const Spacer(),
-//                                                                     InkWell(
-//                                                                       onTap: (){
-//                                                                         if(testI.bookedStatus == 1){
-//                                                                           GetXSnackBarMsg.getWarningMsg('Already booked this item');
-//                                                                         }
-//                                                                         else{
-//                                                                           CartFuture().addToCartTest(box.read('accessToken'), testI.id, context).then((value) {
-//                                                                             bottomMenuGetX.index + 1;
-//                                                                             bottomMenuGetX.data = {
-//                                                                               'search': testSearch.text,
-//                                                                             };
-//                                                                             bottomMenuGetX.fetchTest();
-//                                                                           });
-//                                                                         }
-//                                                                       },
-//                                                                       child: Container(
-//                                                                         decoration: BoxDecoration(borderRadius: const BorderRadius.only(
-//                                                                             bottomRight: Radius.circular(10),topLeft: Radius.circular(10)
-//                                                                         ),
-//                                                                             color: testI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
-//                                                                         ),
-//                                                                         padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-//                                                                         child: Text(
-//                                                                           testI.bookedStatus == 1 ? "Booked" :"+ Book Now",
-//                                                                           style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
-//                                                                       ),
-//                                                                     )
-//                                                                   ],
-//                                                                 ),
-//                                                               ],
-//                                                             ),
-//                                                           )
-//                                                         ],
-//                                                       ),
-//                                                     ),
-//                                                   ),
-//                                                 ),
-//                                               ),
-//
-//                                               if (bottomMenuGetX.testModel!.testData!.data!.length == 10 || index + 1 != bottomMenuGetX.testModel!.testData!.data!.length)
-//                                                 Container()
-//                                               else
-//                                                 SizedBox(height: MediaQuery.of(context).size.height / 1.9),
-//
-//                                               index + 1 == bottomMenuGetX.testModel!.testData!.data!.length ? CustomPaginationWidget(
-//                                                 currentPage: currentIndex,
-//                                                 lastPage: bottomMenuGetX.testModel!.testData!.lastPage!,
-//                                                 onPageChange: (page) {
-//                                                   currentIndex = page - 1;
-//                                                   bottomMenuGetX.index = currentIndex + 1;
-//                                                   bottomMenuGetX.fetchTest();
-//                                                 },
-//                                               ) : Container(),
-//                                             ],
-//                                           ),
-//                                         );
-//                                       },
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                             Container(
-//                               width: MediaQuery.of(context).size.width,
-//                               height: MediaQuery.of(context).size.height / 12.h,
-//                               color: hsPrime,
-//                               child: InkWell(
-//                                 onTap: (){
-//                                   Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-//                                 },
-//                                 child: Row(
-//                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                   children: [
-//                                     Padding(
-//                                       padding: const EdgeInsets.fromLTRB(15, 5, 10, 5),
-//                                       child: Text(
-//                                         //"Total Cart Items [ ${value.testList.data!.cartData!.count} ]",
-//                                         "Total Cart Items [ ${bottomMenuGetX.testModel!.cartData!.count} ]",
-//                                         style: const TextStyle(fontFamily: FontType.MontserratMedium,color: Colors.white),
-//                                       ),
-//                                     ),
-//                                     Padding(
-//                                       padding: const EdgeInsets.fromLTRB(0, 8, 10, 8),
-//                                       child: Container(
-//                                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(15),color: Colors.white),
-//                                         child: Padding(
-//                                           padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
-//                                           child: Row(
-//                                             children: [
-//                                               Text(
-//                                                "\u{20B9}${bottomMenuGetX.testModel?.cartData?.amount}",
-//                                                 style: TextStyle(fontFamily: FontType.MontserratRegular,color: hsPrime,fontWeight: FontWeight.bold),
-//                                               ),
-//                                               SizedBox(width: 5.w),
-//                                               Icon(Icons.arrow_forward_ios_rounded,size: 15,color: hsPrime),
-//                                             ],
-//                                           ),
-//                                         ),
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               ),
-//                             )
-//                           ],
-//                         )
-//                     )
-//                 ),
-//               )
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import '../../../../App Helper/Backend Helper/Api Future/Cart Future/cart_future.dart';
+import '../../../../App Helper/Backend Helper/Api Future/Data Future/data_future.dart';
+import '../../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../../../App Helper/Frontend Helper/Loading Helper/shimmer_loading.dart';
+import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_pagination_widget.dart';
+import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
+import '../../../../App Helper/Widget Helper/appbar_helper.dart';
+import '../../../../App Helper/Widget Helper/search_textfield.dart';
+import '../../../Add To Cart/test_cart.dart';
+import '../Home Widgets/test_package_data_healper.dart';
+import 'test_item_details.dart';
+
+class TestDataNew extends StatefulWidget {
+  const TestDataNew({super.key});
+
+  @override
+  State<TestDataNew> createState() => _TestDataNewState();
+}
+
+class _TestDataNewState extends State<TestDataNew> {
+
+  final controller = Get.find<DataFuture>();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.fetchTest(0);
+  }
+
+  @override
+  void dispose() {
+    controller.testIndex.value = 0;
+    controller.testSearch.clear();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppBarHelper(appBarLabel: 'Test Items'),
+            Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: SearchTextField(
+                  controller: controller.testSearch,
+                  onTap: (){
+                    controller.testSearch.clear();
+                    controller.fetchTest(1);
+                  },
+                  onChanged: (value){
+                    controller.fetchTest(1);
+                  },
+                )
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Obx(
+                  ()=> controller.testLoading.value
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: ShimmerHelper(
+                          child: ListView.builder(
+                            itemCount: 10,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                  width: Get.width,
+                                  decoration: BoxDecoration(color: hsPrime.withOpacity(0.5), borderRadius: BorderRadius.circular(5)),
+                                  margin: const EdgeInsets.symmetric(vertical: 5), height: 100
+                              );
+                            },
+                          )),
+                    )
+                  : controller.testModel.value.testData!.data!.isEmpty
+                   ? Container(
+                      width: Get.width,
+                      height: Get.height / 1.3,
+                      alignment: Alignment.center,
+                      child: Text("Test Not found your branch",
+                          style: TextStyle(fontFamily: FontType.MontserratRegular, fontSize: 16), textAlign: TextAlign.center
+                      ),
+                    )
+                   : AnimationLimiter(
+                      child: ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: controller.testModel.value.testData?.data!.length,
+                        itemBuilder: (context, index){
+                          var testI = controller.testModel.value.testData?.data![index];
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: Duration(milliseconds: 800),
+                            child: Column(
+                              children: [
+                                FadeInAnimation(
+                                  child: TestPackageData(
+                                    onTap: (){
+                                      Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
+                                        testId: testI.id,
+                                      )));
+                                    },
+                                    serviceName: testI!.serviceName,
+                                    specimenVolume: testI.specimenVolume,
+                                    mrpAmount: testI.mrpAmount,
+                                    bookedStatus: testI.bookedStatus.toString(),
+                                    bookedOnTap: (){
+                                      if (testI.bookedStatus == 1) {
+                                        GetXSnackBarMsg.getWarningMsg('Already booked this item');
+                                      } else {
+                                        CartFuture().addToCartTest(testI.id).then((value) {
+                                          controller.fetchTest(controller.testIndex.value + 1);
+                                        });
+                                      }
+                                    },
+                                  )
+                                ),
+                                if (controller.testModel.value.testData?.data!.length == 10 || index + 1 != controller.testModel.value.testData?.data?.length)
+                                  Container()
+                                else
+                                  SizedBox(height: Get.height / 1.9),
+                                index + 1 == controller.testModel.value.testData!.data!.length
+                                    ? CustomPaginationWidget(
+                                  currentPage: controller.testIndex.value,
+                                  lastPage: controller.testModel.value.testData!.lastPage!,
+                                  onPageChange: (page) {
+                                    controller.testIndex.value = page - 1;
+                                    controller.fetchTest(controller.testIndex.value + 1);
+                                  },
+                                ) : Container(),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                ),
+              ),
+            ),
+            Obx(
+              () => controller.testLoading.value
+              ? Container()
+              : BottomBarHelper(
+                count: controller.testModel.value.cartData?.count,
+                amount: controller.testModel.value.cartData?.amount,
+                onTap: (){
+                  Get.to(()=>TestCart());
+                },
+              )
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}

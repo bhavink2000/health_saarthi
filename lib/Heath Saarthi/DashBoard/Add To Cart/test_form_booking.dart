@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -61,11 +62,13 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   final pMobile = TextEditingController();
 
   List<File> prescriptionFiles = [];
-  GetAccessToken getAccessToken = GetAccessToken();
+
+  final box = GetStorage();
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     functionCalling();
   }
@@ -394,7 +397,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
-      var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
+      var pModel = await CartFuture().fetchPatientProfile(patientId);
       setState(() {
         pharmacyId = pModel.patientData!.pharmacyId.toString();
         pName.text = pModel.patientData!.name ?? '';
@@ -422,7 +425,7 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
 
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     final Map<String, dynamic> requestBody = {
       "pharmacy_patient_id": patientController.selectedMobileNo?.toString() ?? '',
@@ -524,42 +527,6 @@ class _TestBookingScreenState extends State<TestBookingScreen> {
       GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
       Navigator.pop(context);
     }
-  }
-
-  Widget showTextField(var label, TextEditingController controller, IconData iconData, String? Function(String?) validator) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-      child: TextFormField(
-        controller: controller,
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.all(hsPaddingM),
-          border: const OutlineInputBorder(),
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              borderRadius: BorderRadius.circular(15)
-          ),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black.withOpacity(0.12)),
-              borderRadius: BorderRadius.circular(15)
-          ),
-          label: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("$label"),
-              const Text(" *", style: TextStyle(color: Colors.red)),
-            ],
-          ),
-          labelStyle: const TextStyle(
-            color: Colors.black54,
-            fontFamily: FontType.MontserratRegular,
-            fontSize: 14,
-          ),
-          prefixIcon: Icon(iconData, color: hsBlack, size: 20),
-        ),
-        validator: validator, // Set the validator function
-      ),
-    );
   }
 
   Widget locationField(var lName){

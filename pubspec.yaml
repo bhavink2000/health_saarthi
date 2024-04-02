@@ -40,6 +40,7 @@ dependencies:
 
   # app ui helper package's
   flutter_staggered_animations: ^1.1.1
+  shimmer: ^3.0.0
   flutter_screenutil: ^5.9.0
   syncfusion_flutter_charts: ^24.2.4
   carousel_slider: ^4.2.1

@@ -9,6 +9,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/patient_details_getx.dart';
@@ -59,7 +60,9 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   final userController = Get.put(UserStatusCheckController());
   final netController = Get.put(NetworkController());
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+
+  //GetAccessToken getAccessToken = GetAccessToken();
 
   final emailId = TextEditingController();
   final address = TextEditingController();
@@ -76,7 +79,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     locationController.cityList.clear();
     locationController.areaList.clear();
@@ -111,7 +114,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const AppBarHelper(appBarLabel: 'Attach Prescription'),
+            AppBarHelper(appBarLabel: 'Attach Prescription'),
             Divider(color: Colors.grey.withOpacity(0.5),thickness: 1),
             Obx(() => Expanded(
               child: locationController.stateLoading.value == false ? SingleChildScrollView(
@@ -524,7 +527,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
-      var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
+      var pModel = await CartFuture().fetchPatientProfile(patientId);
       pharmacyId = pModel.patientData!.pharmacyId.toString();
       pName.text = pModel.patientData!.name ?? '';
       pDob.text = pModel.patientData!.dateOfBirth ?? '';
@@ -566,7 +569,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
 
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
 
     final Map<String, dynamic> requestBody = {

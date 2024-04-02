@@ -41,7 +41,7 @@ class AccountStatus{
                 Navigator.pop(context); // Close the dialog box
               },
               style: ElevatedButton.styleFrom(
-                primary: hsPrime,
+                backgroundColor: hsPrime,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

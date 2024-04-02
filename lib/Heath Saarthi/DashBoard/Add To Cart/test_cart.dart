@@ -5,10 +5,14 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Add%20To%20Cart/cart_item_widget.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_items_getx.dart';
+import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Test%20List/test_item_getx.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,8 +47,6 @@ class TestCart extends StatefulWidget {
 
 class _TestCartState extends State<TestCart> {
 
-  BottomMenuGetX bottomMenuGetX = Get.put(BottomMenuGetX());
-
   String? sStateName;
   String? sCityName;
   String? sAreaName;
@@ -75,14 +77,14 @@ class _TestCartState extends State<TestCart> {
   bool areaLoading = false;
   bool branchLoading = false;
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+  //GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   int curentindex = 0;
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
-    retrieveDeviceToken();
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
       cartScreenCall();
     });
@@ -90,7 +92,7 @@ class _TestCartState extends State<TestCart> {
 
   cartScreenCall()async{
     await getUserStatus();
-    await homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId);
+    await homeMenusProvider.fetchCart(1, context,sBranchId);
     await cartCalculation(sBranchId);
   }
   bool pageLoad = false;
@@ -98,7 +100,7 @@ class _TestCartState extends State<TestCart> {
   var deviceToken;
   getUserStatus()async{
     try{
-      dynamic userData = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      dynamic userData = await ProfileFuture().fetchProfile();
       setState(() {
         userStatus = userData.data.status;
         sStateId = userData.data.state.id.toString();
@@ -115,24 +117,17 @@ class _TestCartState extends State<TestCart> {
     catch(e){
       print("get User Status Error->$e");
       if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+        DeviceInfo().logoutUser(context);
       }
       setState(() {
         pageLoad = true;
       });
     }
   }
-
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    log("SharedPreferences DeviceToken->$deviceToken");
-  }
-
   String? selectLocation;
   final GlobalKey<FormState> _locationFormKey = GlobalKey<FormState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -453,7 +448,7 @@ class _TestCartState extends State<TestCart> {
                         value: 'cLocation',
                         groupValue: selectLocation,
                         onChanged: (value) {
-                          homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,sBranchId).then((value){
+                          homeMenusProvider.fetchCart(1, context,sBranchId).then((value){
                             Future.delayed(const Duration(seconds: 1),(){
                               cartCalculation(sBranchId);
                             });
@@ -804,7 +799,7 @@ class _TestCartState extends State<TestCart> {
                                   showDLocation = false;
                                   setLocation = true;
                                 });
-                                homeMenusProvider.fetchCart(1, getAccessToken.access_token, context,selectedBranchId).then((value){
+                                homeMenusProvider.fetchCart(1, context,selectedBranchId).then((value){
                                   Future.delayed(const Duration(seconds: 1),(){
                                     cartCalculation(selectedBranchId);
                                   });
@@ -903,7 +898,7 @@ class _TestCartState extends State<TestCart> {
                                                     const Spacer(),
                                                     InkWell(
                                                       onTap: (){
-                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestDataNew()));
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -963,7 +958,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
+                                                                                      Image(image: AppIcons.hsTransparent,width: 150,),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
@@ -982,7 +977,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo!.id, context).then((value) async{
+                                                                                              CartFuture().removeToCartTest(cartI.testItemInfo!.id, context).then((value) async{
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1092,7 +1087,7 @@ class _TestCartState extends State<TestCart> {
                                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
                                                 ),
                                                 onPressed: (){
-                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestListItems()));
+                                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TestDataNew()));
                                                 },
                                                 child: const Text("+ Test",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
                                             )
@@ -1118,7 +1113,7 @@ class _TestCartState extends State<TestCart> {
                                                     const Spacer(),
                                                     InkWell(
                                                       onTap: (){
-                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageDataNew()));
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -1175,7 +1170,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
+                                                                                      Image(image: AppIcons.hsTransparent,width: 150,),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                                                                                         child: Text(
@@ -1194,7 +1189,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartP?.packageItemInfo!.id, context).then((value){}).then((value){
+                                                                                              CartFuture().removeToCartTest(cartP?.packageItemInfo!.id, context).then((value){}).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1306,7 +1301,7 @@ class _TestCartState extends State<TestCart> {
                                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))
                                               ),
                                               onPressed: (){
-                                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
+                                                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageDataNew()));
                                               },
                                               child: const Text("+ Package",style: TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white))
                                             )
@@ -1328,7 +1323,7 @@ class _TestCartState extends State<TestCart> {
                                                     const Spacer(),
                                                     InkWell(
                                                       onTap: (){
-                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageListItems()));
+                                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const PackageDataNew()));
                                                       },
                                                       child: Container(
                                                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
@@ -1384,7 +1379,7 @@ class _TestCartState extends State<TestCart> {
                                                                                   child: Column(
                                                                                     mainAxisSize: MainAxisSize.min,
                                                                                     children: <Widget>[
-                                                                                      Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150),
+                                                                                      Image(image: AppIcons.hsTransparent,width: 150,),
                                                                                       const Padding(
                                                                                         padding: EdgeInsets.all(5),
                                                                                         child: Text(
@@ -1403,7 +1398,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(getAccessToken.access_token, cartI.profileItemInfo!.id, context).then((value){
+                                                                                              CartFuture().removeToCartTest(cartI.profileItemInfo!.id, context).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1548,7 +1543,7 @@ class _TestCartState extends State<TestCart> {
   Future<CartCalculationModel?> cartCalculation(var branchIdChange) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Packages%20List/package_item_details.dart';
 
 import 'package:http/http.dart' as http;
@@ -11,9 +13,9 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api
 import '../Bottom Menus/Home Menu/Test List/test_item_details.dart';
 
 class GlobalSearch extends SearchDelegate{
-  var accessToken;
-  BuildContext context;
-  GlobalSearch({Key? key,this.accessToken,required this.context});
+  GlobalSearch({Key? key});
+
+  final box = GetStorage();
 
   var jsonData;
   int curentindex = 0;
@@ -22,7 +24,7 @@ class GlobalSearch extends SearchDelegate{
     final url = Uri.parse(ApiUrls.globalSearchUrls);
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     final body = {'search': query};
     final response = await http.post(url, headers: headers, body: body);
@@ -38,7 +40,8 @@ class GlobalSearch extends SearchDelegate{
         jsonData = jsonDecode(response.body) as Map<String, dynamic>;
         final itemList = jsonData['data']['data'] as List<dynamic>;
         return itemList;
-      } else {
+      }
+      else {
         throw Exception('Failed to load items');
       }
     }
@@ -128,13 +131,11 @@ class GlobalSearch extends SearchDelegate{
                                     if(item['is_package'] == 1){
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>PackageItemDetails(
                                         packageId: item['id'],
-                                        accessToken: accessToken,
                                       )));
                                     }
                                     else{
                                       Navigator.push(context, MaterialPageRoute(builder: (context)=>TestItemDetails(
                                         testId: item['id'],
-                                        accessToken: accessToken,
                                       )));
                                     }
                                   },

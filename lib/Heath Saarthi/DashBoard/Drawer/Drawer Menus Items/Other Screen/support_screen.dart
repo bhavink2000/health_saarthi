@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/hs_dashboard.dart';
 import 'package:http/http.dart' as http;
@@ -32,11 +33,13 @@ class _SupportScreenState extends State<SupportScreen> {
   String? reasonValue;
   var ratingValue = 0.0;
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
   }
   final _supportFormKey = GlobalKey<FormState>();
   @override
@@ -484,7 +487,7 @@ class _SupportScreenState extends State<SupportScreen> {
   void sendSupport() async {
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     var type = dropdownValue == 'Complaint' ? 0 : dropdownValue == 'Help' ? 1 : 2;
     await http.post(
@@ -523,7 +526,7 @@ class _SupportScreenState extends State<SupportScreen> {
   void sendRequestManagement() async {
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     var reasonType = reasonValue == 'Payment' ? 0 : 1;
     await http.post(

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -21,11 +22,13 @@ class _ReferChemistState extends State<ReferChemist> {
   final mobile = TextEditingController();
   final email = TextEditingController();
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
   }
   final _referFormKey = GlobalKey<FormState>();
   @override
@@ -174,7 +177,7 @@ class _ReferChemistState extends State<ReferChemist> {
   void sendReferralPharmacy() async {
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
 
     await http.post(

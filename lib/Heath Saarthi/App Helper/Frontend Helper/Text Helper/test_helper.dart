@@ -4,9 +4,6 @@ class AppTextHelper{
 
   var patientName = 'The name field is required.';
   var patientMobile = 'The mobile no field is required.';
-  //var bookingProblem = 'Booking problem';
-
-  //var logoutProblem = 'Logout problem';
 
   var selectDocuments = 'Select at least one document update';
   var notUpdateUser = 'Not updatable for this user';

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:dio/dio.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:http/http.dart' as http;
@@ -26,12 +28,15 @@ class QRCodeScreen extends StatefulWidget {
 }
 
 class _QRCodeScreenState extends State<QRCodeScreen> {
-  GetAccessToken getAccessToken = GetAccessToken();
+
+  //GetAccessToken getAccessToken = GetAccessToken();
+
+  final box = GetStorage();
   QRCodeModel? qrCodeModel;
   bool isLoading = true;
   @override
   void initState() {
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1), () {
       setState(() {
         isLoading = true;
@@ -54,7 +59,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
   Future<QRCodeModel?> getQRCodeData() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response =
@@ -155,9 +160,9 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                                                   child: Stack(
                                                     children: [
-                                                      const Padding(
+                                                      Padding(
                                                         padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                                                        child: Image(image: AssetImage('assets/Drawer/qrboxbg.png'),width: 300),
+                                                        child: Image(image: AppIcons.qrBoxBg,width: 300),
                                                       ),
                                                       Padding(
                                                         padding: const EdgeInsets.fromLTRB(25, 10, 25, 10),
@@ -211,16 +216,16 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          bottomIconText(AppIcons().qrImgOne, 'Authorized', 'Collection Center'),
-                                                          bottomIconText(AppIcons().qrImgTwo, 'Cash & Digital', 'Payment options'),
+                                                          bottomIconText(AppIcons.qrImgOne, 'Authorized', 'Collection Center'),
+                                                          bottomIconText(AppIcons.qrImgTwo, 'Cash & Digital', 'Payment options'),
                                                         ],
                                                       ),
                                                       const SizedBox(height: 10),
                                                       Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: [
-                                                          bottomIconText(AppIcons().qrImgThree, 'Strict Safety and', 'Hygiene Measures'),
-                                                          bottomIconText(AppIcons().qrImgFour, 'Reports via', 'Whatsapp & Email'),
+                                                          bottomIconText(AppIcons.qrImgThree, 'Strict Safety and', 'Hygiene Measures'),
+                                                          bottomIconText(AppIcons.qrImgFour, 'Reports via', 'Whatsapp & Email'),
                                                         ],
                                                       ),
                                                     ],
@@ -234,7 +239,7 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
                                         Container(
                                           color: qrCodeColor,
                                             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                                            child: const Image(image: AssetImage('assets/Drawer/applogo.png'),width: 130)
+                                            child: Image(image: AppIcons.qrAppLogo,width: 130)
                                         )
                                       ],
                                     ),
@@ -387,12 +392,12 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
     });
 
     Dio dio = Dio();
-    late String imageDownloadPath;
+    String? imageDownloadPath;
     if (Platform.isAndroid) {
-      imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_$imgCount.pdf';
+      imageDownloadPath = '/storage/emulated/0/Download/hsQRCode_${Random().nextInt(10000)}.pdf';
     } else if (Platform.isIOS) {
       var temp = await getTemporaryDirectory();
-      imageDownloadPath = '${temp.path}/hsQRCode_$imgCount.pdf';
+      imageDownloadPath = '${temp.path}/hsQRCode_${Random().nextInt(10000)}.pdf';
     }
     await dio.download(imgUrl, imageDownloadPath,
         onReceiveProgress: (received, total) {
@@ -408,6 +413,6 @@ class _QRCodeScreenState extends State<QRCodeScreen> {
       downloadProgress = 0.0;
     });
 
-    return imageDownloadPath;
+    return imageDownloadPath!;
   }
 }

@@ -7,6 +7,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Error%20Helper/token_expired_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Drawer/Drawer%20Menus%20Items/Other%20Screen/faq_screen.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui';
@@ -43,13 +44,13 @@ class _DrawerScreenState extends State<DrawerScreen> {
   final controller = Get.put(BottomBarController());
   final box = GetStorage();
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   String? deviceToken;
   @override
   void initState() {
     super.initState();
     retrieveDeviceToken();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
   }
 
   Future<void> retrieveDeviceToken() async {
@@ -67,7 +68,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final userDataSession = Provider.of<UserDataSession>(context);
+    //final userDataSession = Provider.of<UserDataSession>(context);
     return BackdropFilter(
       filter: ImageFilter.blur(
         sigmaX: 2,
@@ -80,7 +81,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              const Image(image: AssetImage("assets/health_saarthi_logo.png"), width: 175),
+              Image(image: AppIcons.hsLogo, width: 175),
               const SizedBox(height: 20),
               Expanded(
                 child: SingleChildScrollView(
@@ -195,7 +196,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: <Widget>[
-                                            Image.asset("assets/health_saarthi_logo_transparent_bg.png", width: 150),
+                                            Image(image: AppIcons.hsTransparent,width: 150),
                                             const Padding(
                                               padding: EdgeInsets.fromLTRB(5, 10, 5, 10),
                                               child: Text(
@@ -232,7 +233,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                       print("Logout user status ->$logoutUserStatus");
                                                       if (logoutUserStatus == '200') {
                                                         log('in if code ->200');
-                                                        userDataSession.removeUserData().then((values) {
+                                                        AuthenticationManager().removeToken().then((value){
                                                           box.remove('accessToken');
                                                           box.remove('name',);
                                                           box.remove('mobile',);
@@ -259,45 +260,33 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                           box.remove('aadhaarBImg',);
                                                           box.remove('chequeImg',);
                                                           box.remove('gstImg',);
-                                                          DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+                                                          DeviceInfo().deleteDeviceToken(context).then((value) {
                                                             if (value == 'success') {
                                                               print("token is deleted $value");
                                                             } else {
                                                               print("Token is not deleted");
                                                             }
                                                           });
-                                                          var removeUser = values;
-                                                          if (removeUser == true) {
-                                                            Navigator.of(context).pushAndRemoveUntil(
-                                                              MaterialPageRoute(builder: (context) => const SplashScreen()),
-                                                              (Route<dynamic>route) => false,
-                                                            );
-                                                          } else {
-                                                            print("removeUser not proper remove");
-                                                            Navigator.pop(context);
-                                                          }
+                                                          Navigator.of(context).pushAndRemoveUntil(
+                                                            MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                                                (Route<dynamic>route) => false,
+                                                          );
                                                         });
                                                       } else if (logoutUserStatus == '402') {
                                                         log('in else if code ->402');
-                                                        userDataSession.removeUserData().then((values) {
+                                                        AuthenticationManager().removeToken().then((value){
                                                           box.remove('accessToken');
-                                                          DeviceInfo().deleteDeviceToken(context, deviceToken, getAccessToken.access_token).then((value) {
+                                                          DeviceInfo().deleteDeviceToken(context).then((value) {
                                                             if (value == 'success') {
                                                               print("token is deleted $value");
                                                             } else {
                                                               print("Token is not deleted");
                                                             }
                                                           });
-                                                          var removeUser = values;
-                                                          if (removeUser == true) {
-                                                            Navigator.of(context).pushAndRemoveUntil(
-                                                              MaterialPageRoute(builder: (context) => const SplashScreen()),
-                                                              (Route<dynamic>route) => false,
-                                                            );
-                                                          } else {
-                                                            print("removeUser not proper remove");
-                                                            Navigator.pop(context);
-                                                          }
+                                                          Navigator.of(context).pushAndRemoveUntil(
+                                                            MaterialPageRoute(builder: (context) => const SplashScreen()),
+                                                                (Route<dynamic>route) => false,
+                                                          );
                                                         });
                                                       }
                                                     });
@@ -352,7 +341,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
   Future<dynamic> logoutUser() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(
@@ -382,8 +371,7 @@ class DrawerMenuItemsWidget extends StatelessWidget {
   String? itemName;
   final VoidCallback? itemOnTap;
   IconData? iconData;
-  DrawerMenuItemsWidget(
-      {super.key, this.itemOnTap, this.itemName, this.iconData});
+  DrawerMenuItemsWidget({super.key, this.itemOnTap, this.itemName, this.iconData});
 
   @override
   Widget build(BuildContext context) {

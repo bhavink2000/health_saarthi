@@ -2,9 +2,12 @@ import 'dart:io';
 import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_storage/get_storage.dart';
 
 class NotificationService{
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  final box = GetStorage();
   Future<void> requestNotificationPermission() async {
     try {
       NotificationSettings settings = await messaging.requestPermission(
@@ -31,10 +34,12 @@ class NotificationService{
     try {
       if (Platform.isAndroid) {
         String? token = await messaging.getToken();
+        box.write('deviceToken', token);
         print('Android token->$token');
         return token!;
       } else {
         String? token = await messaging.getToken();
+        box.write('deviceToken', token);
         print('IOS token->$token');
         return token;
       }

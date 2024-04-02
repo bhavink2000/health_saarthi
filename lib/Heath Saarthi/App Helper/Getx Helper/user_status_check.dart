@@ -45,7 +45,7 @@ class UserStatusCheckController extends GetxController{
   ProfileModel? profileModel;
   Future<void> getUserStatus() async {
     try {
-      profileModel = await ProfileFuture().fetchProfile(box.read('accessToken'));
+      profileModel = await ProfileFuture().fetchProfile();
       if (profileModel?.data != null && profileModel?.data != null) {
           userStatus = profileModel?.data?.status;
           log('UserStatus -> $userStatus');
@@ -55,7 +55,7 @@ class UserStatusCheckController extends GetxController{
       if (e is SocketException && e.osError!.errorCode == 111) {
         GetXSnackBarMsg.getWarningMsg('Connection refused. \nCheck server availability.');
       } else if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context!, deviceToken, box.read('accessToken'));
+        DeviceInfo().logoutUser(context!);
       } else {
         log("Unhandled error: $e");
       }

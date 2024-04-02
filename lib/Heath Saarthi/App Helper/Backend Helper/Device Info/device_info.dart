@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/platform/platform.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Service/api_calling.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -12,25 +15,33 @@ import '../Providers/Authentication Provider/user_data_auth_session.dart';
 
 class DeviceInfo{
 
+  final box = GetStorage();
+  static int? getDeviceType() {
+    if (GetPlatform.isAndroid) {
+      return 0;
+    } else if (GetPlatform.isIOS) {
+      return 1;
+    }
+    return null;
+  }
 
-  Future<String> sendDeviceToken(BuildContext context, deviceToken, deviceType, accessToken) async {
+  Future<dynamic> sendDeviceToken(BuildContext context) async {
 
-    var dType = deviceType == 'Android' ? 0 : 1;
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       var response = await http.post(
         Uri.parse(ApiUrls.addDeviceUrl),
         headers: headers,
         body: {
-          'device_token': deviceToken ?? '',
-          'device_type': dType.toString() ?? '',
+          'device_token': box.read('deviceToken') ?? '',
+          'device_type': box.read('deviceType').toString() ?? '',
           'app_version': '${AppTextHelper().appVersion}' ?? '',
         },
       );
-      print("Device Token Response -> ${response.body}");
+
       if (response.statusCode == 200) {
         return response.body;
       }else if(response.statusCode == 201){
@@ -44,26 +55,25 @@ class DeviceInfo{
     }
   }
 
-  Future<String> deleteDeviceToken(BuildContext context, deviceToken,accessToken) async {
+  Future<String> deleteDeviceToken(BuildContext context) async {
     var returnMessage;
     Completer<String> completer = Completer<String>();
 
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     await http.post(
         Uri.parse(ApiUrls.deleteDeviceUrl),
         headers: headers,
         body: {
-      'device_token': deviceToken ?? '',
+      'device_token': box.read('deviceToken') ?? '',
     }).then((response) {
       print(response.body);
       var data = json.decode(response.body);
       if (data['status'] == 200) {
         returnMessage = data['massage'];
       } else {
-        var data = json.decode(response.body);
         if (data['status'] == 400) {
           var errorMsg = data['error']['device_token'];
           print("delete Error->$errorMsg");
@@ -76,11 +86,10 @@ class DeviceInfo{
   }
 
   var bodyMsg;
-  Future<void> logoutUser(BuildContext context, var deviceToken, var accessToken) async {
-    final userDataSession = Provider.of<UserDataSession>(context, listen: false);
+  Future<void> logoutUser(BuildContext context) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${accessToken}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       final response = await http.post(
@@ -93,8 +102,8 @@ class DeviceInfo{
 
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        userDataSession.removeUserData().then((value) {
-          deleteDeviceToken(context, deviceToken, accessToken).then((value) {
+        AuthenticationManager().removeToken().then((value){
+          deleteDeviceToken(context).then((value) {
             if (value == 'success') {
               print("token is deleted $value");
             } else {
@@ -107,8 +116,8 @@ class DeviceInfo{
               (Route<dynamic> route) => false,
         );
       } else {
-        userDataSession.removeUserData().then((value) {
-          deleteDeviceToken(context, deviceToken, accessToken).then((value) {
+        AuthenticationManager().removeToken().then((value){
+          deleteDeviceToken(context).then((value) {
             if (value == 'success') {
               print("token is deleted $value");
             } else {
@@ -123,8 +132,8 @@ class DeviceInfo{
       }
     } catch (error) {
       print(error.toString());
-      userDataSession.removeUserData().then((value) {
-        deleteDeviceToken(context, deviceToken, accessToken).then((value) {
+      AuthenticationManager().removeToken().then((value){
+        deleteDeviceToken(context).then((value) {
           if (value == 'success') {
             print("token is deleted $value");
           } else {
@@ -136,7 +145,6 @@ class DeviceInfo{
         MaterialPageRoute(builder: (context) => const SplashScreen()),
             (Route<dynamic> route) => false,
       );
-      //GetXSnackBarMsg.getWarningMsg('${AppTextHelper().logoutProblem}');
     }
   }
 }

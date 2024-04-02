@@ -13,7 +13,7 @@ class PatientDetailsGetX extends GetxController{
   Future<void> fetchMobileList() async {
     try {
       CartFuture cartFuture = CartFuture();
-      List<MobileData> list = await cartFuture.getMobileNumber('${box.read('accessToken')}', selectedMobileNo);
+      List<MobileData> list = await cartFuture.getMobileNumber(selectedMobileNo);
        mobileList = list;
     } catch (e) {
       log("Error -> $e");

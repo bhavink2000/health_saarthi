@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Sign%20up%20Screen/sign_form.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../../App Helper/Frontend Helper/Loading Helper/loading_helper.dart';
@@ -44,11 +45,12 @@ class SignUpTextField extends StatelessWidget {
   TextEditingController? tController;
   TextInputType? textInputType;
   TextCapitalization? textCapitalization;
+  List<TextInputFormatter>? inputFormatters;
   String? tName,tSign;
   IconData? tIcon;
   int? maxLine,minLine,maxLength;
   final String? Function(String?)? validator;
-  SignUpTextField({super.key, this.validator,this.tController,this.tName,this.tSign,this.tIcon,this.textInputType,this.maxLine,this.minLine,this.maxLength,this.textCapitalization});
+  SignUpTextField({super.key, this.validator,this.tController,this.tName,this.tSign,this.tIcon,this.textInputType,this.inputFormatters,this.maxLine,this.minLine,this.maxLength,this.textCapitalization});
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +64,7 @@ class SignUpTextField extends StatelessWidget {
         autovalidateMode: AutovalidateMode.onUserInteraction,
         keyboardType: textInputType,
         textCapitalization: textCapitalization ?? TextCapitalization.none,
+        inputFormatters: inputFormatters,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.all(hsPaddingM),
           border: const OutlineInputBorder(),

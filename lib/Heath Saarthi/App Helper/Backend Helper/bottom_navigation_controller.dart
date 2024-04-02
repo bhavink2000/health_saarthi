@@ -41,7 +41,7 @@ bottomNavBar() {
                 ),
                 child: Column(
                   children: [
-                    ImageIcon(AppIcons().HHome,
+                    ImageIcon(AppIcons.HHome,
                         size: 25,
                         color: controller.index.value == 0
                             ? Colors.black
@@ -73,7 +73,7 @@ bottomNavBar() {
                 padding: const EdgeInsets.only(top: 5),
                 child: Column(
                   children: [
-                    ImageIcon(AppIcons().HBookNow,
+                    ImageIcon(AppIcons.HBookNow,
                         size: 25,
                         color: controller.index.value == 1
                             ? Colors.black
@@ -105,7 +105,7 @@ bottomNavBar() {
               padding: const EdgeInsets.only(top: 5),
               child: Column(
                 children: [
-                  ImageIcon(AppIcons().HRecord,
+                  ImageIcon(AppIcons.HRecord,
                       size: 25,
                       color: controller.index.value == 2
                           ? Colors.black
@@ -138,7 +138,7 @@ bottomNavBar() {
               padding: const EdgeInsets.only(top: 5),
               child: Column(
                 children: [
-                  ImageIcon(AppIcons().HProfile,
+                  ImageIcon(AppIcons.HProfile,
                       size: 25,
                       color: controller.index.value == 3
                           ? Colors.black

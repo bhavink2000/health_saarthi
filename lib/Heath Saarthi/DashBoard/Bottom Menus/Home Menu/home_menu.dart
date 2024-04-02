@@ -4,7 +4,9 @@ import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Data%20Future/home_data_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Profile%20Future/profile_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/profile_model.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/account_status.dart';
@@ -13,6 +15,7 @@ import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20M
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/Today%20Deal/offers.dart';
 import 'package:health_saarthi/Heath%20Saarthi/DashBoard/Bottom%20Menus/Home%20Menu/Home%20Widgets/test_package.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../App Helper/Backend Helper/Api Future/Data Future/data_future.dart';
 import '../../../App Helper/Backend Helper/Device Info/device_info.dart';
 import '../../../App Helper/Backend Helper/Get Access Token/get_access_token.dart';
 import '../../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
@@ -27,7 +30,8 @@ class HomeMenu extends StatefulWidget {
 
 class _HomeMenuState extends State<HomeMenu> {
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final controller = Get.put(DataFuture(),permanent: true);
+  final homeController = Get.put(HomeDataFuture());
 
   var userStatus;
   var deviceToken;
@@ -35,12 +39,7 @@ class _HomeMenuState extends State<HomeMenu> {
   @override
   void initState() {
     super.initState();
-    getAccessToken = GetAccessToken();
-    getAccessToken.checkAuthentication(context, setState);
-    retrieveDeviceToken();
-    // Future.delayed(const Duration(seconds: 1),(){
-    //   getUserStatus();
-    // });
+    getUserStatus();
   }
 
   @override
@@ -84,7 +83,7 @@ class _HomeMenuState extends State<HomeMenu> {
                       onTap: (){
                         showSearch(
                             context: context,
-                            delegate: GlobalSearch(context: context,accessToken: getAccessToken.access_token)
+                            delegate: GlobalSearch()
                         );
                       },
                     ),
@@ -93,7 +92,7 @@ class _HomeMenuState extends State<HomeMenu> {
               ),
               const SizedBox(height: 10),
               const HomeImageSlider(),
-              HomeTestPackage(),
+              const HomeTestPackage(),
               const HomeOffers(),
               const HomeBodyCheckups(),
             ],
@@ -103,10 +102,11 @@ class _HomeMenuState extends State<HomeMenu> {
     );
   }
 
+
   final box = GetStorage();
   Future<void> getUserStatus()async{
     try{
-      ProfileModel profileModel = await ProfileFuture().fetchProfile(getAccessToken.access_token);
+      ProfileModel profileModel = await ProfileFuture().fetchProfile();
       if (profileModel != null && profileModel.data != null) {
         setState(() {
           userStatus = profileModel.data?.status;
@@ -145,17 +145,9 @@ class _HomeMenuState extends State<HomeMenu> {
     catch(e){
       print("get User Status Error->$e");
       if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context, deviceToken, getAccessToken.access_token);
+        DeviceInfo().logoutUser(context);
       }
     }
   }
 
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    await getUserStatus();
-    log("SharedPreferences DeviceToken->$deviceToken");
-  }
 }

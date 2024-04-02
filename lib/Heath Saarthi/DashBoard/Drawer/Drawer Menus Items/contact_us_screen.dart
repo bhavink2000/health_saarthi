@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Urls/api_urls.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:http/http.dart' as http;
@@ -18,15 +19,17 @@ class ContactUsScreen extends StatefulWidget {
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
 
+  final box = GetStorage();
+
   var salesPersonNM,superiorNM,customerCareNm,otherNM;
   var salesPersonNo,superiorNo,customerCareNo,otherNo;
 
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
       fetchContact();
     });
@@ -183,7 +186,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     });
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     final response = await http.get(
         headers: headers,

@@ -13,9 +13,6 @@ import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/pus
 import 'package:provider/provider.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Future/Profile Future/profile_future.dart';
 import 'Heath Saarthi/App Helper/Backend Helper/Api Service/notification_service.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Get Access Token/get_access_token.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/authentication_provider.dart';
-import 'Heath Saarthi/App Helper/Backend Helper/Providers/Authentication Provider/user_data_auth_session.dart';
 import 'Heath Saarthi/Authentication Screens/Splash Screen/splash_screen.dart';
 
 Future<void> main() async {
@@ -54,86 +51,80 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver{
   final box = GetStorage();
 
   NotificationService notificationService = NotificationService();
-  GetAccessToken getAccessToken = GetAccessToken();
-  HomeMenusProvider homeMenusProvider = HomeMenusProvider();
-
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addObserver(this);
+    //WidgetsBinding.instance!.addObserver(this);
     notificationService.requestNotificationPermission();
     NotificationHandler().notificationCall();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+   // WidgetsBinding.instance!.removeObserver(this);
     super.dispose();
   }
 
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    getAccessToken.checkAuthentication(context, setState);
-    if (state == AppLifecycleState.resumed) {
-      log('----- >>>>> come to foreground <<<<< -----');
-      Future.delayed(Duration(seconds: 2), () {
-        callingForeground();
-      });
-      setState(() {});
-    }
-    else if(state == AppLifecycleState.paused){
-      log('----- >>>>> go to background <<<<< -----');
-      Future.delayed(Duration(seconds: 2), () {
-        callingBackground();
-      });
-      setState(() {});
-    }
-  }
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   super.didChangeAppLifecycleState(state);
+  //   //getAccessToken.checkAuthentication(context, setState);
+  //   if (state == AppLifecycleState.resumed) {
+  //     log('----- >>>>> come to foreground <<<<< -----');
+  //     Future.delayed(Duration(seconds: 2), () {
+  //       callingForeground();
+  //     });
+  //     setState(() {});
+  //   }
+  //   else if(state == AppLifecycleState.paused){
+  //     log('----- >>>>> go to background <<<<< -----');
+  //     Future.delayed(Duration(seconds: 2), () {
+  //       callingBackground();
+  //     });
+  //     setState(() {});
+  //   }
+  // }
+  //
+  // void callingForeground()async{
+  //   try{
+  //     //notificationCall();
+  //     var userStatus = await ProfileFuture().fetchProfile();
+  //     setState(() {
+  //       box.write('userStatus', userStatus.data!.status);
+  //     });
+  //     await homeMenusProvider.fetchTodayDeal(1);
+  //   }
+  //   catch(e){
+  //     log("----- >>>>> foreground catch e -> $e");
+  //   }
+  // }
+  //
+  // void callingBackground()async{
+  //   try{
+  //     //notificationCall();
+  //     var userStatus = await ProfileFuture().fetchProfile();
+  //     setState(() {
+  //       box.write('userStatus', userStatus.data!.status);
+  //     });
+  //     await homeMenusProvider.fetchTest(1,  '');
+  //     await homeMenusProvider.fetchPackage(1, '');
+  //   }
+  //   catch(e){
+  //     log("----- >>>>> background catch e -> $e");
+  //   }
+  // }
 
-
-  void callingForeground()async{
-    try{
-      //notificationCall();
-      var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      setState(() {
-        box.write('userStatus', userStatus.data!.status);
-      });
-      await homeMenusProvider.fetchTodayDeal(1, getAccessToken.access_token);
-    }
-    catch(e){
-      log("----- >>>>> foreground catch e -> $e");
-    }
-  }
-
-  void callingBackground()async{
-    try{
-      //notificationCall();
-      var userStatus = await ProfileFuture().fetchProfile(getAccessToken.access_token);
-      setState(() {
-        box.write('userStatus', userStatus.data!.status);
-      });
-      await homeMenusProvider.fetchTest(1, getAccessToken.access_token, '');
-      await homeMenusProvider.fetchPackage(1, getAccessToken.access_token, '');
-    }
-    catch(e){
-      log("----- >>>>> background catch e -> $e");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    //SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_)=> AuthProvider()),
-        ChangeNotifierProvider(create: (_)=> UserDataSession()),
         ChangeNotifierProvider(create: (_)=> HomeMenusProvider()),
       ],
       child: ScreenUtilInit(

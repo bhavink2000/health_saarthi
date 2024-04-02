@@ -30,11 +30,11 @@ class _MyReportScreenState extends State<MyReportScreen> {
   List<DayData>? dayData;
   List<MonthData>? monthData;
   List<YearData>? yearData;
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
       fetchDay('');
     });
@@ -605,7 +605,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
   }
   Future<void> fetchDay(var monthYear) async {
     try {
-      final value = await ChartFuture().fetchDayData(getAccessToken.access_token,monthYear ?? '');
+      final value = await ChartFuture().fetchDayData(monthYear ?? '');
       setState(() {
         dayData = value.dayData;
       });
@@ -615,7 +615,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
   }
   Future<void> fetchMonth(var yearDate) async {
     try {
-      final value = await ChartFuture().fetchMonthData(getAccessToken.access_token, yearDate ?? '');
+      final value = await ChartFuture().fetchMonthData(yearDate ?? '');
       setState(() {
         monthData = value.monthData;
       });
@@ -625,7 +625,7 @@ class _MyReportScreenState extends State<MyReportScreen> {
   }
   Future<void> fetchYear(fromD, toD) async {
     try {
-      final value = await ChartFuture().fetchYearData(getAccessToken.access_token, fromD ?? '' , toD ?? '');
+      final value = await ChartFuture().fetchYearData(fromD ?? '' , toD ?? '');
       setState(() {
         yearData = value.yearData;
       });

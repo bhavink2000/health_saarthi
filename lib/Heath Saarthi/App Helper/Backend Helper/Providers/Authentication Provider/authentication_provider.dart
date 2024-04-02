@@ -1,6 +1,7 @@
 // ignore_for_file: import_of_legacy_library_into_null_safe
 
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,88 +18,89 @@ import '../../Api Repo/User Authentication/user_authentication.dart';
 import '../../bottom_navigation_controller.dart';
 import 'user_data_auth_session.dart';
 
-class AuthProvider with ChangeNotifier{
-
-  var accessToken = GetStorage();
-
-  final _myUser = UserAuthentication();
-
-  final controller = Get.put(BottomBarController());
-
-  bool _loading = false;
-  bool get loading => _loading;
-  setLoginLoading(bool value) {
-    _loading = value;
-    notifyListeners();
-  }
-  
-  Future<void> loginApi(dynamic data, BuildContext context, var deviceToken,var deviceType) async {
-    print("login Data->$data");
-    LoadingIndicater().onLoad(true, context);
-    setLoginLoading(true);
-    _myUser.loginApi(data).then((value) {
-
-      setLoginLoading(false);
-      final userDataSession = Provider.of<UserDataSession>(context, listen: false);
-      userDataSession.saveUserData(LoginModel(
-        accessToken: value['access_token'].toString(),
-      ));
-      accessToken.write('accessToken', value['access_token'].toString());
-
-      if(value['access_token'] == null || value['access_token'] == ''){
-        //GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
-        LoadingIndicater().onLoadExit(false, context);
-        Navigator.pop(context);
-      }
-      else{
-        GetXSnackBarMsg.getSuccessMsg('login Successfully');
-        controller.index.value = 0;
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
-        //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HSDashboard()), (Route<dynamic> route) => false);
-      }
-    }).catchError((error, stackTrace) {
-      try {
-        var errorString = error.toString();
-        var jsonStartIndex = errorString.indexOf('{');
-        var jsonEndIndex = errorString.lastIndexOf('}');
-        var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
-        print("jsonString -> $jsonString");
-
-        var errorData = json.decode(jsonString) as Map<String, dynamic>;
-        print("errorData -> $errorData");
-
-        var errorObject = errorData['error'];
-        if(errorString == 'Internet connection problem'){
-          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
-        }
-        if (errorObject != null) {
-          var errorMessage = errorObject['message'] != null ? errorObject['message'][0] : null;
-          var mobileError = errorObject['mobile'] != null ? errorObject['mobile'][0] : null;
-          var passwordError = errorObject['password'] != null ? errorObject['password'][0] : null;
-
-          if (errorMessage != null) {
-
-            GetXSnackBarMsg.getWarningMsg('$errorMessage');
-          } else if (mobileError != null) {
-
-            GetXSnackBarMsg.getWarningMsg('$mobileError');
-          } else if (passwordError != null) {
-
-            GetXSnackBarMsg.getWarningMsg('$passwordError');
-          } else {
-            print("in else");
-          }
-        } else {
-          print("No 'error' key found in the response.");
-        }
-
-        Navigator.pop(context);
-      } catch (e) {
-        print('Error decoding response: $e');
-        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internalServerError}');
-        Navigator.pop(context);
-      }
-    });
-  }
-
-}
+// class AuthProvider with ChangeNotifier{
+//
+//   var accessToken = GetStorage();
+//
+//   final _myUser = UserAuthentication();
+//
+//   final controller = Get.put(BottomBarController());
+//
+//   bool _loading = false;
+//   bool get loading => _loading;
+//   setLoginLoading(bool value) {
+//     _loading = value;
+//     notifyListeners();
+//   }
+//
+//   Future<void> loginApi(dynamic data, BuildContext context, var deviceToken,var deviceType) async {
+//     print("login Data->$data");
+//     LoadingIndicater().onLoad(true, context);
+//     setLoginLoading(true);
+//     _myUser.loginApi(data).then((value) {
+//
+//       log('value-->${value['access_token']}');
+//       setLoginLoading(false);
+//       final userDataSession = Provider.of<UserDataSession>(context, listen: false);
+//       userDataSession.saveUserData(LoginModel(
+//         accessToken: value['access_token'].toString(),
+//       ));
+//       accessToken.write('accessToken', value['access_token'].toString());
+//
+//       if(value['access_token'] == null || value['access_token'] == ''){
+//         //GetXSnackBarMsg.getWarningMsg('Login error.\nPlease try again');
+//         LoadingIndicater().onLoadExit(false, context);
+//         Navigator.pop(context);
+//       }
+//       else{
+//         GetXSnackBarMsg.getSuccessMsg('login Successfully');
+//         controller.index.value = 0;
+//         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => Home()), (Route<dynamic> route) => false);
+//         //Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => HSDashboard()), (Route<dynamic> route) => false);
+//       }
+//     }).catchError((error, stackTrace) {
+//       try {
+//         var errorString = error.toString();
+//         var jsonStartIndex = errorString.indexOf('{');
+//         var jsonEndIndex = errorString.lastIndexOf('}');
+//         var jsonString = errorString.substring(jsonStartIndex, jsonEndIndex + 1);
+//         print("jsonString -> $jsonString");
+//
+//         var errorData = json.decode(jsonString) as Map<String, dynamic>;
+//         print("errorData -> $errorData");
+//
+//         var errorObject = errorData['error'];
+//         if(errorString == 'Internet connection problem'){
+//           GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
+//         }
+//         if (errorObject != null) {
+//           var errorMessage = errorObject['message'] != null ? errorObject['message'][0] : null;
+//           var mobileError = errorObject['mobile'] != null ? errorObject['mobile'][0] : null;
+//           var passwordError = errorObject['password'] != null ? errorObject['password'][0] : null;
+//
+//           if (errorMessage != null) {
+//
+//             GetXSnackBarMsg.getWarningMsg('$errorMessage');
+//           } else if (mobileError != null) {
+//
+//             GetXSnackBarMsg.getWarningMsg('$mobileError');
+//           } else if (passwordError != null) {
+//
+//             GetXSnackBarMsg.getWarningMsg('$passwordError');
+//           } else {
+//             print("in else");
+//           }
+//         } else {
+//           print("No 'error' key found in the response.");
+//         }
+//
+//         Navigator.pop(context);
+//       } catch (e) {
+//         print('Error decoding response: $e');
+//         GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internalServerError}');
+//         Navigator.pop(context);
+//       }
+//     });
+//   }
+//
+// }

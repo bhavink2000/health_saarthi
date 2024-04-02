@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:install_plugin/install_plugin.dart';
 import '../Font & Color Helper/font_&_color_helper.dart';
 
@@ -35,19 +36,19 @@ class UpdateAppDialog{
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Align(alignment: Alignment.center,child: Image(image: AssetImage('assets/health_saarthi_logo_transparent_bg.png'),width: 150,)),
-                        Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5),),
+                        Divider(thickness: 0.5,color: Colors.grey.withOpacity(0.5)),
                         const Text(
                           "About update?",
                           style: TextStyle(
                               fontFamily: FontType.MontserratMedium,
                               fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold
+                          ),
                         ),
                         const SizedBox(height: 5,),
                         Text(
-                          "$updateMsg Version $appVersion is now available - \nYour current app version 2.04",
-                          style: const TextStyle(
-                              fontFamily: FontType.MontserratLight),
+                          "$updateMsg Version $appVersion is now available - \nYour current app version is ${AppTextHelper().appVersion}",
+                          style: const TextStyle(fontFamily: FontType.MontserratLight),
                         ),
                         const SizedBox(height: 10,),
                         const Text("Would you like to update it now?",

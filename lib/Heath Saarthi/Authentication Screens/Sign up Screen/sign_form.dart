@@ -7,6 +7,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/File%20Picker/file_image_picker.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/Authentication%20Screens/Sign%20up%20Screen/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
@@ -146,15 +147,27 @@ class _SignUpFormState extends State<SignUpForm> {
                           value: '',
                           child: Text('Select B2B subadmin'),
                         ),
-                        ...b2bSubAdminList?.map((subAdmin) => DropdownMenuItem(
+                        ...b2bSubAdminList.map((subAdmin) => DropdownMenuItem(
                                       value: subAdmin['id'].toString(),
                                       child: Container(
                                           width: MediaQuery.of(context).size.width / 1.5.w,
                                           child: Text(subAdmin['name'])
-                                      )))?.toList() ?? []
+                                      ))).toList() ?? []
                       ],
                     ),
                   ),
+                  // SignUpTextField(
+                  //   tController: vendorName,
+                  //   tName: 'Vendor name',
+                  //   tSign: '*',
+                  //   tIcon: Icons.person,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return ValidationText.vendorName;
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: TextFormField(
@@ -181,12 +194,29 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.vendorName}';
+                          return ValidationText.vendorName;
                         }
                         return null;
                       }, // Set the validator function
                     ),
                   ),
+
+                  // SignUpTextField(
+                  //   tController: emailId,
+                  //   textInputType: TextInputType.emailAddress,
+                  //   tName: 'Email id',
+                  //   tSign: '*',
+                  //   tIcon: Icons.email_rounded,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return ValidationText.emailId;
+                  //     }
+                  //     if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                  //       return ValidationText.emailValidation;
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: TextFormField(
@@ -214,15 +244,28 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.emailId}';
+                          return ValidationText.emailId;
                         }
                         if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
-                          return '${ValidationText.emailValidation}';
+                          return ValidationText.emailValidation;
                         }
                         return null;
                       }, // Set the validator function
                     ),
                   ),
+
+                  // SignUpTextField(
+                  //   tController: pharmacyName,
+                  //   tName: 'Pharmacy name',
+                  //   tSign: '*',
+                  //   tIcon: Icons.person_pin,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return ValidationText.pharmacyName;
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: TextFormField(
@@ -249,12 +292,28 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.pharmacyName}';
+                          return ValidationText.pharmacyName;
                         }
                         return null;
                       }, // Set the validator function
                     ),
                   ),
+
+                  // SignUpTextField(
+                  //   tController: mobile,
+                  //   textInputType: TextInputType.phone,
+                  //   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  //   maxLength: 10,
+                  //   tName: 'Mobile no',
+                  //   tSign: '*',
+                  //   tIcon: Icons.mobile_friendly_rounded,
+                  //   validator: (value) {
+                  //     if (value == null || value.isEmpty) {
+                  //       return ValidationText.mobileNumber;
+                  //     }
+                  //     return null;
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: TextFormField(
@@ -284,13 +343,15 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.mobileNumber}';
+                          return ValidationText.mobileNumber;
                         }
                         return null;
                       }, // Set the validator function
                     ),
                   ),
                   SizedBox(height: space),
+
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Container(
@@ -358,7 +419,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedState,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return '${ValidationText.stateSelect}';
+                                return ValidationText.stateSelect;
                               }
                               return null;
                             },
@@ -435,7 +496,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedCity,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return '${ValidationText.citySelect}';
+                                return ValidationText.citySelect;
                               }
                               return null;
                             },
@@ -502,7 +563,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedBranch,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return '${ValidationText.branchSelect}';
+                                return ValidationText.branchSelect;
                               }
                               return null;
                             },
@@ -569,7 +630,7 @@ class _SignUpFormState extends State<SignUpForm> {
                             selectedItem: selectedArea,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return '${ValidationText.areaSelect}';
+                                return ValidationText.areaSelect;
                               }
                               return null;
                             },
@@ -578,6 +639,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                     ),
                   ),
+
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                     child: DropdownButtonFormField<String>(
@@ -604,7 +666,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.salesExecutive}';
+                          return ValidationText.salesExecutive;
                         }
                         return null;
                       },
@@ -620,13 +682,13 @@ class _SignUpFormState extends State<SignUpForm> {
                           seMobile.text = selectedSalesMobileNo;
                         });
                       },
-                      items: salesExecutiveList?.map((sales) =>
+                      items: salesExecutiveList.map((sales) =>
                           DropdownMenuItem(
                              value: sales['id'].toString(),
                              child: Container(
                                  width: MediaQuery.of(context).size.width / 1.45.w,
                                  child: Text("${sales['name']} - ${sales['mobile_no']}")),
-                           ))?.toList() ?? [],
+                           )).toList() ?? [],
                     ),
                   ),
                   SizedBox(height: space),
@@ -659,6 +721,14 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                     ),
                   ),
+
+
+                  // SignUpTextField(
+                  //   tController: pincode,
+                  //   textInputType: TextInputType.number,
+                  //   tName: 'Pincode',
+                  //   tSign: '',
+                  // ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
                     child: TextFormField(
@@ -812,7 +882,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.address}';
+                          return ValidationText.address;
                         }
                         return null;
                       }, // Set the validator function
@@ -967,8 +1037,8 @@ class _SignUpFormState extends State<SignUpForm> {
                       },
                       validator: (value) {
                         if(value != null && value.isNotEmpty){
-                          if (value?.length != 15) {
-                            return '${ValidationText.gstLength}';
+                          if (value.length != 15) {
+                            return ValidationText.gstLength;
                           }
                           return null;
                         }
@@ -1048,7 +1118,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.bankName}';
+                          return ValidationText.bankName;
                         }
                         return null;
                       }, // Set the validator function
@@ -1160,7 +1230,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '${ValidationText.beneficiaryNm}';
+                          return ValidationText.beneficiaryNm;
                         }
                         return null;
                       }, // Set the validator function
@@ -1409,10 +1479,10 @@ class _SignUpFormState extends State<SignUpForm> {
               SizedBox(
                 height: MediaQuery.of(context).size.height / 2.5,
               ),
-              const Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Image(
-                    image: AssetImage('assets/Gif/HealthSaarthi_GIF.gif')),
+                    image: AppIcons.hsGIF),
               ),
             ],
           );
@@ -1554,7 +1624,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "pancard",
           await MultipartFile.fromFile(
             panCardFile!.path,
-            filename: '${panCardFile!.path.split('/').last.toString()}',
+            filename: panCardFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1563,7 +1633,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "address_proof",
           await MultipartFile.fromFile(
             addressFile!.path,
-            filename: '${addressFile!.path.split('/').last.toString()}',
+            filename: addressFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1572,7 +1642,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "aadhar_front",
           await MultipartFile.fromFile(
             aadhaarCardFFile!.path,
-            filename: '${aadhaarCardFFile!.path.split('/').last.toString()}',
+            filename: aadhaarCardFFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1581,7 +1651,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "aadhar_back",
           await MultipartFile.fromFile(
             aadhaarCardBFile!.path,
-            filename: '${aadhaarCardBFile!.path.split('/').last.toString()}',
+            filename: aadhaarCardBFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1590,7 +1660,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "cheque_image",
           await MultipartFile.fromFile(
             checkFile!.path,
-            filename: '${checkFile!.path.split('/').last.toString()}',
+            filename: checkFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1599,7 +1669,7 @@ class _SignUpFormState extends State<SignUpForm> {
           "gst_image",
           await MultipartFile.fromFile(
             gstFile!.path,
-            filename: '${gstFile!.path.split('/').last.toString()}',
+            filename: gstFile!.path.split('/').last.toString(),
           ),
         ));
       }
@@ -1717,12 +1787,12 @@ class _SignUpFormState extends State<SignUpForm> {
           var errorMessage = errorData['error']['password'][0];
           GetXSnackBarMsg.getWarningMsg('$errorMessage');
         } else {
-          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().serverError}');
+          GetXSnackBarMsg.getWarningMsg(AppTextHelper().serverError);
           Navigator.pop(context);
         }
         Navigator.pop(context);
       } else {
-        GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internalServerError}');
+        GetXSnackBarMsg.getWarningMsg(AppTextHelper().internalServerError);
         Navigator.pop(context);
       }
     } catch (e) {

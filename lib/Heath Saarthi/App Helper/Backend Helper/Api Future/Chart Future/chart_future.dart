@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Dashboard%20Model/Reports%20Model/day_report_model.dart';
 import 'package:http/http.dart' as http;
 import '../../Api Urls/api_urls.dart';
@@ -6,10 +7,13 @@ import '../../Models/Dashboard Model/Reports Model/month_report_model.dart';
 import '../../Models/Dashboard Model/Reports Model/yers_report_model.dart';
 
 class ChartFuture{
-  Future<DayReportModel> fetchDayData(var accessToken, var monthYear) async {
+
+  final box = GetStorage();
+
+  Future<DayReportModel> fetchDayData(var monthYear) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       var response = await http.post(
@@ -31,10 +35,10 @@ class ChartFuture{
     }
   }
 
-  Future<MonthReportModel> fetchMonthData(var accessToken, var year) async {
+  Future<MonthReportModel> fetchMonthData(var year) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       var response = await http.post(
@@ -56,10 +60,10 @@ class ChartFuture{
     }
   }
 
-  Future<YearsReportModel> fetchYearData(var accessToken, var fromDate, var toDate) async {
+  Future<YearsReportModel> fetchYearData(var fromDate, var toDate) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
     try {
       var response = await http.post(

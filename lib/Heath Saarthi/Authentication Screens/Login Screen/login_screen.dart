@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../App Helper/Check Internet Helper/Bindings/dependency_injection.dart';
 import '../../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
+import '../../App Helper/Getx Helper/Auth Getx/login_auth_getx.dart';
 import 'Login Widgets/custom_clippers/blue_top_clipper.dart';
 import 'Login Widgets/custom_clippers/grey_top_clipper.dart';
 import 'Login Widgets/custom_clippers/white_top_clipper.dart';
@@ -9,8 +11,8 @@ import 'Login Widgets/header.dart';
 import 'Login Widgets/login_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  var screenH,deviceToken,deviceType;
-  LoginScreen({Key? key,this.screenH,this.deviceToken,this.deviceType}) : super(key: key);
+  var screenH;
+  LoginScreen({Key? key,this.screenH}) : super(key: key);
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,6 +25,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   late Animation<double> _whiteTopClipperAnimation;
   late Animation<double> _blueTopClipperAnimation;
   late Animation<double> _greyTopClipperAnimation;
+
+
+  final controller = Get.put(LoginController());
 
   @override
   void initState() {
@@ -145,7 +150,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 children: <Widget>[
                   Header(animation: _headerTextAnimation),
                   SizedBox(height: 170.h),
-                  LoginForm(animation: _formElementAnimation,screenH: widget.screenH,deviceToken: widget.deviceToken,deviceType: widget.deviceType),
+                  LoginForm(animation: _formElementAnimation,screenH: widget.screenH),
                 ],
               ),
             ),

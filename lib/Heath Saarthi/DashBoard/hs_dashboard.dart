@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/update_show_dialog.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/location_getx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,26 +37,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   final locationController = Get.put(LocationCall());
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   final box = GetStorage();
 
-  var appVersion, updateMsg;
-  String? appName;
-  String? packageName;
-  String? version;
-  String? buildNumber;
-  String? installerStore;
-  var deviceToken,deviceType;
-  var userDataSession;
-
-  bool? callAddDevice;
   @override
   void initState(){
     CheckNetworkDependencyInjection.init();
-    getAccessToken = GetAccessToken();
-    getAccessToken.checkAuthentication(context, setState);
-    userDataSession = Provider.of<UserDataSession>(context, listen: false);
-    //controller.index.value = 0;
     Future.delayed(const Duration(seconds: 1), () {
       deviceTokenType();
     });
@@ -63,9 +50,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   }
 
   void deviceTokenType()async{
-    await retrieveDeviceToken();
-    await retrieveDeviceDetails();
-    await DeviceInfo().sendDeviceToken(context, deviceToken, deviceType, getAccessToken.access_token).then((value) async{
+    await DeviceInfo().sendDeviceToken(context).then((value) async{
       if (value == null) {
         var data = json.decode(value);
       } else {
@@ -74,11 +59,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
 
         }
         else if (data['status'] == 201) {
-          setState(() {
-            updateMsg = data['message'];
-            appVersion = data['app_version'];
-          });
-          UpdateShowDialog().updateShow(context, deviceToken,getAccessToken.access_token);
+          UpdateShowDialog().updateShow(context);
         } else {
           var errorMsg = data['error']['device_token'];
           print("Error->$errorMsg");
@@ -125,7 +106,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                           onPressed: () => _scaffoldKey.currentState?.openDrawer()
                         ),
                       ),
-                      const Image(image: AssetImage("assets/health_saarthi_logo.png"),width: 150),
+                      Image(image: AppIcons.hsLogo,width: 150),
                       Container(
                         width: MediaQuery.of(context).size.width / 5.35,
                         child: Row(
@@ -167,40 +148,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       ),
     );
   }
-
-  Future<void> retrieveDeviceToken() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      deviceToken = prefs.getString('deviceToken');
-    });
-    print("hs_dashboard \nDeviceToken->$deviceToken");
-  }
-
-  Future retrieveDeviceDetails() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    if (Platform.isAndroid) {
-      appName     = packageInfo.appName;
-      packageName = packageInfo.packageName;
-      version     = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-      installerStore = packageInfo.installerStore;
-      setState(() {
-        deviceType = 'Android';
-      });
-      return deviceType;
-    } else if (Platform.isIOS) {
-      appName = packageInfo.appName;
-      packageName = packageInfo.packageName;
-      version = packageInfo.version;
-      buildNumber = packageInfo.buildNumber;
-      setState(() {
-        deviceType = 'iOS';
-      });
-      return deviceType;
-    }
-    print('retrieve Device Type: $deviceType');
-  }
-
   openExitBox() {
     return showDialog(
         context: context,
@@ -218,7 +165,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Image.asset("assets/health_saarthi_logo_transparent_bg.png",width: 150,),
+                    Image(image: AppIcons.hsTransparent,width: 150,),
                     const Padding(
                       padding: EdgeInsets.all(5),
                       child: Text(

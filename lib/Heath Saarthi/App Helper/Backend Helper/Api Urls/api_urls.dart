@@ -1,4 +1,7 @@
-//1101@9018
+
+//HS Live :- 4946466764
+
+
 class ApiUrls{
 
   //static String mainUrls = 'https://hssawpl.com/api/v1/';                        // live url
@@ -81,3 +84,4 @@ class ApiUrls{
   -> visiting charge add in cart screen(05-02)/make proper field in booking forms(08-02)
   -> IOS notification work(09-02)
 */
+

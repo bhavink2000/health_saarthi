@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/user_status_check.dart';
@@ -37,7 +38,8 @@ class TestMenu extends StatefulWidget {
 
 class _TestMenuState extends State<TestMenu> {
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  final box = GetStorage();
+  //GetAccessToken getAccessToken = GetAccessToken();
   final _cartFormKey = GlobalKey<FormState>();
   final locationController = Get.put(LocationCall());
   final patientController = Get.put(PatientDetailsGetX());
@@ -60,7 +62,7 @@ class _TestMenuState extends State<TestMenu> {
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     collectionDate.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     locationController.cityList.clear();
     locationController.areaList.clear();
@@ -97,7 +99,6 @@ class _TestMenuState extends State<TestMenu> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: Container(
@@ -397,7 +398,7 @@ class _TestMenuState extends State<TestMenu> {
   var pharmacyId;
   void getPatient(var patientId) async {
     try {
-      var pModel = await CartFuture().fetchPatientProfile(getAccessToken.access_token, patientId);
+      var pModel = await CartFuture().fetchPatientProfile(patientId);
       pharmacyId = pModel.patientData!.pharmacyId.toString();
       pName.text = pModel.patientData!.name ?? '';
       pDob.text = pModel.patientData!.dateOfBirth ?? '';
@@ -439,7 +440,7 @@ class _TestMenuState extends State<TestMenu> {
 
     final headers = {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${getAccessToken.access_token}',
+      'Authorization': 'Bearer ${box.read('accessToken')}',
     };
 
     final Map<String, dynamic> requestBody = {

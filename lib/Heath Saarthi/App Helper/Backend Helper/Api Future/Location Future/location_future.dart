@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Location%20Model/city_model.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../Api Urls/api_urls.dart';
 import '../../Models/Location Model/area_model.dart';
@@ -37,7 +38,7 @@ class LocationFuture{
       if (e is DioError) {
         if (e.error is SocketException) {
           log("Socket exception: ${e.error.toString()}");
-          GetXSnackBarMsg.getWarningMsg('Failed to connect to the server. \nPlease check your internet connection.');
+          GetXSnackBarMsg.getWarningMsg('${AppTextHelper().internetProblem}');
           throw Exception('Failed to connect to the server. Please check your internet connection.');
         } else if (e.error is TimeoutException) {
           log("Timeout exception: ${e.error.toString()}");

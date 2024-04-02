@@ -19,16 +19,16 @@ class NotificationMenu extends StatefulWidget {
 
 class _NotificationMenuState extends State<NotificationMenu> {
 
-  GetAccessToken getAccessToken = GetAccessToken();
+  //GetAccessToken getAccessToken = GetAccessToken();
   HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   int curentindex = 0;
   @override
   void initState() {
     super.initState();
-    getAccessToken.checkAuthentication(context, setState);
+    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 2),(){
       setState(() {
-        homeMenusProvider.fetchNotification(getAccessToken.access_token);
+        homeMenusProvider.fetchNotification();
       });
     });
   }
