@@ -591,7 +591,7 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const Home()));
         }else if(data['status'] == '402'){
           GetXSnackBarMsg.getWarningMsg('$msg');
-          DeviceInfo().logoutUser(context);
+          DeviceInfo().logoutUser();
         }
       }
     } catch (e) {
@@ -620,10 +620,10 @@ class _ProfileWidgetsState extends State<ProfileWidgets> {
           errorMessage = errorMessage.substring(messageIndex + 'message: '.length);
           errorMessage = errorMessage.trim().replaceAll('}', ''); // Clean up the string
           GetXSnackBarMsg.getWarningMsg(errorMessage);
-          DeviceInfo().logoutUser(context);
+          DeviceInfo().logoutUser();
         } else {
           log('catch Error: else $e');
-          DeviceInfo().logoutUser(context);
+          DeviceInfo().logoutUser();
         }
       }
     }

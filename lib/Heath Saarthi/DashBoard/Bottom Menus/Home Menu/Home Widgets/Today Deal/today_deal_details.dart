@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Data%20Future/home_data_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Widget%20Helper/appbar_helper.dart';
 import 'package:provider/provider.dart';
 
@@ -30,21 +32,12 @@ class TodayDealDetails extends StatefulWidget {
 
 class _TodayDealDetailsState extends State<TodayDealDetails> {
 
-  //GetAccessToken getAccessToken = GetAccessToken();
-  HomeMenusProvider homeMenusProvider = HomeMenusProvider();
-  int curentindex = 0;
+  final controller = Get.find<HomeDataFuture>();
+
   @override
   void initState() {
     super.initState();
-    //getAccessToken.checkAuthentication(context, setState);
-    Map dealData = {
-      'id': widget.dealId.toString(),
-    };
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        homeMenusProvider.fetchTodayDealDetails(1,dealData);
-      });
-    });
+    controller.fetchTodayDealDetails(widget.dealId);
   }
 
   @override
@@ -64,124 +57,145 @@ class _TodayDealDetailsState extends State<TodayDealDetails> {
               child: Container(
                 width: MediaQuery.of(context).size.width.w,
                 padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                child: ChangeNotifierProvider<HomeMenusProvider>(
-                  create: (BuildContext context) => homeMenusProvider,
-                  child: Consumer<HomeMenusProvider>(
-                    builder: (context, value, __){
-                      switch(value.todayDealDetailsList.status!){
-                        case Status.loading:
-                          return const CenterLoading();
-                        case Status.error:
-                          return value.todayDealDetailsList.message == '402'
-                              ? TokenExpiredHelper()
-                              : value.todayDealDetailsList.message == 'Internet connection problem' ? CenterLoading() : value.todayDealDetailsList.data == []
-                              ? Container()
-                              : const Center(
-                              child: Text(
-                                  "Test Not found your branch",
-                                  style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 16
-                                  ),textAlign: TextAlign.center
-                              )
-                          );
-                        case Status.completed:
-                          return value.todayDealDetailsList.data!.todayDetailsData!.data!.isNotEmpty
-                           ? AnimationLimiter(
-                            child: ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: value.todayDealDetailsList.data!.todayDetailsData!.data!.length,
-                              itemBuilder: (context, index){
-                                var todayDealI = value.todayDealDetailsList.data!.todayDetailsData!.data![index];
-                                return AnimationConfiguration.staggeredList(
-                                  position: index,
-                                  duration: const Duration(milliseconds: 1000),
+                child: Obx(() => controller.tDealDetailsLoad.value
+                    ? const CenterLoading()
+                    : controller.tDealDetails.value.todayDetailsData!.data!.isEmpty
+                    ? const Center(
+                    child: Text(
+                      "Deal is not available",
+                      style: TextStyle(
+                          fontFamily: FontType.MontserratRegular,
+                          fontWeight: FontWeight.bold),
+                    ))
+                    : AnimationLimiter(
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    // itemCount: value.todayDealDetailsList.data!.todayDetailsData!.data!.length,
+                    itemCount: controller.tDealDetails.value.todayDetailsData!.data!.length,
+                    itemBuilder: (context, index) {
+                      // var todayDealI = value.todayDealDetailsList.data!.todayDetailsData!.data![index];
+                      var todayDealI = controller.tDealDetails.value.todayDetailsData!.data![index];
+                      return AnimationConfiguration.staggeredList(
+                        position: index,
+                        duration: const Duration(milliseconds: 1000),
+                        child: Column(
+                          children: [
+                            FadeInAnimation(
+                              child: Container(
+                                padding:
+                                const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5)),
+                                  shadowColor: Colors.grey.withOpacity(0.8),
                                   child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                     children: [
-                                      FadeInAnimation(
-                                        child: Container(
-                                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                                          child: Card(
-                                            elevation: 5,
-                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                            shadowColor: Colors.grey.withOpacity(0.8),
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text(todayDealI.serviceName!,style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 15.sp)),
-                                                      SizedBox(height: 5.h,),
-                                                      Text(todayDealI.specimenVolume!,style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 0.5,color: Colors.black87,fontSize: 12.sp),)
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
-                                                  child: Row(
-                                                    children: [
-                                                      Text("\u{20B9}${todayDealI.mrpAmount}",style: TextStyle(fontFamily: FontType.MontserratMedium,fontSize: 18.sp,color: hsBlack)),
-                                                      const Spacer(),
-                                                      InkWell(
-                                                        onTap: (){
-
-                                                          if(todayDealI.bookedStatus == 1){
-                                                            GetXSnackBarMsg.getWarningMsg('Already booked this item');
-                                                          }
-                                                          else{
-                                                            CartFuture().addToCartTest(todayDealI.id).then((value) {
-                                                              setState(() {
-                                                                homeMenusProvider.fetchTodayDealDetails(curentindex + 1, dealData);
-                                                              });
-                                                            });
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10),
-                                                              color: todayDealI.bookedStatus == 1 ? hsPrime.withOpacity(0.2): hsPrime
-                                                          ),
-                                                          padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-                                                          child: Text(
-                                                            todayDealI.bookedStatus == 1 ? "Booked" :"+ Book Now",
-                                                            style: TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 13.sp,color: Colors.white),),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 10, 10, 5),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text(todayDealI.serviceName!,
+                                                style: const TextStyle(
+                                                    fontFamily: FontType.MontserratMedium,
+                                                    fontSize: 15)),
+                                            const SizedBox(
+                                              height: 5,
                                             ),
-                                          ),
+                                            Text(
+                                              todayDealI.specimenVolume!,
+                                              style: const TextStyle(
+                                                  fontFamily: FontType.MontserratRegular,
+                                                  letterSpacing: 0.5,
+                                                  color: Colors.black87,
+                                                  fontSize: 12),
+                                            )
+                                          ],
                                         ),
                                       ),
-
-                                      if (value.todayDealDetailsList.data!.todayDetailsData!.data!.length == 10 || index + 1 != value.todayDealDetailsList.data!.todayDetailsData!.data!.length)
-                                        Container()
-                                      else
-                                        SizedBox(height: MediaQuery.of(context).size.height / 1.55),
-
-                                      index + 1 == value.todayDealDetailsList.data!.todayDetailsData!.data!.length ? CustomPaginationWidget(
-                                        currentPage: curentindex,
-                                        lastPage: homeMenusProvider.todayDealDetailsList.data!.todayDetailsData!.lastPage!,
-                                        onPageChange: (page) {
-                                          setState(() {
-                                            curentindex = page - 1;
-                                          });
-                                          homeMenusProvider.fetchTodayDealDetails(curentindex + 1, dealData);
-                                        },
-                                      ) : Container(),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 5, 10, 10),
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                                "\u{20B9}${todayDealI.mrpAmount}",
+                                                style: TextStyle(
+                                                    fontFamily: FontType.MontserratMedium,
+                                                    fontSize: 18,
+                                                    color: hsBlack)),
+                                            const Spacer(),
+                                            InkWell(
+                                              onTap: () {
+                                                if (todayDealI.bookedStatus ==
+                                                    1) {
+                                                  GetXSnackBarMsg.getWarningMsg(
+                                                      'Already booked this item');
+                                                } else {
+                                                  CartFuture().addToCartTest(todayDealI.id).then((value) {
+                                                    controller.fetchTodayDealDetails(controller.currentIndex + 1);
+                                                  });
+                                                }
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                    BorderRadius.circular(
+                                                        10),
+                                                    color: todayDealI.bookedStatus == 1
+                                                        ? hsPrime.withOpacity(0.2)
+                                                        : hsPrime),
+                                                padding:
+                                                const EdgeInsets.fromLTRB(
+                                                    15, 8, 15, 8),
+                                                child: Text(
+                                                  todayDealI.bookedStatus == 1
+                                                      ? "Booked"
+                                                      : "+ Book Now",
+                                                  style: const TextStyle(
+                                                      fontFamily: FontType.MontserratRegular,
+                                                      fontSize: 13,
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
-                                );
-                              },
+                                ),
+                              ),
                             ),
-                          )
-                           : Center(child: Text("Deal is not available",style: TextStyle(fontFamily: FontType.MontserratRegular,fontWeight: FontWeight.bold),));
-                      }
+                            if (controller.tDealDetails.value.todayDetailsData!.data!.length == 10 || index + 1 != controller.tDealDetails.value.todayDetailsData!.data!.length)
+                              Container()
+                            else
+                              SizedBox(
+                                  height:
+                                  MediaQuery.of(context).size.height / 1.5),
+                            index + 1 ==
+                                controller.tDealDetails.value.todayDetailsData!.data!.length
+                                ? CustomPaginationWidget(
+                              currentPage: controller.currentIndex.value,
+                              lastPage: controller.tDealDetails.value.todayDetailsData!.lastPage!,
+                              onPageChange: (page) {
+                                controller.currentIndex.value = page - 1;
+                                controller.fetchTodayDealDetails(
+                                    controller.currentIndex.value + 1);
+                              },
+                            )
+                                : Container(),
+                          ],
+                        ),
+                      );
                     },
                   ),
-                ),
+                )),
               ),
             ),
           ],

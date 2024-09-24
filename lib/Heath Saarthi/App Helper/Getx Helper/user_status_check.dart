@@ -55,7 +55,7 @@ class UserStatusCheckController extends GetxController{
       if (e is SocketException && e.osError!.errorCode == 111) {
         GetXSnackBarMsg.getWarningMsg('Connection refused. \nCheck server availability.');
       } else if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context!);
+        DeviceInfo().logoutUser();
       } else {
         log("Unhandled error: $e");
       }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../DashBoard/Add To Cart/cart_screen.dart';
 import '../../DashBoard/Add To Cart/test_cart.dart';
 import '../../DashBoard/Notification Menu/notification_menu.dart';
 import '../Backend Helper/Api Future/Data Future/data_future.dart';
@@ -40,6 +41,7 @@ class AppBarHelper extends StatelessWidget {
               IconButton(onPressed: (){
                 Get.delete<UserStatusCheckController>();
                 Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
+                //Navigator.push(context, MaterialPageRoute(builder: (context)=>const CartScreen()));
               }, icon: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 24)),
               IconButton(onPressed: (){
                 Get.delete<UserStatusCheckController>();

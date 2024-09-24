@@ -95,6 +95,8 @@ class _TestCartState extends State<TestCart> {
     await homeMenusProvider.fetchCart(1, context,sBranchId);
     await cartCalculation(sBranchId);
   }
+
+
   bool pageLoad = false;
   var userStatus;
   var deviceToken;
@@ -117,7 +119,7 @@ class _TestCartState extends State<TestCart> {
     catch(e){
       print("get User Status Error->$e");
       if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context);
+        DeviceInfo().logoutUser();
       }
       setState(() {
         pageLoad = true;
@@ -977,7 +979,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(cartI.testItemInfo!.id, context).then((value) async{
+                                                                                              CartFuture().removeToCartTest(cartI.testItemInfo!.id).then((value) async{
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1189,7 +1191,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(cartP?.packageItemInfo!.id, context).then((value){}).then((value){
+                                                                                              CartFuture().removeToCartTest(cartP?.packageItemInfo!.id).then((value){}).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },
@@ -1398,7 +1400,7 @@ class _TestCartState extends State<TestCart> {
                                                                                           TextButton(
                                                                                             child: const Text("Delete",style: TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 2),),
                                                                                             onPressed: (){
-                                                                                              CartFuture().removeToCartTest(cartI.profileItemInfo!.id, context).then((value){
+                                                                                              CartFuture().removeToCartTest(cartI.profileItemInfo!.id).then((value){
                                                                                                 Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
                                                                                               });
                                                                                             },

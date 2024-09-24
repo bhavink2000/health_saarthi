@@ -2,21 +2,30 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/App%20Helper/snakebar_helper.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/Dashboard/Add%20To%20Cart/Test%20Cart/Controller/test_cart_controller.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Snack%20Bar%20Msg/getx_snackbar_msg.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Text%20Helper/test_helper.dart';
 
-import '../../../../App Helper/app_text_helper.dart';
-import '../../../../App Helper/font_&_color_helper.dart';
+import '../../../App Helper/Backend Helper/Api Future/Data Future/cart_controller.dart';
 
 testCartBottomsheet() {
-  final controller = Get.find<TestCartController>();
+  final controller = Get.find<CartController>();
+  log('in cart bottom');
+  log('controller.grossAmount.value ->${controller.grossAmount.value}');
+  log('controller.totalAmount.value-->${controller.totalAmount.value}');
+  log('in cart bottom');
+  log('in cart bottom');
+  log('in cart bottom');
+  log('in cart bottom');
+
+
   return Container(
     width: Get.width,
     height: Get.height / 3.8,
     decoration: BoxDecoration(
       borderRadius: const BorderRadius.only(
           topRight: Radius.circular(0), topLeft: Radius.circular(0)),
-      color: ColorHelper.hsPrime,
+      color: hsPrime,
     ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +38,7 @@ testCartBottomsheet() {
               const Text(
                 "Gross amount",
                 style: TextStyle(
-                    fontFamily: FontHelper.montserratLight,
+                    fontFamily: FontType.MontserratRegular,
                     fontSize: 14,
                     color: Colors.white),
               ),
@@ -43,7 +52,7 @@ testCartBottomsheet() {
                     "\u{20B9}${controller.grossAmount.value.isEmpty ? 0 : controller.grossAmount.value}",
                     style: const TextStyle(
                         color: Colors.white,
-                        fontFamily: FontHelper.montserratRegular,
+                        fontFamily: FontType.MontserratRegular,
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
               ),
@@ -58,7 +67,7 @@ testCartBottomsheet() {
               const Text(
                 "Total discount",
                 style: TextStyle(
-                    fontFamily: FontHelper.montserratLight,
+                    fontFamily: FontType.MontserratLight,
                     fontSize: 14,
                     color: Colors.white),
               ),
@@ -71,7 +80,7 @@ testCartBottomsheet() {
                 child: Text(controller.totalAmount.value,
                     style: const TextStyle(
                         color: Colors.white,
-                        fontFamily: FontHelper.montserratRegular,
+                        fontFamily: FontType.MontserratRegular,
                         fontSize: 16,
                         fontWeight: FontWeight.bold)),
               ),
@@ -94,7 +103,7 @@ testCartBottomsheet() {
                           child: controller.isApplyPromo == 0
                               ? const Text("Invalid promo code",
                                   style: TextStyle(
-                                      fontFamily: FontHelper.montserratRegular,
+                                      fontFamily: FontType.MontserratRegular,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.orange))
                               : Row(
@@ -102,7 +111,7 @@ testCartBottomsheet() {
                                     const Text("Promo offer applied",
                                         style: TextStyle(
                                             fontFamily:
-                                                FontHelper.montserratRegular,
+                                                FontType.MontserratRegular,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.orange)),
                                     const Spacer(),
@@ -110,7 +119,7 @@ testCartBottomsheet() {
                                       "\u{20B9}${controller.applyPromo}",
                                       style: const TextStyle(
                                           fontFamily:
-                                              FontHelper.montserratMedium),
+                                              FontType.MontserratMedium),
                                     ),
                                   ],
                                 ),
@@ -134,8 +143,8 @@ testCartBottomsheet() {
                       child: Text(
                         "Cancel",
                         style: TextStyle(
-                            fontFamily: FontHelper.montserratRegular,
-                            color: ColorHelper.hsPrime),
+                            fontFamily: FontType.MontserratRegular,
+                            color: hsPrime),
                       ),
                     )
                   ],
@@ -149,7 +158,7 @@ testCartBottomsheet() {
                         controller: controller.promoApply,
                         style: const TextStyle(
                             color: Colors.white,
-                            fontFamily: FontHelper.montserratMedium),
+                            fontFamily: FontType.MontserratMedium),
                         textAlign: TextAlign.left,
                         decoration: InputDecoration(
                           contentPadding:
@@ -163,7 +172,7 @@ testCartBottomsheet() {
                           hintText: 'Coupon code',
                           hintStyle: const TextStyle(
                               color: Colors.white,
-                              fontFamily: FontHelper.montserratMedium,
+                              fontFamily: FontType.MontserratMedium,
                               fontSize: 14),
                           //prefixIcon: Icon(iconData, color: hsBlack,size: 20),
                         ),
@@ -173,8 +182,7 @@ testCartBottomsheet() {
                     ElevatedButton(
                       onPressed: () {
                         if (controller.promoApply.text.isEmpty) {
-                          SnackBarHelper.getWarningMsg(
-                              AppTextHelper.couponCode);
+                          GetXSnackBarMsg.getWarningMsg(AppTextHelper().couponCode);
                         } else {
                           // _showLoadingDialog();
                           controller.cartCalculation().then((_) {
@@ -192,8 +200,8 @@ testCartBottomsheet() {
                       child: Text(
                         "Apply",
                         style: TextStyle(
-                            fontFamily: FontHelper.montserratRegular,
-                            color: ColorHelper.hsPrime),
+                            fontFamily: FontType.MontserratRegular,
+                            color: hsPrime),
                       ),
                     )
                   ],
@@ -216,7 +224,7 @@ testCartBottomsheet() {
                     const Text(
                       "Payable :-",
                       style: TextStyle(
-                          fontFamily: FontHelper.montserratMedium,
+                          fontFamily: FontType.MontserratMedium,
                           color: Colors.orange,
                           fontSize: 14),
                     ),
@@ -226,7 +234,7 @@ testCartBottomsheet() {
                     Text(
                       "\u{20B9}${controller.netAmount.value.isEmpty ? 0.00 : controller.netAmount.value}",
                       style: const TextStyle(
-                          fontFamily: FontHelper.montserratMedium,
+                          fontFamily: FontType.MontserratMedium,
                           color: Colors.orange,
                           fontSize: 20,
                           fontWeight: FontWeight.bold),
@@ -239,20 +247,19 @@ testCartBottomsheet() {
                 child: InkWell(
                   onTap: () {
                     if (controller.userStatus == 0) {
-                      SnackBarHelper.getWarningMsg(AppTextHelper.inAccount);
+                      GetXSnackBarMsg.getWarningMsg(AppTextHelper().inAccount);
+
                     } else if (controller.userStatus == 1) {
                       if (controller.bodyMsg == 'There is no item in cart.') {
-                        SnackBarHelper.getWarningMsg(AppTextHelper.cartEmpty);
+                        GetXSnackBarMsg.getWarningMsg(AppTextHelper().cartEmpty);
                       } else {
                         if (controller.selectLocation.value == '') {
-                          SnackBarHelper.getWarningMsg(
-                              AppTextHelper.selectLocation);
+                          GetXSnackBarMsg.getWarningMsg(AppTextHelper().selectLocation);
                         } else {
                           if (controller.setLocation.value == false) {
-                            SnackBarHelper.getWarningMsg(
-                                AppTextHelper.setLocation);
+                            GetXSnackBarMsg.getWarningMsg(AppTextHelper().setLocation);
                           } else {
-                            log("branch->>${controller.locationController.selectedBranch}/${controller.sBranchName}/${controller.locationController.selectedBranch}");
+                            //log("branch->>${controller.locationController.selectedBranch}/${controller.sBranchName}/${controller.locationController.selectedBranch}");
                             // Navigator.pushReplacement(
                             //     context,
                             //     MaterialPageRoute(
@@ -298,9 +305,11 @@ testCartBottomsheet() {
                           }
                         }
                       }
-                    } else {
-                      SnackBarHelper.getWarningMsg(AppTextHelper.userNotFound);
                     }
+                    // else {
+                    //
+                    //   SnackBarHelper.getWarningMsg(AppTextHelper.userNotFound);
+                    // }
                   },
                   child: Card(
                     elevation: controller.userStatus == 0 ? 0 : 5,
@@ -320,7 +329,7 @@ testCartBottomsheet() {
                             Text(
                               "Book now",
                               style: TextStyle(
-                                  fontFamily: FontHelper.montserratMedium,
+                                  fontFamily: FontType.MontserratMedium,
                                   fontSize: 14,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),

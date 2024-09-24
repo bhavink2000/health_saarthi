@@ -67,39 +67,40 @@ class HomeMenusProvider with ChangeNotifier{
   //   });
   // }
 
-  ApiResponseType<TodayDealModel> todayDealList = ApiResponseType.loading();
-  setTodayDealResponse(ApiResponseType<TodayDealModel> todayDealResponse){
-    todayDealList = todayDealResponse;
-    notifyListeners();
-  }
-  Future<void> fetchTodayDeal(var index)async{
-    setTodayDealResponse(ApiResponseType.loading());
-    homeRepo.todayDealData(index).then((value){
-      setTodayDealResponse(ApiResponseType.complate(value));
-    }).onError((error, stackTrace){
-      setTodayDealResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
-    }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-    });
-  }
+  // ApiResponseType<TodayDealModel> todayDealList = ApiResponseType.loading();
+  // setTodayDealResponse(ApiResponseType<TodayDealModel> todayDealResponse){
+  //   todayDealList = todayDealResponse;
+  //   notifyListeners();
+  // }
+  // Future<void> fetchTodayDeal(var index)async{
+  //   setTodayDealResponse(ApiResponseType.loading());
+  //   homeRepo.todayDealData(index).then((value){
+  //     setTodayDealResponse(ApiResponseType.complate(value));
+  //   }).onError((error, stackTrace){
+  //     setTodayDealResponse(ApiResponseType.error(error.toString()));
+  //     print(error.toString());
+  //   }).catchError((error, stackTrace) {
+  //     print("cathcError -> $error");
+  //   });
+  // }
 
-  ApiResponseType<TodayDealDetailsModel> todayDealDetailsList = ApiResponseType.loading();
-  setTodayDealDetailsResponse(ApiResponseType<TodayDealDetailsModel> todayDealDetailsResponse){
-    todayDealDetailsList = todayDealDetailsResponse;
-    notifyListeners();
-  }
-  Future<void> fetchTodayDealDetails(var index, var data)async{
-    setTodayDealDetailsResponse(ApiResponseType.loading());
-    homeRepo.todayDealDetailsData(index,data).then((value){
-      setTodayDealDetailsResponse(ApiResponseType.complate(value));
-    }).onError((error, stackTrace){
-      setTodayDealDetailsResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
-    }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-    });
-  }
+  // ApiResponseType<TodayDealDetailsModel> todayDealDetailsList = ApiResponseType.loading();
+  // setTodayDealDetailsResponse(ApiResponseType<TodayDealDetailsModel> todayDealDetailsResponse){
+  //   todayDealDetailsList = todayDealDetailsResponse;
+  //   notifyListeners();
+  // }
+  //
+  // Future<void> fetchTodayDealDetails(var index, var data)async{
+  //   setTodayDealDetailsResponse(ApiResponseType.loading());
+  //   homeRepo.todayDealDetailsData(index,data).then((value){
+  //     setTodayDealDetailsResponse(ApiResponseType.complate(value));
+  //   }).onError((error, stackTrace){
+  //     setTodayDealDetailsResponse(ApiResponseType.error(error.toString()));
+  //     print(error.toString());
+  //   }).catchError((error, stackTrace) {
+  //     print("cathcError -> $error");
+  //   });
+  // }
 
   ApiResponseType<CartModel> cartList = ApiResponseType.loading();
   setCartResponse(ApiResponseType<CartModel> cartResponse){
@@ -122,54 +123,54 @@ class HomeMenusProvider with ChangeNotifier{
     });
   }
 
-  ApiResponseType<BookingHistoryModel> bookingList = ApiResponseType.loading();
-  setBookingResponse(ApiResponseType<BookingHistoryModel> bookingResponse){
-    bookingList = bookingResponse;
-    notifyListeners();
-  }
-  Future<void> fetchBookingHistory(var data)async{
-    setBookingResponse(ApiResponseType.loading());
-    homeRepo.bookingData(data).then((value){
-      setBookingResponse(ApiResponseType.complate(value));
-    }).onError((error, stackTrace){
-      setBookingResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
-    }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-    });
-  }
+  // ApiResponseType<BookingHistoryModel> bookingList = ApiResponseType.loading();
+  // setBookingResponse(ApiResponseType<BookingHistoryModel> bookingResponse){
+  //   bookingList = bookingResponse;
+  //   notifyListeners();
+  // }
+  // Future<void> fetchBookingHistory(var data)async{
+  //   setBookingResponse(ApiResponseType.loading());
+  //   homeRepo.bookingData(data).then((value){
+  //     setBookingResponse(ApiResponseType.complate(value));
+  //   }).onError((error, stackTrace){
+  //     setBookingResponse(ApiResponseType.error(error.toString()));
+  //     print(error.toString());
+  //   }).catchError((error, stackTrace) {
+  //     print("cathcError -> $error");
+  //   });
+  // }
 
-  ApiResponseType<FaqsModel> faqsList = ApiResponseType.loading();
-  setFaqsResponse(ApiResponseType<FaqsModel> faqsResponse){
-    faqsList = faqsResponse;
-    notifyListeners();
-  }
-  Future<void> fetchFaqs()async{
-    setFaqsResponse(ApiResponseType.loading());
-    homeRepo.faqsData().then((value){
-      setFaqsResponse(ApiResponseType.complate(value));
-    }).onError((error, stackTrace){
-      setFaqsResponse(ApiResponseType.error(error.toString()));
-      print('on error -> ${error.toString()}');
-    }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-    });
-  }
+  // ApiResponseType<FaqsModel> faqsList = ApiResponseType.loading();
+  // setFaqsResponse(ApiResponseType<FaqsModel> faqsResponse){
+  //   faqsList = faqsResponse;
+  //   notifyListeners();
+  // }
+  // Future<void> fetchFaqs()async{
+  //   setFaqsResponse(ApiResponseType.loading());
+  //   homeRepo.faqsData().then((value){
+  //     setFaqsResponse(ApiResponseType.complate(value));
+  //   }).onError((error, stackTrace){
+  //     setFaqsResponse(ApiResponseType.error(error.toString()));
+  //     print('on error -> ${error.toString()}');
+  //   }).catchError((error, stackTrace) {
+  //     print("cathcError -> $error");
+  //   });
+  // }
 
-  ApiResponseType<NotificationModel> notificationist = ApiResponseType.loading();
-  setNotiResponse(ApiResponseType<NotificationModel> notificationResponse){
-    notificationist = notificationResponse;
-    notifyListeners();
-  }
-  Future<void> fetchNotification()async{
-    setNotiResponse(ApiResponseType.loading());
-    homeRepo.notificationData().then((value){
-      setNotiResponse(ApiResponseType.complate(value));
-    }).onError((error, stackTrace){
-      setNotiResponse(ApiResponseType.error(error.toString()));
-      print(error.toString());
-    }).catchError((error, stackTrace) {
-      print("cathcError -> $error");
-    });
-  }
+  // ApiResponseType<NotificationModel> notificationist = ApiResponseType.loading();
+  // setNotiResponse(ApiResponseType<NotificationModel> notificationResponse){
+  //   notificationist = notificationResponse;
+  //   notifyListeners();
+  // }
+  // Future<void> fetchNotification()async{
+  //   setNotiResponse(ApiResponseType.loading());
+  //   homeRepo.notificationData().then((value){
+  //     setNotiResponse(ApiResponseType.complate(value));
+  //   }).onError((error, stackTrace){
+  //     setNotiResponse(ApiResponseType.error(error.toString()));
+  //     print(error.toString());
+  //   }).catchError((error, stackTrace) {
+  //     print("cathcError -> $error");
+  //   });
+  // }
 }

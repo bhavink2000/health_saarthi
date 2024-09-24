@@ -14,14 +14,12 @@ class TokenExpiredHelper extends StatefulWidget {
 }
 
 class _TokenExpiredHelperState extends State<TokenExpiredHelper> {
-  //GetAccessToken getAccessToken = GetAccessToken();
 
   @override
   void initState() {
     super.initState();
-    //getAccessToken.checkAuthentication(context, setState);
     Future.delayed(const Duration(seconds: 1),(){
-      DeviceInfo().logoutUser(context);
+      DeviceInfo().logoutUser();
     });
   }
 

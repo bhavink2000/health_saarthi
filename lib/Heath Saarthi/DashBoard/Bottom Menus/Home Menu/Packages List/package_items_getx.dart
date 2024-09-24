@@ -9,6 +9,7 @@ import '../../../../App Helper/Frontend Helper/Pagination Helper/custom_paginati
 import '../../../../App Helper/Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../../App Helper/Widget Helper/appbar_helper.dart';
 import '../../../../App Helper/Widget Helper/search_textfield.dart';
+import '../../../Add To Cart/cart_screen.dart';
 import '../../../Add To Cart/test_cart.dart';
 import '../Home Widgets/test_package_data_healper.dart';
 import 'package_item_details.dart';
@@ -155,6 +156,7 @@ class _PackageDataNewState extends State<PackageDataNew> {
                 amount: controller.packageModel.value.cartData?.amount,
                 onTap: (){
                   Get.to(() => TestCart());
+                  //Get.to(() => CartScreen());
                 },
               )
             )

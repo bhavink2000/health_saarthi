@@ -10,6 +10,7 @@ import 'package:http/http.dart' as http;
 import '../../../Frontend Helper/Snack Bar Msg/getx_snackbar_msg.dart';
 import '../../../Frontend Helper/Text Helper/test_helper.dart';
 import '../../Api Urls/api_urls.dart';
+import '../../Models/Dashboard Model/notification_model.dart';
 
 class HomeDataFuture extends GetxController{
   final box = GetStorage();
@@ -25,6 +26,34 @@ class HomeDataFuture extends GetxController{
     super.onInit();
   }
 
+  RxBool notiLoad = false.obs;
+  Rx<NotificationModel> notificationModel = NotificationModel().obs;
+  Future<void> fetchNotification() async {
+    notiLoad(true);
+    try {
+      final response = await http.post(Uri.parse(ApiUrls.notificationUrls), headers: getHeader());
+      var responseBody = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        if (responseBody['status'] == 200) {
+          notificationModel.value = NotificationModel.fromJson(responseBody);
+          notiLoad(false);
+        } else if (responseBody['status'] == '402') {
+          log('402 error :-<');
+          notiLoad(false);
+        } else {
+          notiLoad(false);
+          log('something went wrong status code :-< ${responseBody['status']}');
+        }
+      } else {
+        log('something went wrong in fetching notification');
+        log('response body => $responseBody}');
+        notiLoad(false);
+      }
+    } catch (e) {
+      log('some thing went wrong $e');
+      notiLoad(false);
+    }
+  }
 
   Rx<BannerModel> bannerModel = BannerModel().obs;
   RxBool bannerLoad = false.obs;
@@ -98,6 +127,7 @@ class HomeDataFuture extends GetxController{
 
   Rx<TodayDealDetailsModel> tDealDetails = TodayDealDetailsModel().obs;
   RxBool tDealDetailsLoad = false.obs;
+  RxInt currentIndex = 0.obs;
   Future<void> fetchTodayDealDetails(dealId) async{
     tDealDetailsLoad(true);
     try{

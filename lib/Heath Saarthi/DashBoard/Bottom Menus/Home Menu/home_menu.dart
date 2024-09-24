@@ -145,7 +145,7 @@ class _HomeMenuState extends State<HomeMenu> {
     catch(e){
       print("get User Status Error->$e");
       if (e.toString().contains('402')) {
-        DeviceInfo().logoutUser(context);
+        DeviceInfo().logoutUser();
       }
     }
   }

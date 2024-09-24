@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Data%20Future/home_data_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Enums/enums_status.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:provider/provider.dart';
@@ -19,18 +21,11 @@ class NotificationMenu extends StatefulWidget {
 
 class _NotificationMenuState extends State<NotificationMenu> {
 
-  //GetAccessToken getAccessToken = GetAccessToken();
-  HomeMenusProvider homeMenusProvider = HomeMenusProvider();
-  int curentindex = 0;
+  final controller = Get.find<HomeDataFuture>();
   @override
   void initState() {
     super.initState();
-    //getAccessToken.checkAuthentication(context, setState);
-    Future.delayed(const Duration(seconds: 2),(){
-      setState(() {
-        homeMenusProvider.fetchNotification();
-      });
-    });
+    controller.fetchNotification();
   }
 
   @override
@@ -59,91 +54,89 @@ class _NotificationMenuState extends State<NotificationMenu> {
             Expanded(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: ChangeNotifierProvider<HomeMenusProvider>(
-                  create: (BuildContext context) => homeMenusProvider,
-                  child: Consumer<HomeMenusProvider>(
-                    builder: (context, value, __){
-                      switch(value.notificationist.status!){
-                        case Status.loading:
-                          return const CenterLoading();
-                        case Status.error:
-                          return const CenterLoading();
-                        case Status.completed:
-                          return value.notificationist.data!.data!.isEmpty ? const Center(child: Text("Notification is not available"),) : AnimationLimiter(
-                            child: ListView.builder(
-                              itemCount: value.notificationist.data!.data!.length,
-                              itemBuilder: (context, index){
-                                var notiFi = value.notificationist.data!.data![index];
-                                return Padding(
-                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    child: SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(10),topRight: Radius.circular(10),
-                                                    ),
-                                                    color: hsPrime
-                                                  ),
-                                                  //width: MediaQuery.of(context).size.width.w,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.fromLTRB(10, 8, 0, 8),
-                                                    child: Text(
-                                                      '${notiFi.title}',
-                                                      style: const TextStyle(
-                                                          fontFamily: FontType.MontserratRegular,color: Colors.white,
-                                                          fontSize: 14,fontWeight: FontWeight.bold
-                                                      )
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
+                child: Obx(() => controller.notiLoad.value
+                    ? const Center(child: CenterLoading(),)
+                    : controller.notificationModel.value.data!.isEmpty
+                    ? const Center(child: Text("Notification is not available"),)
+                    : ListView.builder(
+                  itemCount: controller.notificationModel.value.data?.length,
+                  itemBuilder: (context, index) {
+                    var notiFi = controller.notificationModel.value.data?[index];
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: Card(
+                        elevation: 3,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                          const BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
-                                            child: Text(
-                                              '${notiFi.message == null ? 'N/A': notiFi.message}',
-                                              style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Spacer(),
-                                              Container(
-                                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                                decoration: BoxDecoration(borderRadius: const BorderRadius.only(
-                                                    bottomLeft: Radius.circular(0),
-                                                    topLeft: Radius.circular(10),
-                                                    bottomRight: Radius.circular(10)
-                                                ),color: hsPrimeOne),
-                                                child: Text(
-                                                  '${notiFi.createAt}',
-                                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.white,fontSize: 12),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                          color: hsPrime),
+                                      //width: MediaQuery.of(context).size.width.w,
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            10, 8, 0, 8),
+                                        child: Text('${notiFi?.title}',
+                                            style: const TextStyle(
+                                                fontFamily: FontType.MontserratRegular,
+                                                color: Colors.white,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold)),
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                            ),
-                          );
-                      }
-                    },
-                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding:
+                                const EdgeInsets.fromLTRB(10, 8, 10, 8),
+                                child: Text(
+                                  '${notiFi?.message ?? 'N/A'}',
+                                  style: const TextStyle(
+                                      fontFamily: FontType.MontserratRegular,
+                                      fontSize: 12),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  const Spacer(),
+                                  Container(
+                                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                    decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(0),
+                                            topLeft: Radius.circular(5),
+                                            bottomRight: Radius.circular(5)),
+                                        color: hsPrime),
+                                    child: Text(
+                                      '${notiFi?.createAt}',
+                                      style: const TextStyle(
+                                          fontFamily: FontType.MontserratRegular,
+                                          color: Colors.white,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
                 )
               ),
             )

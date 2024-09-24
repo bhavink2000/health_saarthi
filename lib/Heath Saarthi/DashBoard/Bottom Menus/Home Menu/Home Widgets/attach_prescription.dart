@@ -337,10 +337,11 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                             },
                           ),
                           SizedBox(height: 10.h),
+
                           Obx(() => LocationDropdowns(
                             items: locationController.stateList.where((state) => state!.stateName! != null).map((state) => state!.stateName!).toList(),
                             loading: locationController.stateLoading.value,
-                            selectedItem: locationController.selectedState?.value,
+                            selectedItem: locationController.selectedState.value == '' ? null : locationController.selectedState.value,
                             label: "Select state",
                             onChanged: (newValue) {
                               final selectedStateObject = locationController.stateList.firstWhere(
@@ -370,7 +371,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                           Obx(() => LocationDropdowns(
                             items: locationController.cityList.where((city) => city!.cityName != null).map((city) => city!.cityName!).toList(),
                             loading: locationController.cityLoading.value,
-                            selectedItem: locationController.selectedCity?.value,
+                            selectedItem: locationController.selectedCity.value == '' ? null : locationController.selectedCity.value,
                             label: "Select city",
                             onChanged: (newValue) {
                               final selectedCityObject = locationController.cityList.firstWhere(
@@ -399,7 +400,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                           Obx(() => LocationDropdowns(
                             items: locationController.areaList.where((area) => area!.areaName != null).map((area) => area!.areaName!).toList(),
                             loading: locationController.areaLoading.value,
-                            selectedItem: locationController.selectedArea?.value,
+                            selectedItem: locationController.selectedArea.value == "" ? null : locationController.selectedArea.value,
                             label: "Select area",
                             onChanged: (newValue) {
                               final selectedAreaObject = locationController.areaList.firstWhere(
@@ -429,7 +430,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                           Obx(() => LocationDropdowns(
                             items: locationController.branchList.where((branch) => branch!.branchName != null).map((branch) => branch!.branchName!).toList(),
                             loading: locationController.branchLoading.value,
-                            selectedItem: locationController.selectedBranch?.value,
+                            selectedItem: locationController.selectedBranch.value == "" ? null : locationController.selectedBranch.value,
                             label: "Select branch",
                             onChanged: (newValue) {
                               final selectedBranchObject = locationController.branchList.firstWhere(
@@ -448,6 +449,7 @@ class _AttachPrescriptionState extends State<AttachPrescription> {
                               return null;
                             },
                           ),),
+
                           SizedBox(height: 10.h),
                           FormTextField(
                             controller: collectionDate,

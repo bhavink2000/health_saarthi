@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Data%20Future/data_future.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Loading%20Helper/loading_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -21,25 +23,12 @@ class MyBookingScreen extends StatefulWidget {
 
 class _MyBookingScreenState extends State<MyBookingScreen> {
 
-  final fromDate = TextEditingController();
-  final toDate = TextEditingController();
+  final controller = Get.find<DataFuture>();
 
-  //GetAccessToken getAccessToken = GetAccessToken();
-  HomeMenusProvider homeMenusProvider = HomeMenusProvider();
   @override
   void initState() {
     super.initState();
-    //getAccessToken.checkAuthentication(context, setState);
-    Map data = {
-      'from_date': fromDate.text,
-      'to_date': toDate.text,
-    };
-    print("data->$data");
-    Future.delayed(const Duration(seconds: 1),(){
-      setState(() {
-        homeMenusProvider.fetchBookingHistory(data);
-      });
-    });
+    controller.fetchBooking();
   }
   @override
   Widget build(BuildContext context) {
@@ -71,18 +60,18 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   Container(
                     width: MediaQuery.of(context).size.width / 3.w,
                     decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Colors.white
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                        color: Colors.white
                     ),
                     child: TextField(
-                      controller: fromDate,
+                      controller: controller.fromDate,
                       readOnly: true,
                       style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 14),
                       decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                          contentPadding: EdgeInsets.fromLTRB(10, 0, 10, 10),
                           border: InputBorder.none,
                           labelText: "Start Date",
-                        labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold,fontSize: 12)
+                          labelStyle: TextStyle(fontFamily: FontType.MontserratLight,color: Colors.black,fontWeight: FontWeight.bold,fontSize: 12)
                       ),
                       onTap: () async {
                         DateTime? pickedDate = await showDatePicker(
@@ -94,7 +83,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         if(pickedDate != null ){
                           String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
                           setState(() {
-                            fromDate.text = formattedDate;
+                            controller.fromDate.text = formattedDate;
                           });
                         }else{
 
@@ -109,7 +98,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         color: Colors.white
                     ),
                     child: TextField(
-                      controller: toDate,
+                      controller: controller.toDate,
                       readOnly: true,
                       style: const TextStyle(fontFamily: FontType.MontserratRegular,color: Colors.black,fontSize: 14),
                       decoration: const InputDecoration(
@@ -128,7 +117,7 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                         if(pickedDate != null ){
                           String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
                           setState(() {
-                            toDate.text = formattedDate;
+                            controller.toDate.text = formattedDate;
                           });
                         }else{
 
@@ -138,23 +127,18 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
                   ),
                   InkWell(
                     onTap: (){
-                      if(fromDate.text.isEmpty || toDate.text.isEmpty){
+                      if(controller.fromDate.text.isEmpty || controller.toDate.text.isEmpty){
                         GetXSnackBarMsg.getWarningMsg('Please enter dates');
                       }
                       else{
-                        Map data = {
-                          'from_date': fromDate.text,
-                          'to_date': toDate.text,
-                        };
-                        print("Map ->$data");
-                        homeMenusProvider.fetchBookingHistory(data);
+                        controller.fetchBooking();
                       }
                     },
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),
                       decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Colors.white
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white
                       ),
                       child: Text("Apply",style: TextStyle(fontFamily: FontType.MontserratMedium,color: hsPrime,fontWeight: FontWeight.bold,fontSize: 12  ),),
                     ),
@@ -167,83 +151,112 @@ class _MyBookingScreenState extends State<MyBookingScreen> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 decoration: const BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),color: Colors.white),
-                child: ChangeNotifierProvider<HomeMenusProvider>(
-                  create: (BuildContext context) => homeMenusProvider,
-                  child: Consumer<HomeMenusProvider>(
-                    builder: (context, value, __){
-                      switch(value.bookingList.status!){
-                        case Status.loading:
-                          return const CenterLoading();
-                        case Status.error:
-                          return value.bookingList.message == '402'
-                              ? TokenExpiredHelper()
-                              : Center(child: Text("No Data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),);
-                        case Status.completed:
-                          return value.bookingList.data!.bookingData!.bookingItems!.isNotEmpty ? ListView.builder(
-                            itemCount: value.bookingList.data!.bookingData?.bookingItems?.length,
-                            itemBuilder: (context, index){
-                              var bookingH = value.bookingList.data!.bookingData?.bookingItems![index];
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 5, 20, 5),
-                                child: Card(
-                                  elevation: 5,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                  shadowColor: hsGrey.withOpacity(0.5),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-                                    child: ExpansionTile(
-                                      title: Text(bookingH!.pharmacyPatient!.name!,style: const TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 16)),
-                                      subtitle: Text("Booking No :- ${bookingH.bookingCode!}",style: const TextStyle(fontFamily: FontType.MontserratRegular,letterSpacing: 1,fontSize: 12)),
-                                      childrenPadding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
-                                      children: [
-                                        showRowContent('Mobile Number', '${bookingH!.pharmacyPatient!.mobileNo}'),
-                                        const SizedBox(height: 5),
-                                        showRowContent('Gross Amount', '\u{20B9}${bookingH!.grossAmount == null ? 0 : bookingH!.grossAmount}'),
-                                        const SizedBox(height: 5),
-                                        showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount == null ? 0 : bookingH.netAmount}'),
-                                        const SizedBox(height: 5),
-                                        showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount == null ? 0 : bookingH.pharmacyDiscountAmount}'),
-                                        const SizedBox(height: 5),
-                                        showRowContent('Date', '${bookingH.createAt}'),
-                                        const SizedBox(height: 5),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text("Booking Status ",style: TextStyle(fontFamily: FontType.MontserratMedium,letterSpacing: 1,fontSize: 14),),
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(15),
-                                                color: hsPrime
-                                              ),
-                                              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                              child: Text(
-                                                  bookingH.status == 0
-                                                      ? '${bookingH.bookingStatus!.s0}'
-                                                      : bookingH.status == 1
-                                                        ? '${bookingH.bookingStatus!.s1}'
-                                                        : bookingH.status == 2
-                                                          ? '${bookingH.bookingStatus!.s2}'
-                                                          : bookingH.status == 3
-                                                            ? '${bookingH.bookingStatus!.s3}'
-                                                            : '${bookingH.bookingStatus!.s4}',
-                                                  style: const TextStyle(fontFamily: FontType.MontserratRegular,fontSize: 12,fontWeight: FontWeight.bold,color: Colors.white)
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                child: Obx(() => controller.bookingLoad.value
+                    ? SizedBox(height: Get.height / 1.5, child: const CenterLoading(),)
+                    : controller.bookingModel.value.bookingData!
+                    .bookingItems!.isNotEmpty
+                    ? ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.bookingModel.value
+                      .bookingData?.bookingItems?.length,
+                  itemBuilder: (context, index) {
+                    var bookingH = controller.bookingModel
+                        .value.bookingData?.bookingItems![index];
+                    return Padding(
+                      padding:
+                      const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        shadowColor: hsGrey.withOpacity(0.5),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                              dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Text(
+                                bookingH!.pharmacyPatient!.name!,
+                                style: const TextStyle(
+                                    fontFamily: FontType.MontserratMedium,
+                                    letterSpacing: 1,
+                                    fontSize: 16)),
+                            subtitle: Text(
+                                "Booking No :- ${bookingH.bookingCode!}",
+                                style: const TextStyle(
+                                    fontFamily: FontType.MontserratRegular,
+                                    letterSpacing: 1,
+                                    fontSize: 12)),
+                            childrenPadding:
+                            const EdgeInsets.fromLTRB(
+                                10, 5, 10, 5),
+                            children: [
+                              showRowContent('Mobile Number', '${bookingH.pharmacyPatient!.mobileNo}'),
+                              const SizedBox(height: 5),
+                              showRowContent('Gross Amount', '\u{20B9}${bookingH.grossAmount ?? 0}'),
+                              const SizedBox(height: 5),
+                              showRowContent('Net Amount', '\u{20B9}${bookingH.netAmount ?? 0}'),
+                              const SizedBox(height: 5),
+                              showRowContent('Earning Amount', '\u{20B9}${bookingH.pharmacyDiscountAmount ?? 0}'),
+                              const SizedBox(height: 5),
+                              showRowContent('Date', '${bookingH.createAt}'),
+                              const SizedBox(height: 5),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "Booking Status ",
+                                    style: TextStyle(
+                                        fontFamily: FontType.MontserratMedium,
+                                        letterSpacing: 1,
+                                        fontSize: 14),
                                   ),
-                                ),
-                              );
-                            },
-                          ) : Center(
-                            child: Text("No booking data",style: TextStyle(fontFamily: FontType.MontserratMedium,fontWeight: FontWeight.bold,color: hsPrime,letterSpacing: 1),),
-                          );
-                      }
-                    },
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(15),
+                                        color: hsPrime),
+                                    padding:
+                                    const EdgeInsets.fromLTRB(
+                                        10, 5, 10, 5),
+                                    child: Text(
+                                        bookingH.status == 0
+                                            ? '${bookingH.bookingStatus!.s0}'
+                                            : bookingH.status == 1
+                                            ? '${bookingH.bookingStatus!.s1}'
+                                            : bookingH.status == 2
+                                            ? '${bookingH.bookingStatus!.s2}'
+                                            : bookingH.status ==
+                                            3
+                                            ? '${bookingH.bookingStatus!.s3}'
+                                            : '${bookingH.bookingStatus!.s4}',
+                                        style: const TextStyle(
+                                            fontFamily: FontType.MontserratRegular,
+                                            fontSize: 12,
+                                            fontWeight:
+                                            FontWeight.bold,
+                                            color: Colors.white)),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                )
+                    : Center(
+                  child: Text(
+                    "No booking data",
+                    style: TextStyle(
+                        fontFamily: FontType.MontserratMedium,
+                        fontWeight: FontWeight.bold,
+                        color: hsPrime,
+                        letterSpacing: 1),
                   ),
-                ),
+                )),
               ),
             )
           ],

@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Data%20Future/cart_controller.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Dialog%20Helper/update_show_dialog.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Getx%20Helper/location_getx.dart';
@@ -22,6 +23,7 @@ import '../App Helper/Backend Helper/bottom_navigation_controller.dart';
 import '../App Helper/Check Internet Helper/Bindings/dependency_injection.dart';
 import '../App Helper/Frontend Helper/Font & Color Helper/font_&_color_helper.dart';
 import '../App Helper/Getx Helper/user_status_check.dart';
+import 'Add To Cart/cart_screen.dart';
 import 'Add To Cart/test_cart.dart';
 
 class Home extends StatefulWidget {
@@ -36,9 +38,8 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   final controller = Get.put(BottomBarController());
   final locationController = Get.put(LocationCall());
 
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  //GetAccessToken getAccessToken = GetAccessToken();
-  final box = GetStorage();
 
   @override
   void initState(){
@@ -50,7 +51,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   }
 
   void deviceTokenType()async{
-    await DeviceInfo().sendDeviceToken(context).then((value) async{
+    await DeviceInfo().sendDeviceToken().then((value) async{
       if (value == null) {
         var data = json.decode(value);
       } else {
@@ -115,6 +116,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                                 onTap: (){
                                   Get.delete<UserStatusCheckController>();
                                   Navigator.push(context, MaterialPageRoute(builder: (context)=>const TestCart()));
+                                  //Navigator.push(context, MaterialPageRoute(builder: (context)=>const CartScreen()));
                                 },child: Padding(
                                   padding: const EdgeInsets.all(4),
                                   child: Icon(Icons.shopping_cart_rounded,color: hsPrime,size: 25),

@@ -63,7 +63,7 @@ class _LoginFormState extends State<LoginForm> {
 
   void deviceTokenType()async{
     print("----->>>>> calling without add device token api <<<<<-----");
-    await DeviceInfo().sendDeviceToken(context).then((value) {
+    await DeviceInfo().sendDeviceToken().then((value) {
       if (value == null) {
         var data = json.decode(value);
 

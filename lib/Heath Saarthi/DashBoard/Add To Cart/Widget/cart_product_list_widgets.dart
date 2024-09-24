@@ -3,11 +3,11 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/App%20Helper/Netwok%20Helper/Cart%20Data%20Helper/cart_data_helper.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
+import '../../../App Helper/Backend Helper/Api Future/Data Future/cart_controller.dart';
+import '../../../App Helper/Backend Helper/Models/Cart Menu/cart_model.dart';
 
-import '../../../../App Helper/Model Helper/Cart Menu/cart_model.dart';
-import '../../../../App Helper/font_&_color_helper.dart';
-import '../Controller/test_cart_controller.dart';
 
 //ignore: must_be_immutable
 class CartItemWidget extends StatelessWidget {
@@ -31,13 +31,13 @@ class CartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<TestCartController>();
+    final controller = Get.find<CartController>();
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: ColorHelper.hsPrime.withOpacity(0.1)),
+            color: hsPrime.withOpacity(0.1)),
         child: Column(
           children: [
             Padding(
@@ -49,7 +49,7 @@ class CartItemWidget extends StatelessWidget {
                   Text(
                     "$cartItemLabel",
                     style: const TextStyle(
-                        fontFamily: FontHelper.montserratMedium,
+                        fontFamily: FontType.MontserratMedium,
                         fontSize: 16,
                         fontWeight: FontWeight.bold),
                   ),
@@ -60,12 +60,12 @@ class CartItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: ColorHelper.hsPrime.withOpacity(0.8)),
+                          color: hsPrime.withOpacity(0.8)),
                       child: const Text(
                         "+ Add",
                         style: TextStyle(
                             color: Colors.white,
-                            fontFamily: FontHelper.montserratMedium,
+                            fontFamily: FontType.MontserratMedium,
                             fontSize: 14),
                       ),
                     ),
@@ -111,14 +111,14 @@ class CartItemWidget extends StatelessWidget {
                                                   : "${cartPr?.serviceName}",
                                           style: const TextStyle(
                                               fontFamily:
-                                                  FontHelper.montserratLight,
+                                                  FontType.MontserratLight,
                                               fontSize: 13)),
                                     ),
                                     Text(
                                         "\u{20B9}${cartItemLabel == 'Tests' ? "${cartI?.mrpAmount}" : cartItemLabel == 'Package' ? "${cartP?.mrpAmount}" : "${cartPr?.mrpAmount}"}",
                                         style: const TextStyle(
                                             fontFamily:
-                                                FontHelper.montserratLight,
+                                                FontType.MontserratLight,
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold)),
                                     InkWell(
@@ -158,8 +158,7 @@ class CartItemWidget extends StatelessWidget {
                                                             "Are you sure would like to delete package item?",
                                                             style: TextStyle(
                                                                 fontFamily:
-                                                                    FontHelper
-                                                                        .montserratRegular,
+                                                                    FontType.MontserratRegular,
                                                                 fontSize: 12),
                                                             textAlign: TextAlign
                                                                 .center,
@@ -175,8 +174,7 @@ class CartItemWidget extends StatelessWidget {
                                                                 "Cancel",
                                                                 style: TextStyle(
                                                                     fontFamily:
-                                                                        FontHelper
-                                                                            .montserratRegular,
+                                                                        FontType.MontserratRegular,
                                                                     letterSpacing:
                                                                         2),
                                                               ),
@@ -188,34 +186,18 @@ class CartItemWidget extends StatelessWidget {
                                                                 "Delete",
                                                                 style: TextStyle(
                                                                     fontFamily:
-                                                                        FontHelper
-                                                                            .montserratRegular,
+                                                                        FontType.MontserratRegular,
                                                                     letterSpacing:
                                                                         2),
                                                               ),
                                                               onPressed: () {
-                                                                CartDataHelper.removeToCartTest(cartItemLabel ==
-                                                                            'Tests'
-                                                                        ? cartI
-                                                                            ?.id
-                                                                        : cartItemLabel ==
-                                                                                'Package'
-                                                                            ? cartP
-                                                                                ?.id
-                                                                            : cartPr
-                                                                                ?.id)
-                                                                    .then(
-                                                                        (value) {
+                                                                CartFuture().removeToCartTest(cartItemLabel == 'Tests' ? cartI?.id : cartItemLabel == 'Package' ? cartP?.id : cartPr?.id)
+                                                                    .then((value) {
                                                                   // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TestCart()));
-                                                                  controller.fetchCart(
-                                                                      controller
-                                                                          .sBranchId
-                                                                          .value);
-                                                                  controller
-                                                                      .cartCalculation();
-                                                                  log(controller
-                                                                      .netAmount
-                                                                      .value);
+                                                                  Get.back(closeOverlays: true);
+                                                                  controller.fetchCart(controller.sBranchId.value);
+                                                                  controller.cartCalculation();
+                                                                  log(controller.netAmount.value);
                                                                 });
                                                               },
                                                             ),
@@ -232,7 +214,7 @@ class CartItemWidget extends StatelessWidget {
                                         width: Get.width / 6,
                                         child: Icon(
                                             Icons.delete_forever_rounded,
-                                            color: ColorHelper.hsPrime,
+                                            color: hsPrime,
                                             size: 20),
                                       ),
                                     ),
@@ -259,7 +241,7 @@ class CartItemWidget extends StatelessWidget {
                 borderRadius: const BorderRadius.only(
                     bottomRight: Radius.circular(10),
                     bottomLeft: Radius.circular(10)),
-                color: ColorHelper.hsPrime.withOpacity(0.8),
+                color: hsPrime.withOpacity(0.8),
               ),
               padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
               child: Row(
@@ -267,7 +249,7 @@ class CartItemWidget extends StatelessWidget {
                   Text(
                     "$itemDiscount",
                     style: const TextStyle(
-                        fontFamily: FontHelper.montserratMedium,
+                        fontFamily: FontType.MontserratMedium,
                         fontSize: 14,
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
@@ -283,7 +265,7 @@ class CartItemWidget extends StatelessWidget {
                         value: dropdownValue,
                         style: const TextStyle(
                             color: Colors.black,
-                            fontFamily: FontHelper.montserratMedium),
+                            fontFamily: FontType.MontserratMedium),
                         dropdownColor: Colors.white,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
@@ -299,7 +281,7 @@ class CartItemWidget extends StatelessWidget {
                           hintText: 'Discount',
                           hintStyle: const TextStyle(
                             color: Colors.black,
-                            fontFamily: FontHelper.montserratRegular,
+                            fontFamily: FontType.MontserratRegular,
                             fontSize: 12,
                           ),
                         ),
@@ -339,7 +321,7 @@ class CommonAddItemsWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-          color: ColorHelper.hsPrime.withOpacity(0.1),
+          color: hsPrime.withOpacity(0.1),
           borderRadius: BorderRadius.circular(5)),
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
@@ -347,7 +329,7 @@ class CommonAddItemsWidget extends StatelessWidget {
         children: [
           Text("Add $label",
               style: const TextStyle(
-                fontFamily: FontHelper.montserratMedium,
+                fontFamily: FontType.MontserratMedium,
                 fontSize: 15,
               )),
           InkWell(
@@ -358,12 +340,12 @@ class CommonAddItemsWidget extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: ColorHelper.hsPrime.withOpacity(0.8)),
+                  color: hsPrime.withOpacity(0.8)),
               child: Text(
                 "+ $label",
                 style: const TextStyle(
                     color: Colors.white,
-                    fontFamily: FontHelper.montserratMedium,
+                    fontFamily: FontType.MontserratMedium,
                     fontSize: 14),
               ),
             ),

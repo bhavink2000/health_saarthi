@@ -2,14 +2,14 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/App%20Helper/Netwok%20Helper/Cart%20Data%20Helper/cart_data_helper.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/Dashboard/Add%20To%20Cart/Test%20Cart/Controller/test_cart_controller.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Future/Cart%20Future/cart_future.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 
-import '../../../../App Helper/font_&_color_helper.dart';
+import '../../../App Helper/Backend Helper/Api Future/Data Future/cart_controller.dart';
 
 class CartDialogs {
   static void removeFromCartDialog(testId) {
-    final controller = Get.find<TestCartController>();
+    final controller = Get.find<CartController>();
     Get.dialog(
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -32,7 +32,7 @@ class CartDialogs {
                     child: Text(
                       "Are you sure would like to\n delete test item?",
                       style: TextStyle(
-                          fontFamily: FontHelper.montserratRegular,
+                          fontFamily: FontType.MontserratRegular,
                           fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
@@ -49,7 +49,7 @@ class CartDialogs {
                         child: const Text(
                           "Cancel",
                           style: TextStyle(
-                              fontFamily: FontHelper.montserratRegular,
+                              fontFamily: FontType.MontserratRegular,
                               letterSpacing: 2),
                         ),
                       ),
@@ -62,7 +62,7 @@ class CartDialogs {
                           // CartFuture().removeToCartTest(getAccessToken.access_token, cartI.testItemInfo!.id, context).then((value) async {
                           //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const TestCart()));
                           // });
-                          CartDataHelper.removeToCartTest(testId).then((value) {
+                          CartFuture().removeToCartTest(testId).then((value) {
                             controller.fetchCart(controller.sBranchId.value);
                             controller.cartCalculation();
                           });
@@ -70,7 +70,7 @@ class CartDialogs {
                         child: const Text(
                           "Delete",
                           style: TextStyle(
-                              fontFamily: FontHelper.montserratRegular,
+                              fontFamily: FontType.MontserratRegular,
                               letterSpacing: 2),
                         ),
                       ),

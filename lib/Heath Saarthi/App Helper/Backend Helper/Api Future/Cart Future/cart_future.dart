@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Models/Cart%20Menu/patient_model.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +53,7 @@ class CartFuture{
     }
   }
 
-  Future<CartResponseModel> removeToCartTest(testId, BuildContext context) async {
+  Future<CartResponseModel> removeToCartTest(testId) async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${box.read('accessToken')}',
@@ -72,7 +73,7 @@ class CartFuture{
       var amount = responseData['data']['amount'];
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
-        Navigator.pop(context);
+        Get.back();
       } else {
         GetXSnackBarMsg.getWarningMsg('$bodyMsg');
       }

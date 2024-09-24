@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:health_saarthi_getx/Health%20Saarthi/Dashboard/Add%20To%20Cart/Test%20Cart/Controller/test_cart_controller.dart';
+import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/Font%20&%20Color%20Helper/font_&_color_helper.dart';
 
-import '../../../../App Helper/Widget Helper/Common Location Picker/common_location_picker.dart';
-import '../../../../App Helper/font_&_color_helper.dart';
+import '../../../App Helper/Backend Helper/Api Future/Data Future/cart_controller.dart';
+import '../../../App Helper/Backend Helper/Api Future/Location Future/location_widget.dart';
+
 
 class SelectLocationType extends StatelessWidget {
   const SelectLocationType({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.find<TestCartController>();
+    final controller = Get.find<CartController>();
     return Column(
       children: [
         Container(
@@ -26,7 +27,7 @@ class SelectLocationType extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Current location',
                         style: TextStyle(
-                            fontFamily: FontHelper.montserratMedium,
+                            fontFamily: FontType.MontserratMedium,
                             fontSize: 12,
                             color: Colors.black)),
                     value: 'cLocation',
@@ -58,13 +59,13 @@ class SelectLocationType extends StatelessWidget {
                     contentPadding: EdgeInsets.zero,
                     title: const Text('Different location',
                         style: TextStyle(
-                            fontFamily: FontHelper.montserratMedium,
+                            fontFamily: FontType.MontserratMedium,
                             fontSize: 12,
                             color: Colors.black)),
                     value: 'dLocation',
                     groupValue: controller.selectLocation.value,
                     onChanged: (value) {
-                      controller.locationController.fetchState();
+                      controller.locationController.fetchStateList();
                       controller.setLocation.value = false;
                       controller.selectLocation.value = value!;
                       controller.showDLocation.value = true;
@@ -83,10 +84,10 @@ class SelectLocationType extends StatelessWidget {
               child: ExpansionTile(
                 initiallyExpanded: true,
                 title: const Text('Choose location',
-                    style: TextStyle(fontFamily: FontHelper.montserratMedium)),
+                    style: TextStyle(fontFamily: FontType.MontserratMedium)),
                 childrenPadding: const EdgeInsets.symmetric(horizontal: 10),
                 children: [
-                  const CommonLocationPicker(),
+                  const LocationPicker(),
                   const SizedBox(height: 5),
                   InkWell(
                     onTap: () {
@@ -106,12 +107,12 @@ class SelectLocationType extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 5, vertical: 3),
                       decoration: BoxDecoration(
-                          color: ColorHelper.hsPrime,
+                          color: hsPrime,
                           borderRadius: BorderRadius.circular(5)),
                       child: const Text(
                         'Set location',
                         style: TextStyle(
-                            fontFamily: FontHelper.montserratMedium,
+                            fontFamily: FontType.MontserratMedium,
                             color: Colors.white),
                       ),
                     ),

@@ -260,7 +260,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                           box.remove('aadhaarBImg',);
                                                           box.remove('chequeImg',);
                                                           box.remove('gstImg',);
-                                                          DeviceInfo().deleteDeviceToken(context).then((value) {
+                                                          DeviceInfo().deleteDeviceToken().then((value) {
                                                             if (value == 'success') {
                                                               print("token is deleted $value");
                                                             } else {
@@ -276,7 +276,7 @@ class _DrawerScreenState extends State<DrawerScreen> {
                                                         log('in else if code ->402');
                                                         AuthenticationManager().removeToken().then((value){
                                                           box.remove('accessToken');
-                                                          DeviceInfo().deleteDeviceToken(context).then((value) {
+                                                          DeviceInfo().deleteDeviceToken().then((value) {
                                                             if (value == 'success') {
                                                               print("token is deleted $value");
                                                             } else {

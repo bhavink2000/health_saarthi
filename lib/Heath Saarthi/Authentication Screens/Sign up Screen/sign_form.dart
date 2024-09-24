@@ -1535,7 +1535,6 @@ class _SignUpFormState extends State<SignUpForm> {
     return null;
   }
 
-
   String? validateIFSC(String? value) {
     if (value == null || value.isEmpty) {
       return 'IFSC code is required';
@@ -1569,7 +1568,6 @@ class _SignUpFormState extends State<SignUpForm> {
     // If all checks pass, the IFSC code is valid
     return null; // Return null if the IFSC code is valid
   }
-
 
   String? validateAccountNumber(String? value) {
     if (value == null || value.isEmpty) {
@@ -1767,14 +1765,16 @@ class _SignUpFormState extends State<SignUpForm> {
         var bodyMSG = jsonData['message'];
         GetXSnackBarMsg.getSuccessMsg('$bodyMSG');
         storeStateCityAreaBranch();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const SplashScreen()),
-        );
+        log('json--->>>$jsonData');
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const SplashScreen()),
+        // );
         setState(() {
           loadingProgress = 0.0;
           isSigningUp = false;
         });
+        log('Done-----------');
       } else if (response.statusCode == 400) {
         var errorData = jsonData;
         if (errorData['error']['email_id'] != null) {

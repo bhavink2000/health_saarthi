@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Frontend%20Helper/UI%20Helper/app_icons_helper.dart';
 import 'package:http/http.dart' as http;
@@ -92,7 +93,7 @@ class UpdateShowDialog {
                           children: [
                             TextButton(
                               onPressed: () async {
-                                await handleLogout(context);
+                                await handleLogout();
                               },
                               child: Text(
                                 "Logout",
@@ -118,16 +119,17 @@ class UpdateShowDialog {
     );
   }
 
-  Future<void> handleLogout(BuildContext context) async {
+  Future<void> handleLogout() async {
     //userDataSession = Provider.of<UserDataSession>(context, listen: false);
     try {
       await logoutUser();
       await AuthenticationManager().removeToken();
-      await DeviceInfo().deleteDeviceToken(context);
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const SplashScreen()),
-            (Route<dynamic> route) => false,
-      );
+      await DeviceInfo().deleteDeviceToken();
+      Get.offAll(SplashScreen());
+      // Navigator.of().pushAndRemoveUntil(
+      //   MaterialPageRoute(builder: (context) => const SplashScreen()),
+      //       (Route<dynamic> route) => false,
+      // );
     } catch (error) {
       print("Error during logout: $error");
       // Handle errors here, show a snackbar, or any other appropriate action

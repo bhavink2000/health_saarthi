@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/platform/platform.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:health_saarthi/Heath%20Saarthi/App%20Helper/Backend%20Helper/Api%20Service/api_calling.dart';
@@ -25,7 +26,7 @@ class DeviceInfo{
     return null;
   }
 
-  Future<dynamic> sendDeviceToken(BuildContext context) async {
+  Future<dynamic> sendDeviceToken() async {
 
     Map<String, String> headers = {
       'Accept': 'application/json',
@@ -55,7 +56,7 @@ class DeviceInfo{
     }
   }
 
-  Future<String> deleteDeviceToken(BuildContext context) async {
+  Future<String> deleteDeviceToken() async {
     var returnMessage;
     Completer<String> completer = Completer<String>();
 
@@ -86,7 +87,7 @@ class DeviceInfo{
   }
 
   var bodyMsg;
-  Future<void> logoutUser(BuildContext context) async {
+  Future<void> logoutUser() async {
     Map<String, String> headers = {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${box.read('accessToken')}',
@@ -103,7 +104,7 @@ class DeviceInfo{
       if (bodyStatus == 200) {
         GetXSnackBarMsg.getSuccessMsg('$bodyMsg');
         AuthenticationManager().removeToken().then((value){
-          deleteDeviceToken(context).then((value) {
+          deleteDeviceToken().then((value) {
             if (value == 'success') {
               print("token is deleted $value");
             } else {
@@ -111,13 +112,14 @@ class DeviceInfo{
             }
           });
         });
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const SplashScreen()),
-              (Route<dynamic> route) => false,
-        );
+        Get.offAll(SplashScreen());
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (context) => const SplashScreen()),
+        //       (Route<dynamic> route) => false,
+        // );
       } else {
         AuthenticationManager().removeToken().then((value){
-          deleteDeviceToken(context).then((value) {
+          deleteDeviceToken().then((value) {
             if (value == 'success') {
               print("token is deleted $value");
             } else {
@@ -125,15 +127,16 @@ class DeviceInfo{
             }
           });
         });
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const SplashScreen()),
-              (Route<dynamic> route) => false,
-        );
+        Get.offAll(SplashScreen());
+        // Navigator.of(context).pushAndRemoveUntil(
+        //   MaterialPageRoute(builder: (context) => const SplashScreen()),
+        //       (Route<dynamic> route) => false,
+        // );
       }
     } catch (error) {
       print(error.toString());
       AuthenticationManager().removeToken().then((value){
-        deleteDeviceToken(context).then((value) {
+        deleteDeviceToken().then((value) {
           if (value == 'success') {
             print("token is deleted $value");
           } else {
@@ -141,10 +144,11 @@ class DeviceInfo{
           }
         });
       });
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const SplashScreen()),
-            (Route<dynamic> route) => false,
-      );
+      Get.offAll(SplashScreen());
+      // Navigator.of(context).pushAndRemoveUntil(
+      //   MaterialPageRoute(builder: (context) => const SplashScreen()),
+      //       (Route<dynamic> route) => false,
+      // );
     }
   }
 }
